@@ -19,7 +19,9 @@ export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   // Storage not configured yet — respond clearly so the UI can fall back.
-  if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.S3_BUCKET) {
+  // Modern Vercel Blob authenticates via OIDC when a store is connected (BLOB_STORE_ID present),
+  // so a static BLOB_READ_WRITE_TOKEN is not required on Vercel.
+  if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID && !process.env.S3_BUCKET) {
     return NextResponse.json(
       {
         ok: false,
