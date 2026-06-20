@@ -13,6 +13,7 @@
 // and Video URL (reel) automatically.
 
 import { NextRequest, NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 
 export const runtime = "nodejs";
 
@@ -34,10 +35,11 @@ export async function POST(req: NextRequest) {
     const form = await req.formData();
     const files = form.getAll("files").filter((f) => f instanceof File) as File[];
     const urls: string[] = [];
-    // TODO: replace this loop with your storage SDK (see header notes).
-    for (const _f of files) {
-      // const { url } = await put(_f.name, _f, { access: "public" });
-      // urls.push(url);
+    for (const f of files) {
+      const safe = (f.name || "upload").replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80);
+      const key = `tributes/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safe}`;
+      const { url } = await put(key, f, { access: "public", contentType: f.type || undefined, addRandomSuffix: false });
+      urls.push(url);
     }
     return NextResponse.json({ ok: true, urls });
   } catch (e: any) {

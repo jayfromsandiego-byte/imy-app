@@ -88,6 +88,29 @@
   #success p{color:var(--ink-soft);max-width:430px;margin:10px auto 0}
   footer{text-align:center;padding:26px 0 50px;color:var(--ink-soft);font-size:.82rem;border-top:1px solid var(--line)}
   .fp{font-family:'Caveat',cursive;font-size:1.35rem;color:var(--terra);margin-top:8px}
+
+  /* ===== Plus: What they loved ===== */
+  .lt-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  @media(max-width:480px){.lt-menu{grid-template-columns:1fr 1fr}}
+  .lt-tile{position:relative;background:var(--cream-2);border:1px solid var(--field);border-radius:13px;padding:12px 6px 9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Inter';transition:.16s}
+  .lt-tile:hover{border-color:var(--terra)}
+  .lt-tile.on{background:#fff;border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.16)}
+  .lt-tile.on::after{content:"\2713";position:absolute;top:6px;right:7px;width:17px;height:17px;border-radius:50%;background:var(--terra);color:#fff;font-size:.66rem;display:grid;place-items:center}
+  .lt-thumb{width:38px;height:30px;background-color:var(--terra);-webkit-mask:no-repeat center/contain;mask:no-repeat center/contain}
+  .lt-tile .nm{font-size:.72rem;text-align:center;line-height:1.15;color:var(--ink)}
+  .lt-tile .plus{font-size:1.4rem;color:var(--terra);height:30px;display:flex;align-items:center}
+  .lt-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+  .lt-row{display:flex;gap:12px;align-items:flex-start}
+  .lt-cthumb{width:64px;height:46px;flex:none;border:1px solid var(--line);border-radius:9px;background-color:var(--terra);-webkit-mask:no-repeat center/contain;mask:no-repeat center/contain}
+  .lt-label{font-family:'Fraunces',serif;font-weight:540;font-size:1.05rem}
+  .lt-auto{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-top:3px}
+  .lt-seg{display:inline-flex;margin-top:8px;border:1px solid var(--field);border-radius:8px;overflow:hidden}
+  .lt-seg button{border:none;background:var(--cream-2);font-family:'Inter';font-size:.74rem;padding:5px 10px;cursor:pointer;color:var(--ink-soft)}
+  .lt-seg button.on{background:var(--terra);color:#fff}
+  .lt-rm{margin-left:auto;background:none;border:none;color:var(--field);font-size:1.3rem;cursor:pointer;line-height:1}
+  .lt-rm:hover{color:var(--terra-deep)}
+  .lt-note{margin-top:12px}
+  .lt-cap{text-align:center;margin-top:12px}
 </style>
 </head>
 <body>
@@ -161,6 +184,15 @@
       <p class="intro">Key moments and milestones, in your words — added by hand. Add as many as you like.</p>
       <div id="moments"></div>
       <button type="button" onclick="addMoment()" style="background:#fff;border:1px dashed var(--terra);color:var(--terra-deep);font-weight:600;padding:11px 18px;border-radius:30px;cursor:pointer;font-family:'Inter'">＋ Add a moment</button>
+    </div>
+
+    <!-- WHAT THEY LOVED (Plus personalization) -->
+    <div class="card">
+      <h2>What they loved</h2>
+      <p class="intro">Pick the things that were truly theirs. Each becomes its own space on their page — a soft drawing behind their real photos, and a few words. Choose up to six.</p>
+      <div class="lt-menu" id="ltMenu"></div>
+      <div id="ltCards"></div>
+      <div class="help lt-cap" id="ltCap">Nothing chosen yet</div>
     </div>
 
     <!-- PHOTOS -->
@@ -308,9 +340,16 @@
     data.videoCount=galleryFiles.filter(function(f){return f.type.indexOf('video')===0}).length;
     data.coverPhotoName=coverFile?coverFile.name:'';
     data.mediaNames=galleryFiles.map(function(f){return f.name});
-    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent='Creating…';
+    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent='Uploading photos…';
     try{
-      // NOTE: binary upload of coverFile + galleryFiles is sent to /api/upload (see backend notes); text fields post here.
+      // Upload media to /api/upload (multipart "files" -> { urls }); attach the URLs. Degrades gracefully if storage isn't configured.
+      if(coverFile){ data.coverPhoto=(await uploadFiles([coverFile]))[0]||''; }
+      var _imgs=galleryFiles.filter(function(f){return f.type.indexOf('image')===0;});
+      var _vids=galleryFiles.filter(function(f){return f.type.indexOf('video')===0;});
+      data.photos=await uploadFiles(_imgs);
+      data.video=_vids.length?((await uploadFiles([_vids[0]]))[0]||''):'';
+      data.lovedThings=await collectLovedThings();
+      btn.textContent='Creating…';
       const res=await fetch('/api/intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
       const out=await res.json();
       if(res.ok && out.ok){
@@ -322,6 +361,82 @@
     }catch(err){ alert('Network error. Please try again.'); btn.disabled=false; btn.textContent='Create their memorial'; }
     return false;
   }
+
+  // ===== Plus: photo upload (multipart 'files' -> { urls }); degrades gracefully =====
+  async function uploadFiles(fileArr){
+    var out=[];
+    for(var i=0;i<(fileArr||[]).length;i++){
+      try{
+        var fd=new FormData(); fd.append('files', fileArr[i]);
+        var r=await fetch('/api/upload',{method:'POST',body:fd});
+        var j=await r.json().catch(function(){return {};});
+        if(r.ok && j && j.ok && j.urls){ out=out.concat(j.urls); }
+      }catch(_e){ /* storage not ready — skip; submission still proceeds */ }
+    }
+    return out;
+  }
+  async function collectLovedThings(){
+    var cards=Array.prototype.slice.call(document.querySelectorAll('#ltCards .lt-card'));
+    var out=[];
+    for(var i=0;i<cards.length;i++){
+      var card=cards[i];
+      var photos=(card._files && card._files.length) ? await uploadFiles(card._files) : [];
+      out.push({ label:card.querySelector('.lt-label').textContent, motifKey:card.dataset.motif||'', note:((card.querySelector('.lt-note')||{}).value||'').trim(), photos:photos });
+    }
+    return out;
+  }
+  // ===== Plus: "What they loved" capture =====
+  (function(){
+    var CATS=[{k:'gardening',l:'Gardening'},{k:'cars',l:'Cars & driving'},{k:'cooking',l:'Cooking & BBQ'},{k:'outdoors',l:'The outdoors'},{k:'fishing',l:'Fishing'},{k:'golf',l:'Golf & sport'},{k:'music-cello',l:'Music'},{k:'faith',l:'Faith'}];
+    var VERB={gardening:'gardening',cars:'with the car',cooking:'cooking',outdoors:'outdoors',fishing:'fishing',golf:'on the course','music-cello':'playing',faith:'at church'};
+    var MAX=6, A=function(k){return '/personalization/'+k+'.png';};
+    var menu=document.getElementById('ltMenu'), wrap=document.getElementById('ltCards'), cap=document.getElementById('ltCap');
+    if(!menu) return;
+    CATS.forEach(function(c){
+      var b=document.createElement('button'); b.type='button'; b.className='lt-tile'; b.dataset.key=c.k;
+      b.innerHTML='<span class="lt-thumb" style="-webkit-mask-image:url(\''+A(c.k)+'\');mask-image:url(\''+A(c.k)+'\')"></span><span class="nm">'+c.l+'</span>';
+      b.addEventListener('click',function(){toggle(c.k,c.l);}); menu.appendChild(b);
+    });
+    var other=document.createElement('button'); other.type='button'; other.className='lt-tile'; other.dataset.key='__other__';
+    other.innerHTML='<span class="plus">+</span><span class="nm">Something else</span>';
+    other.addEventListener('click',function(){var l=prompt('What did they love?'); if(l&&l.trim()) addCard('__other__',l.trim());});
+    menu.appendChild(other);
+    function count(){return wrap.querySelectorAll('.lt-card').length;}
+    function refresh(){
+      var n=count();
+      cap.textContent=n===0?'Nothing chosen yet':(n>=MAX?'Six is plenty — the most meaningful ones':n+' of '+MAX+' chosen');
+      menu.querySelectorAll('.lt-tile').forEach(function(t){
+        var picked=!!wrap.querySelector('.lt-card[data-key="'+t.dataset.key+'"]');
+        if(t.dataset.key!=='__other__') t.classList.toggle('on',picked);
+        var lock=(!picked && n>=MAX); t.style.opacity=lock?'.4':''; t.style.pointerEvents=lock?'none':'';
+      });
+    }
+    function toggle(key,label){var ex=wrap.querySelector('.lt-card[data-key="'+key+'"]'); if(ex){ex.remove();refresh();} else addCard(key,label);}
+    function addCard(key,label){
+      if(count()>=MAX) return;
+      var isOther=key==='__other__', motif=isOther?'fallback':key, music=(key==='music-cello');
+      var card=document.createElement('div'); card.className='lt-card'; card.dataset.key=key; card.dataset.motif=isOther?'':key; card._files=[];
+      card.innerHTML='<div class="lt-row">'+
+        '<span class="lt-cthumb" style="-webkit-mask-image:url(\''+A(motif)+'\');mask-image:url(\''+A(motif)+'\')"></span>'+
+        '<div style="flex:1;min-width:0"><div class="lt-label"></div>'+
+        '<div class="lt-auto">'+(isOther?'a soft botanical drawing':'✓ drawing auto-matched')+'</div>'+
+        (music?'<div class="lt-seg"><button type="button" class="on" data-m="music-cello">Cello</button><button type="button" data-m="music-guitar">Guitar</button><button type="button" data-m="music-piano">Piano</button></div>':'')+
+        '</div><button type="button" class="lt-rm" aria-label="Remove">×</button></div>'+
+        '<input type="text" class="lt-note" maxlength="160" placeholder="What did they love about it? e.g. “his favorite thing right after work”">'+
+        '<div style="margin-top:10px"><button type="button" class="lt-add" style="background:#fff;border:1px dashed var(--terra);color:var(--terra-deep);font-weight:600;font-size:.84rem;padding:9px 14px;border-radius:30px;cursor:pointer;font-family:Inter">＋ Add photos · '+(VERB[key]||'them')+'</button>'+
+        '<input type="file" class="lt-files" accept="image/*" multiple hidden>'+
+        '<div class="thumbs lt-thumbs" style="margin-top:10px"></div>'+
+        '<div class="help">Photos save once upload storage is connected.</div></div>';
+      card.querySelector('.lt-label').textContent=label;
+      card.querySelector('.lt-rm').addEventListener('click',function(){card.remove();refresh();});
+      if(music) card.querySelectorAll('.lt-seg button').forEach(function(b){b.addEventListener('click',function(){card.querySelectorAll('.lt-seg button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');card.dataset.motif=b.dataset.m;var th=card.querySelector('.lt-cthumb');th.style.webkitMaskImage='url(\''+A(b.dataset.m)+'\')';th.style.maskImage='url(\''+A(b.dataset.m)+'\')';});});
+      var fi=card.querySelector('.lt-files'), th=card.querySelector('.lt-thumbs');
+      card.querySelector('.lt-add').addEventListener('click',function(){fi.click();});
+      fi.addEventListener('change',function(){Array.prototype.slice.call(fi.files).forEach(function(f){ if(f.type.indexOf('image')!==0) return; card._files.push(f); var d=document.createElement('div'); d.className='thumb'; var g=document.createElement('img'); g.src=URL.createObjectURL(f); d.appendChild(g); th.appendChild(d); });});
+      wrap.appendChild(card); refresh();
+    }
+    refresh();
+  })();
 </script>
 </body>
 </html>
