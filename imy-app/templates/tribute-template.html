@@ -207,6 +207,15 @@
   .t-tidewater .portrait,.t-tidewater .mcell,.t-tidewater .reel .rcard{border-radius:14px}
   .t-tidewater .nav .cta,.t-tidewater .letters .send,.t-tidewater .svc-actions .primary{border-radius:30px}
   .t-tidewater .bg-dove{color:#5E8088;opacity:.13}
+  /* ===== Plus personalization — Loved Things (tier-gated, additive) ===== */
+  .lt{position:relative;overflow:hidden}
+  .lt .wrap{position:relative;z-index:1}
+  .lt-blurb{max-width:54ch;color:var(--ink-soft);font-size:1.08rem;margin:-4px 0 24px}
+  .lt-trace{position:absolute;inset:0;z-index:0;background-color:var(--accent);opacity:.12;pointer-events:none;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:min(78%,720px);mask-size:min(78%,720px)}
+  .lt-carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+  .lt-carousel .shot{flex:0 0 82%;max-width:460px;scroll-snap-align:center;aspect-ratio:3/2;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg-2);box-shadow:var(--shadow)}
+  @media(min-width:680px){.lt-carousel .shot{flex-basis:48%}}
+  .lt-carousel .shot img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body class="{{THEME_CLASS}}">
@@ -261,6 +270,8 @@
     </div>
   </div>
 </section>
+
+{{LOVED_THINGS}}
 
 <section id="moments" class="tint-c">
   <div class="wrap">

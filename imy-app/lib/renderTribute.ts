@@ -2,6 +2,8 @@
 // (templates/tribute-template.html) from an Airtable Tributes row.
 // Token model ({{NAME}}) — robust string replacement, no fragile anchor matching.
 
+import { renderLovedThings, type LovedThing } from "./lovedThings";
+
 export type TimelineItem = { year: string; title: string; text: string };
 export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
@@ -27,6 +29,7 @@ export type Tribute = {
   service?: { date?: string; time?: string; place?: string; address?: string; charity?: string };
   details?: DetailItem[];
   loved?: LovedItem[];
+  lovedThings?: LovedThing[];        // Plus personalization sections (ride in Tribute Data JSON)
   timeline?: TimelineItem[];
   photos?: PhotoItem[];
   reel?: ReelItem[];
@@ -137,6 +140,7 @@ export function renderTribute(template: string, t: Tribute): string {
     "{{MEMORIES}}": memoriesHtml,
     "{{SERVICE}}": serviceHtml,
     "{{PLEDGE}}": esc(pledge),
+    "{{LOVED_THINGS}}": renderLovedThings(t.lovedThings || [], t.tier),
   };
 
   let html = template;

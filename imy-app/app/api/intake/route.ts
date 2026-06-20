@@ -17,6 +17,27 @@ function slugify(s: string) {
     .replace(/^-|-$/g, "");
 }
 
+// Plus personalization: sanitize the Loved Things array from onboarding.
+type LovedThingIn = { label?: string; motifKey?: string; note?: string; photos?: Array<string | { url?: string }> };
+function cleanLovedThings(input: unknown) {
+  if (!Array.isArray(input)) return [] as Array<{ label: string; motifKey?: string; note?: string; photos?: string[] }>;
+  const out: Array<{ label: string; motifKey?: string; note?: string; photos?: string[] }> = [];
+  for (const raw of input.slice(0, 6)) {
+    const x = (raw || {}) as LovedThingIn;
+    const label = String(x.label || "").trim().slice(0, 60);
+    if (!label) continue;
+    const item: { label: string; motifKey?: string; note?: string; photos?: string[] } = { label };
+    if (x.motifKey) item.motifKey = String(x.motifKey).trim().slice(0, 40);
+    if (x.note) item.note = String(x.note).trim().slice(0, 160);
+    const photos = Array.isArray(x.photos)
+      ? x.photos.map((p) => (typeof p === "string" ? p : (p && p.url) || "")).filter(Boolean).slice(0, 12)
+      : [];
+    if (photos.length) item.photos = photos;
+    out.push(item);
+  }
+  return out;
+}
+
 export async function POST(req: NextRequest) {
   let body: any;
   try {
@@ -32,6 +53,14 @@ export async function POST(req: NextRequest) {
   const base = slug;
   let n = 1;
   while (await getTributeBySlug(slug)) slug = `${base}-${++n}`;
+
+  // Plus personalization (additive): loved things ride in Tribute Data JSON; gallery photos -> attachments.
+  const lovedThings = cleanLovedThings(body.lovedThings);
+  const tributeData: Record<string, unknown> = {};
+  if (lovedThings.length) tributeData.lovedThings = lovedThings;
+  const galleryPhotos: string[] = Array.isArray(body.photos)
+    ? body.photos.map((p: any) => (typeof p === "string" ? p : (p && p.url) || "")).filter(Boolean).slice(0, 60)
+    : [];
 
   await createRecord("Tributes", {
     "Slug": slug,
@@ -53,6 +82,8 @@ export async function POST(req: NextRequest) {
     "Charity": body.charity,
     "Privacy": body.privacy || "Public",
     "Status": "New",
+    ...(Object.keys(tributeData).length ? { "Tribute Data": JSON.stringify(tributeData) } : {}),
+    ...(galleryPhotos.length ? { "Photos": galleryPhotos.map((url) => ({ url })) } : {}),
   });
 
   // Optionally also record the buyer in Customers.
