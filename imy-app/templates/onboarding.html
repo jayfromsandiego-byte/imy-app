@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>I Miss You Memorial — Create their memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Inter:wght@300;400;500;600&family=Caveat:wght@500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FBF7EF;--cream-2:#F5EFE1;--ink:#332C25;--ink-soft:#6b5f52;--terra:#B07A56;--terra-deep:#8B5E3C;--gold:#CBA85F;--sage:#7E9B82;--sage-soft:#EDF1E8;--line:#e7dcc6;--field:#ddd0b8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px}
+  .wm{display:inline-flex;align-items:baseline;gap:.5ch;font-family:'Fraunces',serif}
+  .wm .script{font-style:italic;font-weight:450;font-size:1.3rem;color:var(--ink)} .wm .script b{color:var(--terra)}
+  .wm .sub{font-family:'Inter';font-weight:600;font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--sage);align-self:center}
+  header{text-align:center;padding:44px 0 6px}
+  header .candle{font-size:1.7rem}
+  h1{font-family:'Fraunces',serif;font-weight:360;font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.1;letter-spacing:-.015em;margin:12px 0 10px}
+  h1 em{font-style:italic;color:var(--terra)}
+  header p{color:var(--ink-soft);max-width:480px;margin:0 auto;font-size:1.02rem}
+  form{padding:22px 0 70px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 18px;margin-bottom:16px;box-shadow:0 14px 36px -28px rgba(51,44,37,.4)}
+  @media(min-width:620px){.card{padding:26px 26px}}
+  .card h2{font-family:'Fraunces',serif;font-weight:540;font-size:1.2rem;margin-bottom:4px}
+  .card .intro{color:var(--ink-soft);font-size:.9rem;margin-bottom:18px}
+  .field{margin-bottom:15px}
+  label{display:block;font-weight:600;font-size:.84rem;margin-bottom:7px}
+  label .opt{color:var(--ink-soft);font-weight:400;font-size:.78rem}
+  .help{font-size:.8rem;color:var(--ink-soft);margin-top:6px}
+  input,textarea,select{width:100%;font-family:'Inter';font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:11px;padding:13px 14px}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.14)}
+  textarea{resize:vertical;min-height:120px;line-height:1.6}
+  .grid-2{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:560px){.grid-2{grid-template-columns:1fr 1fr}}
+  .slug-wrap{display:flex;border:1px solid var(--field);border-radius:11px;overflow:hidden}
+  .slug-wrap:focus-within{border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.14)}
+  .slug-wrap input{border:none;box-shadow:none;border-radius:0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:.88rem}
+  .slug-wrap .suffix{display:flex;align-items:center;padding:0 12px;background:var(--cream-2);color:var(--ink-soft);font-family:'JetBrains Mono',monospace;font-size:.8rem;white-space:nowrap}
+  .preview{margin-top:9px;font-size:.84rem;color:var(--ink-soft)} .preview b{font-family:'JetBrains Mono',monospace;color:var(--terra)}
+
+  /* assistant */
+  .assist-toggle{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:var(--sage-soft);border:1px solid #dde6d8;color:var(--terra-deep);font-weight:600;font-size:.84rem;padding:9px 14px;border-radius:30px;cursor:pointer}
+  .assist-box{display:none;margin-top:12px;background:var(--sage-soft);border:1px solid #dde6d8;border-radius:14px;padding:14px}
+  .assist-box.open{display:block}
+  .assist-box .who{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:6px}
+  .assist-box p{font-size:.9rem;color:var(--ink);margin-bottom:10px}
+  .assist-box .mini{font-size:.78rem;color:var(--ink-soft)}
+
+  /* upload dropzones */
+  .drop{border:1.5px dashed var(--field);border-radius:14px;padding:22px 16px;text-align:center;cursor:pointer;transition:.18s;background:var(--cream-2)}
+  .drop:hover,.drop.drag{border-color:var(--terra);background:#fff}
+  .drop .plus{font-size:1.7rem;color:var(--terra);line-height:1}
+  .drop .t{font-weight:600;font-size:.9rem;margin-top:6px}
+  .drop .s{font-size:.78rem;color:var(--ink-soft);margin-top:2px}
+  .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:12px}
+  .thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--cream-2)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb .vid{display:flex;align-items:center;justify-content:center;height:100%;font-size:1.4rem;color:var(--terra)}
+  .thumb .x{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;cursor:pointer;font-size:.8rem;line-height:1}
+
+  /* theme color tiles */
+  .themes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:480px){.themes{grid-template-columns:1fr 1fr}}
+  .theme-tile{display:block;width:100%;padding:0;border:1px solid var(--field);background:#fff;border-radius:13px;overflow:hidden;cursor:pointer;text-align:center;font-family:'Inter';transition:.18s;position:relative}
+  .theme-tile:hover{border-color:var(--terra)}
+  .theme-tile .tt-img{display:block;height:64px;background-size:cover;background-position:center}
+  .theme-tile .tt-swatch{display:block;height:54px}
+  .theme-tile .tt-name{display:block;padding:8px 4px 2px;font-family:'Fraunces',serif;font-weight:540;font-size:.92rem}
+  .theme-tile .tt-vibe{display:block;font-size:.66rem;color:var(--ink-soft);padding:0 4px 9px;font-weight:500;letter-spacing:.04em}
+  .theme-tile.is-selected{border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.18)}
+  .theme-tile.is-selected::after{content:"\2713";position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--terra);color:#fff;font-size:.72rem;display:grid;place-items:center}
+
+  .cardnote{font-size:.82rem;color:var(--ink-soft);background:var(--cream-2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-top:6px}
+
+  .submit{text-align:center;padding-top:6px}
+  .btn{background:var(--terra);color:#fff;border:none;font-family:'Inter';font-weight:600;font-size:1.04rem;padding:16px 40px;border-radius:40px;cursor:pointer;transition:.2s;width:100%}
+  @media(min-width:560px){.btn{width:auto}}
+  .btn:hover{background:var(--terra-deep)} .btn:disabled{opacity:.6}
+  .reassure{margin-top:14px;font-size:.84rem;color:var(--ink-soft)}
+
+  #success{display:none;text-align:center;background:#fff;border:1px solid var(--line);border-radius:20px;padding:42px 24px}
+  #success .candle{font-size:2rem}
+  #success h2{font-family:'Fraunces',serif;font-weight:400;font-size:1.7rem;margin:12px 0 10px}
+  #success .url{display:inline-block;font-family:'JetBrains Mono',monospace;color:var(--terra);background:var(--cream-2);padding:10px 16px;border-radius:30px;margin:8px 0;border:1px solid var(--line);word-break:break-all}
+  #success p{color:var(--ink-soft);max-width:430px;margin:10px auto 0}
+  footer{text-align:center;padding:26px 0 50px;color:var(--ink-soft);font-size:.82rem;border-top:1px solid var(--line)}
+  .fp{font-family:'Caveat',cursive;font-size:1.35rem;color:var(--terra);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="candle">🕯️</div>
+    <h1>Let's build a place for <em>their story.</em></h1>
+    <p>Tell us about the person you love. When you're done, we begin creating their memorial and email you the link.</p>
+  </header>
+
+  <form id="intake" onsubmit="return handleSubmit(event)">
+    <!-- ABOUT -->
+    <div class="card">
+      <h2>About your loved one</h2>
+      <p class="intro">The essentials at the top of their page.</p>
+      <div class="field">
+        <label>Their full name <span style="color:var(--terra)">*</span></label>
+        <input type="text" name="fullName" id="fullName" placeholder="Their name" oninput="syncSlug()" required>
+      </div>
+      <div class="field">
+        <label>Also known as <span class="opt">— optional</span></label>
+        <input type="text" name="aka" placeholder="A nickname they were loved by">
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Date of birth <span style="color:var(--terra)">*</span></label><input type="date" name="birth" id="birth" required></div>
+        <div class="field"><label>Date of passing <span style="color:var(--terra)">*</span></label><input type="date" name="passing" id="passing" required></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Where they lived <span class="opt">— optional</span></label><input type="text" name="place" placeholder="City, State"></div>
+        <div class="field"><label>Your relationship <span style="color:var(--terra)">*</span></label><input type="text" name="relationship" placeholder="Daughter, son, friend…" required></div>
+      </div>
+    </div>
+
+    <!-- ADDRESS -->
+    <div class="card">
+      <h2>Their web address</h2>
+      <p class="intro">The link you'll share. It becomes their permanent home.</p>
+      <div class="field">
+        <label>Web address <span style="color:var(--terra)">*</span></label>
+        <div class="slug-wrap">
+          <input type="text" name="slug" id="slug" placeholder="their-name" oninput="manualSlug()" required>
+          <span class="suffix">.imissyoumemorial.com</span>
+        </div>
+        <div class="preview">Lives at <b id="slugPreview">their-name.imissyoumemorial.com</b></div>
+      </div>
+    </div>
+
+    <!-- STORY -->
+    <div class="card">
+      <h2>Their story</h2>
+      <p class="intro">In your own words. A few sentences are enough — we can work through them later.</p>
+      <div class="field">
+        <label>A short life story <span style="color:var(--terra)">*</span></label>
+        <textarea name="story" id="story" placeholder="Where they were born, what they loved, who they became, the small things that were theirs alone…" required></textarea>
+        <button type="button" class="assist-toggle" onclick="toggleAssist()">✦ Help me write this</button>
+        <div class="assist-box" id="assistBox">
+          <div class="who">Writing assistant</div>
+          <p>Start with one true thing — a habit, a phrase they always said, a Sunday. Tell me that, and I'll help you shape it into a few warm sentences. Every word stays yours.</p>
+          <div class="mini">A kind helper for hard moments — available here and on their finished page.</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>A favorite quote or philosophy <span class="opt">— optional</span></label><input type="text" name="quote" placeholder="Something they always said"></div>
+        <div class="field"><label>A song that reminds you of them <span class="opt">— optional</span></label><input type="text" name="song" placeholder="Artist — song"></div>
+      </div>
+    </div>
+
+    <!-- LIFE MOMENTS -->
+    <div class="card">
+      <h2>Life moments</h2>
+      <p class="intro">Key moments and milestones, in your words — added by hand. Add as many as you like.</p>
+      <div id="moments"></div>
+      <button type="button" onclick="addMoment()" style="background:#fff;border:1px dashed var(--terra);color:var(--terra-deep);font-weight:600;padding:11px 18px;border-radius:30px;cursor:pointer;font-family:'Inter'">＋ Add a moment</button>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="card">
+      <h2>Photos &amp; video</h2>
+      <p class="intro">A beautiful page holds many photos. Add as many as you can — you can always add more later.</p>
+
+      <div class="field">
+        <label>Cover photo</label>
+        <div class="drop" id="coverDrop"><div class="plus">＋</div><div class="t">Add a cover photo</div><div class="s">Tap to choose, or drag a photo here</div></div>
+        <input type="file" id="coverInput" accept="image/*" hidden>
+        <div class="thumbs" id="coverThumbs"></div>
+      </div>
+
+      <div class="field">
+        <label>More photos &amp; videos <span class="opt">— add as many as you like</span></label>
+        <div class="drop" id="galleryDrop"><div class="plus">＋</div><div class="t">Add photos or videos</div><div class="s">Tap to choose, or drag files here</div></div>
+        <input type="file" id="galleryInput" accept="image/*,video/*" multiple hidden>
+        <div class="thumbs" id="galleryThumbs"></div>
+      </div>
+    </div>
+
+    <!-- DESIGN THEME -->
+    <div class="card">
+      <h2>Choose a design</h2>
+      <p class="intro">A complete look for their page — fonts, colors, containers, and feel. You can change this anytime.</p>
+      <input type="hidden" name="theme" id="themeInput" value="Evensong">
+      <div class="themes" id="themeGrid">
+        <button type="button" class="theme-tile is-selected" data-theme="Evensong" onclick="selectTheme(this)"><span class="tt-swatch" style="background:linear-gradient(135deg,#283845 0 34%,#C9A24B 34% 67%,#F6F2E9 67%)"></span><span class="tt-name">Evensong</span><span class="tt-vibe">reverent · twilight</span></button>
+        <button type="button" class="theme-tile" data-theme="Hearthstone" onclick="selectTheme(this)"><span class="tt-swatch" style="background:linear-gradient(135deg,#3A332B 0 34%,#B5663E 34% 67%,#F3EDE3 67%)"></span><span class="tt-name">Hearthstone</span><span class="tt-vibe">warm · heritage</span></button>
+        <button type="button" class="theme-tile" data-theme="Tidewater" onclick="selectTheme(this)"><span class="tt-swatch" style="background:linear-gradient(135deg,#2F3B40 0 34%,#5E8088 34% 67%,#EEF1F1 67%)"></span><span class="tt-name">Tidewater</span><span class="tt-vibe">serene · coastal</span></button>
+      </div>
+    </div>
+
+    <!-- SERVICE -->
+    <div class="card">
+      <h2>Service &amp; remembrance <span style="font-size:.8rem;color:var(--ink-soft);font-weight:400">— optional</span></h2>
+      <div class="grid-2">
+        <div class="field"><label>Service date</label><input type="date" name="serviceDate"></div>
+        <div class="field"><label>Service time</label><input type="time" name="serviceTime"></div>
+      </div>
+      <div class="field"><label>Service location</label><input type="text" name="serviceLocation" placeholder="Place &amp; address"></div>
+      <div class="field">
+        <label>Donations in their name <span class="opt">— choose a charity</span></label>
+        <select name="charity">
+          <option value="">No charity / decide later</option>
+          <option>American Cancer Society</option>
+          <option>American Red Cross</option>
+          <option>Alzheimer's Association</option>
+          <option>St. Jude Children's Research Hospital</option>
+          <option>AARP Foundation (seniors)</option>
+        </select>
+        <div class="help">Donations are passed to the chosen organization. We keep this list curated.</div>
+      </div>
+    </div>
+
+    <!-- DETAILS -->
+    <div class="card">
+      <h2>Your details</h2>
+      <div class="grid-2">
+        <div class="field"><label>Your email <span style="color:var(--terra)">*</span></label><input type="email" name="email" placeholder="you@example.com" required></div>
+        <div class="field">
+          <label>Who can visit</label>
+          <select name="privacy"><option>Public</option><option>Unlisted</option><option>Password</option></select>
+        </div>
+      </div>
+      <div class="cardnote">We'll keep a card on file so a later upgrade is one tap — <b>your free page is never charged.</b> You'll add it securely after this step.</div>
+    </div>
+
+    <div class="submit">
+      <button type="submit" class="btn" id="submitBtn">Create their memorial</button>
+      <div class="reassure">Begin free · we email you the link</div>
+    </div>
+  </form>
+
+  <div id="success">
+    <div class="candle">🕯️</div>
+    <h2>Their memorial is being created.</h2>
+    <span class="url" id="successUrl">their-name.imissyoumemorial.com</span>
+    <p>We've saved everything and we're preparing their page. <b>We'll email you the link</b> — it's how you'll reach and share their memorial. Thank you for trusting us with their memory.</p>
+  </div>
+</div>
+
+<footer>
+  <span class="wm"><span class="script">I miss <b>you</b></span><span class="sub">Memorial</span></span>
+  <div class="fp">made with love</div>
+</footer>
+
+<script>
+  // ----- slug -----
+  let slugEdited=false;
+  function slugify(s){return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');}
+  function syncSlug(){ if(slugEdited) return; const v=slugify(document.getElementById('fullName').value); document.getElementById('slug').value=v; updatePreview(v||'their-name'); }
+  function manualSlug(){ slugEdited=true; const el=document.getElementById('slug'); el.value=slugify(el.value); updatePreview(el.value||'their-name'); }
+  function updatePreview(s){ document.getElementById('slugPreview').textContent=(s||'their-name')+'.imissyoumemorial.com'; }
+
+  // ----- date sanity: no future dates; realistic recent range -----
+  (function(){
+    var today=new Date().toISOString().slice(0,10);
+    var b=document.getElementById('birth'), p=document.getElementById('passing');
+    b.max=today; p.max=today;
+  })();
+
+  // ----- theme -----
+  function selectTheme(btn){ document.querySelectorAll('.theme-tile').forEach(function(t){t.classList.remove('is-selected')}); btn.classList.add('is-selected'); document.getElementById('themeInput').value=btn.getAttribute('data-theme'); }
+
+  // ----- assistant -----
+  function toggleAssist(){ document.getElementById('assistBox').classList.toggle('open'); }
+
+  // ----- life moments (manual timeline) -----
+  function addMoment(){var w=document.getElementById('moments');var r=document.createElement('div');r.className='moment-row';r.style.cssText='display:grid;grid-template-columns:84px 1fr 40px;gap:8px;align-items:center;margin-bottom:8px';r.innerHTML='<input type="text" class="m-year" placeholder="Year" inputmode="numeric"><input type="text" class="m-text" placeholder="What happened"><button type="button" onclick="this.parentNode.remove()" style="border:1px solid var(--field);background:#fff;border-radius:10px;height:46px;cursor:pointer;color:var(--ink-soft);font-size:1.1rem">×</button>';w.appendChild(r);}
+  addMoment();
+
+  // ----- uploads (client-side preview; files are sent to the upload route on submit) -----
+  var coverFile=null, galleryFiles=[];
+  function wireDrop(dropId,inputId,multiple,onChange){
+    var drop=document.getElementById(dropId), input=document.getElementById(inputId);
+    drop.addEventListener('click',function(){input.click()});
+    ['dragenter','dragover'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add('drag')})});
+    ['dragleave','drop'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove('drag')})});
+    drop.addEventListener('drop',function(ev){ onChange(Array.prototype.slice.call(ev.dataTransfer.files)); });
+    input.addEventListener('change',function(){ onChange(Array.prototype.slice.call(input.files)); });
+  }
+  function renderThumbs(containerId,files,removeFn){
+    var c=document.getElementById(containerId); c.innerHTML='';
+    files.forEach(function(f,i){
+      var d=document.createElement('div'); d.className='thumb';
+      if(f.type.indexOf('video')===0){ d.innerHTML='<div class="vid">▶</div>'; }
+      else { var img=document.createElement('img'); img.src=URL.createObjectURL(f); d.appendChild(img); }
+      var x=document.createElement('button'); x.type='button'; x.className='x'; x.textContent='×'; x.onclick=function(){removeFn(i)}; d.appendChild(x);
+      c.appendChild(d);
+    });
+  }
+  wireDrop('coverDrop','coverInput',false,function(files){ if(files[0]){coverFile=files[0]; renderThumbs('coverThumbs',[coverFile],function(){coverFile=null;renderThumbs('coverThumbs',[],null);});} });
+  wireDrop('galleryDrop','galleryInput',true,function(files){ galleryFiles=galleryFiles.concat(files); renderThumbs('galleryThumbs',galleryFiles,function(i){galleryFiles.splice(i,1);renderThumbs('galleryThumbs',galleryFiles,arguments.callee);}); });
+
+  // ----- submit -----
+  async function handleSubmit(e){
+    e.preventDefault();
+    const form=document.getElementById('intake');
+    const data=Object.fromEntries(new FormData(form).entries());
+    data.tier='Plus';
+    data.milestones=Array.prototype.slice.call(document.querySelectorAll('#moments .moment-row')).map(function(r){return {year:(r.querySelector('.m-year')||{}).value||'',text:(r.querySelector('.m-text')||{}).value||''};}).filter(function(m){return m.year||m.text;});
+    data.photoCount=galleryFiles.filter(function(f){return f.type.indexOf('image')===0}).length + (coverFile?1:0);
+    data.videoCount=galleryFiles.filter(function(f){return f.type.indexOf('video')===0}).length;
+    data.coverPhotoName=coverFile?coverFile.name:'';
+    data.mediaNames=galleryFiles.map(function(f){return f.name});
+    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent='Creating…';
+    try{
+      // NOTE: binary upload of coverFile + galleryFiles is sent to /api/upload (see backend notes); text fields post here.
+      const res=await fetch('/api/intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      const out=await res.json();
+      if(res.ok && out.ok){
+        form.style.display='none';
+        document.getElementById('successUrl').textContent=(out.slug||'their-name')+'.imissyoumemorial.com';
+        document.getElementById('success').style.display='block';
+        window.scrollTo({top:0,behavior:'smooth'});
+      } else { alert(out.error||'Something went wrong. Please try again.'); btn.disabled=false; btn.textContent='Create their memorial'; }
+    }catch(err){ alert('Network error. Please try again.'); btn.disabled=false; btn.textContent='Create their memorial'; }
+    return false;
+  }
+</script>
+</body>
+</html>
