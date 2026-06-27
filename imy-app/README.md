@@ -1,66 +1,54 @@
-# I Miss You Memorial — Automation App
+# I Miss You Memorial — app (imy-app)
 
-Turns an onboarding submission into a live tribute at `{slug}.imissyoumemorial.com`,
-rendered in the canonical **"Vigil"** design.
+Beautiful, shareable memorial tribute pages for the people we've lost.
+Live at **imissyoumemorial.com**; each tribute renders at `{slug}.imissyoumemorial.com`
+in the canonical **"Vigil"** design (candle + rose hero, motif backgrounds below).
 
-## Flow
+> Note: the Next.js project root is the `imy-app/` subdirectory of this repo
+> (Vercel Root Directory = `imy-app`).
+
+## Current architecture (live MVP)
 
 ```
-Stripe payment link  →  /onboarding (form)  →  POST /api/intake
-   → writes Tribute row to Airtable (reserves a unique {slug})
-   → Hyperagent enriches the row (timeline, details, memories) into "Tribute Data"
+Landing (/)  →  /onboarding (Typeform-style story)  →  POST /api/intake
+   → writes a Tribute row to Airtable (reserves a unique {slug})
    → {slug}.imissyoumemorial.com renders the Vigil template, populated
 ```
 
-## Files
-
 | Path | Purpose |
 |---|---|
-| `templates/tribute-template.html` | The canonical Vigil tribute (master design — do not restyle) |
-| `lib/renderTribute.ts` | Injects a person's data into the template via cheerio (design untouched) |
-| `lib/airtable.ts` | Tiny Airtable client (create + lookup by slug) |
+| `app/route.ts` | Serves the marketing landing page (`templates/landing.html`) |
+| `app/onboarding/route.ts` | Serves the onboarding story (`templates/onboarding.html`) |
 | `app/api/intake/route.ts` | Onboarding form → Airtable; reserves a unique subdomain |
-| `app/_sites/[slug]/route.ts` | Renders a tribute for a subdomain |
-| `middleware.ts` | Rewrites `{slug}.imissyoumemorial.com` → `/_sites/{slug}` |
+| `app/api/assist/route.ts` | AI writing helper (OpenAI; graceful fallback without a key) |
+| `app/api/upload/route.ts` | Photo/video uploads (Vercel Blob; 501 until storage configured) |
+| `app/sites/[slug]/route.ts` | Renders a tribute for a subdomain; slug `example` = built-in sample |
+| `lib/renderTribute.ts` | Fills the template via `{{TOKEN}}` string replacement (no cheerio) |
+| `lib/airtable.ts` | Minimal Airtable client (create + lookup by slug) |
+| `middleware.ts` | Rewrites `{slug}.imissyoumemorial.com` → `/sites/{slug}` |
 
-## Setup
+Data today is **Airtable** (base `apparEJ9ZRhjp7joc`). Uploads use **Vercel Blob**.
+The AI helper uses **OpenAI**. See `.env.example` for all expected variables.
 
-1. `npm i cheerio` (plus a standard Next.js App Router project).
-2. Ensure `tsconfig.json` has the `@/*` path alias mapped to the project root.
-3. Environment variables:
-   ```
-   AIRTABLE_PAT=...            # data.records:read/write
-   AIRTABLE_BASE_ID=app...     # from setup_base.py
-   ```
-4. Place the onboarding form at `/onboarding` and have it `POST` JSON to `/api/intake`
-   (same fields as the form: fullName, slug, aka, email, relationship, birth, passing,
-   place, story, quote, song, theme, coverPhoto, video, serviceDate, serviceLocation,
-   charity, privacy, tier).
+## Roadmap (planned — see the Notion runbook)
 
-## Wildcard subdomains (the one infra step)
+Per "Hyperagent Build Runbook — Customer Login + Client Dashboard": enhance this app
+**in place** — keep the renderer and subdomain URLs, and add:
 
-1. Add a wildcard DNS record: `*.imissyoumemorial.com  CNAME  cname.vercel-dns.com`
-   (or your host's target).
-2. In Vercel: Project → Domains → add `*.imissyoumemorial.com`.
-3. Deploy. Every subdomain is rendered dynamically from Airtable — **no per-site deploy**.
-   A new memorial is live the moment `/api/intake` writes its row.
+- **Auth.js (NextAuth v5)** — Google / Microsoft / Apple / email magic link.
+- **Supabase Postgres via Prisma** — accounts + tributes (Airtable kept as a migration source/fallback).
+- **Customer dashboard** — owners view, edit, and manage their tribute and plan.
+- **Stripe checkout + webhooks** — payment success sets the tier; a lapse keeps the tribute online (Permanence Pledge in code).
 
-## The enrichment step (matching the sample's richness)
+All new work happens on a branch → Vercel preview → founder sign-off → merge.
+Never push straight to production; never lose a tribute.
 
-The onboarding form captures raw fields. To reach the full richness of the canonical
-sample (life timeline, "she loved most" detail cards, seeded memories, quote
-attribution), Hyperagent reads the new Airtable row, expands the story into a
-`Tribute Data` JSON blob:
+## Local dev
 
-```json
-{
-  "datesSuffix": "a sky full of those who loved her",
-  "quoteAttrib": "what she said, most mornings",
-  "details": [{ "k": "She loved most", "v": "…", "wide": true }],
-  "timeline": [{ "year": "1942", "title": "Born in …", "text": "…", "tag": "family" }],
-  "memories": [{ "text": "…", "name": "…", "rel": "Daughter" }]
-}
+```bash
+npm install
+npm run dev      # http://localhost:3000
 ```
 
-`recordToTribute()` merges that JSON over the raw fields, so the renderer produces a
-tribute indistinguishable in structure from the Eleanor Hayes master.
+`tsconfig.json` maps `@/*` to the project root. Wildcard subdomains require a
+`*.imissyoumemorial.com` DNS record and the domain added in Vercel.
