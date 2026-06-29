@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
 import { saveTribute, moderateMemory } from "@/app/dashboard/actions";
+import MediaManager from "@/components/MediaManager";
 
 export const dynamic = "force-dynamic";
 const C = { ink: "#2C2520", inkSoft: "#5A4F45", terra: "#A87C5F", line: "#E4D9C4", deep: "#F3ECDD", good: "#4F7A52", bad: "#8C2F2A" };
@@ -15,7 +16,8 @@ export default async function EditTribute({ params }: { params: { id: string } }
     return <p style={{ color: C.inkSoft }}>This tribute could not be found, or isn't yours to manage. <a href="/dashboard" style={{ color: C.terra }}>Back to your tributes</a></p>;
   }
   const { data: memories } = await db.from("tribute_memories").select("*").eq("tribute_id", t.id).is("deleted_at", null).order("created_at", { ascending: false });
-  const { count: photoCount } = await db.from("tribute_photos").select("*", { count: "exact", head: true }).eq("tribute_id", t.id).is("deleted_at", null);
+  const { data: photos } = await db.from("tribute_photos").select("id,url,sort").eq("tribute_id", t.id).is("deleted_at", null).order("sort", { ascending: true });
+  const photoCount = (photos || []).length;
   const pending = (memories || []).filter((m: any) => m.status === "pending");
   const approved = (memories || []).filter((m: any) => m.status === "approved");
 
@@ -49,6 +51,8 @@ export default async function EditTribute({ params }: { params: { id: string } }
         </div>
         <button type="submit" style={{ marginTop: 18, background: C.terra, color: "#fff", border: "none", fontFamily: "inherit", fontWeight: 600, fontSize: 15, padding: "12px 26px", borderRadius: 30, cursor: "pointer" }}>Save changes</button>
       </form>
+
+      <MediaManager tributeId={t.id} photos={(photos as any) || []} />
 
       <div style={{ background: "#fff", border: `1px solid ${C.line}`, borderRadius: 14, padding: 22 }}>
         <h2 style={{ fontWeight: 600, fontSize: "1.2rem" }}>Memories awaiting your review{pending.length > 0 ? ` · ${pending.length}` : ""}</h2>

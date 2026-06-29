@@ -1,6 +1,7 @@
 // POST /api/intake — onboarding submit. Writes a published tribute into Supabase
-// (instant generation), reserves a unique slug, saves loved-things + a first memory,
-// and best-effort mirrors to Airtable during cutover. Falls back to Airtable if Supabase env is absent.
+// (instant generation), reserves a unique slug, saves loved-things + a first memory
+// + an optional cover photo, and best-effort mirrors to Airtable during cutover.
+// Falls back to Airtable if Supabase env is absent.
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { createRecord } from "@/lib/airtable";
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
   let slug = slugify(body.slug || name);
   if (!slug) return NextResponse.json({ ok: false, error: "A name is required." }, { status: 400 });
   const email = (body.email || "").toString().trim() || null;
+  const coverPhotoUrl = /^https?:\/\//.test(String(body.coverPhotoUrl || "")) ? String(body.coverPhotoUrl).slice(0, 600) : null;
 
   // Fallback: no Supabase env yet -> Airtable-only (keeps the live MVP working).
   if (!supabaseConfigured) {
@@ -74,6 +76,9 @@ export async function POST(req: NextRequest) {
     await db.from("tribute_loved_things").insert(
       lovedThings.map((l: any, idx: number) => ({ tribute_id: tid, label: String(l.label || "").slice(0, 60), motif_key: l.motifKey || null, sort: idx }))
     );
+  }
+  if (coverPhotoUrl) {
+    await db.from("tribute_photos").insert({ tribute_id: tid, url: coverPhotoUrl, sort: 0 });
   }
   if (body.firstMemory && body.firstMemory.body) {
     await db.from("tribute_memories").insert({

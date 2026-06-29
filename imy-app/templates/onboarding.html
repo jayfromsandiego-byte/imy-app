@@ -182,7 +182,7 @@
     cw.appendChild(b);
   });
 
-  // photo preview (stored locally; uploaded after the page is created)
+  // photo preview (stored locally; uploaded when the tribute is created)
   var drop=document.getElementById('drop'),photo=document.getElementById('photo'),prev_=document.getElementById('prev');
   drop.onclick=function(){photo.click()};
   photo.onchange=function(){if(photo.files[0]){prev_.src=URL.createObjectURL(photo.files[0]);prev_.style.display='block';}};
@@ -203,8 +203,18 @@
     if(!fullName){alert('A name is needed to begin.');i=0;render();return;}
     var email=val('email').trim();
     if(!email){alert('An email lets us send you the link.');return;}
-    var payload={fullName:fullName,slug:slugify(fullName),birth:val('birth'),passing:val('passing'),place:val('place'),story:val('story'),quote:'',email:email,lovedThings:loved,tier:'free',firstMemory:val('memory')?{author_name:'Family',relation:'',body:val('memory')}:null};
     var btn=document.getElementById('createBtn');btn.disabled=true;btn.textContent='Creating…';
+    // Upload the chosen photo first (optional). If storage isn't connected yet,
+    // we proceed without it — the page is still created and a photo can be added later.
+    var coverPhotoUrl=null;
+    try{
+      if(photo&&photo.files&&photo.files[0]){
+        var pfd=new FormData(); pfd.append('files',photo.files[0]);
+        var pres=await fetch('/api/upload',{method:'POST',body:pfd});
+        if(pres.ok){var pj=await pres.json(); if(pj&&pj.ok&&pj.urls&&pj.urls[0])coverPhotoUrl=pj.urls[0];}
+      }
+    }catch(e){/* photo optional; proceed without if storage isn't ready */}
+    var payload={fullName:fullName,slug:slugify(fullName),birth:val('birth'),passing:val('passing'),place:val('place'),story:val('story'),quote:'',email:email,lovedThings:loved,tier:'free',coverPhotoUrl:coverPhotoUrl,firstMemory:val('memory')?{author_name:'Family',relation:'',body:val('memory')}:null};
     try{
       var res=await fetch('/api/intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       var out=await res.json();
