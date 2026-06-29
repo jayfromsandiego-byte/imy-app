@@ -3,390 +3,274 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>I Miss You Memorial — A place for the people we love</title>
+<title>I Miss You Memorial — a place for the people we love</title>
+<meta name="description" content="A beautiful, lasting place to remember someone you love. Begin free, and keep them online for good.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600&family=Caveat:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Sometype+Mono:wght@400;500;600&family=Caveat:wght@500&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --cream:#FBF7EF; --cream-2:#F5EFE1; --ink:#332C25; --ink-soft:#6b5f52;
-    --terra:#B07A56; --terra-deep:#8B5E3C; --gold:#CBA85F; --sage:#7E9B82; --sage-soft:#EDF1E8;
-    --blush:#E7C9B5; --blush-soft:#FAEEE6; --rose:#C57B63; --line:#ece0cc;
-    --shadow:0 1px 2px rgba(51,44,37,.04), 0 16px 40px -26px rgba(51,44,37,.28);
-  }
+  :root{--cream:#FAF5EC;--cream-deep:#F3ECDD;--ink:#2C2520;--ink-soft:#5A4F45;--terra:#A87C5F;--terra-deep:#8B5E3C;--gold:#C9A572;--night:#1A130D;--flame:#F4B860;--line:#E4D9C4}
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--cream);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  em{font-style:italic}
+  body{background:var(--cream);color:var(--ink);font-family:'Besley',Georgia,serif;font-size:18px;line-height:1.7;-webkit-font-smoothing:antialiased}
   img{max-width:100%;display:block}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
-  @media(min-width:760px){.wrap{padding:0 40px}}
+  a{color:inherit;text-decoration:none}
+  em{font-style:italic;color:var(--terra)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .mono{font-family:'Sometype Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra)}
+  .btn{display:inline-block;background:var(--terra);color:#fff;font-weight:600;font-size:1.02rem;padding:15px 32px;border-radius:40px;transition:.18s;border:none;cursor:pointer}
+  .btn:hover{background:var(--terra-deep)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--terra);background:#fff}
 
-  .wm{display:inline-flex;align-items:baseline;gap:.5ch;font-family:'Fraunces',serif}
-  .wm .script{font-style:italic;font-weight:450;font-size:1.3rem;color:var(--ink)} .wm .script b{color:var(--terra);font-weight:450}
-  .wm .sub{font-family:'Inter';font-weight:600;font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--sage);align-self:center}
+  /* header */
+  header.site{position:sticky;top:0;z-index:40;background:rgba(250,245,236,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px}
+  .wm{font-size:19px;font-weight:600}.wm em{font-style:italic}
+  header .links{display:flex;align-items:center;gap:22px}
+  header .links a{font-size:.95rem;color:var(--ink-soft)}
+  @media(max-width:600px){header .links a.t{display:none}}
 
-  .btn{display:inline-block;font-family:'Inter';font-weight:600;font-size:1rem;padding:14px 24px;border-radius:40px;text-decoration:none;transition:.2s;cursor:pointer;border:1px solid transparent;text-align:center}
-  .btn-primary{background:var(--terra);color:#fff;box-shadow:0 12px 26px -14px rgba(176,122,86,.8)}
-  .btn-primary:hover{background:var(--terra-deep)}
-  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-  .btn-ghost:hover{border-color:var(--terra);color:var(--terra)}
+  /* hero */
+  .hero{padding:64px 0 30px;text-align:center}
+  .hero h1{font-weight:600;font-size:clamp(2.2rem,6.4vw,4rem);line-height:1.08;letter-spacing:-.02em;max-width:14ch;margin:14px auto 18px}
+  .hero p.lead{font-size:1.25rem;color:var(--ink-soft);max-width:30ch;margin:0 auto 26px}
+  .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .collage{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:46px 0 0;align-items:end}
+  .collage figure{border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 18px 40px -28px rgba(44,37,32,.55);background:#fff}
+  .collage img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/4;filter:saturate(.96)}
+  .collage figure:nth-child(odd){transform:translateY(10px) rotate(-1.2deg)}
+  .collage figure:nth-child(even){transform:translateY(-6px) rotate(1deg)}
+  @media(max-width:720px){.collage{grid-template-columns:repeat(3,1fr)}.collage figure:nth-child(n+4){display:none}}
 
-  /* ---- top bar ---- */
-  header.bar{position:sticky;top:0;z-index:40;background:rgba(251,247,239,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .bar-in{max-width:1080px;margin:0 auto;padding:12px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-  @media(min-width:760px){.bar-in{padding:14px 40px}}
-  .bar nav{display:none}
-  @media(min-width:860px){.bar nav{display:flex;gap:8px}.bar nav a{text-decoration:none;color:var(--ink-soft);font-size:.9rem;margin:0 12px;font-weight:500}.bar nav a:hover{color:var(--terra)}}
-  .bar .cta-top{font-size:.85rem;padding:10px 18px}
+  /* small-things beat */
+  .small{padding:84px 0;text-align:center}
+  .small h2{font-weight:500;font-size:clamp(1.7rem,4.5vw,2.5rem);line-height:1.25;max-width:20ch;margin:14px auto 0}
+  .small .list{max-width:600px;margin:30px auto 0;display:flex;flex-direction:column;gap:2px;font-size:1.18rem;color:var(--ink-soft)}
+  .small .list span{padding:7px 0;border-bottom:1px solid var(--line)}
+  .small .list span:last-child{border:none}
 
-  /* ---- hero ---- */
-  .hero{text-align:center;padding:56px 0 26px;position:relative}
-  .kicker{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:18px}
-  .hero h1{font-family:'Fraunces',serif;font-weight:340;font-size:clamp(2.3rem,8vw,4.4rem);line-height:1.04;letter-spacing:-.02em;max-width:15ch;margin:0 auto 18px}
-  .hero h1 em{font-style:italic;color:var(--rose)}
-  .hero .lede{font-size:1.1rem;color:var(--ink-soft);max-width:34ch;margin:0 auto 26px;font-weight:350}
-  @media(min-width:760px){.hero .lede{max-width:560px;font-size:1.2rem}}
-  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .cta-row .btn{flex:1 1 auto;min-width:200px;max-width:300px}
-  @media(min-width:560px){.cta-row .btn{flex:0 0 auto}}
-  .micro{margin-top:16px;font-size:.85rem;color:var(--ink-soft)}
-  .micro a{color:var(--terra);font-weight:600;text-decoration:none;border-bottom:1px solid var(--terra)}
+  /* the line */
+  .line{background:var(--night);color:#F3E9D8;text-align:center;padding:96px 0}
+  .line p{font-family:'Besley',serif;font-weight:400;font-size:clamp(1.7rem,4.6vw,2.7rem);line-height:1.3;max-width:18ch;margin:0 auto}
+  .line p em{color:var(--flame);font-style:italic}
 
-  .hero-img{margin:36px auto 0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:16/10;position:relative;max-width:980px}
-  @media(min-width:760px){.hero-img{aspect-ratio:16/9}}
-  .hero-img img{width:100%;height:100%;object-fit:cover}
-  .hero-img .cap{position:absolute;left:18px;bottom:14px;font-family:'Caveat',cursive;font-size:1.4rem;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+  /* gather (feeling, not features) */
+  .gather{padding:84px 0}
+  .gather .head{text-align:center;max-width:34ch;margin:0 auto 44px}
+  .gather h2{font-weight:600;font-size:clamp(1.8rem,4.6vw,2.6rem);line-height:1.15}
+  .gather .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media(max-width:780px){.gather .grid{grid-template-columns:1fr}}
+  .g{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .g img{height:170px;width:100%;object-fit:cover}
+  .g .b{padding:20px 22px}
+  .g h3{font-weight:600;font-size:1.25rem;margin-bottom:6px}
+  .g p{color:var(--ink-soft);font-size:1rem}
 
-  /* ---- section scaffold ---- */
-  section{padding:54px 0}
-  @media(min-width:760px){section{padding:72px 0}}
-  .tint-sage{background:var(--sage-soft)}
-  .tint-blush{background:var(--blush-soft)}
-  .tint-cream{background:var(--cream-2)}
-  .ey{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin-bottom:12px;text-align:center}
-  .ey.gold{color:var(--gold)} .ey.sage{color:var(--sage)} .ey.terra{color:var(--terra)}
-  .h2{font-family:'Fraunces',serif;font-weight:360;font-size:clamp(1.8rem,5.4vw,2.7rem);line-height:1.12;letter-spacing:-.01em;text-align:center;max-width:20ch;margin:0 auto 14px}
-  .h2 em{font-style:italic;color:var(--terra)}
-  .lead-c{text-align:center;color:var(--ink-soft);max-width:60ch;margin:0 auto 36px;font-size:1.05rem}
+  /* pricing — emotional */
+  .pricing{padding:84px 0;background:var(--cream-deep)}
+  .pricing .head{text-align:center;max-width:32ch;margin:0 auto 40px}
+  .pricing h2{font-weight:600;font-size:clamp(1.8rem,4.6vw,2.6rem)}
+  .pricing .head p{color:var(--ink-soft);margin-top:10px}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:820px){.tiers{grid-template-columns:1fr;max-width:460px;margin:0 auto}}
+  .tier{background:var(--cream);border:1px solid var(--line);border-radius:20px;padding:30px 26px;display:flex;flex-direction:column;position:relative}
+  .tier.plus{border:2px solid var(--terra);box-shadow:0 24px 50px -34px rgba(168,124,95,.6)}
+  .tier.heir{background:linear-gradient(180deg,#3f2c1a,#241711);color:#EAD9B8;border-color:#5a4226}
+  .tier .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--terra);color:#fff;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:30px;white-space:nowrap}
+  .tier .nm{font-weight:600;font-size:1.5rem}
+  .tier.heir .nm{color:#FBF3E5}
+  .tier .price{font-family:'Sometype Mono',monospace;font-size:1rem;color:var(--ink-soft);margin:4px 0 18px}
+  .tier.heir .price{color:var(--gold)}
+  .tier .sell{font-size:1.08rem;line-height:1.6;margin-bottom:24px}
+  .tier.heir .sell{color:#E4D4B6}
+  .tier .btn{width:100%;text-align:center;margin-top:auto}
+  .tier.heir .btn{background:var(--gold);color:#2a1d0e}
+  .tier .free-note{font-family:'Caveat',cursive;font-size:1.25rem;color:var(--terra);margin-top:12px;text-align:center}
 
-  /* ---- how it works ---- */
-  #how{position:relative;overflow:hidden}
-  .floaters{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.5}
-  .floaters span{position:absolute;font-size:2rem;opacity:.16;animation:drift 18s linear infinite}
-  .floaters span:nth-child(1){left:6%;top:30%;animation-duration:22s}
-  .floaters span:nth-child(2){left:42%;top:62%;animation-duration:26s;animation-delay:-6s}
-  .floaters span:nth-child(3){left:74%;top:22%;animation-duration:20s;animation-delay:-10s}
-  .floaters span:nth-child(4){left:88%;top:70%;animation-duration:28s;animation-delay:-3s}
-  @keyframes drift{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(40px,-26px) rotate(8deg)}100%{transform:translate(0,0) rotate(0)}}
-  @media(prefers-reduced-motion:reduce){.floaters span{animation:none}}
-  #how .wrap{position:relative;z-index:1}
-  .steps{display:grid;grid-template-columns:1fr;gap:16px}
-  @media(min-width:620px){.steps{grid-template-columns:1fr 1fr}}
-  @media(min-width:920px){.steps{grid-template-columns:repeat(4,1fr)}}
-  .scard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;text-align:center;box-shadow:var(--shadow)}
-  .scard .num{font-family:'Fraunces',serif;font-style:italic;color:var(--gold);font-size:2rem;line-height:1}
-  .scard h4{font-family:'Fraunces',serif;font-weight:560;font-size:1.12rem;margin:8px 0 6px}
-  .scard p{font-size:.92rem;color:var(--ink-soft)}
-  .how-note{text-align:center;color:var(--ink-soft);margin-top:28px;font-size:1.02rem;max-width:46ch;margin-left:auto;margin-right:auto}
+  .concierge{text-align:center;margin-top:34px;color:var(--ink-soft);font-size:1.02rem}
+  .concierge a{color:var(--terra-deep);text-decoration:underline;text-underline-offset:3px}
 
-  /* ---- example preview ---- */
-  .ex{display:grid;grid-template-columns:1fr;gap:26px;align-items:center}
-  @media(min-width:820px){.ex{grid-template-columns:1.05fr .95fr;gap:44px}}
-  .ex-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-  .ex-card .top{aspect-ratio:16/10;background-size:cover;background-position:center}
-  .ex-card .body{padding:22px 24px}
-  .ex-card .body .nm{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:560}
-  .ex-card .body .dt{font-family:'Fraunces',serif;font-style:italic;color:var(--ink-soft);margin-bottom:12px}
-  .loved{margin-top:14px}
-  .loved .lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin-bottom:10px}
-  .loved-items{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .loved-items .li{display:flex;gap:9px;align-items:center;background:var(--cream-2);border:1px solid var(--line);border-radius:11px;padding:7px 8px}
-  .loved-items .li .th{width:38px;height:38px;border-radius:8px;background-size:cover;background-position:center;flex:none;background-color:var(--blush-soft)}
-  .loved-items .li .tx{font-size:.82rem;line-height:1.3}
-  .ex-copy h3{font-family:'Fraunces',serif;font-weight:380;font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.2;margin-bottom:14px}
-  .ex-copy h3 em{color:var(--terra)}
-  .ex-copy p{color:var(--ink-soft);margin-bottom:16px}
-  .ex-copy .q{font-family:'Fraunces',serif;font-style:italic;font-size:1.15rem;color:var(--ink);border-left:2px solid var(--gold);padding-left:16px;margin:18px 0}
+  /* pledge */
+  .pledge{padding:74px 0;text-align:center}
+  .pledge .mono{display:block;margin-bottom:14px}
+  .pledge p{font-size:clamp(1.3rem,3.2vw,1.7rem);font-weight:400;line-height:1.45;max-width:24ch;margin:0 auto;color:var(--ink)}
 
-  /* ---- free inclusions ---- */
-  .incl{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:680px;margin:0 auto}
-  .incl span{background:#fff;border:1px solid var(--line);border-radius:30px;padding:9px 18px;font-size:.9rem;color:var(--ink);font-weight:500;box-shadow:var(--shadow)}
-  .incl-cta{text-align:center;margin-top:30px}
+  /* fine print: details & faq */
+  .fine{background:#fff;border-top:1px solid var(--line);padding:64px 0}
+  .fine h2{text-align:center;font-weight:600;font-size:1.5rem;margin-bottom:8px}
+  .fine .sub{text-align:center;color:var(--ink-soft);font-size:.95rem;margin-bottom:30px}
+  .table{max-width:760px;margin:0 auto 36px;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:.92rem}
+  .table .row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr}
+  .table .row>div{padding:11px 14px;border-bottom:1px solid var(--line)}
+  .table .row.h>div{background:var(--cream-deep);font-family:'Sometype Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .table .row>div:not(:first-child){text-align:center;border-left:1px solid var(--line)}
+  .table .row:last-child>div{border-bottom:none}
+  details.faq{max-width:760px;margin:0 auto;border-bottom:1px solid var(--line)}
+  details.faq summary{cursor:pointer;padding:16px 4px;font-weight:600;font-size:1.05rem;list-style:none}
+  details.faq summary::-webkit-details-marker{display:none}
+  details.faq p{padding:0 4px 18px;color:var(--ink-soft);font-size:.98rem}
+  .legal{max-width:760px;margin:30px auto 0;color:var(--ink-soft);font-size:.82rem;line-height:1.6}
 
-  /* ---- pillars / themes ---- */
-  .pillars{display:grid;grid-template-columns:1fr;gap:16px}
-  @media(min-width:760px){.pillars{grid-template-columns:repeat(3,1fr)}}
-  .pillar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;text-align:center;box-shadow:var(--shadow)}
-  .pillar .ic{font-size:1.7rem;margin-bottom:12px}
-  .pillar h3{font-family:'Fraunces',serif;font-weight:560;font-size:1.25rem;margin-bottom:8px}
-  .pillar p{color:var(--ink-soft);font-size:.95rem}
-  .swatches{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
-  .swatches .sw{width:54px;height:54px;border-radius:12px;background-size:cover;background-position:center;border:2px solid #fff;box-shadow:var(--shadow)}
-  .swatch-note{text-align:center;color:var(--ink-soft);font-size:.9rem;margin-top:14px}
-
-  /* ---- shared (warm) ---- */
-  .shared{display:grid;grid-template-columns:1fr;gap:24px;align-items:center}
-  @media(min-width:820px){.shared{grid-template-columns:1fr 1fr;gap:44px}}
-  .shared .ph{border-radius:20px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
-  .shared .ph img{width:100%;height:100%;object-fit:cover}
-  .shared h2{font-family:'Fraunces',serif;font-weight:380;font-size:clamp(1.8rem,4.4vw,2.5rem);line-height:1.16;margin-bottom:14px}
-  .shared h2 em{color:var(--terra)}
-  .shared p{color:var(--ink-soft);font-size:1.08rem}
-
-  /* ---- AI assistant ---- */
-  .assist{display:grid;grid-template-columns:1fr;gap:24px;align-items:center}
-  @media(min-width:820px){.assist{grid-template-columns:.9fr 1.1fr;gap:40px}}
-  .chat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
-  .bub{padding:12px 16px;border-radius:16px;margin-bottom:10px;font-size:.95rem;max-width:88%}
-  .bub.ai{background:var(--sage-soft);border:1px solid #dde6d8;color:var(--ink)}
-  .bub.me{background:var(--terra);color:#fff;margin-left:auto}
-  .bub.ai .who{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:4px}
-
-  /* ---- pricing ---- */
-  .tiers{display:grid;grid-template-columns:1fr;gap:18px;max-width:420px;margin:0 auto}
-  @media(min-width:880px){.tiers{grid-template-columns:repeat(3,1fr);max-width:none;align-items:start}}
-  .tier{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow);display:flex;flex-direction:column}
-  .tier.feat{border-color:var(--terra)}
-  @media(min-width:880px){.tier.feat{transform:translateY(-8px);box-shadow:0 24px 50px -28px rgba(176,122,86,.6)}}
-  .tier .badge{display:inline-block;align-self:flex-start;background:var(--terra);color:#fff;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:5px 12px;border-radius:20px;margin-bottom:10px}
-  .tier .tn{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:560}
-  .tier .price{font-family:'Fraunces',serif;font-size:2.3rem;font-weight:360;color:var(--terra);margin:8px 0 0;line-height:1}
-  .tier .price small{font-size:.85rem;color:var(--ink-soft);font-family:'Inter'}
-  .tier .alt{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--ink-soft);margin:6px 0 16px;min-height:16px}
-  .tier ul{list-style:none;padding:0;margin:0 0 20px;flex:1}
-  .tier li{font-size:.9rem;color:var(--ink-soft);padding:8px 0 8px 22px;position:relative;border-bottom:1px solid var(--cream-2)}
-  .tier li:before{content:"✓";position:absolute;left:0;color:var(--terra);font-weight:700}
-  .tier .btn{width:100%}
-  .perm{background:var(--sage-soft);border:1px solid #dde6d8;border-radius:14px;padding:14px 16px;margin:0 auto 26px;max-width:620px;text-align:center;font-size:.92rem;color:var(--ink)}
-  .perm b{color:var(--terra-deep)}
-
-  /* ---- final cta ---- */
-  .close{text-align:center}
-  .close h2{font-family:'Fraunces',serif;font-weight:360;font-size:clamp(1.9rem,5.4vw,3rem);line-height:1.12;max-width:16ch;margin:0 auto 22px}
-  .close h2 em{color:var(--terra)}
-
-  footer{border-top:1px solid var(--line);padding:42px 0 56px;text-align:center;background:var(--cream-2)}
-  .fp{font-family:'Caveat',cursive;font-size:1.5rem;color:var(--terra);margin:10px 0}
-  footer .fl a{color:var(--ink-soft);text-decoration:none;margin:0 10px;font-size:.9rem}
+  footer.site{background:var(--night);color:#B7A98F;text-align:center;padding:46px 0}
+  footer.site .wm{color:#F3E9D8;font-size:20px}
+  footer.site .fp{font-family:'Caveat',cursive;font-size:1.5rem;color:var(--terra);margin:12px 0}
+  footer.site .small-links{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-top:14px}
+  footer.site .small-links a{color:#B7A98F;margin:0 8px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}.collage figure{transform:none!important}}
 </style>
 </head>
 <body>
-
-<header class="bar">
-  <div class="bar-in">
-    <span class="wm"><span class="script">I miss <b>you</b></span><span class="sub">Memorial</span></span>
-    <nav>
-      <a href="#how">How it works</a>
-      <a href="#example">An example</a>
-      <a href="#pricing">Pricing</a>
+<header class="site">
+  <div class="wrap">
+    <a class="wm" href="/">I&nbsp;<em>Miss</em>&nbsp;You Memorial</a>
+    <nav class="links">
+      <a class="t" href="/sites/example">See an example</a>
+      <a class="t" href="#pricing">Pricing</a>
+      <a class="btn" href="/onboarding">Start a tribute</a>
     </nav>
-    <a href="/onboarding" class="btn btn-primary cta-top">Start a tribute</a>
   </div>
 </header>
 
-<div class="wrap">
-  <!-- HERO -->
-  <div class="hero">
-    <div class="kicker">For someone you love</div>
-    <h1>Create a memorial page worthy of <em>their life.</em></h1>
-    <p class="lede">A beautiful place to hold their photos, their stories, and the voices of everyone who loved them.</p>
-    <div class="cta-row">
-      <a href="/onboarding" class="btn btn-primary">Start a tribute</a>
-      <a href="#example" class="btn btn-ghost">See an example</a>
-    </div>
-    <p class="micro">Begin free · keep their page online for as long as you need · <a href="/onboarding">start now →</a></p>
-    <div class="hero-img">
-      <img src="/hero.jpg" alt="Framed family photographs, fresh flowers, and a softly lit candle in warm daylight">
-      <span class="cap">the light always finds them</span>
-    </div>
-  </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<section id="how" class="tint-sage">
-  <div class="floaters"><span>🕊️</span><span>🤍</span><span>🕊️</span><span>🤍</span></div>
+<!-- HERO -->
+<section class="hero">
   <div class="wrap">
-    <div class="ey sage">How it works</div>
-    <div class="h2">Four <em>steps.</em></div>
-    <div class="steps">
-      <div class="scard"><div class="num">i</div><h4>Begin</h4><p>Add their name and a photo. Their page exists from the first moment.</p></div>
-      <div class="scard"><div class="num">ii</div><h4>Gather</h4><p>Photos, videos, and stories. Our writing assistant helps when words are hard.</p></div>
-      <div class="scard"><div class="num">iii</div><h4>Invite</h4><p>Share a link so everyone who loved them can add their memories too.</p></div>
-      <div class="scard"><div class="num">iv</div><h4>Keep</h4><p>Their tribute stays online, ready whenever you want to visit.</p></div>
+    <span class="mono">In loving memory</span>
+    <h1>The people we love don't leave. They just need somewhere to <em>stay.</em></h1>
+    <p class="lead">Make them a beautiful place to be remembered, and gather everyone who loved them around it.</p>
+    <div class="cta">
+      <a class="btn" href="/onboarding">Begin their tribute</a>
+      <a class="btn ghost" href="/sites/example">See Eleanor's tribute</a>
     </div>
-    <p class="how-note">You can begin with a single photo and a name, and return whenever you're ready.</p>
-  </div>
-</section>
-
-<!-- EXAMPLE PREVIEW -->
-<section id="example">
-  <div class="wrap">
-    <div class="ey terra">An example</div>
-    <div class="h2">See what their page could <em>become.</em></div>
-    <div class="ex">
-      <div class="ex-card">
-        <div class="top" style="background-image:url('/photos/hands.jpg')"></div>
-        <div class="body">
-          <div class="nm">Eleanor Margaret Hayes</div>
-          <div class="dt">1948 — 2024</div>
-          <div class="loved">
-            <div class="lbl">What she loved most</div>
-            <div class="loved-items">
-              <div class="li"><span class="th" style="background-image:url('/photos/candle.jpg')"></span><span class="tx">Black coffee, no sugar</span></div>
-              <div class="li"><span class="th" style="background-image:url('/themes/garden.jpg')"></span><span class="tx">Her garden at dawn</span></div>
-              <div class="li"><span class="th" style="background-image:url('/photos/table.jpg')"></span><span class="tx">A full kitchen table</span></div>
-              <div class="li"><span class="th" style="background-image:url('/themes/letters.jpg')"></span><span class="tx">Letters, written by hand</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="ex-copy">
-        <h3>A real page, built from <em>real love.</em></h3>
-        <p>This is a living example — the kind of page you can make. It holds what she did before, the people she shaped, and the small, exact things that were hers alone.</p>
-        <div class="q">“Find the smallest beautiful thing in the day, and tell someone about it. That was the whole point.”</div>
-        <a href="/sites/example" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Visit the example</a>
-      </div>
+    <div class="collage">
+      <figure><img src="/photos/table.jpg" alt="A full kitchen table"></figure>
+      <figure><img src="/themes/letters.jpg" alt="Hand-written letters"></figure>
+      <figure><img src="/photos/hands.jpg" alt="Hands held"></figure>
+      <figure><img src="/themes/garden.jpg" alt="A garden at dawn"></figure>
+      <figure><img src="/photos/candle.jpg" alt="A lit candle"></figure>
+      <figure><img src="/themes/golden-hour.jpg" alt="Golden hour light"></figure>
     </div>
   </div>
 </section>
 
-<!-- FREE INCLUSIONS (heading removed) -->
-<section class="tint-cream">
+<!-- THE SMALL THINGS -->
+<section class="small">
   <div class="wrap">
-    <div class="h2">A beautiful tribute, the moment you <em>begin.</em></div>
-    <p class="lead-c">Answer a few questions about them, and we build a real memorial page at their own web address — with a candle to light, a gallery, and a wall of shared memories.</p>
-    <div class="incl">
-      <span>One full tribute page</span>
-      <span>Upload 50 photos</span>
-      <span>5 videos</span>
-      <span>Pick 3 themes</span>
-      <span>25 shared memories</span>
-    </div>
-    <div class="incl-cta"><a href="/onboarding" class="btn btn-primary">Start a tribute</a></div>
-  </div>
-</section>
-
-<!-- WHY / THEMES -->
-<section class="tint-sage">
-  <div class="wrap">
-    <div class="ey sage">Why I Miss You Memorial</div>
-    <div class="h2">Made with the care a <em>memory deserves.</em></div>
-    <div class="pillars">
-      <div class="pillar"><div class="ic">🕯️</div><h3>Beautiful</h3><p>Distinct design themes — each with its own fonts, colors, and feel — so a page can look like them, not like a template.</p></div>
-      <div class="pillar"><div class="ic">∞</div><h3>Lasting</h3><p>Choose Eternal and their page is guaranteed for 50 years, with archival backup — no more to pay, ever.</p></div>
-      <div class="pillar"><div class="ic">🤍</div><h3>Shared</h3><p>Everyone who loved them can add a photo, a memory, a few words. It grows as a family.</p></div>
-    </div>
-    <div class="swatches">
-      <span class="sw" style="background:linear-gradient(135deg,#283845 0 34%,#C9A24B 34% 67%,#F6F2E9 67%)" title="Evensong"></span>
-      <span class="sw" style="background:linear-gradient(135deg,#3A332B 0 34%,#B5663E 34% 67%,#F3EDE3 67%)" title="Hearthstone"></span>
-      <span class="sw" style="background:linear-gradient(135deg,#2F3B40 0 34%,#5E8088 34% 67%,#EEF1F1 67%)" title="Tidewater"></span>
-    </div>
-    <p class="swatch-note">Three considered designs — <em>Evensong</em>, <em>Hearthstone</em>, and <em>Tidewater</em> — each its own fonts, colors, and feel.</p>
-  </div>
-</section>
-
-<!-- SHARED -->
-<section class="tint-blush">
-  <div class="wrap">
-    <div class="shared">
-      <div class="ph"><img src="/photos/table.jpg" alt="A family table set in a garden"></div>
-      <div>
-        <div class="ey terra" style="text-align:left">Carried together</div>
-        <h2>No one should remember <em>alone.</em></h2>
-        <p>Invite family, friends, and their photos and memories. Grief is lighter when it's carried together.</p>
-      </div>
+    <span class="mono">What we hold onto</span>
+    <h2>It is never the big things. It is the small ones.</h2>
+    <div class="list">
+      <span>The way they answered the phone.</span>
+      <span>Their seat at the table, and who sat beside them.</span>
+      <span>The recipe no one wrote down.</span>
+      <span>The sound of them, humming in another room.</span>
     </div>
   </div>
 </section>
 
-<!-- AI WRITING ASSISTANT -->
-<section>
+<!-- THE LINE -->
+<section class="line">
   <div class="wrap">
-    <div class="ey gold">Writing assistant</div>
-    <div class="h2">When the words are <em>hard.</em></div>
-    <p class="lead-c">A kind helper that sits beside you — on the form while you create the page, and on the finished site for anyone who wants to leave a memory. Tell it a few true things, and it helps you find the words.</p>
-    <div class="assist">
-      <div class="chat">
-        <div class="bub ai"><span class="who">Writing assistant</span>What's one small thing you don't want to forget about her?</div>
-        <div class="bub me">She always hummed while she cooked. I never knew the song.</div>
-        <div class="bub ai"><span class="who">Writing assistant</span>That's beautiful. Here's a start: “The kitchen was never still when she was in it — there was always a song only she knew.” Want to keep going?</div>
-      </div>
-      <div>
-        <h3 style="font-family:'Fraunces',serif;font-weight:380;font-size:1.5rem;margin-bottom:12px">Closer to a friend than a form.</h3>
-        <p style="color:var(--ink-soft)">It never writes <em>for</em> you — it helps you say what you already feel. Every word stays yours.</p>
-      </div>
+    <p>Grief is love with nowhere to go. Here, it has <em>somewhere to live.</em></p>
+  </div>
+</section>
+
+<!-- GATHER (feeling, not features) -->
+<section class="gather">
+  <div class="wrap">
+    <div class="head">
+      <span class="mono">A place that holds them</span>
+      <h2>Somewhere their whole life can be kept, and shared.</h2>
+    </div>
+    <div class="grid">
+      <div class="g"><img src="/themes/hearth.jpg" alt=""><div class="b"><h3>Gathered, not alone</h3><p>Everyone who loved them can light a candle, leave a memory, and find each other again, from anywhere in the world.</p></div></div>
+      <div class="g"><img src="/photos/eleanor.jpg" alt=""><div class="b"><h3>Theirs, completely</h3><p>Their face, their story, the things they loved, the songs and the small details that were theirs alone, held in one beautiful place.</p></div></div>
+      <div class="g"><img src="/themes/stillness.jpg" alt=""><div class="b"><h3>Kept for good</h3><p>Not a post that scrolls away. A lasting home for them that stays, so the people who come after can find them too.</p></div></div>
     </div>
   </div>
 </section>
 
-<!-- PRICING (permanence folded in) -->
-<section id="pricing" class="tint-cream">
+<!-- PRICING (emotional) -->
+<section class="pricing" id="pricing">
   <div class="wrap">
-    <div class="ey gold">Pricing</div>
-    <div class="h2">Begin free. <em>Choose</em> what lasts.</div>
-    <div class="perm"><b>About permanence:</b> a free page is a wonderful place to begin. To keep a page online for the long term — guaranteed 50 years, with archival backup, and never another charge — choose Eternal.</div>
+    <div class="head">
+      <span class="mono">For as long as you need it</span>
+      <h2>Begin free. Give more when you're ready.</h2>
+      <p>You will never be charged to keep a memory online. That is a promise.</p>
+    </div>
     <div class="tiers">
+
       <div class="tier">
-        <div class="tn">Free</div>
-        <div class="price">$0</div>
-        <div class="alt">to begin</div>
-        <ul>
-          <li>One full tribute page</li>
-          <li>50 photos &amp; 5 videos</li>
-          <li>3 themes</li>
-          <li>25 shared memories</li>
-          <li>Their own shareable link</li>
-        </ul>
-        <a href="/onboarding" class="btn btn-ghost">Start a tribute</a>
+        <div class="nm">Begin</div>
+        <div class="price">Free</div>
+        <p class="sell">Make them a beautiful place today, and keep it online for good. No card, no catch, no end date.</p>
+        <a class="btn ghost" href="/onboarding">Start free</a>
+        <div class="free-note">free, and theirs forever</div>
       </div>
-      <div class="tier feat">
-        <span class="badge">Most chosen</span>
-        <div class="tn">Plus</div>
-        <div class="price">$6<small> / month</small></div>
-        <div class="alt">or $59 one time</div>
-        <ul>
-          <li>Everything in Free</li>
-          <li>Unlimited photos &amp; videos</li>
-          <li>All 10 themes</li>
-          <li>AI writing assistant</li>
-          <li>Audio memories</li>
-          <li>Custom domain</li>
-        </ul>
-        <a href="https://buy.stripe.com/eVqbJ06kIdxlbwCc2E9AA0h" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Choose Plus</a>
+
+      <div class="tier plus">
+        <span class="badge">What most families choose</span>
+        <div class="nm">Everything</div>
+        <div class="price">$79 · once</div>
+        <p class="sell">When one page can't hold all of them. Every photograph, every voice, their fullest story, gathered and kept — for a single gift, and never asked again.</p>
+        <a class="btn" href="/onboarding?plan=plus">Give them everything</a>
       </div>
-      <div class="tier">
-        <div class="tn">Eternal</div>
-        <div class="price">$200<small> once</small></div>
-        <div class="alt">a page that stays</div>
-        <ul>
-          <li>Everything in Plus</li>
-          <li>50-year guarantee</li>
-          <li>Archival backup</li>
-          <li>A gift to charity in their name</li>
-          <li>Never another charge</li>
-        </ul>
-        <a href="https://buy.stripe.com/7sY00i8sQ3WL9oufeQ9AA0j" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Choose Eternal</a>
+
+      <div class="tier heir">
+        <div class="nm">Heirloom</div>
+        <div class="price">$200 · once</div>
+        <p class="sell">For the ones we cannot bear to lose twice. Their memory safeguarded with our deepest care, and a keepsake to hold in your hands and pass down.</p>
+        <a class="btn" href="/onboarding?plan=heirloom">Keep them for generations</a>
       </div>
+
     </div>
-    <p class="lead-c" style="margin-top:26px;font-size:.95rem">A gift to charity in their name comes with Eternal — and helps us sponsor a tribute for a family who can't afford one.</p>
+    <p class="concierge">Would you like us to create it for you, with a gentle hand? <a href="#concierge">Meet our concierge</a>.</p>
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="close">
+<!-- PLEDGE -->
+<section class="pledge">
   <div class="wrap">
-    <div class="h2">Begin a tribute <em>today.</em></div>
-    <p class="lead-c">It will be here as long as you need.</p>
-    <a href="/onboarding" class="btn btn-primary" style="padding:16px 40px">Start a tribute</a>
+    <span class="mono">Our permanence pledge</span>
+    <p>Their tribute stays online for as long as we exist, backed by a reserve set aside to keep it safe, and everything is always yours to keep.</p>
   </div>
 </section>
 
-<footer>
-  <span class="wm"><span class="script">I miss <b>you</b></span><span class="sub">Memorial</span></span>
-  <div class="fp">made with love</div>
-  <div class="fl"><a href="#how">How it works</a><a href="#example">An example</a><a href="#pricing">Pricing</a></div>
-</footer>
+<!-- FINE PRINT: details + FAQ -->
+<section class="fine" id="details">
+  <div class="wrap">
+    <h2>The details, for when you're ready</h2>
+    <p class="sub">Everything above is about them. Here is exactly what each gift includes.</p>
 
+    <div class="table" role="table">
+      <div class="row h"><div>What's included</div><div>Begin (Free)</div><div>Everything ($79)</div><div>Heirloom ($200)</div></div>
+      <div class="row"><div>A complete tribute at their own link</div><div>✓</div><div>✓</div><div>✓</div></div>
+      <div class="row"><div>Candles, roses &amp; memories from everyone</div><div>✓</div><div>✓</div><div>✓</div></div>
+      <div class="row"><div>Anniversary &amp; birthday reminders</div><div>✓</div><div>✓</div><div>✓</div></div>
+      <div class="row"><div>Photographs</div><div>up to 30</div><div>unlimited</div><div>unlimited</div></div>
+      <div class="row"><div>Video &amp; audio memories</div><div>—</div><div>included</div><div>more, uncapped</div></div>
+      <div class="row"><div>Every background motif &amp; the AI life-story helper</div><div>3 motifs</div><div>all 36</div><div>all 36</div></div>
+      <div class="row"><div>The quiet "made with love" credit</div><div>shown</div><div>removed</div><div>removed</div></div>
+      <div class="row"><div>Permanence reserve, backup &amp; a keepsake book</div><div>—</div><div>—</div><div>included</div></div>
+    </div>
+
+    <details class="faq"><summary>Is it really free? What's the catch?</summary><p>It is really free, and it stays online for good. A free tribute carries a small "made with love" credit, holds up to 30 photographs, and has three backgrounds to choose from. We never charge a family to keep a memory online.</p></details>
+    <details class="faq"><summary>Why a one-time price instead of a subscription?</summary><p>Because a memorial is not something you should pay rent on. Plus and Heirloom are a single gift, once. No recurring bill, no renewal hanging over your family. If you ever choose a monthly option, lapsing it never takes the page down.</p></details>
+    <details class="faq"><summary>What does "kept forever" actually mean?</summary><p>Their tribute stays online for as long as we operate, backed by a dedicated reserve fund and an independent backup archive, and your photos and words are always yours to export. If we ever had to close, we would give at least 90 days' notice and a complete copy of everything.</p></details>
+    <details class="faq"><summary>Can other people add to it?</summary><p>Yes. Anyone with the link can light a candle, send a rose, and leave a memory. You review memories before they appear, so their page stays gentle and theirs.</p></details>
+    <details class="faq"><summary>What is the keepsake book?</summary><p>For Heirloom, a printed book of their tribute, mailed to you to hold and pass down. It can also be ordered on its own at any time.</p></details>
+
+    <p class="legal">Prices in US dollars. Plus and Heirloom are one-time payments. Add-ons (a printed keepsake book, extra video, anniversary care) are available separately. Donations made "in their name" go to a charity you choose. Permanence is provided as described in the Permanence Pledge and our Terms; hosting is intended to continue for as long as the company operates.</p>
+  </div>
+</section>
+
+<footer class="site" id="concierge">
+  <div class="wrap">
+    <span class="wm" style="font-family:'Besley',serif">I&nbsp;<em style="color:var(--terra)">Miss</em>&nbsp;You Memorial</span>
+    <div class="fp">made with love</div>
+    <p style="max-width:48ch;margin:0 auto;font-size:.95rem">A place for the people we love. Begin free, and keep them with you for good.</p>
+    <div class="small-links">
+      <a href="/onboarding">Begin a tribute</a> · <a href="/sites/example">See an example</a> · <a href="#pricing">Pricing</a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
