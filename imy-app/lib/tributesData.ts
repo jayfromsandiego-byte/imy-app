@@ -20,6 +20,7 @@ const bySort = (a: any, b: any) => (a.sort ?? 0) - (b.sort ?? 0);
 
 function rowToTribute(r: any): Tribute {
   const photos = (r.tribute_photos || []).slice().sort(bySort);
+  const lovedThings = (r.tribute_loved_things || []).slice().sort(bySort);
   return {
     slug: r.slug || undefined,
     fullName: r.loved_one_name || "",
@@ -28,20 +29,23 @@ function rowToTribute(r: any): Tribute {
     place: r.place || undefined,
     story: r.story || undefined,
     quote: r.portrait_quote || undefined,
-    candleCount: r.candle_count ?? 1,
+    candleCount: r.candle_count ?? 0,
     tier: r.tier || "free",
     theme: r.theme || undefined,
+    motif: r.motif || undefined,
     coverPhoto: photos[0]?.url || undefined,
     portrait: photos[0]?.url || undefined,
     message: r.message_from_them ? { text: r.message_from_them, sign: firstName(r.loved_one_name) } : undefined,
     details: (r.tribute_detail_cards || []).slice().sort(bySort).map((d: any) => ({ k: d.label, v: d.value })),
     timeline: (r.tribute_timeline || []).slice().sort(bySort).map((t: any) => ({ year: t.year, title: t.title, text: t.body })),
     photos: photos.map((p: any) => ({ url: p.url, cap: p.caption || undefined })),
+    // "What they loved most" cards come from the family's chosen interests.
+    loved: lovedThings.map((l: any) => ({ label: l.label })),
     reel: (r.tribute_videos || []).slice().sort(bySort).map((v: any) => ({ label: v.caption || "" })),
     memories: (r.tribute_memories || [])
       .filter((m: any) => m.status === "approved")
       .map((m: any) => ({ text: m.body, name: m.author_name, rel: m.relation || "", photos: m.photo_url ? [m.photo_url] : undefined })),
-    lovedThings: (r.tribute_loved_things || []).slice().sort(bySort).map((l: any) => ({ label: l.label, motifKey: l.motif_key, note: l.note })),
+    lovedThings: lovedThings.map((l: any) => ({ label: l.label, motifKey: l.motif_key, note: l.note })),
     service: r.tribute_service
       ? { date: dateOnly(r.tribute_service.starts_at), place: r.tribute_service.venue, address: r.tribute_service.address, charity: r.tribute_service.charity_name }
       : undefined,
