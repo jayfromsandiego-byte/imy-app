@@ -10,7 +10,7 @@ const SELECT =
   "tribute_timeline(year,title,body,sort)," +
   "tribute_photos(url,caption,sort)," +
   "tribute_videos(url,caption,sort)," +
-  "tribute_memories(author_name,relation,body,status)," +
+  "tribute_memories(author_name,relation,body,status,photo_url)," +
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_service(starts_at,venue,address,charity_name)";
 
@@ -21,6 +21,7 @@ const bySort = (a: any, b: any) => (a.sort ?? 0) - (b.sort ?? 0);
 function rowToTribute(r: any): Tribute {
   const photos = (r.tribute_photos || []).slice().sort(bySort);
   return {
+    slug: r.slug || undefined,
     fullName: r.loved_one_name || "",
     birth: dateOnly(r.born_on),
     passing: dateOnly(r.died_on),
@@ -39,7 +40,7 @@ function rowToTribute(r: any): Tribute {
     reel: (r.tribute_videos || []).slice().sort(bySort).map((v: any) => ({ label: v.caption || "" })),
     memories: (r.tribute_memories || [])
       .filter((m: any) => m.status === "approved")
-      .map((m: any) => ({ text: m.body, name: m.author_name, rel: m.relation || "" })),
+      .map((m: any) => ({ text: m.body, name: m.author_name, rel: m.relation || "", photos: m.photo_url ? [m.photo_url] : undefined })),
     lovedThings: (r.tribute_loved_things || []).slice().sort(bySort).map((l: any) => ({ label: l.label, motifKey: l.motif_key, note: l.note })),
     service: r.tribute_service
       ? { date: dateOnly(r.tribute_service.starts_at), place: r.tribute_service.venue, address: r.tribute_service.address, charity: r.tribute_service.charity_name }

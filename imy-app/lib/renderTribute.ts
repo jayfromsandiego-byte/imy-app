@@ -12,6 +12,7 @@ export type MemoryItem = { text: string; name: string; rel: string; writerPhoto?
 export type ReelItem = { poster?: string; label?: string };
 
 export type Tribute = {
+  slug?: string;            // used to wire public interactions (candle / memory) on the page
   fullName: string;
   birth?: string;
   passing?: string;
@@ -22,9 +23,9 @@ export type Tribute = {
   quote?: string;
   story?: string;
   candleCount?: number;
-  tier?: string;            // "Free" | "Plus" | "Eternal"
+  tier?: string;            // "free" | "plus" | "heirloom"
   theme?: string;           // "Garden" | "Letters" | "Ocean" | "Hearth" | "Golden Hour" | "Stillness"
-  showAnnounce?: boolean;   // override; defaults to true unless tier is Eternal/Plus
+  showAnnounce?: boolean;   // override; defaults to true unless tier is paid (plus/heirloom)
   message?: { text: string; sign?: string };
   service?: { date?: string; time?: string; place?: string; address?: string; charity?: string };
   details?: DetailItem[];
@@ -104,15 +105,18 @@ export function renderTribute(template: string, t: Tribute): string {
       </div></div></section>`
     : "";
 
-  const isEternal = (t.tier || "").toLowerCase() === "eternal";
-  const showAnnounce = t.showAnnounce !== undefined ? t.showAnnounce : !isEternal;
+  const tier = (t.tier || "").trim().toLowerCase();
+  const isPaid = tier === "plus" || tier === "heirloom" || tier === "eternal";
+  // The quiet "Made with love" credit shows only on free tributes; paid tiers remove it.
+  const showAnnounce = t.showAnnounce !== undefined ? t.showAnnounce : !isPaid;
   const announce = showAnnounce
-    ? `<div class="announce"><span class="flame">🕯</span> With love, from <b>I Miss You Memorial</b> · <a href="https://imissyoumemorial.com">Create one</a></div>`
+    ? `<div class="announce"><span class="flame">🕯</span> Made with love · <b>I Miss You Memorial</b> · <a href="https://imissyoumemorial.com">Create one</a></div>`
     : "";
 
-  const pledge = isEternal
-    ? "Guaranteed for 50 years, with archival backup — kept for as long as it is needed."
-    : "Kept online with love. Choose Eternal to keep this page guaranteed for 50 years.";
+  // Permanence Pledge: never a fixed-year guarantee (a liability with no precedent).
+  const pledge = isPaid
+    ? "Backed by a dedicated reserve and an independent archive — kept with love, for as long as we are here."
+    : "Kept online with love. We will never charge a family to keep a memory.";
 
   const themeClass = ({
     "evensong": "t-evensong", "hearthstone": "t-hearthstone", "tidewater": "t-tidewater",
@@ -120,6 +124,7 @@ export function renderTribute(template: string, t: Tribute): string {
 
   const tokens: Record<string, string> = {
     "{{TITLE}}": `${esc(t.fullName)} — A Tribute · I Miss You Memorial`,
+    "{{SLUG}}": esc(t.slug || ""),
     "{{THEME_CLASS}}": themeClass,
     "{{ANNOUNCE_BAR}}": announce,
     "{{KICKER}}": "In loving memory",
@@ -159,6 +164,7 @@ export function recordToTribute(rec: any): Tribute {
   }
   const photosField = Array.isArray(f["Photos"]) ? f["Photos"].map((a: any) => ({ url: a.url })) : undefined;
   return {
+    slug: f["Slug"] || undefined,
     fullName: f["Loved One"] || "",
     birth: f["Birth Date"],
     passing: f["Passing Date"],

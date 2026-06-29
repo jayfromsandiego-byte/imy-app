@@ -145,6 +145,11 @@
   .share .addphoto{background:#fff;border:1px dashed var(--accent);color:var(--accent-deep);font-weight:600;padding:11px 18px;border-radius:30px;cursor:pointer;font-family:var(--body)}
   .share .post{background:var(--green);color:#fff;border:none;font-weight:700;padding:11px 24px;border-radius:30px;cursor:pointer;font-family:var(--body)}
   .share .post:hover{background:var(--green-deep)}
+  .share .post:disabled{opacity:.6;cursor:default}
+  .share .memfield{flex:1;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-family:var(--body);background:#fff}
+  .share .memrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:0 0 10px}
+  .share .memnote{margin-top:12px;font-size:.9rem;color:var(--ink-soft)}
+  .share .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 
   .reel-head{display:flex;align-items:center;justify-content:space-between;margin:34px 0 12px}
   .reel-head .swipe{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--ink-soft)}
@@ -176,6 +181,9 @@
   footer{background:var(--bg-2);border-top:1px solid var(--line);text-align:center;padding:46px 20px 58px;position:relative;overflow:hidden}
   footer .pledge{font-family:var(--disp);font-style:italic;font-size:1.2rem;color:var(--ink-soft);max-width:40ch;margin:14px auto 0}
   footer .fp{font-family:var(--disp);font-style:italic;font-size:1.2rem;color:var(--accent);margin-top:10px}
+  footer .legal{margin-top:16px;font-size:.8rem}
+  footer .legal a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px}
+  footer .legal a:hover{color:var(--accent)}
 
   .lb{position:fixed;inset:0;background:rgba(28,22,20,.92);z-index:90;display:none;align-items:center;justify-content:center}
   .lb.open{display:flex}
@@ -218,7 +226,7 @@
   .lt-carousel .shot img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
-<body class="{{THEME_CLASS}}">
+<body class="{{THEME_CLASS}}" data-slug="{{SLUG}}">
 {{ANNOUNCE_BAR}}
 <header class="nav">
   <div class="nav-in">
@@ -303,13 +311,19 @@
 
     <div class="share">
       <div style="font-family:var(--disp);font-size:1.2rem;margin-bottom:10px">Share a memory of {{FIRST}}</div>
-      <textarea placeholder="A moment, a kindness, something they said…"></textarea>
+      <textarea id="memBody" placeholder="A moment, a kindness, something they said…"></textarea>
       <div class="thumbs" id="shareThumbs"></div>
-      <input type="file" id="shareFiles" accept="image/*,video/*" multiple hidden>
-      <div class="row">
-        <button class="addphoto" type="button" onclick="document.getElementById('shareFiles').click()">＋ Add photos &amp; video</button>
-        <button class="post" type="button">Share and Save</button>
+      <input type="file" id="shareFiles" accept="image/*" hidden>
+      <div class="memrow">
+        <input id="memName" class="memfield" type="text" placeholder="Your name" autocomplete="name">
+        <input id="memRel" class="memfield" type="text" placeholder="Who you are to {{FIRST}} (optional)">
       </div>
+      <input id="memCompany" class="hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="row">
+        <button class="addphoto" type="button" onclick="document.getElementById('shareFiles').click()">＋ Add a photo</button>
+        <button class="post" type="button" id="memPost" onclick="shareMemory()">Share and Save</button>
+      </div>
+      <div class="memnote" id="memNote" style="display:none"></div>
     </div>
 
     <div class="aihelp">
@@ -332,6 +346,7 @@
   <span class="wm"><span class="script">I miss <b>you</b></span><span class="sub">Memorial</span></span>
   <div class="pledge">{{PLEDGE}}</div>
   <div class="fp">with love from I Miss You Memorial</div>
+  <div class="legal"><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></div>
 </footer>
 
 <div class="lb" id="lb"><button class="x" onclick="closeLb()">×</button><button class="prev" onclick="stepLb(-1)">‹</button><img id="lbImg" src="" alt=""><button class="next" onclick="stepLb(1)">›</button></div>
@@ -340,24 +355,41 @@
   function rand(a,b){return a+Math.random()*(b-a);}
   function pick(a){return a[Math.floor(Math.random()*a.length)];}
 
-  /* ===== candle field ===== */
+  /* ===== candle field — a real, persisted vigil =====
+     The scattered candles are ambiance (decorative light only); they never touch
+     the count. The number is the truth: it starts at the real stored value and
+     only changes when someone actually lights a candle, which we persist. */
   (function(){
     var vigil=document.getElementById('candlelight'), starLayer=document.getElementById('starLayer'),
         candleLayer=document.getElementById('candleLayer'), countEl=document.querySelector('[data-count]');
     if(!vigil) return;
-    var NAMES=[["A friend","lit a candle"],["Someone who loved them","lit a candle"],["A neighbour","lit a candle"],["Family","lit a candle"]];
-    var count=parseInt((countEl&&countEl.textContent||'1').replace(/[^0-9]/g,''),10)||1;
+    var slug=(document.body.getAttribute('data-slug')||'').trim();
+    var count=parseInt((countEl&&countEl.textContent||'0').replace(/[^0-9]/g,''),10)||0;
     var tip=document.createElement('div'); tip.className='cf-tip'; vigil.appendChild(tip);
     var STAR_N=window.innerWidth<640?70:130;
     for(var i=0;i<STAR_N;i++){var s=document.createElement('div');s.className='star';var sz=rand(1,3).toFixed(2);s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=rand(0,100).toFixed(2)+'%';s.style.top=(Math.pow(Math.random(),1.7)*82).toFixed(2)+'%';s.style.setProperty('--o',rand(.35,.95).toFixed(2));s.style.setProperty('--td',rand(2.6,6).toFixed(2)+'s');s.style.setProperty('--tdl',rand(0,5).toFixed(2)+'s');starLayer.appendChild(s);}
-    function showTip(c){var r=c.getBoundingClientRect(),fr=vigil.getBoundingClientRect();tip.style.left=(r.left-fr.left+r.width/2)+'px';tip.style.top=(r.top-fr.top)+'px';tip.innerHTML='<b>'+c.getAttribute('data-name')+'</b> · '+c.getAttribute('data-rel');tip.classList.add('show');}
+    function setCount(n){count=n;if(countEl)countEl.textContent=count.toLocaleString('en-US');}
+    function showTip(c,label,sub){var r=c.getBoundingClientRect(),fr=vigil.getBoundingClientRect();tip.style.left=(r.left-fr.left+r.width/2)+'px';tip.style.top=(r.top-fr.top)+'px';tip.innerHTML='<b>'+label+'</b>'+(sub?' · '+sub:'');tip.classList.add('show');}
     function hideTip(){tip.classList.remove('show');}
-    function spawnCandle(xPct,yPct,opts){opts=opts||{};var depth=Math.max(0,Math.min(1,(yPct-18)/78));var scale=(0.42+depth*0.95)*rand(0.82,1.18);var c=document.createElement('div');c.className='candle'+(opts.isNew?' new':'');c.style.left=xPct+'%';c.style.top=yPct+'%';c.style.setProperty('--s',scale.toFixed(3));c.style.setProperty('--fd',rand(1.7,3.8).toFixed(2)+'s');c.style.setProperty('--fdl',rand(0,2.6).toFixed(2)+'s');c.style.setProperty('--hd',rand(2.4,4.6).toFixed(2)+'s');c.style.setProperty('--hdl',rand(0,2.4).toFixed(2)+'s');c.style.zIndex=String(2+Math.round(depth*40));c.style.opacity=(0.55+depth*0.45).toFixed(2);c.innerHTML='<span class="halo"></span><span class="flame"></span>';var nm=opts.name||pick(NAMES);c.setAttribute('data-name',nm[0]);c.setAttribute('data-rel',nm[1]);c.addEventListener('mouseenter',function(){showTip(c);});c.addEventListener('mouseleave',hideTip);candleLayer.appendChild(c);return c;}
+    function spawnCandle(xPct,yPct,opts){opts=opts||{};var depth=Math.max(0,Math.min(1,(yPct-18)/78));var scale=(0.42+depth*0.95)*rand(0.82,1.18);var c=document.createElement('div');c.className='candle'+(opts.isNew?' new':'');c.style.left=xPct+'%';c.style.top=yPct+'%';c.style.setProperty('--s',scale.toFixed(3));c.style.setProperty('--fd',rand(1.7,3.8).toFixed(2)+'s');c.style.setProperty('--fdl',rand(0,2.6).toFixed(2)+'s');c.style.setProperty('--hd',rand(2.4,4.6).toFixed(2)+'s');c.style.setProperty('--hdl',rand(0,2.4).toFixed(2)+'s');c.style.zIndex=String(2+Math.round(depth*40));c.style.opacity=(0.55+depth*0.45).toFixed(2);c.innerHTML='<span class="halo"></span><span class="flame"></span>';candleLayer.appendChild(c);return c;}
     var INIT_N=window.innerWidth<640?30:48;
     for(var k=0;k<INIT_N;k++){spawnCandle(rand(1.5,98.5),20+Math.pow(Math.random(),0.62)*76);}
-    function bump(n){count+=n;if(countEl)countEl.textContent=count.toLocaleString('en-US');}
-    vigil.addEventListener('click',function(e){var fr=vigil.getBoundingClientRect();var xp=((e.clientX-fr.left)/fr.width)*100,yp=((e.clientY-fr.top)/fr.height)*100;if(yp<6)return;var c=spawnCandle(xp,yp,{isNew:true,name:["You","just now"]});bump(1);showTip(c);setTimeout(hideTip,2200);var p=document.createElement('div');p.className='plus1 go';p.textContent='+1';p.style.left=xp+'%';p.style.top=yp+'%';vigil.appendChild(p);setTimeout(function(){p.remove();},1900);});
-    (function ambient(){spawnCandle(rand(2,98),22+Math.pow(Math.random(),0.7)*72,{isNew:true});bump(1);setTimeout(ambient,rand(4200,8200));})();
+    setCount(count);
+    var busy=false,last=0;
+    vigil.addEventListener('click',function(e){
+      var now=Date.now(); if(busy||now-last<350) return; last=now;
+      var fr=vigil.getBoundingClientRect();var xp=((e.clientX-fr.left)/fr.width)*100,yp=((e.clientY-fr.top)/fr.height)*100;if(yp<6)return;
+      var c=spawnCandle(xp,yp,{isNew:true});
+      setCount(count+1); showTip(c,'You','just now'); setTimeout(hideTip,2200);
+      var p=document.createElement('div');p.className='plus1 go';p.textContent='+1';p.style.left=xp+'%';p.style.top=yp+'%';vigil.appendChild(p);setTimeout(function(){p.remove();},1900);
+      if(!slug) return;
+      busy=true;
+      fetch('/api/tribute/'+encodeURIComponent(slug)+'/candle',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(d){if(d&&d.ok&&typeof d.count==='number')setCount(d.count);})
+        .catch(function(){})
+        .then(function(){busy=false;});
+    });
     setInterval(function(){var all=candleLayer.querySelectorAll('.candle');if(!all.length)return;for(var n=0;n<3;n++){var c=all[Math.floor(Math.random()*all.length)];c.classList.add('boost');(function(cc){setTimeout(function(){cc.classList.remove('boost');},260);})(c);}},1100);
   })();
 
@@ -379,6 +411,43 @@
 
   function releaseLetter(){var t=document.getElementById('letter');if(!t||!t.value.trim())return;t.value='';var n=document.createElement('div');n.textContent='Released.';n.style.cssText='font-family:var(--disp);font-style:italic;font-size:1.2rem;color:#B07A56;margin-top:8px';t.parentNode.appendChild(n);setTimeout(function(){n.remove();},2600);}
   (function(){var inp=document.getElementById('shareFiles');if(!inp)return;inp.addEventListener('change',function(){var c=document.getElementById('shareThumbs');c.innerHTML='';Array.prototype.slice.call(inp.files).forEach(function(f){if(f.type.indexOf('image')===0){var im=document.createElement('img');im.className='t';im.src=URL.createObjectURL(f);c.appendChild(im);}else{var dv=document.createElement('div');dv.className='t';dv.style.cssText='display:flex;align-items:center;justify-content:center;background:#eee;color:#B07A56;font-size:1.2rem';dv.textContent='▶';c.appendChild(dv);}});});})();
+
+  /* ===== leave a memory — saved as pending, welcomed in by the family ===== */
+  async function shareMemory(){
+    var slug=(document.body.getAttribute('data-slug')||'').trim();
+    var bodyEl=document.getElementById('memBody'),nameEl=document.getElementById('memName'),
+        relEl=document.getElementById('memRel'),hp=document.getElementById('memCompany'),
+        note=document.getElementById('memNote'),btn=document.getElementById('memPost'),
+        fileEl=document.getElementById('shareFiles');
+    function say(msg){if(note){note.style.display='block';note.textContent=msg;}}
+    var text=((bodyEl&&bodyEl.value)||'').trim();
+    if(text.length<2){say('Please write a few words first.');if(bodyEl)bodyEl.focus();return;}
+    if(btn){btn.disabled=true;btn.textContent='Sharing…';}
+    var photoUrl=null;
+    try{
+      if(fileEl&&fileEl.files&&fileEl.files[0]){
+        var fd=new FormData(); fd.append('files',fileEl.files[0]);
+        var up=await fetch('/api/upload',{method:'POST',body:fd});
+        if(up.ok){var uj=await up.json(); if(uj&&uj.ok&&uj.urls&&uj.urls[0])photoUrl=uj.urls[0];}
+      }
+    }catch(e){/* photos are optional; saving the words matters most */}
+    var payload={body:text,name:((nameEl&&nameEl.value)||''),relation:((relEl&&relEl.value)||''),company:((hp&&hp.value)||''),photoUrl:photoUrl};
+    try{
+      var r=await fetch('/api/tribute/'+encodeURIComponent(slug)+'/memory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var d=await r.json().catch(function(){return null;});
+      if(r.ok&&d&&d.ok){
+        if(bodyEl)bodyEl.value='';if(nameEl)nameEl.value='';if(relEl)relEl.value='';
+        var th=document.getElementById('shareThumbs');if(th)th.innerHTML='';if(fileEl)fileEl.value='';
+        say('Thank you. Your memory has been shared with the family — it will appear here once they welcome it in.');
+      }else if(r.status===429){
+        say('Thank you — that is plenty for now. Please try again in a little while.');
+      }else{
+        say('Something went wrong. Please try again in a moment.');
+      }
+    }catch(e){ say('Something went wrong. Please try again in a moment.'); }
+    if(btn){btn.disabled=false;btn.textContent='Share and Save';}
+  }
+
   function assist(){var i=document.getElementById('assistIn'),o=document.getElementById('assistOut');var v=(i.value||'').trim();if(!v)return;var s=v.charAt(0).toUpperCase()+v.slice(1);if(!/[.!?]$/.test(s))s+='.';o.textContent='A start you can make your own: “'+s+'”';o.style.display='block';}
   var imgs=[],idx=0;
   (function(){document.querySelectorAll('#photoGrid .mcell img').forEach(function(im){imgs.push(im.src);im.parentNode.addEventListener('click',function(){idx=imgs.indexOf(im.src);openLb();});});})();
