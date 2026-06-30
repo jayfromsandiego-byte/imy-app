@@ -282,6 +282,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 .mwhero .mw-grain{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.13;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .mwhero .mw-band{position:absolute;top:0;left:0;right:0;height:224px;z-index:3;pointer-events:none;
   background:linear-gradient(180deg,rgba(9,5,2,.95) 0%,rgba(9,5,2,.74) 32%,rgba(9,5,2,.36) 66%,transparent 100%)}
+.mwhero .mw-spot{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(52% 70% at 27% 56%,rgba(14,9,4,.5),transparent 60%)}
 .mwhero .mw-nav{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;gap:18px;padding:20px 4.5%}
 .mwhero .mw-b{color:#FFF9EE;font-weight:700;font-size:19px;letter-spacing:-.01em;text-shadow:0 1px 3px rgba(0,0,0,.7),0 2px 16px rgba(0,0,0,.5)}
 .mwhero .mw-b em{color:#EFD49A;font-style:italic}
@@ -292,23 +293,27 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 .mwhero .mw-navcta:hover{background:var(--terra2)}
 @media(max-width:680px){.mwhero .mw-links{display:none}}
 .mwhero .mw-inner{position:relative;z-index:4;width:100%;max-width:1160px;margin:0 auto;padding:0 5%}
-.mwhero .mw-note{position:relative;max-width:484px;padding:40px 38px 34px;border-radius:5px;
-  background:rgba(253,248,240,.92);-webkit-backdrop-filter:blur(10px) saturate(1.08);backdrop-filter:blur(10px) saturate(1.08);
-  border:1px solid rgba(201,165,114,.6);box-shadow:0 44px 96px -30px rgba(20,12,6,.82),0 8px 18px rgba(20,12,6,.34),inset 0 1px 0 rgba(255,255,255,.8);transform:rotate(-1deg)}
-.mwhero .mw-pin{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 36% 32%,#f8e9bd,#c9a572 56%,#8d7340);box-shadow:0 5px 11px rgba(20,12,6,.6)}
+.mwhero .mw-note{position:relative;max-width:588px;padding:48px 46px 40px;border-radius:6px;
+  background:rgba(254,250,243,.96);-webkit-backdrop-filter:blur(7px) saturate(1.05);backdrop-filter:blur(7px) saturate(1.05);
+  border:1px solid rgba(201,165,114,.6);box-shadow:0 54px 120px -30px rgba(20,12,6,.92),0 12px 26px rgba(20,12,6,.42),0 0 0 7px rgba(253,248,240,.08),inset 0 1px 0 rgba(255,255,255,.85);transform:rotate(-1deg)}
+.mwhero .mw-pin{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;z-index:5;
+  background:radial-gradient(circle at 35% 30%,#ff9e90 0%,#ef5240 38%,#c0301f 72%,#971f12 100%);
+  box-shadow:0 5px 11px rgba(20,12,6,.6),inset -2px -3px 7px rgba(120,12,0,.55),inset 3px 4px 8px rgba(255,255,255,.6)}
+.mwhero .mw-pin::before{content:"";position:absolute;top:5px;left:6px;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.88);filter:blur(.5px)}
+.mwhero .mw-pin::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);width:3px;height:10px;border-radius:0 0 2px 2px;background:linear-gradient(180deg,#d7c4ab,#7c6a52)}
 .mwhero .mw-tape{position:absolute;width:68px;height:22px;background:rgba(214,196,150,.45);border:1px solid rgba(201,165,114,.4);transform:rotate(-7deg);bottom:-9px;right:30px}
 .mwhero .mw-eyb{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;color:var(--terra);display:flex;align-items:center;gap:10px}
 .mwhero .mw-eyb::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
-.mwhero .mw-hh{font-weight:700;font-size:clamp(29px,3.4vw,43px);line-height:1.08;letter-spacing:-.025em;color:var(--ink);margin:0}
+.mwhero .mw-hh{font-weight:700;font-size:clamp(33px,4vw,52px);line-height:1.07;letter-spacing:-.025em;color:var(--ink);margin:0}
 .mwhero .mw-hh em{color:var(--terra);font-style:italic}
 .mwhero .mw-rule{width:46px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--terra),var(--gold));margin:15px 0 0}
-.mwhero .mw-ld{font-size:clamp(15px,1.5vw,17px);margin-top:14px;line-height:1.5;color:var(--muted);max-width:34ch}
+.mwhero .mw-ld{font-size:clamp(16px,1.6vw,19px);margin-top:15px;line-height:1.5;color:var(--muted);max-width:42ch}
 .mwhero .mw-cta{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
-.mwhero .mw-bs,.mwhero .mw-bg2{font-family:'Besley',serif;font-size:14.5px;font-weight:600;padding:12px 24px;border-radius:30px;white-space:nowrap;display:inline-block;text-decoration:none;cursor:pointer;transition:.2s}
-.mwhero .mw-bs{background:var(--terra);color:#fff;border:1.5px solid var(--terra);box-shadow:0 14px 28px -12px rgba(120,80,54,.85)}
-.mwhero .mw-bs:hover{background:var(--terra2)}
-.mwhero .mw-bg2{background:rgba(255,255,255,.42);color:var(--terra2);border:1.5px solid rgba(168,124,95,.5)}
-.mwhero .mw-bg2:hover{background:rgba(255,255,255,.62)}
+.mwhero .mw-bs,.mwhero .mw-bg2{font-family:'Besley',serif;font-size:16px;font-weight:700;padding:15px 30px;border-radius:32px;white-space:nowrap;display:inline-block;text-decoration:none;cursor:pointer;transition:.2s}
+.mwhero .mw-bs{background:var(--terra);color:#fff;border:1.5px solid var(--terra);box-shadow:0 18px 34px -12px rgba(120,80,54,.95),inset 0 1px 0 rgba(255,255,255,.3)}
+.mwhero .mw-bs:hover{background:var(--terra2);transform:translateY(-1px)}
+.mwhero .mw-bg2{background:#fff;color:var(--terra2);border:2px solid var(--terra)}
+.mwhero .mw-bg2:hover{background:#fbf1e6}
 .mwhero .mw-sig{font-family:'Caveat',cursive;font-size:22px;color:var(--terra2);margin-top:13px;display:block}
 @media(max-width:680px){.mwhero{min-height:80vh}.mwhero .mw-note{max-width:none;padding:30px 24px}}
 </style>
@@ -321,6 +326,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
   <div class="mw-bg"><img src="https://pub.hyperagent.com/api/published/pbf01KWBE8XFP_ZYS6S7BJ3MVYD8MC/36eaf3d1-1610-48b5-980c-e275c8f5eebd.png" alt="A wall of family photographs and an open memorial book"></div>
   <div class="mw-grade"></div>
   <div class="mw-grain"></div>
+  <div class="mw-spot"></div>
   <div class="mw-band"></div>
   <nav class="mw-nav">
     <span class="mw-b">I <em>Miss</em> You Memorial</span>
