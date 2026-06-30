@@ -167,6 +167,14 @@ export function renderTribute(template: string, t: Tribute): string {
   else if (_b && _b.mo === _tMo && _b.d === _tD) { _anniv = `Today would have been ${first}'s birthday.`; }
   const anniversaryHtml = _anniv ? `<div class="vigil-anniv">${esc(_anniv)}</div>` : "";
 
+  // schema.org structured data — helps search engines show a proper memorial result.
+  const _ld: any = { "@context": "https://schema.org", "@type": "WebPage", name: ogTitle, url: ogUrl, about: { "@type": "Person", name: t.fullName || first } };
+  if (t.birth) _ld.about.birthDate = t.birth;
+  if (t.passing) _ld.about.deathDate = t.passing;
+  if (portrait) _ld.about.image = portrait;
+  if (_excerpt) _ld.about.description = ogDesc;
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify(_ld).replace(/</g, "\\u003c")}</script>`;
+
   const tokens: Record<string, string> = {
     "{{TITLE}}": `${esc(t.fullName)} — I Miss You Memorial`,
     "{{SLUG}}": esc(t.slug || ""),
@@ -175,6 +183,7 @@ export function renderTribute(template: string, t: Tribute): string {
     "{{OG_IMAGE}}": esc(ogImage),
     "{{OG_URL}}": esc(ogUrl),
     "{{ANNIVERSARY}}": anniversaryHtml,
+    "{{JSONLD}}": jsonLd,
     "{{TIER_ATTR}}": tierAttr,
     "{{MOTIF}}": motifKey(t.motif, t.theme),
     "{{KICKER}}": "In loving memory",
