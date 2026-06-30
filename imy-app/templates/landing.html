@@ -269,36 +269,79 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 <noscript><style>.reveal,.frag .l{opacity:1!important;transform:none!important}</style></noscript>
 <style>
 </style>
+<style>
+/* ===== FULL-SCREEN MEMORY-WALL HERO (scoped: .mwhero / mw-) ===== */
+.mwhero{position:relative;z-index:2;min-height:92vh;overflow:hidden;display:flex;align-items:center;
+  --terra:#A87C5F;--terra2:#946a4f;--gold:#C9A572;--flame:#F4B860;--muted:#5f4e40;--ink:#2C2520}
+.mwhero .mw-bg{position:absolute;inset:0;z-index:0}
+.mwhero .mw-bg img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.08) contrast(1.05) brightness(1.02)}
+.mwhero .mw-grade{position:absolute;inset:0;z-index:1;background:
+  radial-gradient(70% 80% at 22% 54%,rgba(244,184,96,.22),transparent 58%),
+  linear-gradient(115deg,rgba(168,124,95,.28),transparent 46%),
+  radial-gradient(140% 120% at 50% 48%,transparent 50%,rgba(18,11,5,.6) 100%)}
+.mwhero .mw-grain{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.13;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.mwhero .mw-band{position:absolute;top:0;left:0;right:0;height:224px;z-index:3;pointer-events:none;
+  background:linear-gradient(180deg,rgba(9,5,2,.95) 0%,rgba(9,5,2,.74) 32%,rgba(9,5,2,.36) 66%,transparent 100%)}
+.mwhero .mw-nav{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;gap:18px;padding:20px 4.5%}
+.mwhero .mw-b{color:#FFF9EE;font-weight:700;font-size:19px;letter-spacing:-.01em;text-shadow:0 1px 3px rgba(0,0,0,.7),0 2px 16px rgba(0,0,0,.5)}
+.mwhero .mw-b em{color:#EFD49A;font-style:italic}
+.mwhero .mw-links{display:flex;gap:20px;margin-left:16px}
+.mwhero .mw-links a{color:#F6ECDA;text-decoration:none;font-size:14.5px;font-weight:500;text-shadow:0 1px 3px rgba(0,0,0,.7),0 1px 10px rgba(0,0,0,.5);transition:.18s}
+.mwhero .mw-links a:hover{color:#fff}
+.mwhero .mw-navcta{margin-left:auto;background:var(--terra);color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:30px;text-decoration:none;box-shadow:0 12px 26px -12px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,247,235,.25);transition:.2s}
+.mwhero .mw-navcta:hover{background:var(--terra2)}
+@media(max-width:680px){.mwhero .mw-links{display:none}}
+.mwhero .mw-inner{position:relative;z-index:4;width:100%;max-width:1160px;margin:0 auto;padding:0 5%}
+.mwhero .mw-note{position:relative;max-width:484px;padding:40px 38px 34px;border-radius:5px;
+  background:rgba(253,248,240,.92);-webkit-backdrop-filter:blur(10px) saturate(1.08);backdrop-filter:blur(10px) saturate(1.08);
+  border:1px solid rgba(201,165,114,.6);box-shadow:0 44px 96px -30px rgba(20,12,6,.82),0 8px 18px rgba(20,12,6,.34),inset 0 1px 0 rgba(255,255,255,.8);transform:rotate(-1deg)}
+.mwhero .mw-pin{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 36% 32%,#f8e9bd,#c9a572 56%,#8d7340);box-shadow:0 5px 11px rgba(20,12,6,.6)}
+.mwhero .mw-tape{position:absolute;width:68px;height:22px;background:rgba(214,196,150,.45);border:1px solid rgba(201,165,114,.4);transform:rotate(-7deg);bottom:-9px;right:30px}
+.mwhero .mw-eyb{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;color:var(--terra);display:flex;align-items:center;gap:10px}
+.mwhero .mw-eyb::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+.mwhero .mw-hh{font-weight:700;font-size:clamp(29px,3.4vw,43px);line-height:1.08;letter-spacing:-.025em;color:var(--ink);margin:0}
+.mwhero .mw-hh em{color:var(--terra);font-style:italic}
+.mwhero .mw-rule{width:46px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--terra),var(--gold));margin:15px 0 0}
+.mwhero .mw-ld{font-size:clamp(15px,1.5vw,17px);margin-top:14px;line-height:1.5;color:var(--muted);max-width:34ch}
+.mwhero .mw-cta{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.mwhero .mw-bs,.mwhero .mw-bg2{font-family:'Besley',serif;font-size:14.5px;font-weight:600;padding:12px 24px;border-radius:30px;white-space:nowrap;display:inline-block;text-decoration:none;cursor:pointer;transition:.2s}
+.mwhero .mw-bs{background:var(--terra);color:#fff;border:1.5px solid var(--terra);box-shadow:0 14px 28px -12px rgba(120,80,54,.85)}
+.mwhero .mw-bs:hover{background:var(--terra2)}
+.mwhero .mw-bg2{background:rgba(255,255,255,.42);color:var(--terra2);border:1.5px solid rgba(168,124,95,.5)}
+.mwhero .mw-bg2:hover{background:rgba(255,255,255,.62)}
+.mwhero .mw-sig{font-family:'Caveat',cursive;font-size:22px;color:var(--terra2);margin-top:13px;display:block}
+@media(max-width:680px){.mwhero{min-height:80vh}.mwhero .mw-note{max-width:none;padding:30px 24px}}
+</style>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
 
-<!-- NAV -->
-<div class="nav"><div class="nav-in">
-  <div class="brand wm">I <em>Miss</em> You Memorial</div>
-  <div class="nav-links"><a href="#memory">Remember</a><a href="#example">Example</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></div>
-  <div class="right"><a class="btn solid" href="/onboarding">Start a tribute</a></div>
-</div></div>
-
-<!-- HERO -->
-<div class="hero">
-  <div>
-    <div class="eyebrow">For someone you love</div>
-    <h1>Create a memorial page worthy of <span class="hl">their&nbsp;life</span></h1>
-    <p class="lead">A beautiful place to hold their photos, their stories, and the voice of everyone who loved them.</p>
-    <div class="cta-row">
-      <a class="btn solid" href="/onboarding">Start a tribute</a>
-      <a class="btn ghost" href="#example">See an example</a>
+<!-- HERO (full-screen memory wall) -->
+<header class="mwhero">
+  <div class="mw-bg"><img src="https://pub.hyperagent.com/api/published/pbf01KWBE8XFP_ZYS6S7BJ3MVYD8MC/36eaf3d1-1610-48b5-980c-e275c8f5eebd.png" alt="A wall of family photographs and an open memorial book"></div>
+  <div class="mw-grade"></div>
+  <div class="mw-grain"></div>
+  <div class="mw-band"></div>
+  <nav class="mw-nav">
+    <span class="mw-b">I <em>Miss</em> You Memorial</span>
+    <span class="mw-links"><a href="#memory">Remember</a><a href="#example">Example</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></span>
+    <a class="mw-navcta" href="/onboarding">Start a tribute</a>
+  </nav>
+  <div class="mw-inner">
+    <div class="mw-note">
+      <span class="mw-pin"></span><span class="mw-tape"></span>
+      <div class="mw-eyb">For someone you love</div>
+      <h1 class="mw-hh">Create a memorial page worthy of <em>their&nbsp;life</em></h1>
+      <div class="mw-rule"></div>
+      <p class="mw-ld">A beautiful place to hold their photos, their stories, and the voice of everyone who loved them.</p>
+      <div class="mw-cta">
+        <a class="mw-bs" href="/onboarding">Start a tribute</a>
+        <a class="mw-bg2" href="#example">See an example</a>
+      </div>
+      <span class="mw-sig">— with all our love</span>
     </div>
   </div>
-  <div class="hero-collage" aria-hidden="true">
-    <figure class="pc p1"><img src="https://pub.hyperagent.com/api/published/pbf01KVXH3TTS_HFMBSRDVYN6XCHTG/7bb79736-30a5-4159-97b8-6b753830eae6.png" alt=""><figcaption>In her garden</figcaption></figure>
-    <figure class="pc p2"><img src="https://pub.hyperagent.com/api/published/pbf01KVX5AW73_AJ0N5057PGXN6K8Z/bfc0c03d-1044-4932-8bbf-ed164d94d167.png" alt=""></figure>
-    <figure class="pc p3"><img src="https://pub.hyperagent.com/api/published/pbf01KVXH3VZ3_H15J3RTB4ZP243F1/08395cd8-a177-4f78-bf4a-71b17b455cbc.png" alt=""></figure>
-    <div class="note n1">She always hummed while she cooked.</div>
-    <div class="note n2">Black coffee, no sugar.</div>
-  </div>
-</div>
+</header>
 
 <!-- THE SMALL THINGS -->
 <div class="memory" id="memory"><div class="in reveal">
