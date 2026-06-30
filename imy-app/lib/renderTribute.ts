@@ -157,6 +157,16 @@ export function renderTribute(template: string, t: Tribute): string {
     : `A place to remember ${first} — light a candle, leave a memory, and share what they meant to you.`;
   const ogImage = portrait || DEFAULT_OG;
 
+  // Anniversary / birthday acknowledgement, computed server-side from the dates.
+  const _md = (s?: string) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((s || "").trim()); return m ? { y: +m[1], mo: +m[2], d: +m[3] } : null; };
+  const _now = new Date();
+  const _tMo = _now.getUTCMonth() + 1, _tD = _now.getUTCDate(), _tY = _now.getUTCFullYear();
+  const _b = _md(t.birth), _p = _md(t.passing);
+  let _anniv = "";
+  if (_p && _p.mo === _tMo && _p.d === _tD) { const yrs = _tY - _p.y; _anniv = yrs > 0 ? `Remembering ${first}, ${yrs} year${yrs === 1 ? "" : "s"} on.` : `Remembering ${first} today.`; }
+  else if (_b && _b.mo === _tMo && _b.d === _tD) { _anniv = `Today would have been ${first}'s birthday.`; }
+  const anniversaryHtml = _anniv ? `<div class="vigil-anniv">${esc(_anniv)}</div>` : "";
+
   const tokens: Record<string, string> = {
     "{{TITLE}}": `${esc(t.fullName)} — I Miss You Memorial`,
     "{{SLUG}}": esc(t.slug || ""),
@@ -164,6 +174,7 @@ export function renderTribute(template: string, t: Tribute): string {
     "{{OG_DESC}}": esc(ogDesc),
     "{{OG_IMAGE}}": esc(ogImage),
     "{{OG_URL}}": esc(ogUrl),
+    "{{ANNIVERSARY}}": anniversaryHtml,
     "{{TIER_ATTR}}": tierAttr,
     "{{MOTIF}}": motifKey(t.motif, t.theme),
     "{{KICKER}}": "In loving memory",

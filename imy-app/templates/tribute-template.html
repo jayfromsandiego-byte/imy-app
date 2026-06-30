@@ -258,6 +258,9 @@ body.a11y-contrast .btn,body.a11y-contrast .h-btn,body.a11y-contrast .galtab,bod
 .a11y-reset{width:100%;border:none;background:transparent;color:#1558d6;font-weight:700;cursor:pointer;padding:7px;font-size:12.5px;text-decoration:underline;margin-top:2px}
 .imy-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#1A130D;color:#f3ece0;font-family:'Sometype Mono',monospace;font-size:12.5px;letter-spacing:.04em;padding:11px 18px;border-radius:30px;z-index:400;opacity:0;transition:.3s;box-shadow:0 14px 30px -12px rgba(0,0,0,.6);border:1px solid rgba(244,184,96,.4)}
 .imy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.vigil-anniv{position:relative;z-index:5;margin-top:12px;font-family:'Caveat',cursive;font-size:21px;color:var(--flame-2);text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.vigil-nudge{position:relative;z-index:5;margin-top:16px;font-family:'Sometype Mono',monospace;font-size:12px;color:var(--parch-dim)}
+.vigil-nudge button{background:none;border:none;color:var(--flame-2);font-family:'Sometype Mono',monospace;font-size:12px;cursor:pointer;text-decoration:underline;padding:0}
 </style>
 </head>
 <body data-tier="{{TIER_ATTR}}" data-motif="{{MOTIF}}" data-slug="{{SLUG}}" data-share="{{FIRST}}">
@@ -292,8 +295,10 @@ body.a11y-contrast .btn,body.a11y-contrast .h-btn,body.a11y-contrast .galtab,bod
     <button class="h-btn send" id="roseBtn" type="button">Send a rose</button>
     <button class="h-btn light" id="shareBtn" type="button">Share</button>
   </div>
+  {{ANNIVERSARY}}
   <div class="candle-ct"><b data-count>{{CANDLE_COUNT}}</b> candles burning · a rose rests a little while, then gently fades</div>
   <div class="tap-prompt">Tap the dark — light a candle</div>
+  <div class="vigil-nudge" id="candleNudge" hidden>Thank you for lighting a candle. <button type="button" id="nudgeShare">Share {{FIRST}}'s page →</button></div>
 </div>
 
 <!-- BODY (motif background applies from here down) -->
@@ -451,7 +456,8 @@ function rand(a,b){return a+Math.random()*(b-a);}
   var busy=false,last=0;
   function playStrike(){try{var A=window.AudioContext||window.webkitAudioContext;if(!A)return;playStrike._x=playStrike._x||new A();var ctx=playStrike._x,t=ctx.currentTime;var o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(660,t);o.frequency.exponentialRampToValueAtTime(180,t+.12);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+.22);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+.24);}catch(e){}}
   function persist(){if(!slug||busy)return;busy=true;fetch('/api/tribute/'+encodeURIComponent(slug)+'/candle',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.ok?r.json():null;}).then(function(d){if(d&&d.ok&&typeof d.count==='number')setCount(d.count);}).catch(function(){}).then(function(){busy=false;});}
-  function lightAt(xp,yp){var c=spawnCandle(xp,yp,{isNew:true});setCount(count+1);playStrike();showTip(c,'You','just now');setTimeout(hideTip,2200);var p=document.createElement('div');p.className='plus1 go';p.textContent='+1';p.style.left=xp+'%';p.style.top=yp+'%';vigil.appendChild(p);setTimeout(function(){p.remove();},1900);persist();}
+  function maybeNudge(){try{if(sessionStorage.getItem('imy_lit'))return;sessionStorage.setItem('imy_lit','1');}catch(e){}var n=document.getElementById('candleNudge');if(!n)return;n.hidden=false;var ns=document.getElementById('nudgeShare');if(ns)ns.addEventListener('click',function(){if(window.__imyShare)window.__imyShare();});}
+  function lightAt(xp,yp){var c=spawnCandle(xp,yp,{isNew:true});setCount(count+1);playStrike();showTip(c,'You','just now');setTimeout(hideTip,2200);var p=document.createElement('div');p.className='plus1 go';p.textContent='+1';p.style.left=xp+'%';p.style.top=yp+'%';vigil.appendChild(p);setTimeout(function(){p.remove();},1900);persist();maybeNudge();}
   vigil.addEventListener('click',function(e){if(e.target.closest('.candle')||e.target.closest('.stone')||e.target.closest('.hero-actions'))return;var now=Date.now();if(now-last<350)return;last=now;var fr=vigil.getBoundingClientRect();var xp=((e.clientX-fr.left)/fr.width)*100,yp=((e.clientY-fr.top)/fr.height)*100;if(yp<8)return;lightAt(xp,yp);});
   var lb=document.getElementById('lightBtn');if(lb)lb.onclick=function(){var now=Date.now();if(now-last<350)return;last=now;lightAt(rand(6,94),rand(60,90));};
   setInterval(function(){var all=candleLayer.querySelectorAll('.candle');if(!all.length)return;for(var n=0;n<3;n++){var c=all[Math.floor(Math.random()*all.length)];c.classList.add('boost');(function(cc){setTimeout(function(){cc.classList.remove('boost');},260);})(c);}},1100);
@@ -548,16 +554,19 @@ async function shareMemory(){
   document.addEventListener('keydown',function(e){if(e.key==='Escape'){panel.classList.remove('open');fab.setAttribute('aria-expanded','false');}});
 })();
 
-/* share — the core loop: native share sheet on mobile, clipboard fallback on desktop */
+/* share — the core loop: native share sheet on mobile, clipboard fallback on desktop.
+   Exposed as window.__imyShare so the post-candle nudge can trigger it too. */
 (function(){
-  var btn=document.getElementById('shareBtn'); if(!btn) return;
-  var who=(document.body.getAttribute('data-share')||'them').trim()||'them';
   function toast(msg){var d=document.createElement('div');d.className='imy-toast';d.textContent=msg;document.body.appendChild(d);requestAnimationFrame(function(){d.classList.add('show');});setTimeout(function(){d.classList.remove('show');setTimeout(function(){d.remove();},320);},2200);}
-  btn.addEventListener('click',async function(){
-    var url=location.href,title=document.title,text='Remember '+who+' with me.';
+  async function imyShare(){
+    var url=location.href,title=document.title;
+    var who=(document.body.getAttribute('data-share')||'them').trim()||'them';
+    var text='Remember '+who+' with me.';
     if(navigator.share){try{await navigator.share({title:title,text:text,url:url});return;}catch(e){if(e&&e.name==='AbortError')return;}}
     try{await navigator.clipboard.writeText(url);toast('Link copied');}catch(e){toast(url);}
-  });
+  }
+  window.__imyShare=imyShare;
+  var btn=document.getElementById('shareBtn'); if(btn) btn.addEventListener('click',imyShare);
 })();
 </script>
 </body>
