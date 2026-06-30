@@ -146,9 +146,24 @@ export function renderTribute(template: string, t: Tribute): string {
     ? "Backed by a dedicated reserve and an independent archive — kept with love, for as long as we are here."
     : "Every tribute stays online. We will never charge you to keep a memory alive.";
 
+  // Open Graph / Twitter share preview — the product grows by people sharing the link,
+  // so a shared tribute should show the loved one's portrait, name, and a gentle line.
+  const DEFAULT_OG = "https://pub.hyperagent.com/api/published/pbf01KWBE8XFP_ZYS6S7BJ3MVYD8MC/36eaf3d1-1610-48b5-980c-e275c8f5eebd.png";
+  const ogUrl = t.slug ? `https://${t.slug}.imissyoumemorial.com` : "https://imissyoumemorial.com";
+  const ogTitle = `${t.fullName || first} · In loving memory`;
+  const _excerpt = (t.story || "").replace(/\s+/g, " ").trim();
+  const ogDesc = _excerpt
+    ? (_excerpt.length > 155 ? _excerpt.slice(0, 152) + "…" : _excerpt)
+    : `A place to remember ${first} — light a candle, leave a memory, and share what they meant to you.`;
+  const ogImage = portrait || DEFAULT_OG;
+
   const tokens: Record<string, string> = {
     "{{TITLE}}": `${esc(t.fullName)} — I Miss You Memorial`,
     "{{SLUG}}": esc(t.slug || ""),
+    "{{OG_TITLE}}": esc(ogTitle),
+    "{{OG_DESC}}": esc(ogDesc),
+    "{{OG_IMAGE}}": esc(ogImage),
+    "{{OG_URL}}": esc(ogUrl),
     "{{TIER_ATTR}}": tierAttr,
     "{{MOTIF}}": motifKey(t.motif, t.theme),
     "{{KICKER}}": "In loving memory",
