@@ -1,33 +1,24 @@
-// POST /api/upload — receives onboarding photos/videos (multipart form-data)
-// and returns public URLs to store on the tribute.
-//
-// WIRING (one of):
-//  - Vercel Blob: add `@vercel/blob`, set BLOB_READ_WRITE_TOKEN, then
-//      import { put } from "@vercel/blob";
-//      const { url } = await put(file.name, file, { access: "public" });
-//  - S3 / R2 / UploadThing: swap in their SDK below.
-//
-// Once URLs are returned, the onboarding submit writes them to Airtable:
-//   first image -> Cover Photo;  remaining -> Photos (attachments);  video -> Video URL.
-// renderTribute already places Cover Photo (hero/portrait), Photos[] (gallery),
-// and Video URL (reel) automatically.
-
+// POST /api/upload — receives photos (multipart form-data, field "files") and
+// returns public URLs. Cloudflare R2 is preferred (zero egress + WebP optimization);
+// Vercel Blob is a fallback. For large media (video), use POST /api/upload/presign
+// to upload directly to R2 instead of proxying bytes through this function.
 import { NextRequest, NextResponse } from "next/server";
-import { put } from "@vercel/blob";
+import { r2Configured, uploadToR2 } from "@/lib/r2";
 
 export const runtime = "nodejs";
 
+const MAX_BYTES = 25 * 1024 * 1024; // 25MB per file through this proxied route
+
 export async function POST(req: NextRequest) {
-  // Storage not configured yet — respond clearly so the UI can fall back.
-  // Modern Vercel Blob authenticates via OIDC when a store is connected (BLOB_STORE_ID present),
-  // so a static BLOB_READ_WRITE_TOKEN is not required on Vercel.
-  if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID && !process.env.S3_BUCKET) {
+  const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+
+  if (!r2Configured && !hasBlob) {
     return NextResponse.json(
       {
         ok: false,
         error: "upload_storage_not_configured",
         message:
-          "Add a storage provider (Vercel Blob token or S3/R2 bucket) to enable photo uploads. See app/api/upload/route.ts for wiring.",
+          "Add Cloudflare R2 (preferred) or Vercel Blob to enable uploads. See lib/r2.ts and the founder setup checklist.",
       },
       { status: 501 }
     );
@@ -36,12 +27,26 @@ export async function POST(req: NextRequest) {
   try {
     const form = await req.formData();
     const files = form.getAll("files").filter((f) => f instanceof File) as File[];
+    if (!files.length) return NextResponse.json({ ok: false, error: "no_files" }, { status: 400 });
+
     const urls: string[] = [];
     for (const f of files) {
-      const safe = (f.name || "upload").replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80);
-      const key = `tributes/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safe}`;
-      const { url } = await put(key, f, { access: "public", contentType: f.type || undefined, addRandomSuffix: false });
-      urls.push(url);
+      if (f.size > MAX_BYTES) {
+        return NextResponse.json(
+          { ok: false, error: "too_large", message: "Files over 25MB should use the presigned upload (/api/upload/presign)." },
+          { status: 413 }
+        );
+      }
+      if (r2Configured) {
+        const buf = Buffer.from(await f.arrayBuffer());
+        urls.push(await uploadToR2(buf, f.name || "upload", f.type || "application/octet-stream"));
+      } else {
+        const { put } = await import("@vercel/blob");
+        const safe = (f.name || "upload").replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80);
+        const key = `tributes/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safe}`;
+        const { url } = await put(key, f, { access: "public", contentType: f.type || undefined, addRandomSuffix: false });
+        urls.push(url);
+      }
     }
     return NextResponse.json({ ok: true, urls });
   } catch (e: any) {

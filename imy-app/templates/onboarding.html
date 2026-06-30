@@ -3,440 +3,233 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>I Miss You Memorial — Create their memorial</title>
+<title>I Miss You Memorial — Create their tribute</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Inter:wght@300;400;500;600&family=Caveat:wght@500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Sometype+Mono:wght@400;500;600&family=Caveat:wght@500&display=swap" rel="stylesheet">
 <style>
-  :root{--cream:#FBF7EF;--cream-2:#F5EFE1;--ink:#332C25;--ink-soft:#6b5f52;--terra:#B07A56;--terra-deep:#8B5E3C;--gold:#CBA85F;--sage:#7E9B82;--sage-soft:#EDF1E8;--line:#e7dcc6;--field:#ddd0b8}
+  :root{--cream:#FAF5EC;--cream-deep:#F3ECDD;--ink:#2C2520;--ink-soft:#5A4F45;--terra:#A87C5F;--terra-deep:#8B5E3C;--gold:#C9A572;--line:#E4D9C4;--field:#DCCEB4}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--cream);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
-  img{max-width:100%;display:block}
-  .wrap{max-width:680px;margin:0 auto;padding:0 18px}
-  .wm{display:inline-flex;align-items:baseline;gap:.5ch;font-family:'Fraunces',serif}
-  .wm .script{font-style:italic;font-weight:450;font-size:1.3rem;color:var(--ink)} .wm .script b{color:var(--terra)}
-  .wm .sub{font-family:'Inter';font-weight:600;font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--sage);align-self:center}
-  header{text-align:center;padding:44px 0 6px}
-  header .candle{font-size:1.7rem}
-  h1{font-family:'Fraunces',serif;font-weight:360;font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.1;letter-spacing:-.015em;margin:12px 0 10px}
-  h1 em{font-style:italic;color:var(--terra)}
-  header p{color:var(--ink-soft);max-width:480px;margin:0 auto;font-size:1.02rem}
-  form{padding:22px 0 70px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 18px;margin-bottom:16px;box-shadow:0 14px 36px -28px rgba(51,44,37,.4)}
-  @media(min-width:620px){.card{padding:26px 26px}}
-  .card h2{font-family:'Fraunces',serif;font-weight:540;font-size:1.2rem;margin-bottom:4px}
-  .card .intro{color:var(--ink-soft);font-size:.9rem;margin-bottom:18px}
-  .field{margin-bottom:15px}
-  label{display:block;font-weight:600;font-size:.84rem;margin-bottom:7px}
-  label .opt{color:var(--ink-soft);font-weight:400;font-size:.78rem}
-  .help{font-size:.8rem;color:var(--ink-soft);margin-top:6px}
-  input,textarea,select{width:100%;font-family:'Inter';font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:11px;padding:13px 14px}
-  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.14)}
-  textarea{resize:vertical;min-height:120px;line-height:1.6}
-  .grid-2{display:grid;grid-template-columns:1fr;gap:14px}
-  @media(min-width:560px){.grid-2{grid-template-columns:1fr 1fr}}
-  .slug-wrap{display:flex;border:1px solid var(--field);border-radius:11px;overflow:hidden}
-  .slug-wrap:focus-within{border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.14)}
-  .slug-wrap input{border:none;box-shadow:none;border-radius:0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:.88rem}
-  .slug-wrap .suffix{display:flex;align-items:center;padding:0 12px;background:var(--cream-2);color:var(--ink-soft);font-family:'JetBrains Mono',monospace;font-size:.8rem;white-space:nowrap}
-  .preview{margin-top:9px;font-size:.84rem;color:var(--ink-soft)} .preview b{font-family:'JetBrains Mono',monospace;color:var(--terra)}
-
-  /* assistant */
-  .assist-toggle{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:var(--sage-soft);border:1px solid #dde6d8;color:var(--terra-deep);font-weight:600;font-size:.84rem;padding:9px 14px;border-radius:30px;cursor:pointer}
-  .assist-box{display:none;margin-top:12px;background:var(--sage-soft);border:1px solid #dde6d8;border-radius:14px;padding:14px}
+  html,body{height:100%}
+  body{background:var(--cream);color:var(--ink);font-family:'Besley',Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .stage{min-height:100dvh;display:flex;flex-direction:column}
+  /* progress */
+  .bar{position:fixed;top:0;left:0;height:3px;background:var(--terra);width:0;transition:width .4s ease;z-index:10}
+  header{padding:20px 22px;display:flex;align-items:center;justify-content:space-between}
+  .wm{font-size:17px;font-weight:600}.wm em{font-style:italic;color:var(--terra)}
+  .count{font-family:'Sometype Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--ink-soft)}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 22px}
+  .wrap{width:100%;max-width:620px}
+  .step{display:none;animation:rise .45s ease}
+  .step.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.step{animation:none}.bar{transition:none}}
+  .eyebrow{font-family:'Sometype Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin-bottom:14px}
+  h2{font-weight:600;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.15;letter-spacing:-.01em;margin-bottom:10px}
+  h2 em{font-style:italic;color:var(--terra)}
+  .sub{color:var(--ink-soft);margin-bottom:24px;font-size:1.02rem}
+  input[type=text],input[type=date],input[type=email],textarea{width:100%;font-family:'Besley',serif;font-size:1.15rem;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:13px;padding:15px 16px}
+  input:focus,textarea:focus{outline:none;border-color:var(--terra);box-shadow:0 0 0 3px rgba(168,124,95,.15)}
+  textarea{resize:vertical;min-height:140px;line-height:1.6}
+  .two{display:grid;grid-template-columns:1fr;gap:14px}@media(min-width:520px){.two{grid-template-columns:1fr 1fr}}
+  .lbl{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:7px;display:block}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+  .chip{font-family:'Besley',serif;font-size:.98rem;background:#fff;border:1px solid var(--field);border-radius:999px;padding:10px 16px;cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--terra)}
+  .chip.on{background:var(--terra);color:#fff;border-color:var(--terra)}
+  .photo-drop{border:1.5px dashed var(--field);border-radius:16px;padding:30px 18px;text-align:center;cursor:pointer;background:var(--cream-deep)}
+  .photo-drop:hover{border-color:var(--terra);background:#fff}
+  .photo-drop .pl{font-size:2rem;color:var(--terra)}
+  .photo-prev{margin-top:14px;width:140px;height:170px;border-radius:14px 14px 60px 60px;object-fit:cover;border:1px solid var(--line);display:none;margin-left:auto;margin-right:auto}
+  .assist{display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:var(--cream-deep);border:1px solid var(--line);color:var(--terra-deep);font-family:'Sometype Mono',monospace;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;padding:9px 14px;border-radius:30px;cursor:pointer}
+  .assist-box{display:none;margin-top:12px;background:var(--cream-deep);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:.96rem}
   .assist-box.open{display:block}
-  .assist-box .who{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:6px}
-  .assist-box p{font-size:.9rem;color:var(--ink);margin-bottom:10px}
-  .assist-box .mini{font-size:.78rem;color:var(--ink-soft)}
-
-  /* upload dropzones */
-  .drop{border:1.5px dashed var(--field);border-radius:14px;padding:22px 16px;text-align:center;cursor:pointer;transition:.18s;background:var(--cream-2)}
-  .drop:hover,.drop.drag{border-color:var(--terra);background:#fff}
-  .drop .plus{font-size:1.7rem;color:var(--terra);line-height:1}
-  .drop .t{font-weight:600;font-size:.9rem;margin-top:6px}
-  .drop .s{font-size:.78rem;color:var(--ink-soft);margin-top:2px}
-  .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:12px}
-  .thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--cream-2)}
-  .thumb img{width:100%;height:100%;object-fit:cover}
-  .thumb .vid{display:flex;align-items:center;justify-content:center;height:100%;font-size:1.4rem;color:var(--terra)}
-  .thumb .x{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;cursor:pointer;font-size:.8rem;line-height:1}
-
-  /* theme color tiles */
-  .themes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  @media(max-width:480px){.themes{grid-template-columns:1fr 1fr}}
-  .theme-tile{display:block;width:100%;padding:0;border:1px solid var(--field);background:#fff;border-radius:13px;overflow:hidden;cursor:pointer;text-align:center;font-family:'Inter';transition:.18s;position:relative}
-  .theme-tile:hover{border-color:var(--terra)}
-  .theme-tile .tt-img{display:block;height:64px;background-size:cover;background-position:center}
-  .theme-tile .tt-swatch{display:block;height:54px}
-  .theme-tile .tt-name{display:block;padding:8px 4px 2px;font-family:'Fraunces',serif;font-weight:540;font-size:.92rem}
-  .theme-tile .tt-vibe{display:block;font-size:.66rem;color:var(--ink-soft);padding:0 4px 9px;font-weight:500;letter-spacing:.04em}
-  .theme-tile.is-selected{border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.18)}
-  .theme-tile.is-selected::after{content:"\2713";position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--terra);color:#fff;font-size:.72rem;display:grid;place-items:center}
-
-  .cardnote{font-size:.82rem;color:var(--ink-soft);background:var(--cream-2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-top:6px}
-
-  .submit{text-align:center;padding-top:6px}
-  .btn{background:var(--terra);color:#fff;border:none;font-family:'Inter';font-weight:600;font-size:1.04rem;padding:16px 40px;border-radius:40px;cursor:pointer;transition:.2s;width:100%}
-  @media(min-width:560px){.btn{width:auto}}
-  .btn:hover{background:var(--terra-deep)} .btn:disabled{opacity:.6}
-  .reassure{margin-top:14px;font-size:.84rem;color:var(--ink-soft)}
-
-  #success{display:none;text-align:center;background:#fff;border:1px solid var(--line);border-radius:20px;padding:42px 24px}
-  #success .candle{font-size:2rem}
-  #success h2{font-family:'Fraunces',serif;font-weight:400;font-size:1.7rem;margin:12px 0 10px}
-  #success .url{display:inline-block;font-family:'JetBrains Mono',monospace;color:var(--terra);background:var(--cream-2);padding:10px 16px;border-radius:30px;margin:8px 0;border:1px solid var(--line);word-break:break-all}
-  #success p{color:var(--ink-soft);max-width:430px;margin:10px auto 0}
-  footer{text-align:center;padding:26px 0 50px;color:var(--ink-soft);font-size:.82rem;border-top:1px solid var(--line)}
-  .fp{font-family:'Caveat',cursive;font-size:1.35rem;color:var(--terra);margin-top:8px}
-
-  /* ===== Plus: What they loved ===== */
-  .lt-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-  @media(max-width:480px){.lt-menu{grid-template-columns:1fr 1fr}}
-  .lt-tile{position:relative;background:var(--cream-2);border:1px solid var(--field);border-radius:13px;padding:12px 6px 9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Inter';transition:.16s}
-  .lt-tile:hover{border-color:var(--terra)}
-  .lt-tile.on{background:#fff;border-color:var(--terra);box-shadow:0 0 0 3px rgba(176,122,86,.16)}
-  .lt-tile.on::after{content:"\2713";position:absolute;top:6px;right:7px;width:17px;height:17px;border-radius:50%;background:var(--terra);color:#fff;font-size:.66rem;display:grid;place-items:center}
-  .lt-thumb{width:38px;height:30px;background-color:var(--terra);-webkit-mask:no-repeat center/contain;mask:no-repeat center/contain}
-  .lt-tile .nm{font-size:.72rem;text-align:center;line-height:1.15;color:var(--ink)}
-  .lt-tile .plus{font-size:1.4rem;color:var(--terra);height:30px;display:flex;align-items:center}
-  .lt-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
-  .lt-row{display:flex;gap:12px;align-items:flex-start}
-  .lt-cthumb{width:64px;height:46px;flex:none;border:1px solid var(--line);border-radius:9px;background-color:var(--terra);-webkit-mask:no-repeat center/contain;mask:no-repeat center/contain}
-  .lt-label{font-family:'Fraunces',serif;font-weight:540;font-size:1.05rem}
-  .lt-auto{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-top:3px}
-  .lt-seg{display:inline-flex;margin-top:8px;border:1px solid var(--field);border-radius:8px;overflow:hidden}
-  .lt-seg button{border:none;background:var(--cream-2);font-family:'Inter';font-size:.74rem;padding:5px 10px;cursor:pointer;color:var(--ink-soft)}
-  .lt-seg button.on{background:var(--terra);color:#fff}
-  .lt-rm{margin-left:auto;background:none;border:none;color:var(--field);font-size:1.3rem;cursor:pointer;line-height:1}
-  .lt-rm:hover{color:var(--terra-deep)}
-  .lt-note{margin-top:12px}
-  .lt-cap{text-align:center;margin-top:12px}
+  .nav{display:flex;align-items:center;gap:14px;margin-top:26px}
+  .btn{background:var(--terra);color:#fff;border:none;font-family:'Besley',serif;font-weight:600;font-size:1.05rem;padding:15px 34px;border-radius:40px;cursor:pointer;transition:.18s}
+  .btn:hover{background:var(--terra-deep)}.btn:disabled{opacity:.55;cursor:default}
+  .back{background:none;border:none;color:var(--ink-soft);font-family:'Besley',serif;font-size:1rem;cursor:pointer;padding:8px}
+  .skip{color:var(--ink-soft);font-size:.9rem;text-decoration:underline;cursor:pointer;background:none;border:none;font-family:'Besley',serif}
+  .saved{font-family:'Sometype Mono',monospace;font-size:11px;color:var(--ink-soft);opacity:0;transition:.3s}.saved.show{opacity:1}
+  .fp{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--terra)}
+  #done{display:none;text-align:center}
+  #done .url{display:inline-block;font-family:'Sometype Mono',monospace;color:var(--terra);background:var(--cream-deep);border:1px solid var(--line);padding:11px 18px;border-radius:30px;margin:14px 0;word-break:break-all}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="bar" id="bar"></div>
+<div class="stage">
   <header>
-    <div class="candle">🕯️</div>
-    <h1>Let's build a place for <em>their story.</em></h1>
-    <p>Tell us about the person you love. When you're done, we begin creating their memorial and email you the link.</p>
+    <span class="wm">I&nbsp;<em>Miss</em>&nbsp;You Memorial</span>
+    <span class="count" id="count"></span>
   </header>
+  <main>
+    <div class="wrap">
+      <form id="f" onsubmit="return false">
 
-  <form id="intake" onsubmit="return handleSubmit(event)">
-    <!-- ABOUT -->
-    <div class="card">
-      <h2>About your loved one</h2>
-      <p class="intro">The essentials at the top of their page.</p>
-      <div class="field">
-        <label>Their full name <span style="color:var(--terra)">*</span></label>
-        <input type="text" name="fullName" id="fullName" placeholder="Their name" oninput="syncSlug()" required>
-      </div>
-      <div class="field">
-        <label>Also known as <span class="opt">— optional</span></label>
-        <input type="text" name="aka" placeholder="A nickname they were loved by">
-      </div>
-      <div class="grid-2">
-        <div class="field"><label>Date of birth <span style="color:var(--terra)">*</span></label><input type="date" name="birth" id="birth" required></div>
-        <div class="field"><label>Date of passing <span style="color:var(--terra)">*</span></label><input type="date" name="passing" id="passing" required></div>
-      </div>
-      <div class="grid-2">
-        <div class="field"><label>Where they lived <span class="opt">— optional</span></label><input type="text" name="place" placeholder="City, State"></div>
-        <div class="field"><label>Your relationship <span style="color:var(--terra)">*</span></label><input type="text" name="relationship" placeholder="Daughter, son, friend…" required></div>
-      </div>
-    </div>
+        <section class="step active" data-step>
+          <div class="eyebrow">To begin, gently</div>
+          <h2>Who are we <em>remembering?</em></h2>
+          <p class="sub">Their full name, as you'd like it to appear.</p>
+          <input type="text" id="fullName" placeholder="Their name" autocomplete="off">
+          <div class="nav"><button type="button" class="btn" onclick="next()">Continue</button></div>
+        </section>
 
-    <!-- ADDRESS -->
-    <div class="card">
-      <h2>Their web address</h2>
-      <p class="intro">The link you'll share. It becomes their permanent home.</p>
-      <div class="field">
-        <label>Web address <span style="color:var(--terra)">*</span></label>
-        <div class="slug-wrap">
-          <input type="text" name="slug" id="slug" placeholder="their-name" oninput="manualSlug()" required>
-          <span class="suffix">.imissyoumemorial.com</span>
-        </div>
-        <div class="preview">Lives at <b id="slugPreview">their-name.imissyoumemorial.com</b></div>
-      </div>
-    </div>
+        <section class="step" data-step>
+          <div class="eyebrow">A face to hold</div>
+          <h2>A photo of <em id="n1">them</em></h2>
+          <p class="sub">This becomes their Memorial Stone. You can add more photos later — this one is optional now.</p>
+          <div class="photo-drop" id="drop"><div class="pl">＋</div><div>Add a photo</div></div>
+          <input type="file" id="photo" accept="image/*" hidden>
+          <img id="prev" class="photo-prev" alt="">
+          <div class="nav"><button type="button" class="back" onclick="prev()">← Back</button><button type="button" class="btn" onclick="next()">Continue</button><button type="button" class="skip" onclick="next()">Skip for now</button></div>
+        </section>
 
-    <!-- STORY -->
-    <div class="card">
-      <h2>Their story</h2>
-      <p class="intro">In your own words. A few sentences are enough — we can work through them later.</p>
-      <div class="field">
-        <label>A short life story <span style="color:var(--terra)">*</span></label>
-        <textarea name="story" id="story" placeholder="Where they were born, what they loved, who they became, the small things that were theirs alone…" required></textarea>
-        <button type="button" class="assist-toggle" onclick="toggleAssist()">✦ Help me write this</button>
-        <div class="assist-box" id="assistBox">
-          <div class="who">Writing assistant</div>
-          <p>Start with one true thing — a habit, a phrase they always said, a Sunday. Tell me that, and I'll help you shape it into a few warm sentences. Every word stays yours.</p>
-          <div class="mini">A kind helper for hard moments — available here and on their finished page.</div>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="field"><label>A favorite quote or philosophy <span class="opt">— optional</span></label><input type="text" name="quote" placeholder="Something they always said"></div>
-        <div class="field"><label>A song that reminds you of them <span class="opt">— optional</span></label><input type="text" name="song" placeholder="Artist — song"></div>
-      </div>
-    </div>
+        <section class="step" data-step>
+          <div class="eyebrow">Their dates</div>
+          <h2>The years that held <em id="n2">their</em> life</h2>
+          <p class="sub">When they were born, and when they passed.</p>
+          <div class="two">
+            <div><span class="lbl">Born</span><input type="date" id="birth"></div>
+            <div><span class="lbl">Passed</span><input type="date" id="passing"></div>
+          </div>
+          <div class="nav"><button type="button" class="back" onclick="prev()">← Back</button><button type="button" class="btn" onclick="next()">Continue</button></div>
+        </section>
 
-    <!-- LIFE MOMENTS -->
-    <div class="card">
-      <h2>Life moments</h2>
-      <p class="intro">Key moments and milestones, in your words — added by hand. Add as many as you like.</p>
-      <div id="moments"></div>
-      <button type="button" onclick="addMoment()" style="background:#fff;border:1px dashed var(--terra);color:var(--terra-deep);font-weight:600;padding:11px 18px;border-radius:30px;cursor:pointer;font-family:'Inter'">＋ Add a moment</button>
-    </div>
+        <section class="step" data-step>
+          <div class="eyebrow">Where life happened</div>
+          <h2>Where did <em id="n3">they</em> live?</h2>
+          <p class="sub">A place that was theirs. Optional.</p>
+          <input type="text" id="place" placeholder="City, State" autocomplete="off">
+          <div class="nav"><button type="button" class="back" onclick="prev()">← Back</button><button type="button" class="btn" onclick="next()">Continue</button><button type="button" class="skip" onclick="next()">Skip</button></div>
+        </section>
 
-    <!-- WHAT THEY LOVED (Plus personalization) -->
-    <div class="card">
-      <h2>What they loved</h2>
-      <p class="intro">Pick the things that were truly theirs. Each becomes its own space on their page — a soft drawing behind their real photos, and a few words. Choose up to six.</p>
-      <div class="lt-menu" id="ltMenu"></div>
-      <div id="ltCards"></div>
-      <div class="help lt-cap" id="ltCap">Nothing chosen yet</div>
-    </div>
+        <section class="step" data-step>
+          <div class="eyebrow">What they loved</div>
+          <h2>What did <em id="n4">they</em> love?</h2>
+          <p class="sub">Choose what feels like them. These quietly shape the art on their page.</p>
+          <div class="chips" id="chips"></div>
+          <div class="nav"><button type="button" class="back" onclick="prev()">← Back</button><button type="button" class="btn" onclick="next()">Continue</button></div>
+        </section>
 
-    <!-- PHOTOS -->
-    <div class="card">
-      <h2>Photos &amp; video</h2>
-      <p class="intro">A beautiful page holds many photos. Add as many as you can — you can always add more later.</p>
+        <section class="step" data-step>
+          <div class="eyebrow">Their story</div>
+          <h2>Tell us about <em id="n5">them</em></h2>
+          <p class="sub">A few true sentences are enough. The words stay yours.</p>
+          <textarea id="story" placeholder="Where they were born, what they loved, who they became, the small things that were theirs alone…"></textarea>
+          <button type="button" class="assist" onclick="document.getElementById('ab').classList.toggle('open')">✦ Help me begin</button>
+          <div class="assist-box" id="ab">Start with one true thing — a habit, a phrase they always said, an ordinary Sunday. Tell me that, and a gentle first draft will appear here for you to make your own. Nothing is ever published without you.</div>
+          <div class="nav"><button type="button" class="back" onclick="prev()">← Back</button><button type="button" class="btn" onclick="next()">Continue</button></div>
+        </section>
 
-      <div class="field">
-        <label>Cover photo</label>
-        <div class="drop" id="coverDrop"><div class="plus">＋</div><div class="t">Add a cover photo</div><div class="s">Tap to choose, or drag a photo here</div></div>
-        <input type="file" id="coverInput" accept="image/*" hidden>
-        <div class="thumbs" id="coverThumbs"></div>
-      </div>
+        <section class="step" data-step>
+          <div class="eyebrow">A first memory</div>
+          <h2>One memory of <em id="n6">them</em></h2>
+          <p class="sub">A moment you never want to forget. Others can add theirs later. Optional.</p>
+          <textarea id="memory" placeholder="The time that comes to mind first…"></textarea>
+          <div class="nav"><button type="button" class="back" onclick="prev()">← Back</button><button type="button" class="btn" onclick="next()">Continue</button><button type="button" class="skip" onclick="next()">Skip</button></div>
+        </section>
 
-      <div class="field">
-        <label>More photos &amp; videos <span class="opt">— add as many as you like</span></label>
-        <div class="drop" id="galleryDrop"><div class="plus">＋</div><div class="t">Add photos or videos</div><div class="s">Tap to choose, or drag files here</div></div>
-        <input type="file" id="galleryInput" accept="image/*,video/*" multiple hidden>
-        <div class="thumbs" id="galleryThumbs"></div>
+        <section class="step" data-step>
+          <div class="eyebrow">Almost there</div>
+          <h2>Where shall we send <em>their link?</em></h2>
+          <p class="sub">We'll create their page now and email you the link to share and to keep editing. It stays free, forever.</p>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+          <div style="margin-top:14px"><span class="lbl">Their web address</span><div class="count" id="slugPrev" style="font-size:13px"></div></div>
+          <div class="nav"><button type="button" class="back" onclick="prev()">← Back</button><button type="button" class="btn" id="createBtn" onclick="submitAll()">Create their tribute</button></div>
+          <div class="saved" id="saved" style="margin-top:14px">Saved as you go ·</div>
+        </section>
+
+      </form>
+
+      <div id="done">
+        <div style="font-size:2rem">🕯️</div>
+        <h2 style="margin-top:10px">Their tribute is <em>here.</em></h2>
+        <a class="url" id="doneUrl" href="#" target="_blank" rel="noopener"></a>
+        <p class="sub">We've saved everything and lit the first candle. Save this link — it's how you'll reach and share their memorial.</p>
+        <div class="fp">made with love</div>
       </div>
     </div>
-
-    <!-- DESIGN THEME -->
-    <div class="card">
-      <h2>Choose a design</h2>
-      <p class="intro">A complete look for their page — fonts, colors, containers, and feel. You can change this anytime.</p>
-      <input type="hidden" name="theme" id="themeInput" value="Evensong">
-      <div class="themes" id="themeGrid">
-        <button type="button" class="theme-tile is-selected" data-theme="Evensong" onclick="selectTheme(this)"><span class="tt-swatch" style="background:linear-gradient(135deg,#283845 0 34%,#C9A24B 34% 67%,#F6F2E9 67%)"></span><span class="tt-name">Evensong</span><span class="tt-vibe">reverent · twilight</span></button>
-        <button type="button" class="theme-tile" data-theme="Hearthstone" onclick="selectTheme(this)"><span class="tt-swatch" style="background:linear-gradient(135deg,#3A332B 0 34%,#B5663E 34% 67%,#F3EDE3 67%)"></span><span class="tt-name">Hearthstone</span><span class="tt-vibe">warm · heritage</span></button>
-        <button type="button" class="theme-tile" data-theme="Tidewater" onclick="selectTheme(this)"><span class="tt-swatch" style="background:linear-gradient(135deg,#2F3B40 0 34%,#5E8088 34% 67%,#EEF1F1 67%)"></span><span class="tt-name">Tidewater</span><span class="tt-vibe">serene · coastal</span></button>
-      </div>
-    </div>
-
-    <!-- SERVICE -->
-    <div class="card">
-      <h2>Service &amp; remembrance <span style="font-size:.8rem;color:var(--ink-soft);font-weight:400">— optional</span></h2>
-      <div class="grid-2">
-        <div class="field"><label>Service date</label><input type="date" name="serviceDate"></div>
-        <div class="field"><label>Service time</label><input type="time" name="serviceTime"></div>
-      </div>
-      <div class="field"><label>Service location</label><input type="text" name="serviceLocation" placeholder="Place &amp; address"></div>
-      <div class="field">
-        <label>Donations in their name <span class="opt">— choose a charity</span></label>
-        <select name="charity">
-          <option value="">No charity / decide later</option>
-          <option>American Cancer Society</option>
-          <option>American Red Cross</option>
-          <option>Alzheimer's Association</option>
-          <option>St. Jude Children's Research Hospital</option>
-          <option>AARP Foundation (seniors)</option>
-        </select>
-        <div class="help">Donations are passed to the chosen organization. We keep this list curated.</div>
-      </div>
-    </div>
-
-    <!-- DETAILS -->
-    <div class="card">
-      <h2>Your details</h2>
-      <div class="grid-2">
-        <div class="field"><label>Your email <span style="color:var(--terra)">*</span></label><input type="email" name="email" placeholder="you@example.com" required></div>
-        <div class="field">
-          <label>Who can visit</label>
-          <select name="privacy"><option>Public</option><option>Unlisted</option><option>Password</option></select>
-        </div>
-      </div>
-      <div class="cardnote">We'll keep a card on file so a later upgrade is one tap — <b>your free page is never charged.</b> You'll add it securely after this step.</div>
-    </div>
-
-    <div class="submit">
-      <button type="submit" class="btn" id="submitBtn">Create their memorial</button>
-      <div class="reassure">Begin free · we email you the link</div>
-    </div>
-  </form>
-
-  <div id="success">
-    <div class="candle">🕯️</div>
-    <h2>Their memorial is being created.</h2>
-    <span class="url" id="successUrl">their-name.imissyoumemorial.com</span>
-    <p>We've saved everything and we're preparing their page. <b>We'll email you the link</b> — it's how you'll reach and share their memorial. Thank you for trusting us with their memory.</p>
-  </div>
+  </main>
 </div>
 
-<footer>
-  <span class="wm"><span class="script">I miss <b>you</b></span><span class="sub">Memorial</span></span>
-  <div class="fp">made with love</div>
-</footer>
-
 <script>
-  // ----- slug -----
-  let slugEdited=false;
-  function slugify(s){return s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');}
-  function syncSlug(){ if(slugEdited) return; const v=slugify(document.getElementById('fullName').value); document.getElementById('slug').value=v; updatePreview(v||'their-name'); }
-  function manualSlug(){ slugEdited=true; const el=document.getElementById('slug'); el.value=slugify(el.value); updatePreview(el.value||'their-name'); }
-  function updatePreview(s){ document.getElementById('slugPreview').textContent=(s||'their-name')+'.imissyoumemorial.com'; }
+  var MOTIFS=[['Gardening','gardening'],['Music','music-piano'],['Coffee','coffee'],['Cooking','cooking'],['Travel','travel'],['The outdoors','outdoors'],['Pets','pets'],['Faith','faith'],['Books','books'],['Fishing','fishing'],['Dancing','dancing'],['Sailing','sailing'],['Golf','golf'],['Cars','cars'],['Woodworking','woodworking'],['Knitting','knitting']];
+  var loved=[];
+  var steps=[].slice.call(document.querySelectorAll('[data-step]'));
+  var i=0;
+  var KEY='imy_onboarding_v1';
 
-  // ----- date sanity: no future dates; realistic recent range -----
-  (function(){
-    var today=new Date().toISOString().slice(0,10);
-    var b=document.getElementById('birth'), p=document.getElementById('passing');
-    b.max=today; p.max=today;
-  })();
+  function slugify(s){return (s||'').toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');}
+  function val(id){var e=document.getElementById(id);return e?e.value:'';}
 
-  // ----- theme -----
-  function selectTheme(btn){ document.querySelectorAll('.theme-tile').forEach(function(t){t.classList.remove('is-selected')}); btn.classList.add('is-selected'); document.getElementById('themeInput').value=btn.getAttribute('data-theme'); }
-
-  // ----- assistant -----
-  function toggleAssist(){ document.getElementById('assistBox').classList.toggle('open'); }
-
-  // ----- life moments (manual timeline) -----
-  function addMoment(){var w=document.getElementById('moments');var r=document.createElement('div');r.className='moment-row';r.style.cssText='display:grid;grid-template-columns:84px 1fr 40px;gap:8px;align-items:center;margin-bottom:8px';r.innerHTML='<input type="text" class="m-year" placeholder="Year" inputmode="numeric"><input type="text" class="m-text" placeholder="What happened"><button type="button" onclick="this.parentNode.remove()" style="border:1px solid var(--field);background:#fff;border-radius:10px;height:46px;cursor:pointer;color:var(--ink-soft);font-size:1.1rem">×</button>';w.appendChild(r);}
-  addMoment();
-
-  // ----- uploads (client-side preview; files are sent to the upload route on submit) -----
-  var coverFile=null, galleryFiles=[];
-  function wireDrop(dropId,inputId,multiple,onChange){
-    var drop=document.getElementById(dropId), input=document.getElementById(inputId);
-    drop.addEventListener('click',function(){input.click()});
-    ['dragenter','dragover'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add('drag')})});
-    ['dragleave','drop'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove('drag')})});
-    drop.addEventListener('drop',function(ev){ onChange(Array.prototype.slice.call(ev.dataTransfer.files)); });
-    input.addEventListener('change',function(){ onChange(Array.prototype.slice.call(input.files)); });
+  function render(){
+    steps.forEach(function(s,k){s.classList.toggle('active',k===i);});
+    document.getElementById('bar').style.width=((i)/(steps.length-1)*100)+'%';
+    document.getElementById('count').textContent=(i+1)+' / '+steps.length;
+    var nm=(val('fullName')||'them').split(' ')[0];
+    ['n1','n2','n3','n4','n5','n6'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=nm;});
+    document.getElementById('slugPrev').textContent=(location.host||'imissyoumemorial.com')+'/sites/'+(slugify(val('fullName'))||'their-name');
+    window.scrollTo({top:0});
   }
-  function renderThumbs(containerId,files,removeFn){
-    var c=document.getElementById(containerId); c.innerHTML='';
-    files.forEach(function(f,i){
-      var d=document.createElement('div'); d.className='thumb';
-      if(f.type.indexOf('video')===0){ d.innerHTML='<div class="vid">▶</div>'; }
-      else { var img=document.createElement('img'); img.src=URL.createObjectURL(f); d.appendChild(img); }
-      var x=document.createElement('button'); x.type='button'; x.className='x'; x.textContent='×'; x.onclick=function(){removeFn(i)}; d.appendChild(x);
-      c.appendChild(d);
-    });
-  }
-  wireDrop('coverDrop','coverInput',false,function(files){ if(files[0]){coverFile=files[0]; renderThumbs('coverThumbs',[coverFile],function(){coverFile=null;renderThumbs('coverThumbs',[],null);});} });
-  wireDrop('galleryDrop','galleryInput',true,function(files){ galleryFiles=galleryFiles.concat(files); renderThumbs('galleryThumbs',galleryFiles,function(i){galleryFiles.splice(i,1);renderThumbs('galleryThumbs',galleryFiles,arguments.callee);}); });
+  function next(){ if(i<steps.length-1){i++;save();render();} }
+  function prev(){ if(i>0){i--;render();} }
 
-  // ----- submit -----
-  async function handleSubmit(e){
-    e.preventDefault();
-    const form=document.getElementById('intake');
-    const data=Object.fromEntries(new FormData(form).entries());
-    data.tier='Plus';
-    data.milestones=Array.prototype.slice.call(document.querySelectorAll('#moments .moment-row')).map(function(r){return {year:(r.querySelector('.m-year')||{}).value||'',text:(r.querySelector('.m-text')||{}).value||''};}).filter(function(m){return m.year||m.text;});
-    data.photoCount=galleryFiles.filter(function(f){return f.type.indexOf('image')===0}).length + (coverFile?1:0);
-    data.videoCount=galleryFiles.filter(function(f){return f.type.indexOf('video')===0}).length;
-    data.coverPhotoName=coverFile?coverFile.name:'';
-    data.mediaNames=galleryFiles.map(function(f){return f.name});
-    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent='Uploading photos…';
+  // chips
+  var cw=document.getElementById('chips');
+  MOTIFS.forEach(function(m){
+    var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=m[0];
+    b.onclick=function(){var idx=loved.findIndex(function(x){return x.motifKey===m[1]});if(idx>=0){loved.splice(idx,1);b.classList.remove('on');}else{loved.push({label:m[0],motifKey:m[1]});b.classList.add('on');}save();};
+    cw.appendChild(b);
+  });
+
+  // photo preview (stored locally; uploaded when the tribute is created)
+  var drop=document.getElementById('drop'),photo=document.getElementById('photo'),prev_=document.getElementById('prev');
+  drop.onclick=function(){photo.click()};
+  photo.onchange=function(){if(photo.files[0]){prev_.src=URL.createObjectURL(photo.files[0]);prev_.style.display='block';}};
+
+  // autosave + resume
+  function save(){
+    var d={fullName:val('fullName'),birth:val('birth'),passing:val('passing'),place:val('place'),story:val('story'),memory:val('memory'),email:val('email'),loved:loved,i:i};
+    try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    var s=document.getElementById('saved');s.classList.add('show');setTimeout(function(){s.classList.remove('show');},900);
+  }
+  ['fullName','birth','passing','place','story','memory','email'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',save);});
+  (function restore(){try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d){['fullName','birth','passing','place','story','memory','email'].forEach(function(id){if(d[id]&&document.getElementById(id))document.getElementById(id).value=d[id];});if(Array.isArray(d.loved)){loved=d.loved;loved.forEach(function(l){[].slice.call(cw.children).forEach(function(c){if(c.textContent===l.label)c.classList.add('on');});});}}}catch(e){}})();
+
+  render();
+
+  async function submitAll(){
+    var fullName=val('fullName').trim();
+    if(!fullName){alert('A name is needed to begin.');i=0;render();return;}
+    var email=val('email').trim();
+    if(!email){alert('An email lets us send you the link.');return;}
+    var btn=document.getElementById('createBtn');btn.disabled=true;btn.textContent='Creating…';
+    // Upload the chosen photo first (optional). If storage isn't connected yet,
+    // we proceed without it — the page is still created and a photo can be added later.
+    var coverPhotoUrl=null;
     try{
-      // Upload media to /api/upload (multipart "files" -> { urls }); attach the URLs. Degrades gracefully if storage isn't configured.
-      if(coverFile){ data.coverPhoto=(await uploadFiles([coverFile]))[0]||''; }
-      var _imgs=galleryFiles.filter(function(f){return f.type.indexOf('image')===0;});
-      var _vids=galleryFiles.filter(function(f){return f.type.indexOf('video')===0;});
-      data.photos=await uploadFiles(_imgs);
-      data.video=_vids.length?((await uploadFiles([_vids[0]]))[0]||''):'';
-      data.lovedThings=await collectLovedThings();
-      btn.textContent='Creating…';
-      const res=await fetch('/api/intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-      const out=await res.json();
-      if(res.ok && out.ok){
-        form.style.display='none';
-        document.getElementById('successUrl').textContent=(out.slug||'their-name')+'.imissyoumemorial.com';
-        document.getElementById('success').style.display='block';
-        window.scrollTo({top:0,behavior:'smooth'});
-      } else { alert(out.error||'Something went wrong. Please try again.'); btn.disabled=false; btn.textContent='Create their memorial'; }
-    }catch(err){ alert('Network error. Please try again.'); btn.disabled=false; btn.textContent='Create their memorial'; }
-    return false;
+      if(photo&&photo.files&&photo.files[0]){
+        var pfd=new FormData(); pfd.append('files',photo.files[0]);
+        var pres=await fetch('/api/upload',{method:'POST',body:pfd});
+        if(pres.ok){var pj=await pres.json(); if(pj&&pj.ok&&pj.urls&&pj.urls[0])coverPhotoUrl=pj.urls[0];}
+      }
+    }catch(e){/* photo optional; proceed without if storage isn't ready */}
+    var payload={fullName:fullName,slug:slugify(fullName),birth:val('birth'),passing:val('passing'),place:val('place'),story:val('story'),quote:'',email:email,lovedThings:loved,tier:'free',coverPhotoUrl:coverPhotoUrl,firstMemory:val('memory')?{author_name:'Family',relation:'',body:val('memory')}:null};
+    try{
+      var res=await fetch('/api/intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var out=await res.json();
+      if(res.ok&&out.ok){
+        try{localStorage.removeItem(KEY);}catch(e){}
+        document.getElementById('f').style.display='none';
+        var url=out.url||((location.protocol+'//'+location.host)+'/sites/'+out.slug);
+        var a=document.getElementById('doneUrl');a.textContent=url;a.href=url;
+        document.getElementById('done').style.display='block';
+        document.getElementById('bar').style.width='100%';
+        document.getElementById('count').textContent='';
+        window.scrollTo({top:0});
+      }else{alert(out.error||'Something went wrong. Please try again.');btn.disabled=false;btn.textContent='Create their tribute';}
+    }catch(e){alert('Network error. Please try again.');btn.disabled=false;btn.textContent='Create their tribute';}
   }
-
-  // ===== Plus: photo upload (multipart 'files' -> { urls }); degrades gracefully =====
-  async function uploadFiles(fileArr){
-    var out=[];
-    for(var i=0;i<(fileArr||[]).length;i++){
-      try{
-        var fd=new FormData(); fd.append('files', fileArr[i]);
-        var r=await fetch('/api/upload',{method:'POST',body:fd});
-        var j=await r.json().catch(function(){return {};});
-        if(r.ok && j && j.ok && j.urls){ out=out.concat(j.urls); }
-      }catch(_e){ /* storage not ready — skip; submission still proceeds */ }
-    }
-    return out;
-  }
-  async function collectLovedThings(){
-    var cards=Array.prototype.slice.call(document.querySelectorAll('#ltCards .lt-card'));
-    var out=[];
-    for(var i=0;i<cards.length;i++){
-      var card=cards[i];
-      var photos=(card._files && card._files.length) ? await uploadFiles(card._files) : [];
-      out.push({ label:card.querySelector('.lt-label').textContent, motifKey:card.dataset.motif||'', note:((card.querySelector('.lt-note')||{}).value||'').trim(), photos:photos });
-    }
-    return out;
-  }
-  // ===== Plus: "What they loved" capture =====
-  (function(){
-    var CATS=[{k:'gardening',l:'Gardening'},{k:'cars',l:'Cars & driving'},{k:'cooking',l:'Cooking & BBQ'},{k:'outdoors',l:'The outdoors'},{k:'fishing',l:'Fishing'},{k:'golf',l:'Golf & sport'},{k:'music-cello',l:'Music'},{k:'faith',l:'Faith'}];
-    var VERB={gardening:'gardening',cars:'with the car',cooking:'cooking',outdoors:'outdoors',fishing:'fishing',golf:'on the course','music-cello':'playing',faith:'at church'};
-    var MAX=6, A=function(k){return '/personalization/'+k+'.png';};
-    var menu=document.getElementById('ltMenu'), wrap=document.getElementById('ltCards'), cap=document.getElementById('ltCap');
-    if(!menu) return;
-    CATS.forEach(function(c){
-      var b=document.createElement('button'); b.type='button'; b.className='lt-tile'; b.dataset.key=c.k;
-      b.innerHTML='<span class="lt-thumb" style="-webkit-mask-image:url(\''+A(c.k)+'\');mask-image:url(\''+A(c.k)+'\')"></span><span class="nm">'+c.l+'</span>';
-      b.addEventListener('click',function(){toggle(c.k,c.l);}); menu.appendChild(b);
-    });
-    var other=document.createElement('button'); other.type='button'; other.className='lt-tile'; other.dataset.key='__other__';
-    other.innerHTML='<span class="plus">+</span><span class="nm">Something else</span>';
-    other.addEventListener('click',function(){var l=prompt('What did they love?'); if(l&&l.trim()) addCard('__other__',l.trim());});
-    menu.appendChild(other);
-    function count(){return wrap.querySelectorAll('.lt-card').length;}
-    function refresh(){
-      var n=count();
-      cap.textContent=n===0?'Nothing chosen yet':(n>=MAX?'Six is plenty — the most meaningful ones':n+' of '+MAX+' chosen');
-      menu.querySelectorAll('.lt-tile').forEach(function(t){
-        var picked=!!wrap.querySelector('.lt-card[data-key="'+t.dataset.key+'"]');
-        if(t.dataset.key!=='__other__') t.classList.toggle('on',picked);
-        var lock=(!picked && n>=MAX); t.style.opacity=lock?'.4':''; t.style.pointerEvents=lock?'none':'';
-      });
-    }
-    function toggle(key,label){var ex=wrap.querySelector('.lt-card[data-key="'+key+'"]'); if(ex){ex.remove();refresh();} else addCard(key,label);}
-    function addCard(key,label){
-      if(count()>=MAX) return;
-      var isOther=key==='__other__', motif=isOther?'fallback':key, music=(key==='music-cello');
-      var card=document.createElement('div'); card.className='lt-card'; card.dataset.key=key; card.dataset.motif=isOther?'':key; card._files=[];
-      card.innerHTML='<div class="lt-row">'+
-        '<span class="lt-cthumb" style="-webkit-mask-image:url(\''+A(motif)+'\');mask-image:url(\''+A(motif)+'\')"></span>'+
-        '<div style="flex:1;min-width:0"><div class="lt-label"></div>'+
-        '<div class="lt-auto">'+(isOther?'a soft botanical drawing':'✓ drawing auto-matched')+'</div>'+
-        (music?'<div class="lt-seg"><button type="button" class="on" data-m="music-cello">Cello</button><button type="button" data-m="music-guitar">Guitar</button><button type="button" data-m="music-piano">Piano</button></div>':'')+
-        '</div><button type="button" class="lt-rm" aria-label="Remove">×</button></div>'+
-        '<input type="text" class="lt-note" maxlength="160" placeholder="What did they love about it? e.g. “his favorite thing right after work”">'+
-        '<div style="margin-top:10px"><button type="button" class="lt-add" style="background:#fff;border:1px dashed var(--terra);color:var(--terra-deep);font-weight:600;font-size:.84rem;padding:9px 14px;border-radius:30px;cursor:pointer;font-family:Inter">＋ Add photos · '+(VERB[key]||'them')+'</button>'+
-        '<input type="file" class="lt-files" accept="image/*" multiple hidden>'+
-        '<div class="thumbs lt-thumbs" style="margin-top:10px"></div>'+
-        '<div class="help">Photos save once upload storage is connected.</div></div>';
-      card.querySelector('.lt-label').textContent=label;
-      card.querySelector('.lt-rm').addEventListener('click',function(){card.remove();refresh();});
-      if(music) card.querySelectorAll('.lt-seg button').forEach(function(b){b.addEventListener('click',function(){card.querySelectorAll('.lt-seg button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');card.dataset.motif=b.dataset.m;var th=card.querySelector('.lt-cthumb');th.style.webkitMaskImage='url(\''+A(b.dataset.m)+'\')';th.style.maskImage='url(\''+A(b.dataset.m)+'\')';});});
-      var fi=card.querySelector('.lt-files'), th=card.querySelector('.lt-thumbs');
-      card.querySelector('.lt-add').addEventListener('click',function(){fi.click();});
-      fi.addEventListener('change',function(){Array.prototype.slice.call(fi.files).forEach(function(f){ if(f.type.indexOf('image')!==0) return; card._files.push(f); var d=document.createElement('div'); d.className='thumb'; var g=document.createElement('img'); g.src=URL.createObjectURL(f); d.appendChild(g); th.appendChild(d); });});
-      wrap.appendChild(card); refresh();
-    }
-    refresh();
-  })();
 </script>
 </body>
 </html>

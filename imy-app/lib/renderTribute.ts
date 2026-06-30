@@ -1,18 +1,24 @@
-// renderTribute — fills the token-based Vigil/Candlelight template
-// (templates/tribute-template.html) from an Airtable Tributes row.
-// Token model ({{NAME}}) — robust string replacement, no fragile anchor matching.
+// renderTribute — fills the token-based approved tribute template
+// (templates/tribute-template.html) from a tribute record. Token model ({{NAME}}):
+// robust string replacement, no fragile anchor matching.
+//
+// This renders the LOCKED design: arched Memorial Stone cover over a candle + rose
+// vigil, with the section background driven by the family's chosen motif, and the
+// premium sections gated by tier (free shows a gentle lock; paid is unlocked).
 
-import { renderLovedThings, type LovedThing } from "./lovedThings";
+import { type LovedThing } from "./lovedThings";
 
 export type TimelineItem = { year: string; title: string; text: string };
 export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
 export type PhotoItem = { url?: string; cap?: string };
-export type MemoryItem = { text: string; name: string; rel: string; writerPhoto?: string; subjectPhoto?: string; photos?: string[] };
+export type MemoryItem = { text: string; name: string; rel: string; photos?: string[] };
 export type ReelItem = { poster?: string; label?: string };
 
 export type Tribute = {
+  slug?: string;
   fullName: string;
+  role?: string;            // e.g. "Teacher · Gardener · Grandmother" (optional)
   birth?: string;
   passing?: string;
   place?: string;
@@ -22,14 +28,15 @@ export type Tribute = {
   quote?: string;
   story?: string;
   candleCount?: number;
-  tier?: string;            // "Free" | "Plus" | "Eternal"
-  theme?: string;           // "Garden" | "Letters" | "Ocean" | "Hearth" | "Golden Hour" | "Stillness"
-  showAnnounce?: boolean;   // override; defaults to true unless tier is Eternal/Plus
+  tier?: string;            // "free" | "plus" | "heirloom"
+  theme?: string;
+  motif?: string;           // family's chosen interest key -> section background
+  showAnnounce?: boolean;
   message?: { text: string; sign?: string };
   service?: { date?: string; time?: string; place?: string; address?: string; charity?: string };
   details?: DetailItem[];
   loved?: LovedItem[];
-  lovedThings?: LovedThing[];        // Plus personalization sections (ride in Tribute Data JSON)
+  lovedThings?: LovedThing[];
   timeline?: TimelineItem[];
   photos?: PhotoItem[];
   reel?: ReelItem[];
@@ -47,100 +54,156 @@ function fmtDate(s?: string): string {
   return `${months[parseInt(m[2], 10) - 1]} ${parseInt(m[3], 10)}, ${m[1]}`;
 }
 
+// Map a family's chosen interest (stored on the tribute) to one of the eight
+// section-background motif archetypes. Defaults to the warm "gardener" pattern.
+const MOTIF_MAP: Record<string, string> = {
+  gardening: "gardener", garden: "gardener", flowers: "gardener", gardener: "gardener",
+  cooking: "cook", coffee: "cook", baking: "cook", food: "cook", cook: "cook", baker: "cook",
+  fishing: "angler", angler: "angler",
+  "music-piano": "musician", music: "musician", singing: "musician", dancing: "musician", musician: "musician",
+  sailing: "sailor", boating: "sailor", sailor: "sailor",
+  flying: "aviator", aviation: "aviator", aviator: "aviator",
+  travel: "traveler", outdoors: "traveler", hiking: "traveler", traveler: "traveler",
+  astronomy: "astronomer", stargazing: "astronomer", stars: "astronomer", astronomer: "astronomer",
+};
+function motifKey(m?: string, theme?: string): string {
+  const k = (m || theme || "").toString().trim().toLowerCase();
+  return MOTIF_MAP[k] || "gardener";
+}
+
 export function renderTribute(template: string, t: Tribute): string {
   const parts = (t.fullName || "").trim().split(/\s+/);
   const first = parts[0] || t.fullName || "Them";
-  const rest = parts.slice(1).join(" ") || "";
 
-  const dates = [fmtDate(t.birth), fmtDate(t.passing)].filter(Boolean).join(" — ")
-    + (t.place ? ` · of ${esc(t.place)}` : "");
+  const dates =
+    [fmtDate(t.birth), fmtDate(t.passing)].filter(Boolean).join(" — ") +
+    (t.place ? ` · ${esc(t.place)}` : "");
 
-  const detailsHtml = (t.details || [])
-    .map((d) => `<div class="detail"><div class="k">${esc(d.k)}</div><div class="v">${esc(d.v)}</div></div>`)
-    .join("") || "";
-
-  const lovedHtml = (t.loved || [])
-    .map((l) => `<div class="loved-card"><div class="img" style="${l.photo ? `background-image:url('${esc(l.photo)}')` : ""}"></div><div class="tx">${esc(l.label)}</div></div>`)
-    .join("") || "";
-
-  const timelineHtml = (t.timeline || [])
-    .map((it) => `<div class="tl-item"><div class="tl-year">${esc(it.year)}</div><div class="tl-title">${esc(it.title)}</div><div class="tl-text">${esc(it.text)}</div></div>`)
-    .join("") || "";
-
-  const photos = (t.photos && t.photos.length) ? t.photos : (t.coverPhoto ? [{ url: t.coverPhoto }] : []);
-  const galleryHtml = photos
-    .slice(0, 21)
-    .map((p) => (p.url ? `<div class="mcell"><img loading="lazy" src="${esc(p.url)}" alt=""></div>` : ""))
-    .join("") || "";
-
-  const reelHtml = (t.reel || [])
-    .map((r) => `<div class="rcard" style="${r.poster ? `background-image:url('${esc(r.poster)}')` : ""}"><div class="play">▶</div></div>`)
-    .join("") || "";
-
-  const memoriesHtml = (t.memories || [])
-    .map((m) => {
-      const ph = (m.photos || []).map((u) => `<img src="${esc(u)}" alt="">`).join("");
-      const subj = m.subjectPhoto ? `<span class="av" style="background-image:url('${esc(m.subjectPhoto)}')" title="${esc(first)}"></span>` : "";
-      const writer = m.writerPhoto ? `<span class="av" style="background-image:url('${esc(m.writerPhoto)}')"></span>` : "";
-      return `<div class="memory"><div class="mtxt">${esc(m.text)}</div>${ph ? `<div class="mphotos">${ph}</div>` : ""}<div class="mby">${writer}${subj}<div><div class="nm">${esc(m.name)}</div><div class="rel">${esc(m.rel)}</div></div></div></div>`;
-    })
-    .join("") || "";
+  const portrait = t.portrait || t.coverPhoto || "";
+  const stoneImg = portrait ? `<img src="${esc(portrait)}" alt="${esc(t.fullName)}">` : "";
+  const roleLine = t.role ? `<div class="role">${esc(t.role)}</div>` : "";
 
   const quoteBlock = t.quote
-    ? `<div style="font-family:'Fraunces',serif;font-style:italic;font-size:1.2rem;color:var(--ink);border-left:2px solid var(--gold);padding-left:16px;margin:0 0 26px">“${esc(t.quote)}”</div>`
+    ? `<blockquote class="her-quote">“${esc(t.quote)}”</blockquote>`
     : "";
 
-  const messageFrom = t.message && t.message.text
-    ? `<section class="tint-sage"><div class="wrap"><div class="msg"><div class="env">✉️</div><div class="eyebrow" style="text-align:center">A message from ${esc(first)}</div><blockquote>“${esc(t.message.text)}”</blockquote><div class="sign">— ${esc(t.message.sign || first)}</div></div></div></section>`
+  const factsInner = (t.details || [])
+    .map((d) => `<div class="fact"><div class="ft">${esc(d.k)}</div><div class="fv">${esc(d.v)}</div></div>`)
+    .join("");
+  const facts = factsInner ? `<div class="facts">${factsInner}</div>` : "";
+
+  const lovedFigs = (t.loved || [])
+    .map((l) => `<figure class="lcard">${l.photo ? `<img src="${esc(l.photo)}" alt="${esc(l.label)}">` : ""}<figcaption>${esc(l.label)}</figcaption></figure>`)
+    .join("");
+  const loved = lovedFigs ? `<div class="loved"><h3>What ${esc(first)} loved most</h3><div class="loved-grid">${lovedFigs}</div></div>` : "";
+
+  const timelineInner = (t.timeline || [])
+    .map((it) => `<div class="tl-item"><div class="tl-year">${esc(it.year)}</div><div class="tl-t">${esc(it.title)}</div><div class="tl-d">${esc(it.text)}</div></div>`)
+    .join("");
+  const timelineBlock = timelineInner ? `<div class="timeline"><div class="tl-track">${timelineInner}</div></div>` : "";
+
+  const photos = (t.photos && t.photos.length) ? t.photos : (portrait ? [{ url: portrait }] : []);
+  const gallery = photos
+    .slice(0, 12)
+    .map((p) => (p.url ? `<div class="tile photo"><img loading="lazy" src="${esc(p.url)}" alt=""></div>` : ""))
+    .join("");
+
+  const message = t.message && t.message.text
+    ? `<section class="section reveal" id="message"><div class="kick">A message from ${esc(first)}</div><div class="message"><div class="mq">“${esc(t.message.text)}”</div><div class="mby">— ${esc(t.message.sign || first)}</div></div></section>`
+    : "";
+
+  const memoriesInner = (t.memories && t.memories.length)
+    ? t.memories
+        .map((m) => {
+          const initial = esc((m.name || "•").trim().charAt(0).toUpperCase() || "•");
+          const photo = (m.photos && m.photos[0]) ? `<div class="mem-photo"><img src="${esc(m.photos[0])}" alt=""></div>` : "";
+          return `<div class="mem-card"><div class="mem-head"><div class="mem-av">${initial}</div><div><div class="mem-nm">${esc(m.name)}</div>${m.rel ? `<div class="mem-rel">${esc(m.rel)}</div>` : ""}</div></div><div class="mem-text">${esc(m.text)}</div>${photo}</div>`;
+        })
+        .join("")
+    : `<div class="mem-card"><div class="mem-text">Be the first to share a memory of ${esc(first)}.</div></div>`;
+
+  const reelInner = (t.reel || [])
+    .map((r) => `<div class="rec"><div class="play">▶</div><div style="flex:1"><div style="font-size:14px;font-weight:700">${esc(r.label || "A recorded tribute")}</div><div class="wave" style="margin-top:8px"></div></div></div>`)
+    .join("");
+  const recorded = reelInner
+    ? `<section class="section reveal" id="tributes"><div class="kick">Recorded tributes</div><h2>In their own voices.</h2><div class="rec-track">${reelInner}</div></section>`
     : "";
 
   const svc = t.service;
-  const serviceHtml = svc && (svc.date || svc.place)
-    ? `<section id="service"><div class="wrap"><div class="eyebrow">Service &amp; remembrance</div><h2 class="sec">If you would like to <em>be there.</em></h2><div class="svc">
-        <div class="card"><div class="k">When</div><div class="v">${esc([fmtDate(svc.date), svc.time].filter(Boolean).join(" · ")) || "To be announced"}</div></div>
-        ${svc.place ? `<div class="card"><div class="k">Where</div><div class="v">${esc(svc.place)}${svc.address ? `<br><span style="color:var(--ink-soft);font-size:.92rem">${esc(svc.address)}</span>` : ""}</div></div>` : ""}
-        ${svc.charity ? `<div class="card"><div class="k">In lieu of flowers</div><div class="v">Donations in ${esc(first)}'s name to ${esc(svc.charity)}.</div></div>` : ""}
-        <div class="svc-actions"><a class="primary" href="#">Add to calendar</a>${svc.charity ? `<a href="#">Give in their name</a>` : ""}<a href="#memories">Share a memory</a></div>
-      </div></div></section>`
+  const service = svc && (svc.date || svc.place)
+    ? `<section class="section reveal" id="service"><div class="kick">Service &amp; remembrance</div><h2>If you would like to be there.</h2><div class="svc">
+        <div class="scard"><div class="st">When</div><div class="sv">${esc([fmtDate(svc.date), svc.time].filter(Boolean).join(" · ")) || "To be announced"}</div></div>
+        ${svc.place ? `<div class="scard"><div class="st">Where</div><div class="sv">${esc(svc.place)}${svc.address ? `<br>${esc(svc.address)}` : ""}</div></div>` : ""}
+        ${svc.charity ? `<div class="scard" style="grid-column:1/-1"><div class="st">In lieu of flowers</div><div class="sv">Donations in ${esc(first)}'s name to ${esc(svc.charity)}.</div></div>` : ""}
+      </div><div class="svc-actions"><a class="btn outline" href="#memories">Share a memory</a></div></section>`
     : "";
 
-  const isEternal = (t.tier || "").toLowerCase() === "eternal";
-  const showAnnounce = t.showAnnounce !== undefined ? t.showAnnounce : !isEternal;
-  const announce = showAnnounce
-    ? `<div class="announce"><span class="flame">🕯</span> With love, from <b>I Miss You Memorial</b> · <a href="https://imissyoumemorial.com">Create one</a></div>`
-    : "";
+  const tier = (t.tier || "").trim().toLowerCase();
+  const isPaid = tier === "plus" || tier === "heirloom" || tier === "eternal";
+  const tierAttr = isPaid ? "plus" : "free";
 
-  const pledge = isEternal
-    ? "Guaranteed for 50 years, with archival backup — kept for as long as it is needed."
-    : "Kept online with love. Choose Eternal to keep this page guaranteed for 50 years.";
+  const pledge = isPaid
+    ? "Backed by a dedicated reserve and an independent archive — kept with love, for as long as we are here."
+    : "Every tribute stays online. We will never charge you to keep a memory alive.";
 
-  const themeClass = ({
-    "evensong": "t-evensong", "hearthstone": "t-hearthstone", "tidewater": "t-tidewater",
-  } as Record<string, string>)[(t.theme || "").trim().toLowerCase()] || "";
+  // Open Graph / Twitter share preview — the product grows by people sharing the link,
+  // so a shared tribute should show the loved one's portrait, name, and a gentle line.
+  const DEFAULT_OG = "https://pub.hyperagent.com/api/published/pbf01KWBE8XFP_ZYS6S7BJ3MVYD8MC/36eaf3d1-1610-48b5-980c-e275c8f5eebd.png";
+  const ogUrl = t.slug ? `https://${t.slug}.imissyoumemorial.com` : "https://imissyoumemorial.com";
+  const ogTitle = `${t.fullName || first} · In loving memory`;
+  const _excerpt = (t.story || "").replace(/\s+/g, " ").trim();
+  const ogDesc = _excerpt
+    ? (_excerpt.length > 155 ? _excerpt.slice(0, 152) + "…" : _excerpt)
+    : `A place to remember ${first} — light a candle, leave a memory, and share what they meant to you.`;
+  const ogImage = portrait || DEFAULT_OG;
+
+  // Anniversary / birthday acknowledgement, computed server-side from the dates.
+  const _md = (s?: string) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((s || "").trim()); return m ? { y: +m[1], mo: +m[2], d: +m[3] } : null; };
+  const _now = new Date();
+  const _tMo = _now.getUTCMonth() + 1, _tD = _now.getUTCDate(), _tY = _now.getUTCFullYear();
+  const _b = _md(t.birth), _p = _md(t.passing);
+  let _anniv = "";
+  if (_p && _p.mo === _tMo && _p.d === _tD) { const yrs = _tY - _p.y; _anniv = yrs > 0 ? `Remembering ${first}, ${yrs} year${yrs === 1 ? "" : "s"} on.` : `Remembering ${first} today.`; }
+  else if (_b && _b.mo === _tMo && _b.d === _tD) { _anniv = `Today would have been ${first}'s birthday.`; }
+  const anniversaryHtml = _anniv ? `<div class="vigil-anniv">${esc(_anniv)}</div>` : "";
+
+  // schema.org structured data — helps search engines show a proper memorial result.
+  const _ld: any = { "@context": "https://schema.org", "@type": "WebPage", name: ogTitle, url: ogUrl, about: { "@type": "Person", name: t.fullName || first } };
+  if (t.birth) _ld.about.birthDate = t.birth;
+  if (t.passing) _ld.about.deathDate = t.passing;
+  if (portrait) _ld.about.image = portrait;
+  if (_excerpt) _ld.about.description = ogDesc;
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify(_ld).replace(/</g, "\\u003c")}</script>`;
 
   const tokens: Record<string, string> = {
-    "{{TITLE}}": `${esc(t.fullName)} — A Tribute · I Miss You Memorial`,
-    "{{THEME_CLASS}}": themeClass,
-    "{{ANNOUNCE_BAR}}": announce,
+    "{{TITLE}}": `${esc(t.fullName)} — I Miss You Memorial`,
+    "{{SLUG}}": esc(t.slug || ""),
+    "{{OG_TITLE}}": esc(ogTitle),
+    "{{OG_DESC}}": esc(ogDesc),
+    "{{OG_IMAGE}}": esc(ogImage),
+    "{{OG_URL}}": esc(ogUrl),
+    "{{ANNIVERSARY}}": anniversaryHtml,
+    "{{JSONLD}}": jsonLd,
+    "{{TIER_ATTR}}": tierAttr,
+    "{{MOTIF}}": motifKey(t.motif, t.theme),
     "{{KICKER}}": "In loving memory",
     "{{FIRST}}": esc(first),
-    "{{REST}}": esc(rest),
+    "{{FULLNAME}}": esc(t.fullName),
+    "{{ROLE_LINE}}": roleLine,
     "{{DATES}}": dates,
-    "{{CANDLE_COUNT}}": String(t.candleCount ?? 1),
+    "{{STONE_IMG}}": stoneImg,
+    "{{CANDLE_COUNT}}": String(t.candleCount ?? 0),
     "{{STORY}}": esc(t.story || ""),
     "{{QUOTE_BLOCK}}": quoteBlock,
-    "{{PORTRAIT}}": esc(t.portrait || t.coverPhoto || ""),
-    "{{PORTRAIT_CAP}}": esc(t.portraitCap || first),
-    "{{DETAILS}}": detailsHtml,
-    "{{LOVED_ITEMS}}": lovedHtml,
-    "{{TIMELINE}}": timelineHtml,
-    "{{GALLERY}}": galleryHtml,
-    "{{REEL}}": reelHtml,
-    "{{MESSAGE_FROM}}": messageFrom,
-    "{{MEMORIES}}": memoriesHtml,
-    "{{SERVICE}}": serviceHtml,
+    "{{FACTS}}": facts,
+    "{{LOVED}}": loved,
+    "{{TIMELINE_BLOCK}}": timelineBlock,
+    "{{GALLERY}}": gallery,
+    "{{MESSAGE_FROM}}": message,
+    "{{MEMORIES}}": memoriesInner,
+    "{{RECORDED}}": recorded,
+    "{{SERVICE}}": service,
     "{{PLEDGE}}": esc(pledge),
-    "{{LOVED_THINGS}}": renderLovedThings(t.lovedThings || [], t.tier),
   };
 
   let html = template;
@@ -148,7 +211,7 @@ export function renderTribute(template: string, t: Tribute): string {
   return html;
 }
 
-// Map an Airtable Tributes record to the Tribute render object.
+// Map an Airtable Tributes record to the Tribute render object (legacy fallback).
 export function recordToTribute(rec: any): Tribute {
   const f = (rec && rec.fields) || {};
   let enriched: Partial<Tribute> = {};
@@ -159,6 +222,7 @@ export function recordToTribute(rec: any): Tribute {
   }
   const photosField = Array.isArray(f["Photos"]) ? f["Photos"].map((a: any) => ({ url: a.url })) : undefined;
   return {
+    slug: f["Slug"] || undefined,
     fullName: f["Loved One"] || "",
     birth: f["Birth Date"],
     passing: f["Passing Date"],
@@ -166,9 +230,10 @@ export function recordToTribute(rec: any): Tribute {
     coverPhoto: f["Cover Photo"] || (Array.isArray(f["Photos"]) && f["Photos"][0]?.url),
     quote: f["Quote"],
     story: f["Story"],
-    candleCount: 1,
+    candleCount: 0,
     tier: f["Tier"],
     theme: f["Theme"],
+    motif: f["Motif"],
     service: (f["Service Date"] || f["Service Location"])
       ? { date: f["Service Date"], place: f["Service Location"], charity: f["Charity"] } : undefined,
     photos: photosField,
