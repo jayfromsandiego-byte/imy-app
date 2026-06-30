@@ -16,7 +16,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Besley',Georgia,serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;
-  background:radial-gradient(125% 90% at 50% -8%,#fffdf7 0%,var(--cream) 55%)}
+  background:radial-gradient(52% 44% at 82% 2%,rgba(201,165,114,.24),transparent 60%),radial-gradient(48% 42% at 4% 8%,rgba(168,124,95,.14),transparent 55%),radial-gradient(70% 60% at 50% 120%,rgba(244,184,96,.07),transparent 60%),radial-gradient(125% 90% at 50% -8%,#fffdf7 0%,var(--cream) 55%)}
 .mono{font-family:'Sometype Mono',monospace}.hand{font-family:'Caveat',cursive}
 .wm{font-weight:700;letter-spacing:-.01em}.wm em{font-style:italic;color:var(--terracotta);font-weight:700}
 img{max-width:100%}
@@ -192,8 +192,8 @@ img{max-width:100%}
 
 /* ===== SOCIAL PROOF ===== */
 .proof .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1010px;margin:0 auto}
-.qc{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 26px 24px;box-shadow:0 18px 50px -34px rgba(20,14,8,.5);display:flex;flex-direction:column}
-.proof .qc:nth-child(1){transform:rotate(-1deg)}.proof .qc:nth-child(2){transform:rotate(.7deg)}.proof .qc:nth-child(3){transform:rotate(-.5deg)}
+.qc{position:relative;background:linear-gradient(180deg,#fffdf9,#f7eede);border-top:3px solid var(--gold);border:1px solid var(--line);border-radius:14px;padding:26px 26px 24px;box-shadow:0 18px 50px -34px rgba(20,14,8,.5);display:flex;flex-direction:column}
+.proof .qc:nth-child(1){transform:rotate(-1.4deg) translateY(10px);border-top-color:var(--terracotta)}.proof .qc:nth-child(2){transform:rotate(.8deg) translateY(-6px);border-top-color:var(--gold)}.proof .qc:nth-child(3){transform:rotate(-.6deg) translateY(12px);border-top-color:var(--terracotta-deep)}
 .qc .fl{width:12px;height:27px;border-radius:3px;background:linear-gradient(180deg,#f3ead6,#e6d4b4);position:relative;margin:0 0 18px}
 .qc .fl::after{content:"";position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:9px;height:15px;border-radius:50% 50% 48% 48%/64% 64% 38% 38%;background:radial-gradient(circle at 50% 70%,#fff6d8,var(--flame) 55%,rgba(244,184,96,0));box-shadow:0 0 16px 5px rgba(244,184,96,.4)}
 .qc p{font-size:17.5px;line-height:1.58;color:var(--ink);font-style:italic}
@@ -303,7 +303,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 <!-- THE SMALL THINGS -->
 <div class="memory" id="memory"><div class="in reveal">
   <div class="eyebrow center">What we keep</div>
-  <h2>It's the <em>little things</em> that matter.</h2>
+  <h2>It's the <em>little things</em><br>that matter.</h2>
   <div class="photos">
     <figure class="pf"><img src="https://pub.hyperagent.com/api/published/pbf01KW0E09TZ_6EMSFRENZM31TM7B/fc5283fc-d846-4bd9-9489-5e87b0043ca0.png" alt="An empty armchair by a sunlit window, a folded blanket over the arm"><figcaption>still their chair</figcaption></figure>
     <figure class="pf"><img src="https://pub.hyperagent.com/api/published/pbf01KW0E0A6A_XFXEXWR6986KQR09/9c567acf-a9f4-44f2-9ec7-b0d5788a9646.png" alt="A handwritten letter and old photographs on a wooden table"><figcaption>their handwriting</figcaption></figure>
@@ -317,7 +317,6 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
     <div class="l">How the kitchen smelled on a Sunday.</div>
     <div class="l">The advice you would give anything to hear once more.</div>
   </div>
-  <p style="max-width:32ch;margin:36px auto 0;font-size:clamp(18px,2.4vw,23px);color:var(--ink)">It is not only what you keep. It is who you find again.</p>
 </div></div>
 
 <!-- BRAND LINE -->
@@ -424,7 +423,6 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
         <li><span class="ck">✓</span> Upload audio, recordings, and voicemails</li>
         <li><span class="ck">✓</span> A custom design built around what they loved</li>
         <li><span class="ck">✓</span> A custom web address of your own</li>
-        <li><span class="ck">✓</span> A keepsake QR token, mailed to you, for a headstone or photo album</li>
         <li><span class="ck">✓</span> No announcement bar or branding</li>
       </ul>
       <a class="cta solid" href="/onboarding?plan=plus">Choose Plus</a>
