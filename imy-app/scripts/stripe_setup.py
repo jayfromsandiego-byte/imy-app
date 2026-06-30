@@ -28,8 +28,8 @@ def price_month(pid, cents):
 
 out = {"MODE": MODE}
 plus = product("I Miss You Memorial — Plus", "Everything, made full and entirely theirs.")
-out["STRIPE_PRICE_PLUS_ONCE"] = price_once(plus, 7900)
-out["STRIPE_PRICE_PLUS_MONTHLY"] = price_month(plus, 700)
+out["STRIPE_PRICE_PLUS_ONCE"] = price_once(plus, 9700)
+out["STRIPE_PRICE_PLUS_MONTHLY"] = price_month(plus, 1200)
 heir = product("I Miss You Memorial — Heirloom", "Kept for generations.")
 out["STRIPE_PRICE_HEIRLOOM"] = price_once(heir, 20000)
 book = product("Keepsake Book", "A printed linen keepsake book, mailed.")
