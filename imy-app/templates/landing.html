@@ -317,9 +317,63 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 .mwhero .mw-sig{font-family:'Caveat',cursive;font-size:22px;color:var(--terra2);margin-top:13px;display:block}
 @media(max-width:680px){.mwhero{min-height:80vh}.mwhero .mw-note{max-width:none;padding:30px 24px}}
 </style>
+<style>
+/* ===== ENGAGE: motion & life (on-brand, reduced-motion safe) ===== */
+:root{--uline-img:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9C32 3 80 3 117 8' stroke='%23C9A572' stroke-width='3.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")}
+/* animated hand-drawn underline on accent words */
+.uline{position:relative;display:inline-block}
+.uline::after{content:"";position:absolute;left:-.04em;right:-.04em;bottom:-.16em;height:.34em;
+  background:var(--uline-img) no-repeat center/100% 100%;clip-path:inset(0 100% 0 0)}
+.reveal.seen .uline::after{animation:drawline 1.05s cubic-bezier(.45,0,.2,1) .3s forwards}
+.mwhero .uline::after{animation:drawline 1.25s cubic-bezier(.45,0,.2,1) .7s forwards}
+@keyframes drawline{to{clip-path:inset(0 0 0 0)}}
+
+/* candle flicker */
+@keyframes flick{0%,100%{opacity:.82;transform:translateX(-50%) scale(1)}
+  20%{opacity:1;transform:translateX(-51%) scale(1.07,.96)}
+  45%{opacity:.66;transform:translateX(-49%) scale(.95,1.05)}
+  70%{opacity:.96;transform:translateX(-50%) scale(1.03,.99)}}
+.how .ic .glow{animation:flick 2.7s ease-in-out infinite!important}
+.how .jstep:nth-child(2) .glow{animation-delay:.4s}
+.how .jstep:nth-child(3) .glow{animation-delay:.9s}
+.how .jstep:nth-child(4) .glow{animation-delay:1.3s}
+@keyframes flickB{0%,100%{opacity:1;transform:translateX(-50%) scaleY(1)}
+  30%{opacity:.7;transform:translateX(-50%) scaleY(.88)}60%{opacity:.96;transform:translateX(-50%) scaleY(1.06)}}
+.qc .fl::after{animation:flickB 2.3s ease-in-out infinite}
+.proof .qc:nth-child(2) .fl::after{animation-delay:.5s}
+.proof .qc:nth-child(3) .fl::after{animation-delay:1s}
+
+/* animating lines */
+.thread path{animation:flow 7s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-38}}
+.flourish::before,.flourish::after{background-size:220% 100%;animation:shimmer 5.5s ease-in-out infinite}
+@keyframes shimmer{0%,100%{background-position:0 0;opacity:.65}50%{background-position:100% 0;opacity:1}}
+.eyebrow::before,.eyebrow.center::after{transform-origin:center;animation:ruleGrow 3.6s ease-in-out infinite}
+@keyframes ruleGrow{0%,100%{opacity:.45;transform:scaleX(.7)}50%{opacity:1;transform:scaleX(1)}}
+
+/* ambient drifting warm glows behind the plain light sections (shapes that move) */
+.memory,.how,.final{position:relative;overflow:hidden}
+.memory::before,.how::before,.final::before{content:"";position:absolute;inset:-8% 0;z-index:0;pointer-events:none;
+  background:radial-gradient(38% 48% at 15% 26%,rgba(201,165,114,.18),transparent 70%),radial-gradient(34% 46% at 87% 80%,rgba(168,124,95,.14),transparent 72%);
+  animation:drift1 20s ease-in-out infinite alternate}
+@keyframes drift1{from{transform:translate(0,0) scale(1)}to{transform:translate(22px,-16px) scale(1.07)}}
+.memory>.in,.how>.in,.final>*{position:relative;z-index:1}
+
+/* floating embers across the whole page (something always moving) */
+.motes{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden}
+.motes i{position:absolute;bottom:-16px;border-radius:50%;background:radial-gradient(circle,rgba(244,184,96,.9),rgba(244,184,96,0) 70%);opacity:0;animation:rise2 linear infinite}
+@keyframes rise2{0%{transform:translateY(0) translateX(0);opacity:0}12%{opacity:.5}86%{opacity:.32}100%{transform:translateY(-108vh) translateX(var(--dx,12px));opacity:0}}
+
+@media(prefers-reduced-motion:reduce){
+  .motes{display:none}
+  .how .ic .glow,.qc .fl::after,.thread path,.flourish::before,.flourish::after,.eyebrow::before,.eyebrow.center::after,.memory::before,.how::before,.final::before{animation:none!important}
+  .uline::after{clip-path:inset(0 0 0 0)!important;animation:none!important}
+}
+</style>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
+<div class="motes" aria-hidden="true"><i style="left:32.8%;width:5px;height:5px;animation-duration:17.3s;animation-delay:-20.9s;--dx:14px"></i><i style="left:10.9%;width:7px;height:7px;animation-duration:13.6s;animation-delay:-10.8s;--dx:-18px"></i><i style="left:10.2%;width:6px;height:6px;animation-duration:13.8s;animation-delay:-20.0s;--dx:10px"></i><i style="left:7.6%;width:7px;height:7px;animation-duration:14.4s;animation-delay:-17.1s;--dx:20px"></i><i style="left:57.4%;width:4px;height:4px;animation-duration:19.3s;animation-delay:-13.3s;--dx:-12px"></i><i style="left:6.4%;width:5px;height:5px;animation-duration:16.2s;animation-delay:-18.8s;--dx:-18px"></i><i style="left:56.2%;width:7px;height:7px;animation-duration:22.0s;animation-delay:-18.0s;--dx:14px"></i><i style="left:56.3%;width:5px;height:5px;animation-duration:17.1s;animation-delay:-9.9s;--dx:-18px"></i><i style="left:55.6%;width:7px;height:7px;animation-duration:15.3s;animation-delay:-7.0s;--dx:10px"></i><i style="left:75.8%;width:6px;height:6px;animation-duration:19.4s;animation-delay:-12.0s;--dx:-8px"></i><i style="left:25.6%;width:5px;height:5px;animation-duration:20.7s;animation-delay:-16.6s;--dx:14px"></i><i style="left:30.5%;width:6px;height:6px;animation-duration:22.6s;animation-delay:-6.0s;--dx:-8px"></i><i style="left:59.9%;width:4px;height:4px;animation-duration:14.3s;animation-delay:-12.8s;--dx:-8px"></i><i style="left:16.4%;width:6px;height:6px;animation-duration:17.6s;animation-delay:-0.8s;--dx:-18px"></i><i style="left:74.6%;width:7px;height:7px;animation-duration:21.7s;animation-delay:-4.0s;--dx:-8px"></i><i style="left:68.1%;width:7px;height:7px;animation-duration:18.5s;animation-delay:-4.5s;--dx:-18px"></i></div>
 
 <!-- HERO (full-screen memory wall) -->
 <header class="mwhero">
@@ -337,7 +391,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
     <div class="mw-note">
       <span class="mw-pin"></span><span class="mw-tape"></span>
       <div class="mw-eyb">For someone you love</div>
-      <h1 class="mw-hh">Create a memorial page worthy of <em>their&nbsp;life</em></h1>
+      <h1 class="mw-hh">Create a memorial page worthy of <em class="uline">their&nbsp;life</em></h1>
       <div class="mw-rule"></div>
       <p class="mw-ld">A beautiful place to hold their photos, their stories, and the voice of everyone who loved them.</p>
       <div class="mw-cta">
@@ -352,7 +406,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 <!-- THE SMALL THINGS -->
 <div class="memory" id="memory"><div class="in reveal">
   <div class="eyebrow center">What we keep</div>
-  <h2>It's the <em>little things</em><br>that matter.</h2>
+  <h2>It's the <em class="uline">little things</em><br>that matter.</h2>
   <div class="photos">
     <figure class="pf"><img src="https://pub.hyperagent.com/api/published/pbf01KW0E09TZ_6EMSFRENZM31TM7B/fc5283fc-d846-4bd9-9489-5e87b0043ca0.png" alt="An empty armchair by a sunlit window, a folded blanket over the arm"><figcaption>still their chair</figcaption></figure>
     <figure class="pf"><img src="https://pub.hyperagent.com/api/published/pbf01KW0E0A6A_XFXEXWR6986KQR09/9c567acf-a9f4-44f2-9ec7-b0d5788a9646.png" alt="A handwritten letter and old photographs on a wooden table"><figcaption>their handwriting</figcaption></figure>
@@ -371,7 +425,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 <!-- BRAND LINE -->
 <div class="creed reveal">
   <div class="flourish" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c1.6 2.4 1.6 4.2 0 6.6C10.4 7.2 10.4 5.4 12 3Z"/><circle cx="12" cy="15" r="2.2"/></svg></div>
-  <h2>Grief is love with <em>nowhere to go.</em></h2>
+  <h2>Grief is love with <em class="uline">nowhere to go.</em></h2>
   <p>Here, it has somewhere to live.</p>
 </div>
 
@@ -434,7 +488,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 <div class="sec sec-cream proof"><div class="wrap reveal">
   <div class="sec-head">
     <div class="eyebrow center">From the families</div>
-    <h2>What families <em>find here.</em></h2>
+    <h2>What families <em class="uline">find here.</em></h2>
   </div>
   <div class="quotes">
     <div class="qc"><div class="fl" aria-hidden="true"></div><p>“My kids never got to meet my dad. Now they know his voice, his stories, the way he told a joke. They talk about him like they were there.”</p><div class="who">Marcus, for his father</div></div>
@@ -445,7 +499,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 
 <!-- PRICING -->
 <div class="sec" id="pricing"><div class="wrap reveal">
-  <div class="sec-head"><div class="eyebrow center">Pricing</div><h2>Choose what <em>lasts</em>.</h2></div>
+  <div class="sec-head"><div class="eyebrow center">Pricing</div><h2>Choose what <em class="uline">lasts</em>.</h2></div>
   <div class="pledge"><b>Our promise:</b> we will never charge a family to keep a memory online.</div>
   <div class="tiers">
 
@@ -488,7 +542,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
         <li><span class="ck">✦</span> A professionally produced memorial film</li>
         <li><span class="ck">✦</span> A printed keepsake book and a framed portrait, mailed to you</li>
       </ul>
-      <a class="cta solid" href="mailto:hello@imissyoumemorial.com?subject=Concierge%20tribute">Contact us</a>
+      <a class="cta solid" href="mailto:hello@imissyoumemorial.com">Contact us</a>
     </div>
 
   </div>
@@ -496,7 +550,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 
 <!-- FAQ -->
 <div class="sec sec-cream" id="faq"><div class="wrap reveal">
-  <div class="sec-head"><div class="eyebrow center">Questions</div><h2>Questions, <em>answered</em>.</h2></div>
+  <div class="sec-head"><div class="eyebrow center">Questions</div><h2>Questions, <em class="uline">answered</em>.</h2></div>
   <div class="faq">
     <details><summary>What does it cost to begin?<span class="pl">+</span></summary><div class="a">You can create a full tribute page and keep it online without paying. Plus adds more when you are ready.</div></details>
     <details><summary>How long does their page stay online?<span class="pl">+</span></summary><div class="a">As long as you need. We will never charge you to keep a memory online.</div></details>
@@ -583,64 +637,7 @@ document.addEventListener('keydown', function(e) {
   }
 })();
 </script>
-<!-- broken-img-handler -->
-<script>
-(function(){
-  if(window.__brokenImgHandler)return;
-  window.__brokenImgHandler=true;
-  var MAX=5,DELAYS=[2000,4000,8000,16000,32000];
-  document.addEventListener('error',function(e){
-    var img=e.target;
-    if(!img||img.tagName!=='IMG')return;
-    var liveSrc=img.getAttribute('src');
-    var src=img.dataset.haOriginalSrc||liveSrc;
-    if(!src)return;
-    if(img.dataset.haOriginalSrc&&liveSrc&&liveSrc!==img.dataset.haOriginalSrc&&liveSrc.indexOf('_r=')<0){src=liveSrc;img.dataset.haOriginalSrc=src;img.dataset.haRetryCount='0'}
-    else if(!img.dataset.haOriginalSrc){img.dataset.haOriginalSrc=src}
-    var attempt=parseInt(img.dataset.haRetryCount||'0',10);
-    if(img.dataset.haPhId){var old=document.getElementById(img.dataset.haPhId);if(old)old.remove()}
-    var ph=document.createElement('div');
-    ph.className='ha-img-placeholder'+(attempt>=MAX?' ha-failed':'');
-    ph.id='ha-ph-'+Math.random().toString(36).slice(2,9);
-    var w=img.getAttribute('width');var h=img.getAttribute('height');
-    if(w)ph.style.width=w+(isNaN(Number(w))?'':'px');
-    else if(img.style.width)ph.style.width=img.style.width;
-    else if(img.width>1)ph.style.width=img.width+'px';
-    if(h)ph.style.height=h+(isNaN(Number(h))?'':'px');
-    else if(img.style.height)ph.style.height=img.style.height;
-    else if(img.height>1)ph.style.height=img.height+'px';
-    ph.textContent=attempt>=MAX?'Image unavailable':'Loading image…';
-    img.dataset.haPhId=ph.id;
-    if(img.dataset.haOrigDisplay==null)img.dataset.haOrigDisplay=img.style.display||'';
-    img.style.display='none';
-    img.insertAdjacentElement('afterend',ph);
-    if(attempt<MAX){
-      img.dataset.haRetryCount=String(attempt+1);
-      setTimeout(function(){
-        if(!img.isConnected)return;
-        if(img.dataset.haOriginalSrc!==src)return;
-        if(img.complete&&img.naturalWidth>0)return;
-        var curSrc=img.getAttribute('src');
-        if(curSrc&&curSrc.indexOf(src)!==0)return;
-        var fresh=src+(src.indexOf('?')>=0?'&':'?')+'_r='+(attempt+1)+'_'+Date.now();
-        img.src=fresh;
-      },DELAYS[attempt]);
-    }
-  },true);
-  document.addEventListener('load',function(e){
-    var img=e.target;
-    if(!img||img.tagName!=='IMG')return;
-    if(img.dataset.haPhId){
-      var ph=document.getElementById(img.dataset.haPhId);
-      if(ph)ph.remove();
-      delete img.dataset.haPhId;
-      img.style.display=img.dataset.haOrigDisplay||'';
-      delete img.dataset.haOrigDisplay;
-      delete img.dataset.haOriginalSrc;
-      delete img.dataset.haRetryCount;
-    }
-  },true);
-})();
-</script>
+
+
 </body>
 </html>

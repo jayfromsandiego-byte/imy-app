@@ -2,7 +2,11 @@
 """Create the I Miss You Memorial product catalog in Stripe.
 Run with the Stripe key in env (STRIPE_SECRET_KEY or STRIPE_API_KEY).
 Prints the price IDs to paste into Vercel env. Idempotent-ish: creates new
-products each run, so run once per environment (test, then live)."""
+products each run, so run once per environment (test, then live).
+
+Pricing (locked June 2026): Free $0 · Plus $97 once or $12/month · Concierge $499+.
+Concierge is a "contact us" offer (not self-serve Stripe), so it is not minted here.
+"""
 import os, json, urllib.request, urllib.parse
 
 KEY = os.environ.get("STRIPE_SECRET_KEY") or os.environ.get("STRIPE_API_KEY") or ""
@@ -30,8 +34,4 @@ out = {"MODE": MODE}
 plus = product("I Miss You Memorial — Plus", "Everything, made full and entirely theirs.")
 out["STRIPE_PRICE_PLUS_ONCE"] = price_once(plus, 9700)
 out["STRIPE_PRICE_PLUS_MONTHLY"] = price_month(plus, 1200)
-heir = product("I Miss You Memorial — Heirloom", "Kept for generations.")
-out["STRIPE_PRICE_HEIRLOOM"] = price_once(heir, 20000)
-book = product("Keepsake Book", "A printed linen keepsake book, mailed.")
-out["STRIPE_PRICE_BOOK"] = price_once(book, 9900)
 print(json.dumps(out, indent=2))

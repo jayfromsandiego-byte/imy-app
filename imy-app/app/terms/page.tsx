@@ -6,7 +6,7 @@ export const metadata = {
   description: "The promises we make to you, and the few we ask in return.",
 };
 
-const UPDATED = "29 June 2026";
+const UPDATED = "30 June 2026";
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Sometype+Mono:wght@400;500&display=swap');
@@ -69,9 +69,8 @@ export default function TermsPage() {
         <h2>Plans, payments, and refunds</h2>
         <ul>
           <li><b>Free</b> — a complete tribute page, online for as long as we exist.</li>
-          <li><b>Plus</b> — $79 once, or $7 a month: unlimited photos and video, audio memories, the full motif library, an AI-written life story, and no footer credit.</li>
-          <li><b>Heirloom</b> — $200 once: everything in Plus, funded permanence, and we help build it with you.</li>
-          <li>Add-ons such as a printed keepsake book or a gift to charity in their name are optional.</li>
+          <li><b>Plus</b> — $97 once, or $12 a month: unlimited photos and video, audio memories, a custom design built around what they loved, a custom web address, and no footer credit.</li>
+          <li><b>Concierge</b> — from $499: done for you. We meet with you, build a fully custom site, produce a memorial film, and mail a printed keepsake book and a framed portrait.</li>
         </ul>
         <p>
           Payments are handled securely by Stripe; we never see or store your card details. If something isn't
