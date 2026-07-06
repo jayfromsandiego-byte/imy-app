@@ -57,7 +57,15 @@ function rowToTribute(r: any): Tribute {
       .map((m: any) => ({ text: m.body, name: m.author_name, rel: m.relation || "", photos: m.photo_url ? [m.photo_url] : undefined })),
     lovedThings: lovedThings.map((l: any) => ({ label: l.label, motifKey: l.motif_key, note: l.note })),
     service: r.tribute_service
-      ? { date: dateOnly(r.tribute_service.starts_at), place: r.tribute_service.venue, address: r.tribute_service.address, charity: r.tribute_service.charity_name, charityUrl: r.tribute_service.charity_url || undefined }
+      ? {
+          date: dateOnly(r.tribute_service.starts_at),
+          // starts_at is stored as "YYYY-MM-DD [time]" — keep the time the family gave.
+          time: String(r.tribute_service.starts_at || "").slice(10).trim() || undefined,
+          place: r.tribute_service.venue,
+          address: r.tribute_service.address,
+          charity: r.tribute_service.charity_name,
+          charityUrl: r.tribute_service.charity_url || undefined,
+        }
       : undefined,
   };
 }

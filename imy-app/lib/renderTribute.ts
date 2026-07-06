@@ -153,7 +153,7 @@ export function renderTribute(template: string, t: Tribute): string {
   const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
     ? `<div class="svcrow"><div class="svcrow-in">
   <span class="lab">Service</span>
-  <span class="what">${esc([t.service.date, t.service.time].filter(Boolean).join(" · "))}${t.service.place ? ` <span class="mono">· ${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
+  <span class="what">${esc([fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "))}${t.service.place ? ` <span class="mono">· ${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
   ${t.service.charity ? `<a class="mini" href="${esc(t.service.charityUrl || `https://www.google.com/search?q=${encodeURIComponent(t.service.charity + " donate")}`)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center">Give in ${esc(first)}'s name</a>` : ""}
   </div></div>`
     : "";
