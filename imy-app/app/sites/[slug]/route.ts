@@ -1,106 +1,70 @@
 // Serves a fully-rendered tribute for {slug}.imissyoumemorial.com (and /sites/{slug}).
-// Reads the token-based template and injects the person's data.
-// Special slug "example" renders a built-in sample so "See an example" always works.
-
+// Reads from Supabase (Airtable fallback during cutover) and injects into the template.
+// "example" is aliased to the seeded "eleanor" tribute so "See an example" always works.
+//
+// SEO: every tribute canonicalizes to the apex /sites/{slug} form, so the subdomain
+// and path versions never compete. Public tributes carry a modest Person JSON-LD;
+// non-public tributes are served with noindex. The consent-first tracking layer is
+// injected last (a no-op until its env vars exist).
 import { NextRequest } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
-import { getTributeBySlug } from "@/lib/airtable";
-import { renderTribute, recordToTribute, Tribute } from "@/lib/renderTribute";
+import { getTribute } from "@/lib/tributesData";
+import { renderTribute } from "@/lib/renderTribute";
+import { injectSeo } from "@/lib/seo";
+import { injectTracking } from "@/lib/tracking";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const EXAMPLE: Tribute = {
-  fullName: "Eleanor Margaret Hayes",
-  birth: "1948-03-12",
-  passing: "2024-10-22",
-  place: "Half Moon Bay, CA",
-  portrait: "/photos/eleanor.jpg",
-  portraitCap: "Eleanor, in her garden",
-  candleCount: 2850,
-  tier: "Free",
-  story:
-    "Eleanor was born by the sea, the eldest of four. She taught third grade for thirty-eight years, kept a garden that drew the whole street to her gate, and was the kind of grandmother who always had butterscotch in her pocket. She believed the small things were the whole of a life.",
-  quote: "Find the smallest beautiful thing in the day, and tell someone about it.",
-  details: [
-    { k: "She loved most", v: "First light over her garden" },
-    { k: "Always carried", v: "A handful of seeds, just in case" },
-    { k: "Known for", v: "Feeding anyone who came to the door" },
-    { k: "Family", v: "Two children, four grandchildren" },
-  ],
-  loved: [
-    { label: "Black coffee, no sugar", photo: "/photos/candle.jpg" },
-    { label: "Her garden at dawn", photo: "/themes/garden.jpg" },
-    { label: "A full kitchen table", photo: "/photos/table.jpg" },
-    { label: "Letters, written by hand", photo: "/themes/letters.jpg" },
-  ],
-  timeline: [
-    { year: "1948", title: "Born by the sea", text: "The eldest of four, raised on the coast." },
-    { year: "1971", title: "Began teaching", text: "Thirty-eight years of third graders who never forgot her." },
-    { year: "1996", title: "Planted the garden", text: "The one the whole street still stops to admire." },
-  ],
-  photos: [
-    { url: "/photos/hands.jpg" },
-    { url: "/themes/garden.jpg" },
-    { url: "/photos/table.jpg" },
-    { url: "/photos/candle.jpg" },
-    { url: "/hero.jpg" },
-    { url: "/themes/ocean.jpg" },
-  ],
-  reel: [
-    { poster: "/themes/ocean.jpg", label: "Eulogy" },
-    { poster: "/photos/table.jpg", label: "A song for her" },
-  ],
-  message: {
-    text: "Don't be sad for too long. Put the kettle on, sit in the garden, and notice something lovely. I'll be in all of it.",
-    sign: "Eleanor",
-  },
-  memories: [
-    {
-      text: "She taught me that the best part of any morning was the quiet before everyone woke. I still get up early, just to feel close to her.",
-      name: "Daniel", rel: "her son",
-      writerPhoto: "/photos/hands.jpg", subjectPhoto: "/photos/eleanor.jpg",
-      photos: ["/themes/garden.jpg", "/photos/table.jpg"],
-    },
-    {
-      text: "Every child on the street learned to plant something in her garden. She made the world feel a little gentler.",
-      name: "Marie", rel: "a neighbour",
-      subjectPhoto: "/photos/eleanor.jpg",
-    },
-  ],
-  service: {
-    date: "2026-06-13", time: "11:00 AM",
-    place: "Linden Community Chapel",
-    address: "142 Seaside Avenue, Half Moon Bay, CA 94019",
-    charity: "American Cancer Society",
-  },
-};
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
+
+// A gentle, on-brand page for a mistyped/expired/private link (better than plain text,
+// and shared links that miss are common).
+const NOT_FOUND = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Tribute not found · I Miss You Memorial</title><link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet"><style>html,body{height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#FAF5EC;color:#2C2520;font-family:'Besley',Georgia,serif;text-align:center;padding:24px;-webkit-font-smoothing:antialiased}.b{max-width:30rem}.wm{font-weight:700;font-size:1.05rem;margin-bottom:24px}.wm em{font-style:italic;color:#A87C5F}h1{font-weight:500;font-size:1.7rem;line-height:1.2;margin:0 0 12px}p{color:#6b5f52;line-height:1.6;margin:0 0 24px}a{display:inline-block;background:#A87C5F;color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:30px}</style></head><body><div class="b"><div class="wm">I <em>Miss</em> You Memorial</div><h1>This tribute couldn't be found.</h1><p>The link may be mistyped, or the page may have been kept private. If someone shared it with you, ask them to check the address.</p><a href="https://imissyoumemorial.com">Create a tribute</a></div></body></html>`;
 
 export async function GET(_req: NextRequest, { params }: { params: { slug: string } }) {
-  const templatePath = path.join(process.cwd(), "templates", "tribute-template.html");
-  const template = await fs.readFile(templatePath, "utf8");
-
-  let tribute: Tribute | null = null;
-  if (params.slug === "example") {
-    tribute = EXAMPLE;
-  } else {
-    const rec = await getTributeBySlug(params.slug);
-    if (rec) tribute = recordToTribute(rec);
-  }
+  const slug = params.slug === "example" ? "eleanor" : params.slug;
+  const tribute = await getTribute(slug);
 
   if (!tribute) {
-    return new Response("This tribute could not be found.", {
+    return new Response(NOT_FOUND, {
       status: 404,
-      headers: { "content-type": "text/plain; charset=utf-8" },
+      headers: { "content-type": "text/html; charset=utf-8" },
     });
   }
 
-  const html = renderTribute(template, tribute);
+  const template = await fs.readFile(path.join(process.cwd(), "templates", "tribute-template.html"), "utf8");
+  let html = renderTribute(template, tribute);
+
+  const canonical = `${SITE}/sites/${encodeURIComponent(tribute.slug || slug)}`;
+  const isPublic = !tribute.visibility || tribute.visibility === "public";
+  const person: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: tribute.fullName,
+    url: canonical,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+  };
+  if (tribute.birth) person.birthDate = String(tribute.birth).slice(0, 10);
+  if (tribute.passing) person.deathDate = String(tribute.passing).slice(0, 10);
+  if (tribute.coverPhoto || tribute.portrait) person.image = tribute.coverPhoto || tribute.portrait;
+
+  html = injectSeo(html, {
+    canonical,
+    ogUrl: canonical,
+    twitterCard: "summary_large_image",
+    noindex: !isPublic,
+    jsonLd: isPublic ? [person] : [],
+  });
+  html = injectTracking(html);
+
   return new Response(html, {
     headers: {
       "content-type": "text/html; charset=utf-8",
-      "cache-control": "public, max-age=60, s-maxage=300",
+      // Fresh within a minute — approvals, flowers, and Family Unlock should feel
+      // immediate; stale-while-revalidate keeps the CDN protective under load.
+      "cache-control": "public, max-age=0, s-maxage=60, stale-while-revalidate=86400",
     },
   });
 }
