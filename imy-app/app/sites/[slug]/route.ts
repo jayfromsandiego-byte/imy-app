@@ -62,7 +62,9 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
   return new Response(html, {
     headers: {
       "content-type": "text/html; charset=utf-8",
-      "cache-control": "public, max-age=60, s-maxage=300",
+      // Fresh within a minute — approvals, flowers, and Family Unlock should feel
+      // immediate; stale-while-revalidate keeps the CDN protective under load.
+      "cache-control": "public, max-age=0, s-maxage=60, stale-while-revalidate=86400",
     },
   });
 }
