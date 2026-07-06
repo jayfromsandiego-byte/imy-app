@@ -19,6 +19,19 @@ const firstName = (n: string) => (n || "").trim().split(/\s+/)[0] || n || "Them"
 const dateOnly = (s?: string | null) => (s ? String(s).slice(0, 10) : undefined);
 const bySort = (a: any, b: any) => (a.sort ?? 0) - (b.sort ?? 0);
 
+/** The human time from a stored starts_at ("2026-06-13 11:00 AM" or ISO "…T18:00:00+00:00"). */
+function humanTime(startsAt?: string | null): string | undefined {
+  const tail = String(startsAt || "").slice(10).trim().replace(/^T/, "");
+  if (!tail) return undefined;
+  if (/am|pm/i.test(tail)) return tail.replace(/:\d{2}(\s*[ap]m)/i, "$1");
+  const m = tail.match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return undefined;
+  let h = parseInt(m[1], 10);
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${h}:${m[2]} ${ampm}`;
+}
+
 function rowToTribute(r: any): Tribute {
   const photos = (r.tribute_photos || []).slice().sort(bySort);
   const lovedThings = (r.tribute_loved_things || []).slice().sort(bySort);
@@ -59,8 +72,7 @@ function rowToTribute(r: any): Tribute {
     service: r.tribute_service
       ? {
           date: dateOnly(r.tribute_service.starts_at),
-          // starts_at is stored as "YYYY-MM-DD [time]" — keep the time the family gave.
-          time: String(r.tribute_service.starts_at || "").slice(10).trim() || undefined,
+          time: humanTime(r.tribute_service.starts_at),
           place: r.tribute_service.venue,
           address: r.tribute_service.address,
           charity: r.tribute_service.charity_name,
