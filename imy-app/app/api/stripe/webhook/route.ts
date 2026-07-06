@@ -95,6 +95,15 @@ export async function POST(req: NextRequest) {
           .update({ status: sub.status || "active" })
           .eq("stripe_subscription_id", sub.id);
       }
+    } else if (event.type === "invoice.payment_failed") {
+      // A missed renewal begins the grace period: the row turns past_due,
+      // premium features rest later, the tribute itself never comes down.
+      const inv = event.data.object;
+      if (db && inv.subscription) {
+        await db.from("subscriptions")
+          .update({ status: "past_due" })
+          .eq("stripe_subscription_id", String(inv.subscription));
+      }
     } else if (event.type === "customer.subscription.deleted") {
       // Subscription ended: rest premium features, keep the tribute online (Permanence Pledge).
       const sub = event.data.object;

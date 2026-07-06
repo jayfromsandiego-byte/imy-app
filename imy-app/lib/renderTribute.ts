@@ -97,7 +97,9 @@ export function renderTribute(template: string, t: Tribute): string {
   const datesLine = esc(datesBits.join(" · ")) || "&nbsp;";
 
   // ── boot data for the template's engine ──
-  const photos = (t.photos || []).filter((p) => p.url);
+  // Free keeps about thirty photographs (the pricing promise); Plus is unlimited.
+  const allPhotos = (t.photos || []).filter((p) => p.url);
+  const photos = tier === "free" ? allPhotos.slice(0, 30) : allPhotos;
   const videos = (t.videos || []).filter((v) => v.url);
   const imgs: Record<string, string> = {};
   photos.forEach((p, i) => { imgs[`p${i}`] = p.url as string; });

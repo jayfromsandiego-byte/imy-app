@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { createRecord } from "@/lib/airtable";
+import { sendSealEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -152,6 +153,13 @@ export async function POST(req: NextRequest) {
   try {
     await createRecord("Tributes", { Slug: slug, "Loved One": name, "Customer Email": email, Story: body.story, Status: "New", Tier: "Free" });
   } catch { /* non-fatal */ }
+
+  // The promised email: their page is ready, and this address is the key back
+  // to it. Best-effort — a failed send never blocks the seal. No-op until
+  // RESEND_API_KEY exists.
+  if (email) {
+    try { await sendSealEmail(email, name, slug); } catch { /* non-fatal */ }
+  }
 
   return NextResponse.json({
     ok: true, slug, tributeId: tid,

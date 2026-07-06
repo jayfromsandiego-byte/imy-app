@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
+import { sendMemoryWaitingEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   const db = supabaseAdmin();
   const { data: trib } = await db
     .from("tributes")
-    .select("id")
+    .select("id, loved_one_name, owner_email")
     .eq("slug", slug)
     .eq("status", "published")
     .is("deleted_at", null)
@@ -60,6 +61,21 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
     status: "pending",
   });
   if (error) return NextResponse.json({ ok: false, error: "failed" }, { status: 500 });
+
+  // Nudge the caretaker when this is the FIRST memory waiting — one gentle
+  // email, not one per visitor. Best-effort; no-op until Resend is configured.
+  try {
+    if (trib.owner_email) {
+      const { count } = await db
+        .from("tribute_memories")
+        .select("id", { count: "exact", head: true })
+        .eq("tribute_id", trib.id)
+        .eq("status", "pending");
+      if (count === 1) {
+        await sendMemoryWaitingEmail(trib.owner_email, trib.loved_one_name || "them");
+      }
+    }
+  } catch { /* non-fatal */ }
 
   return NextResponse.json({ ok: true, pending: true });
 }
