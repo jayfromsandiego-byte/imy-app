@@ -59,8 +59,10 @@ export type Tribute = {
 const esc = (s = "") =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 
-const FALLBACK_COVER =
-  "https://pub.hyperagent.com/api/published/pbf01KVX5AVQA_YEJ7PMX4T4YF9D4X/6c8f0124-0c96-4644-9aea-16af7edeb8c9.png";
+// No-photo fallback: a quiet lit candle from the brand's own photo set — never
+// a stranger's face in a family's arch. Absolute for og:image validity.
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
+const FALLBACK_COVER = `${SITE}/photos/candle.jpg`;
 
 function firstName(full: string) {
   return (full || "").trim().split(/\s+/)[0] || "them";
