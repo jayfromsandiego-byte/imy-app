@@ -12,7 +12,8 @@ const SELECT =
   "tribute_videos(url,caption,sort)," +
   "tribute_memories(author_name,relation,body,status,photo_url)," +
   "tribute_loved_things(label,motif_key,note,sort)," +
-  "tribute_service(starts_at,venue,address,charity_name)";
+  "tribute_audio(url,kind)," +
+  "tribute_service(starts_at,venue,address,charity_name,charity_url)";
 
 const firstName = (n: string) => (n || "").trim().split(/\s+/)[0] || n || "Them";
 const dateOnly = (s?: string | null) => (s ? String(s).slice(0, 10) : undefined);
@@ -24,12 +25,19 @@ function rowToTribute(r: any): Tribute {
   return {
     slug: r.slug || undefined,
     fullName: r.loved_one_name || "",
+    aka: r.aka || undefined,
     birth: dateOnly(r.born_on),
     passing: dateOnly(r.died_on),
     place: r.place || undefined,
     story: r.story || undefined,
     quote: r.portrait_quote || undefined,
     candleCount: r.candle_count ?? 0,
+    flowerCount: r.flower_count ?? 0,
+    sponsor: (r.sponsor_name || r.sponsor_message)
+      ? { name: r.sponsor_name || undefined, photoUrl: r.sponsor_photo_url || undefined, message: r.sponsor_message || undefined }
+      : undefined,
+    voiceUrl: ((r.tribute_audio || []).find((a: any) => a.kind === "voice") || {}).url || undefined,
+    videos: (r.tribute_videos || []).slice().sort(bySort).map((v: any) => ({ url: v.url, cap: v.caption || undefined })).filter((v: any) => v.url),
     tier: r.tier || "free",
     theme: r.theme || undefined,
     motif: r.motif || undefined,
@@ -47,7 +55,7 @@ function rowToTribute(r: any): Tribute {
       .map((m: any) => ({ text: m.body, name: m.author_name, rel: m.relation || "", photos: m.photo_url ? [m.photo_url] : undefined })),
     lovedThings: lovedThings.map((l: any) => ({ label: l.label, motifKey: l.motif_key, note: l.note })),
     service: r.tribute_service
-      ? { date: dateOnly(r.tribute_service.starts_at), place: r.tribute_service.venue, address: r.tribute_service.address, charity: r.tribute_service.charity_name }
+      ? { date: dateOnly(r.tribute_service.starts_at), place: r.tribute_service.venue, address: r.tribute_service.address, charity: r.tribute_service.charity_name, charityUrl: r.tribute_service.charity_url || undefined }
       : undefined,
   };
 }

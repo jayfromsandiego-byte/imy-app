@@ -1,10 +1,16 @@
-// renderTribute — fills the token-based approved tribute template
-// (templates/tribute-template.html) from a tribute record. Token model ({{NAME}}):
-// robust string replacement, no fragile anchor matching.
+// renderTribute — fills the WREATH tribute template (templates/tribute-template.html,
+// the v11 final locked July 5 2026) from a tribute record.
 //
-// This renders the LOCKED design: arched Memorial Stone cover over a candle + rose
-// vigil, with the section background driven by the family's chosen motif, and the
-// premium sections gated by tier (free shows a gentle lock; paid is unlocked).
+// Two-channel injection, zero animation drift:
+//   1) {{TOKENS}} — SSR-visible strings (name, dates, counts, OG meta) so crawlers
+//      and link previews see the real person.
+//   2) window.__TRIBUTE__ — one JSON boot object the template's own render engine
+//      consumes (gallery, chapters, memories, wall state). The engine code is the
+//      design file's own; data in, identical motion out.
+//
+// Tier gating: body[data-tier] drives the template's existing free/plus rendering.
+// The credit banner shows on FREE only. The memory wall shows ten on free; every
+// approved memory beyond ten becomes a "waiting" entry until Plus/Family Unlock.
 
 import { type LovedThing } from "./lovedThings";
 
@@ -13,12 +19,13 @@ export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
 export type PhotoItem = { url?: string; cap?: string };
 export type MemoryItem = { text: string; name: string; rel: string; photos?: string[] };
-export type ReelItem = { poster?: string; label?: string };
+export type ReelItem = { poster?: string; label?: string; url?: string };
 
 export type Tribute = {
   slug?: string;
   fullName: string;
-  role?: string;            // e.g. "Teacher · Gardener · Grandmother" (optional)
+  aka?: string;
+  role?: string;
   birth?: string;
   passing?: string;
   place?: string;
@@ -28,198 +35,188 @@ export type Tribute = {
   quote?: string;
   story?: string;
   candleCount?: number;
-  tier?: string;            // "free" | "plus" | "heirloom"
+  flowerCount?: number;
+  tier?: string; // "free" | "plus" | "heirloom"
   theme?: string;
-  motif?: string;           // family's chosen interest key -> section background
+  motif?: string;
   showAnnounce?: boolean;
   message?: { text: string; sign?: string };
-  service?: { date?: string; time?: string; place?: string; address?: string; charity?: string };
+  service?: { date?: string; time?: string; place?: string; address?: string; charity?: string; charityUrl?: string };
   details?: DetailItem[];
   loved?: LovedItem[];
   lovedThings?: LovedThing[];
   timeline?: TimelineItem[];
   photos?: PhotoItem[];
+  videos?: { url: string; cap?: string }[];
+  voiceUrl?: string;
   reel?: ReelItem[];
   memories?: MemoryItem[];
+  sponsor?: { name?: string; photoUrl?: string; message?: string };
 };
 
 const esc = (s = "") =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 
-function fmtDate(s?: string): string {
-  if (!s) return "";
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s.trim());
-  if (!m) return s;
-  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  return `${months[parseInt(m[2], 10) - 1]} ${parseInt(m[3], 10)}, ${m[1]}`;
-}
+const FALLBACK_COVER =
+  "https://pub.hyperagent.com/api/published/pbf01KVX5AVQA_YEJ7PMX4T4YF9D4X/6c8f0124-0c96-4644-9aea-16af7edeb8c9.png";
 
-// Map a family's chosen interest (stored on the tribute) to one of the eight
-// section-background motif archetypes. Defaults to the warm "gardener" pattern.
-const MOTIF_MAP: Record<string, string> = {
-  gardening: "gardener", garden: "gardener", flowers: "gardener", gardener: "gardener",
-  cooking: "cook", coffee: "cook", baking: "cook", food: "cook", cook: "cook", baker: "cook",
-  fishing: "angler", angler: "angler",
-  "music-piano": "musician", music: "musician", singing: "musician", dancing: "musician", musician: "musician",
-  sailing: "sailor", boating: "sailor", sailor: "sailor",
-  flying: "aviator", aviation: "aviator", aviator: "aviator",
-  travel: "traveler", outdoors: "traveler", hiking: "traveler", traveler: "traveler",
-  astronomy: "astronomer", stargazing: "astronomer", stars: "astronomer", astronomer: "astronomer",
-};
-function motifKey(m?: string, theme?: string): string {
-  const k = (m || theme || "").toString().trim().toLowerCase();
-  return MOTIF_MAP[k] || "gardener";
+function firstName(full: string) {
+  return (full || "").trim().split(/\s+/)[0] || "them";
+}
+function nameHtml(full: string) {
+  const parts = (full || "").trim().split(/\s+/);
+  if (parts.length < 2) return esc(full);
+  const last = parts.pop() as string;
+  return `${esc(parts.join(" "))} <em>${esc(last)}</em>`;
+}
+function fmtDate(d?: string) {
+  if (!d) return "";
+  const dt = new Date(`${String(d).slice(0, 10)}T12:00:00Z`);
+  if (isNaN(+dt)) return String(d);
+  return dt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+}
+function yearOf(d?: string) {
+  const m = String(d || "").match(/\d{4}/);
+  return m ? m[0] : "";
 }
 
 export function renderTribute(template: string, t: Tribute): string {
-  const parts = (t.fullName || "").trim().split(/\s+/);
-  const first = parts[0] || t.fullName || "Them";
+  const tier = t.tier === "plus" || t.tier === "heirloom" ? "plus" : "free";
+  const first = firstName(t.fullName);
+  const cover = t.coverPhoto || t.portrait || FALLBACK_COVER;
+  const slug = t.slug || "example";
 
-  const dates =
-    [fmtDate(t.birth), fmtDate(t.passing)].filter(Boolean).join(" — ") +
-    (t.place ? ` · ${esc(t.place)}` : "");
+  // ── dates line ──
+  const born = fmtDate(t.birth);
+  const died = fmtDate(t.passing);
+  const datesBits = [born && died ? `${born} — ${died}` : born || died, t.place].filter(Boolean);
+  const datesLine = esc(datesBits.join(" · ")) || "&nbsp;";
 
-  const portrait = t.portrait || t.coverPhoto || "";
-  const stoneImg = portrait ? `<img src="${esc(portrait)}" alt="${esc(t.fullName)}">` : "";
-  const roleLine = t.role ? `<div class="role">${esc(t.role)}</div>` : "";
+  // ── boot data for the template's engine ──
+  const photos = (t.photos || []).filter((p) => p.url);
+  const videos = (t.videos || []).filter((v) => v.url);
+  const imgs: Record<string, string> = {};
+  photos.forEach((p, i) => { imgs[`p${i}`] = p.url as string; });
+  const gal = photos.map((p, i) => [`p${i}`, p.cap || ""]);
+  // Living pictures: pair video i with photo i (dashboard can re-pair later).
+  const liv: Record<string, string> = {};
+  videos.forEach((v, i) => { if (imgs[`p${i}`]) liv[`p${i}`] = v.url; });
 
-  const quoteBlock = t.quote
-    ? `<blockquote class="her-quote">“${esc(t.quote)}”</blockquote>`
-    : "";
+  const timeline = t.timeline || [];
+  const ch = timeline.length
+    ? [{
+        name: `${first}'s life`,
+        yrs: "in moments",
+        mo: timeline.map((m) => [m.year || "", m.title || m.text || ""]),
+        ph: gal.slice(0, 3).length ? gal.slice(0, 3) : (photos[0] ? [["p0", photos[0].cap || ""]] : []),
+      }]
+    : [];
 
-  const factsInner = (t.details || [])
-    .map((d) => `<div class="fact"><div class="ft">${esc(d.k)}</div><div class="fv">${esc(d.v)}</div></div>`)
-    .join("");
-  const facts = factsInner ? `<div class="facts">${factsInner}</div>` : "";
+  const approved = (t.memories || []).map((m) => ({
+    g: "friends",
+    av: (m.name || "A")[0].toUpperCase(),
+    nm: m.name || "A friend",
+    rel: m.rel || "",
+    tx: m.text || "",
+    h: 0,
+    cm: [] as unknown[],
+  })).filter((m) => m.tx);
 
-  const lovedFigs = (t.loved || [])
-    .map((l) => `<figure class="lcard">${l.photo ? `<img src="${esc(l.photo)}" alt="${esc(l.label)}">` : ""}<figcaption>${esc(l.label)}</figcaption></figure>`)
-    .join("");
-  const loved = lovedFigs ? `<div class="loved"><h3>What ${esc(first)} loved most</h3><div class="loved-grid">${lovedFigs}</div></div>` : "";
+  const CAP = 10;
+  const mems = tier === "free" ? approved.slice(0, CAP) : approved;
+  const seedw = tier === "free"
+    ? approved.slice(CAP).map((m) => ({ nm: m.nm, rel: m.rel, tx: m.tx, g: m.g }))
+    : [];
 
-  const timelineInner = (t.timeline || [])
-    .map((it) => `<div class="tl-item"><div class="tl-year">${esc(it.year)}</div><div class="tl-t">${esc(it.title)}</div><div class="tl-d">${esc(it.text)}</div></div>`)
-    .join("");
-  const timelineBlock = timelineInner ? `<div class="timeline"><div class="tl-track">${timelineInner}</div></div>` : "";
+  const words = (t.lovedThings || []).map((l) => String(l.label || "").toLowerCase()).filter(Boolean).slice(0, 8);
 
-  const photos = (t.photos && t.photos.length) ? t.photos : (portrait ? [{ url: portrait }] : []);
-  const gallery = photos
-    .slice(0, 12)
-    .map((p) => (p.url ? `<div class="tile photo"><img loading="lazy" src="${esc(p.url)}" alt=""></div>` : ""))
-    .join("");
+  const boards = photos.length
+    ? [{
+        key: "photos",
+        label: "Photographs",
+        items: photos.slice(0, 8).map((p, i) => ({
+          t: "photo", img: p.url, ttl: p.cap || "", who: "", rel: "",
+          date: "", h: 0, r: (i % 2 ? 3 : -3) + (i % 3), c: [] as unknown[],
+        })),
+      }]
+    : [];
 
-  const message = t.message && t.message.text
-    ? `<section class="section reveal" id="message"><div class="kick">A message from ${esc(first)}</div><div class="message"><div class="mq">“${esc(t.message.text)}”</div><div class="mby">— ${esc(t.message.sign || first)}</div></div></section>`
-    : "";
-
-  const memoriesInner = (t.memories && t.memories.length)
-    ? t.memories
-        .map((m) => {
-          const initial = esc((m.name || "•").trim().charAt(0).toUpperCase() || "•");
-          const photo = (m.photos && m.photos[0]) ? `<div class="mem-photo"><img src="${esc(m.photos[0])}" alt=""></div>` : "";
-          return `<div class="mem-card"><div class="mem-head"><div class="mem-av">${initial}</div><div><div class="mem-nm">${esc(m.name)}</div>${m.rel ? `<div class="mem-rel">${esc(m.rel)}</div>` : ""}</div></div><div class="mem-text">${esc(m.text)}</div>${photo}</div>`;
-        })
-        .join("")
-    : `<div class="mem-card"><div class="mem-text">Be the first to share a memory of ${esc(first)}.</div></div>`;
-
-  const reelInner = (t.reel || [])
-    .map((r) => `<div class="rec"><div class="play">▶</div><div style="flex:1"><div style="font-size:14px;font-weight:700">${esc(r.label || "A recorded tribute")}</div><div class="wave" style="margin-top:8px"></div></div></div>`)
-    .join("");
-  const recorded = reelInner
-    ? `<section class="section reveal" id="tributes"><div class="kick">Recorded tributes</div><h2>In their own voices.</h2><div class="rec-track">${reelInner}</div></section>`
-    : "";
-
-  const svc = t.service;
-  const service = svc && (svc.date || svc.place)
-    ? `<section class="section reveal" id="service"><div class="kick">Service &amp; remembrance</div><h2>If you would like to be there.</h2><div class="svc">
-        <div class="scard"><div class="st">When</div><div class="sv">${esc([fmtDate(svc.date), svc.time].filter(Boolean).join(" · ")) || "To be announced"}</div></div>
-        ${svc.place ? `<div class="scard"><div class="st">Where</div><div class="sv">${esc(svc.place)}${svc.address ? `<br>${esc(svc.address)}` : ""}</div></div>` : ""}
-        ${svc.charity ? `<div class="scard" style="grid-column:1/-1"><div class="st">In lieu of flowers</div><div class="sv">Donations in ${esc(first)}'s name to ${esc(svc.charity)}.</div></div>` : ""}
-      </div><div class="svc-actions"><a class="btn outline" href="#memories">Share a memory</a></div></section>`
-    : "";
-
-  const tier = (t.tier || "").trim().toLowerCase();
-  const isPaid = tier === "plus" || tier === "heirloom" || tier === "eternal";
-  const tierAttr = isPaid ? "plus" : "free";
-
-  const pledge = isPaid
-    ? "Backed by a dedicated reserve and an independent archive — kept with love, for as long as we are here."
-    : "Every tribute stays online. We will never charge you to keep a memory alive.";
-
-  // Open Graph / Twitter share preview — the product grows by people sharing the link,
-  // so a shared tribute should show the loved one's portrait, name, and a gentle line.
-  const DEFAULT_OG = "https://pub.hyperagent.com/api/published/pbf01KWBE8XFP_ZYS6S7BJ3MVYD8MC/36eaf3d1-1610-48b5-980c-e275c8f5eebd.png";
-  const ogUrl = t.slug ? `https://${t.slug}.imissyoumemorial.com` : "https://imissyoumemorial.com";
-  const ogTitle = `${t.fullName || first} · In loving memory`;
-  const _excerpt = (t.story || "").replace(/\s+/g, " ").trim();
-  const ogDesc = _excerpt
-    ? (_excerpt.length > 155 ? _excerpt.slice(0, 152) + "…" : _excerpt)
-    : `A place to remember ${first} — light a candle, leave a memory, and share what they meant to you.`;
-  const ogImage = portrait || DEFAULT_OG;
-
-  // Anniversary / birthday acknowledgement, computed server-side from the dates.
-  const _md = (s?: string) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((s || "").trim()); return m ? { y: +m[1], mo: +m[2], d: +m[3] } : null; };
-  const _now = new Date();
-  const _tMo = _now.getUTCMonth() + 1, _tD = _now.getUTCDate(), _tY = _now.getUTCFullYear();
-  const _b = _md(t.birth), _p = _md(t.passing);
-  let _anniv = "";
-  if (_p && _p.mo === _tMo && _p.d === _tD) { const yrs = _tY - _p.y; _anniv = yrs > 0 ? `Remembering ${first}, ${yrs} year${yrs === 1 ? "" : "s"} on.` : `Remembering ${first} today.`; }
-  else if (_b && _b.mo === _tMo && _b.d === _tD) { _anniv = `Today would have been ${first}'s birthday.`; }
-  const anniversaryHtml = _anniv ? `<div class="vigil-anniv">${esc(_anniv)}</div>` : "";
-
-  // schema.org structured data — helps search engines show a proper memorial result.
-  const _ld: any = { "@context": "https://schema.org", "@type": "WebPage", name: ogTitle, url: ogUrl, about: { "@type": "Person", name: t.fullName || first } };
-  if (t.birth) _ld.about.birthDate = t.birth;
-  if (t.passing) _ld.about.deathDate = t.passing;
-  if (portrait) _ld.about.image = portrait;
-  if (_excerpt) _ld.about.description = ogDesc;
-  const jsonLd = `<script type="application/ld+json">${JSON.stringify(_ld).replace(/</g, "\\u003c")}</script>`;
-
-  const tokens: Record<string, string> = {
-    "{{TITLE}}": `${esc(t.fullName)} — I Miss You Memorial`,
-    "{{SLUG}}": esc(t.slug || ""),
-    "{{OG_TITLE}}": esc(ogTitle),
-    "{{OG_DESC}}": esc(ogDesc),
-    "{{OG_IMAGE}}": esc(ogImage),
-    "{{OG_URL}}": esc(ogUrl),
-    "{{ANNIVERSARY}}": anniversaryHtml,
-    "{{JSONLD}}": jsonLd,
-    "{{TIER_ATTR}}": tierAttr,
-    "{{MOTIF}}": motifKey(t.motif, t.theme),
-    "{{KICKER}}": "In loving memory",
-    "{{FIRST}}": esc(first),
-    "{{FULLNAME}}": esc(t.fullName),
-    "{{ROLE_LINE}}": roleLine,
-    "{{DATES}}": dates,
-    "{{STONE_IMG}}": stoneImg,
-    "{{CANDLE_COUNT}}": String(t.candleCount ?? 0),
-    "{{STORY}}": esc(t.story || ""),
-    "{{QUOTE_BLOCK}}": quoteBlock,
-    "{{FACTS}}": facts,
-    "{{LOVED}}": loved,
-    "{{TIMELINE_BLOCK}}": timelineBlock,
-    "{{GALLERY}}": gallery,
-    "{{MESSAGE_FROM}}": message,
-    "{{MEMORIES}}": memoriesInner,
-    "{{RECORDED}}": recorded,
-    "{{SERVICE}}": service,
-    "{{PLEDGE}}": esc(pledge),
+  const boot = {
+    slug, tier,
+    gal, imgs, liv, ch, mems, seedw, words, boards,
+    waiting: seedw.length,
   };
 
-  let html = template;
-  for (const [k, v] of Object.entries(tokens)) html = html.split(k).join(v);
+  // ── conditional blocks ──
+  const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
+    ? `<div class="svcrow"><div class="svcrow-in">
+  <span class="lab">Service</span>
+  <span class="what">${esc([t.service.date, t.service.time].filter(Boolean).join(" · "))}${t.service.place ? ` <span class="mono">· ${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
+  ${t.service.charity ? `<a class="mini" href="${esc(t.service.charityUrl || `https://www.google.com/search?q=${encodeURIComponent(t.service.charity + " donate")}`)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center">Give in ${esc(first)}'s name</a>` : ""}
+  </div></div>`
+    : "";
+
+  const creditBanner = tier === "free"
+    ? `<div class="announce">Built with love, by I <em style="color:var(--flame)">Miss</em> You Memorial<span class="mono">free · forever</span></div>`
+    : "";
+
+  const sponsorPlaque = t.sponsor && (t.sponsor.name || t.sponsor.message)
+    ? `<div class="plaque rev" id="plaque">
+        ${t.sponsor.photoUrl ? `<img class="pl-photo" id="plPhoto" src="${esc(t.sponsor.photoUrl)}" alt="${esc(t.sponsor.name || "The giver")}"/>` : ""}
+        <div><div class="pl-line" id="plLine">${t.sponsor.name
+          ? `The full memorial — a gift from ${esc(t.sponsor.name)}, so every memory has a home.`
+          : "Someone who loves this family opened the wall for everyone."}</div>
+        ${t.sponsor.message ? `<div class="pl-line" style="font-weight:400;font-size:13.5px;margin-top:4px">&ldquo;${esc(t.sponsor.message)}&rdquo;</div>` : ""}
+        <div class="pl-date" id="plDate">Given with love</div></div>
+      </div>`
+    : "";
+
+  const archVideo = tier === "plus" && videos[0]
+    ? `<video class="living" src="${esc(videos[0].url)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>`
+    : "";
+  const archLivetag = archVideo ? `<span class="livetag" id="archLiveTag">Living portrait</span>` : "";
+
+  const metaDescription = (t.story || "").replace(/\s+/g, " ").trim().slice(0, 155) ||
+    `A place to remember ${t.fullName} — photos, stories, and the voices of everyone who loved ${first}.`;
+
+  const boot_script = `<script>window.__TRIBUTE__=${JSON.stringify(boot).replace(/</g, "\\u003c")};</script>`;
+
+  // ── token pass ──
+  let html = template
+    .split("{{TRIBUTE_BOOT}}").join(boot_script)
+    .split("{{TITLE}}").join(esc(`${t.fullName} — I Miss You Memorial`))
+    .split("{{META_DESCRIPTION}}").join(esc(metaDescription))
+    .split("{{COVER_URL}}").join(esc(cover))
+    .split("{{NAME_PLAIN}}").join(esc(t.fullName))
+    .split("{{NAME_HTML}}").join(nameHtml(t.fullName))
+    .split("{{DATES_LINE}}").join(datesLine)
+    .split("{{EPIGRAPH}}").join(esc(t.quote || t.aka || "Loved, and remembered."))
+    .split("{{FLOWER_COUNT}}").join(String(Math.max(0, t.flowerCount ?? 0)))
+    .split("{{THEIR}}").join("their")
+    .split("{{TIER}}").join(tier)
+    .split("{{SERVICE_STRIP}}").join(serviceStrip)
+    .split("{{CREDIT_BANNER}}").join(creditBanner)
+    .split("{{SPONSOR_PLAQUE}}").join(sponsorPlaque)
+    .split("{{ARCH_VIDEO}}").join(archVideo)
+    .split("{{ARCH_LIVETAG}}").join(archLivetag)
+    .split("{{PRESENCE_HIDDEN}}").join("hidden")
+    .split("{{PRESENCE_LINE}}").join("");
+
+  // ── name pass: the template's UI strings speak the person's real name ──
+  html = html.split("Eleanor Margaret Hayes").join(esc(t.fullName));
+  html = html.replace(/Eleanor(&#39;s|'s)/g, `${esc(first)}$1`);
+  html = html.split("Eleanor").join(esc(first));
+
   return html;
 }
 
-// Map an Airtable Tributes record to the Tribute render object (legacy fallback).
+/** Airtable fallback mapping (legacy MVP records) — kept during cutover. */
 export function recordToTribute(rec: any): Tribute {
   const f = (rec && rec.fields) || {};
   let enriched: Partial<Tribute> = {};
   try {
     if (f["Tribute Data"]) enriched = JSON.parse(f["Tribute Data"]);
-  } catch {
-    /* ignore malformed enrichment */
-  }
+  } catch { /* ignore malformed enrichment */ }
   const photosField = Array.isArray(f["Photos"]) ? f["Photos"].map((a: any) => ({ url: a.url })) : undefined;
   return {
     slug: f["Slug"] || undefined,
@@ -227,15 +224,13 @@ export function recordToTribute(rec: any): Tribute {
     birth: f["Birth Date"],
     passing: f["Passing Date"],
     place: f["Place"],
-    coverPhoto: f["Cover Photo"] || (Array.isArray(f["Photos"]) && f["Photos"][0]?.url),
+    coverPhoto: f["Cover Photo"] || (Array.isArray(f["Photos"]) && f["Photos"][0]?.url) || undefined,
     quote: f["Quote"],
     story: f["Story"],
     candleCount: 0,
-    tier: f["Tier"],
+    flowerCount: 0,
+    tier: (f["Tier"] || "free").toString().toLowerCase(),
     theme: f["Theme"],
-    motif: f["Motif"],
-    service: (f["Service Date"] || f["Service Location"])
-      ? { date: f["Service Date"], place: f["Service Location"], charity: f["Charity"] } : undefined,
     photos: photosField,
     ...enriched,
   };
