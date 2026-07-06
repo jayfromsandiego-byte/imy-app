@@ -63,7 +63,11 @@ export async function POST(req: NextRequest) {
   // own page; the dashboard keeps its billing return.
   const fallbackReturn = slug ? `/sites/${slug}` : "/dashboard/billing";
   const returnTo = (p.returnTo || "").startsWith("/") ? p.returnTo : fallbackReturn;
-  const success_url = `${origin}${returnTo}${returnTo.includes("?") ? "&" : "?"}upgraded=1`;
+  // plan + cs let the landing page's tracking layer attribute the purchase
+  // (Stripe substitutes {CHECKOUT_SESSION_ID} at redirect time).
+  const success_url =
+    `${origin}${returnTo}${returnTo.includes("?") ? "&" : "?"}` +
+    `upgraded=1&plan=${encodeURIComponent(plan)}&cs={CHECKOUT_SESSION_ID}`;
   const cancel_url = `${origin}${returnTo}${returnTo.includes("?") ? "&" : "?"}canceled=1`;
 
   // Referral → 20% off, monthly only, auto-applied.

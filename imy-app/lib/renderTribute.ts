@@ -39,6 +39,8 @@ export type Tribute = {
   tier?: string; // "free" | "plus" | "heirloom"
   theme?: string;
   motif?: string;
+  visibility?: string; // "public" | "unlisted" | "private" — SEO only, never rendering
+  status?: string;
   showAnnounce?: boolean;
   message?: { text: string; sign?: string };
   service?: { date?: string; time?: string; place?: string; address?: string; charity?: string; charityUrl?: string };
