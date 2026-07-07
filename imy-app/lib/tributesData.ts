@@ -56,6 +56,7 @@ function rowToTribute(r: any): Tribute {
     motif: r.motif || undefined,
     visibility: r.visibility || undefined,
     status: r.status || undefined,
+    pronouns: r.pronouns || undefined,
     coverPhoto: photos[0]?.url || undefined,
     portrait: photos[0]?.url || undefined,
     message: r.message_from_them ? { text: r.message_from_them, sign: firstName(r.loved_one_name) } : undefined,

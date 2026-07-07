@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
   const visibilityRaw = String(body.visibility || "public").toLowerCase();
   const visibility = ["public", "unlisted", "private"].includes(visibilityRaw) ? visibilityRaw : "public";
 
+  const pronounsRaw = String(body.pronouns || "").toLowerCase();
+  const pronouns = ["he", "she", "they"].includes(pronounsRaw) ? pronounsRaw : null;
+
   // Fallback: no Supabase env yet → Airtable-only (keeps the live MVP working).
   if (!supabaseConfigured) {
     try {
@@ -72,6 +75,7 @@ export async function POST(req: NextRequest) {
     tier: "free", // Plus wakes via the Stripe webhook, same second payment lands
     status: "published",
     visibility,
+    pronouns,
     owner_email: email,
     claim_token: claim,
     candle_count: 0,

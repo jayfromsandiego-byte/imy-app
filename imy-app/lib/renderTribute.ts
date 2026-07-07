@@ -41,6 +41,7 @@ export type Tribute = {
   motif?: string;
   visibility?: string; // "public" | "unlisted" | "private" — SEO only, never rendering
   status?: string;
+  pronouns?: string; // "he" | "she" | "they" — how the page speaks of them
   showAnnounce?: boolean;
   message?: { text: string; sign?: string };
   service?: { date?: string; time?: string; place?: string; address?: string; charity?: string; charityUrl?: string };
@@ -84,6 +85,22 @@ function yearOf(d?: string) {
   return m ? m[0] : "";
 }
 
+/** Memory relation → wall group (family · friends · neighbours · students). */
+function classifyGroup(rel: string): string {
+  const r = (rel || "").toLowerCase();
+  if (/(son|daughter|mother|father|mom|dad|brother|sister|grand|wife|husband|partner|niece|nephew|cousin|aunt|uncle|family)/.test(r)) return "family";
+  if (/(neighbou?r|street|next door)/.test(r)) return "neighbours";
+  if (/(student|pupil|class|taught|teacher)/.test(r)) return "students";
+  return "friends";
+}
+
+/** The words a page uses for its person. Default is they/them — never a guess. */
+function pronounSet(p?: string) {
+  if (p === "he") return { sub: "he", Sub: "He", obj: "him", pos: "his", Pos: "His" };
+  if (p === "she") return { sub: "she", Sub: "She", obj: "her", pos: "her", Pos: "Her" };
+  return { sub: "they", Sub: "They", obj: "them", pos: "their", Pos: "Their" };
+}
+
 export function renderTribute(template: string, t: Tribute): string {
   const tier = t.tier === "plus" || t.tier === "heirloom" ? "plus" : "free";
   const first = firstName(t.fullName);
@@ -119,7 +136,7 @@ export function renderTribute(template: string, t: Tribute): string {
     : [];
 
   const approved = (t.memories || []).map((m) => ({
-    g: "friends",
+    g: classifyGroup(m.rel || ""),
     av: (m.name || "A")[0].toUpperCase(),
     nm: m.name || "A friend",
     rel: m.rel || "",
@@ -212,6 +229,116 @@ export function renderTribute(template: string, t: Tribute): string {
   html = html.split("Eleanor Margaret Hayes").join(esc(t.fullName));
   html = html.replace(/Eleanor(&#39;s|'s)/g, `${esc(first)}$1`);
   html = html.split("Eleanor").join(esc(first));
+
+  // ═══ identity pass (July 7) ══════════════════════════════════════════════
+  // The design file is Eleanor's demo. Two real families taught us what leaks:
+  // her pronouns, her quote band, her "who she really was" cards, her wall
+  // groups, and the demo tape shelf. Everything below regenerates those from
+  // THIS tribute's data using the template's own markup — same classes, same
+  // motion — or hides a section that has nothing real to say.
+  const pn = pronounSet(t.pronouns);
+
+  // 1) The quote band: their photograph, their words — or no band at all.
+  {
+    const qIdx = html.indexOf("smallest beautiful thing in the day");
+    if (qIdx > -1) {
+      const secStart = html.lastIndexOf('<section class="band rev">', qIdx);
+      const secEnd = html.indexOf("</section>", qIdx);
+      if (secStart > -1 && secEnd > -1) {
+        const bandPhoto = photos[1]?.url || photos[0]?.url || cover;
+        const band = t.quote
+          ? `<section class="band rev"><div class="bgi"><img src="${esc(bandPhoto)}" alt=""></div><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
+          : "";
+        html = html.slice(0, secStart) + band + html.slice(secEnd + "</section>".length);
+      }
+    }
+  }
+
+  // 2) "Who they really were": their detail cards — or the section rests.
+  const detailCards = (t.details || []).filter((d) => d.k && d.v).slice(0, 6);
+  if (detailCards.length) {
+    const tIdx = html.indexOf('<div class="truths">');
+    const mIdx = html.indexOf("money aside, masks off", tIdx);
+    if (tIdx > -1 && mIdx > -1) {
+      const footStart = html.lastIndexOf("<div", mIdx);
+      const cards = detailCards
+        .map((d) => `<div class="truth"><div class="tl2">${esc(d.k)}</div><div class="tv">${esc(d.v)}</div></div>`)
+        .join("\n          ");
+      html = html.slice(0, tIdx) + `<div class="truths">\n          ${cards}\n        </div>\n        ` + html.slice(footStart);
+    }
+  } else {
+    html = html.split('<a href="#really">Who she was</a>').join("");
+  }
+
+  // 3) The editor affordance visitors can't use.
+  html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
+
+  // 4) Wall groups from the people who actually wrote, never Eleanor's.
+  {
+    const present = new Set([...mems, ...seedw].map((m: any) => m.g));
+    const groups: Array<[string, string]> = [["all", "Everyone"], ["family", "Family"], ["friends", "Friends"]];
+    if (present.has("neighbours")) groups.push(["neighbours", "Neighbours"]);
+    if (present.has("students")) groups.push(["students", `${pn.Pos} students`]);
+    html = html.split(
+      "var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbours'],['students','Her students']];"
+    ).join(`var GROUPS=${JSON.stringify(groups)};`);
+  }
+
+  // 5) The ticker's fallback names become theirs (it already prefers their words).
+  {
+    const tickerWords = words.length ? words.slice(0, 8).map((w) => esc(w)).join("·") + "·" : `family·friends·always loved·`;
+    html = html.split(
+      'var names="her students·the tea girls·seaside ave·room 4·the garden club·her grandchildren·the whole street·butterscotch in every pocket·"'
+    ).join(`var names="${tickerWords}"`);
+  }
+
+  // 6) The rest of the page speaks their pronouns. Curated, exact strings only.
+  const table: Array<[string, string]> = [
+    [">Her story</a>", `>${pn.Pos} story</a>`],
+    ["Her story &amp; her legacy", `${pn.Pos} story &amp; ${pn.pos} legacy`],
+    ['<a href="#really">Who she was</a>', `<a href="#really">Who ${pn.sub} was</a>`],
+    ["Chapters · the top of her story", `Chapters · the top of ${pn.pos} story`],
+    ['aria-label="Chapters of her life"', `aria-label="Chapters of ${pn.pos} life"`],
+    [", only her.", `, only ${pn.obj}.`],
+    ["Curated by her family", `Curated by ${pn.pos} family`],
+    ["want to forget about her?", `want to forget about ${pn.obj}?`],
+    ['placeholder="She always…"', `placeholder="${pn.Sub} always…"`],
+    ["The shelf keeps her in motion", `The shelf keeps ${pn.obj} in motion`],
+    ["the room fills with her", `the room fills with ${pn.obj}`],
+    ["her videos, kept forever", `${pn.pos} videos, kept forever`],
+    ["Before you add to her page", `Before you add to ${pn.pos} page`],
+    ["find you on her page", `find you on ${pn.pos} page`],
+    ["students:'her student'", `students:'${pn.pos} student'`],
+    ["e.g. her student, Room 4, 1989", `e.g. ${pn.pos} student, Room 4, 1989`],
+    ["keep her voice", `keep ${pn.pos} voice`],
+    ["Choose how you knew her. It keeps her page organized.", `Choose how you knew ${pn.obj}. It keeps ${pn.pos} page organized.`],
+    ["Her page, bound as a linen hardcover", `${pn.Pos} page, bound as a linen hardcover`],
+    ["plus · her motif", `plus · ${pn.pos} motif`],
+    ["Her motifs paint every section on Plus", `${pn.Pos} motifs paint every section on Plus`],
+    ["Donations in her name", `Donations in ${pn.pos} name`],
+    ["Her voice lives on Plus pages.", `${pn.Pos} voice lives on Plus pages.`],
+    ["The tape shelf, her videos kept forever", `The tape shelf, ${pn.pos} videos kept forever`],
+    ["the thing she always said", `the thing ${pn.sub} always said`],
+    ["Who she really was", `Who ${pn.sub} really was`],
+    ["With everything set aside, <em>this</em> was her.", `With everything set aside, <em>this</em> was ${pn.obj}.`],
+    ["written by her family · only they can change it", `written by ${pn.pos} family · only they can change it`],
+    ['"her garden rows, just after sunrise"', `"${pn.pos} garden rows, just after sunrise"`],
+    ['"seeds in her coat pocket"', `"seeds in ${pn.pos} coat pocket"`],
+    ["label:'Her students'", `label:'${pn.Pos} students'`],
+  ];
+  for (const [from, to] of table) html = html.split(from).join(to);
+
+  // 7) Sections with nothing real to show, rest quietly.
+  {
+    const hides: string[] = [];
+    if (!videos.length) hides.push("#keep .shelfview{display:none!important}");
+    if (!words.length) hides.push(".cyc{display:none!important}");
+    if (!detailCards.length) hides.push("#really{display:none!important}");
+    if (hides.length) {
+      const hi = html.lastIndexOf("</head>");
+      if (hi > -1) html = html.slice(0, hi) + `<style>${hides.join("")}</style>` + html.slice(hi);
+    }
+  }
 
   return html;
 }
