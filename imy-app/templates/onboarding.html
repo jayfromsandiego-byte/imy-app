@@ -422,7 +422,7 @@
       <div class="hand">a letter for the one you miss</div>
       <h1>Let’s write down<br><em>who they were.</em></h1>
       <div class="wrows">
-        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>sixteen small questions · each answer lays a flower on the garland</span></div>
+        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>seventeen small questions · each answer lays a flower on the garland</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9.2" y="9" width="5.6" height="12" rx="1.6"/><path d="M12,9 V7.4"/><path d="M12,6.6 q1.7,-2.1 0,-3.6 q-1.7,1.5 0,3.6"/></svg><span>about ten quiet minutes · it saves as you go, change anything later</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $97 once</b></span></div>
       </div>
@@ -443,7 +443,7 @@
     </div>
     <div class="fin-hand">sealed with love</div>
     <div class="fin-msg">
-      <div class="cap" id="finCap">sixteen flowers laid · the garland is full</div>
+      <div class="cap" id="finCap">seventeen flowers laid · the garland is full</div>
       <h2>Their memorial is ready.</h2>
       <span class="url" id="finUrl"></span>
       <p>We saved every word as you wrote it. Open the page when you are ready, and shape it together with family. It stays online forever. That is a promise.</p>
@@ -505,6 +505,7 @@ var ENGINE=(function(){
   var STEPS=[
     {id:'name',ch:'who they were',q:'What was their <em>name?</em>',sub:'As it will appear at the top of their page.',type:'text',key:'fullName',ph:'Their full name',req:true},
     {id:'aka',ch:'who they were',q:'Did they go by another name?',sub:'The name the people who loved them used.',type:'text',key:'aka',ph:'A nickname, if there was one',skip:'they didn’t · skip'},
+    {id:'pronouns',ch:'who they were',q:'How should their page <em>speak of them?</em>',sub:'Small words matter — his story, her story, their story.',type:'pronouns',key:'pronouns',skip:'their story is right · skip'},
     {id:'dates',ch:'who they were',q:'The dates that <em>held their life.</em>',sub:'Take your time. There is no rush here.',type:'dates',req:true},
     {id:'home',ch:'who they were',q:'Where did they call <em>home?</em>',sub:'The place you picture them.',type:'text',key:'place',ph:'City, state',skip:'skip this'},
     {id:'rel',ch:'who they were',q:'Who were they <em>to you?</em>',type:'chips',key:'relationship',req:true},
@@ -542,7 +543,7 @@ var ENGINE=(function(){
     var imgs=[],vids=[];
     gFiles.forEach(function(f){if(f.__url){if((f.type||'').indexOf('video')===0)vids.push(f.__url);else imgs.push(f.__url)}});
     return {
-      fullName:A.fullName||'',aka:A.aka||A.nickname||'',birth:A.birth||'',passing:A.passing||'',place:A.place||A.home||'',
+      fullName:A.fullName||'',aka:A.aka||A.nickname||'',pronouns:A.pronouns||'',birth:A.birth||'',passing:A.passing||'',place:A.place||A.home||'',
       story:A.story||'',quote:A.quote||'',song:A.song||'',voiceUrl:A.voiceUpURL||'',
       moments:(A.moments||[]).map(function(m){return {year:m.year||'',title:m.text||'',body:''}}),
       lovedThings:(A.lovedThings||[]).map(function(l){return {label:l}}),
@@ -619,6 +620,8 @@ var ENGINE=(function(){
   function body(st){
     switch(st.type){
       case 'text':return '<input type="text" data-key="'+st.key+'" placeholder="'+esc(st.ph)+'" aria-label="'+esc(st.ph)+'">';
+      case 'pronouns':
+        return '<div class="chips" id="pnChips">'+[['he','He · his story'],['she','She · her story'],['they','They · their story']].map(function(o){return '<button type="button" class="chip'+(A.pronouns===o[0]?' on':'')+'" data-pn="'+o[0]+'">'+o[1]+'</button>'}).join('')+'</div>';
       case 'dates':
         return '<div class="grid2"><div class="fgroup"><label class="small">when they were born</label><input type="date" data-key="birth" max="2026-12-31"></div>'+
                '<div class="fgroup"><label class="small">when they passed</label><input type="date" data-key="passing" max="2026-12-31"></div></div>';
@@ -983,7 +986,7 @@ var ENGINE=(function(){
     var fo=document.getElementById('finOpen');
     if(fo)fo.href=(SEAL&&SEAL.path)||('/sites/'+realSlug);
     var fn=(A.fullName||'').trim();
-    document.getElementById('finCap').textContent='sixteen flowers laid'+(fn?' for '+fn:' · the garland is full');
+    document.getElementById('finCap').textContent='seventeen flowers laid'+(fn?' for '+fn:' · the garland is full');
     var st=document.getElementById('finStone'),init=document.getElementById('fsInit');
     var veil=st.querySelector('.fs-veil');
     if(A.photoURL){st.style.backgroundImage='url('+A.photoURL+')';init.style.display='none';if(veil)veil.style.display='block'}
@@ -1033,6 +1036,13 @@ var ENGINE=(function(){
       }else{
         pickAddr('free');
       }
+      return;
+    }
+    var pnc=t.closest('#pnChips .chip');
+    if(pnc){
+      pnc.parentNode.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});
+      pnc.classList.add('on');
+      A.pronouns=pnc.getAttribute('data-pn');persist();
       return;
     }
     var chip=t.closest('.chip');
