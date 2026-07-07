@@ -255,10 +255,11 @@ export function renderTribute(template: string, t: Tribute): string {
   }
 
   // 2) "Who they really were": their detail cards — or the section rests.
+  // Either way Eleanor's demo cards leave the page entirely, even from source.
   const detailCards = (t.details || []).filter((d) => d.k && d.v).slice(0, 6);
-  if (detailCards.length) {
+  {
     const tIdx = html.indexOf('<div class="truths">');
-    const mIdx = html.indexOf("money aside, masks off", tIdx);
+    const mIdx = tIdx > -1 ? html.indexOf("money aside, masks off", tIdx) : -1;
     if (tIdx > -1 && mIdx > -1) {
       const footStart = html.lastIndexOf("<div", mIdx);
       const cards = detailCards
@@ -266,8 +267,9 @@ export function renderTribute(template: string, t: Tribute): string {
         .join("\n          ");
       html = html.slice(0, tIdx) + `<div class="truths">\n          ${cards}\n        </div>\n        ` + html.slice(footStart);
     }
-  } else {
-    html = html.split('<a href="#really">Who she was</a>').join("");
+    if (!detailCards.length) {
+      html = html.split('<a href="#really">Who she was</a>').join("");
+    }
   }
 
   // 3) The editor affordance visitors can't use.
