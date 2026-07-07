@@ -18,7 +18,7 @@ export type TimelineItem = { year: string; title: string; text: string };
 export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
 export type PhotoItem = { url?: string; cap?: string };
-export type MemoryItem = { text: string; name: string; rel: string; photos?: string[] };
+export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; photos?: string[] };
 export type ReelItem = { poster?: string; label?: string; url?: string };
 
 export type Tribute = {
@@ -136,12 +136,13 @@ export function renderTribute(template: string, t: Tribute): string {
     : [];
 
   const approved = (t.memories || []).map((m) => ({
+    id: m.id || "",
     g: classifyGroup(m.rel || ""),
     av: (m.name || "A")[0].toUpperCase(),
     nm: m.name || "A friend",
     rel: m.rel || "",
     tx: m.text || "",
-    h: 0,
+    h: Math.max(0, m.hearts ?? 0),
     cm: [] as unknown[],
   })).filter((m) => m.tx);
 

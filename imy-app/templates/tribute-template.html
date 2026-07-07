@@ -1370,7 +1370,17 @@ document.querySelectorAll('.rev').forEach(function(el){io.observe(el)});
 if(!RM){var bands=[].slice.call(document.querySelectorAll('.band .bgi img')),tk=false;
 addEventListener('scroll',function(){if(tk)return;tk=true;requestAnimationFrame(function(){if(!noMo()){var vh=innerHeight;bands.forEach(function(im){var r=im.parentNode.getBoundingClientRect();var off=((r.top+r.height/2)-vh/2)/vh;im.style.transform='translateY('+(off*-26)+'px)'})}tk=false})},{passive:true})}
 /* likes */
-function wireLikes(scope){(scope||document).querySelectorAll('.like').forEach(function(h){if(h.id==='lbLike'||h.dataset.wired)return;h.dataset.wired='1';var b=parseInt(h.dataset.base||'0',10),ct=h.querySelector('.ct'),on=h.classList.contains('on');h.onclick=function(){on=!on;h.classList.toggle('on',on);h.classList.add('pop');setTimeout(function(){h.classList.remove('pop')},400);ct.textContent=b+(on?1:0)}})}
+/* hearts: on production pages (T + data-id) every heart is kept — one truthful count,
+   remembered per visitor in this browser, taken back as quietly as it was given. */
+var HEARTED={};try{HEARTED=JSON.parse(localStorage.getItem('imy-hearts-'+SLUG)||'{}')}catch(e){}
+function saveHearted(){try{localStorage.setItem('imy-hearts-'+SLUG,JSON.stringify(HEARTED))}catch(e){}}
+function wireLikes(scope){(scope||document).querySelectorAll('.like').forEach(function(h){if(h.id==='lbLike'||h.dataset.wired)return;h.dataset.wired='1';var b=parseInt(h.dataset.base||'0',10),ct=h.querySelector('.ct'),id=h.dataset.id||'',on=h.classList.contains('on');
+if(T&&id&&HEARTED[id]){on=true;h.classList.add('on')}
+h.onclick=function(){on=!on;h.classList.toggle('on',on);h.classList.add('pop');setTimeout(function(){h.classList.remove('pop')},400);
+if(T&&id){if(on)HEARTED[id]=1;else delete HEARTED[id];saveHearted();b=Math.max(0,b+(on?1:-1));ct.textContent=b;
+fetch('/api/tribute/'+SLUG+'/memory/heart',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({memoryId:id,on:on})})
+.then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&typeof j.count==='number'){b=j.count;ct.textContent=b}}).catch(function(){});return}
+ct.textContent=b+(on?1:0)}})}
 wireLikes();
 /* ===== memories · grouped · 2x2 · working comments ===== */
 var MEMS=(T&&T.mems)||[
@@ -1394,7 +1404,7 @@ function memCard(m){
   return '<div class="mem-card'+(m.jj?' enter':'')+'"><span class="pin2"></span>'
    +'<div class="mem-head"><div class="mem-av">'+m.av+'</div><div><div class="mem-nm">'+m.nm+'</div><div class="mem-rel">'+m.rel+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
    +'<div class="mem-text">&ldquo;'+m.tx+'&rdquo;</div>'
-   +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
+   +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"'+(m.id?' data-id="'+m.id+'"':'')+'><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
    +'<div class="cdrawer">'+(cms||'<div class="c1" style="color:var(--ink-soft)">Be the first to leave a word.</div>')
    +'<div class="addc2"><input placeholder="Leave a word&hellip;"/><button type="button">Post</button></div></div></div>'}
 function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g===curG});
