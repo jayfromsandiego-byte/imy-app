@@ -1,5 +1,5 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
-// identity safety, tier behavior, hearts, comments, and voice wiring. 32 checks.
+// identity safety, tier behavior, hearts, comments, voice, and the Plus band. 40 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -127,6 +127,22 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("free gate speaks the Plus promise", htmlFree.includes("Voice memories live on Plus pages."));
   const badScheme = renderTribute(template, { ...voiced, memories: [{ ...voiced.memories![0], audio: "javascript:alert(1)" }] });
   t("non-https audio never reaches the page", boot(badScheme).mems[0].au === "");
+}
+
+
+// ── 7 · the quiet Plus band (July 8) ─────────────────────────────────────────
+{
+  const htmlFree = renderTribute(template, freeShe);
+  t("free page carries the Plus band", htmlFree.includes('id="plus-band"'));
+  t("band posts real checkout forms", htmlFree.includes('name="plan" value="plus_once"') && htmlFree.includes('name="plan" value="plus_monthly"'));
+  t("band carries the page slug", htmlFree.includes('name="slug" value="rose-8559"'));
+  t("band speaks her voice (she page)", htmlFree.includes("Her voice. Living pictures."));
+  t("band leads with the pledge", htmlFree.includes("Everything here is free, forever."));
+  const htmlSkipped = renderTribute(template, skipped);
+  t("band defaults to their voice (no pronouns)", htmlSkipped.includes("Their voice. Living pictures."));
+  const htmlPlus = renderTribute(template, jonny);
+  t("plus pages never carry the band", !htmlPlus.includes('id="plus-band"'));
+  t("concierge cta is a real intake, not the old mockup", htmlFree.includes("mailto:hello@imissyoumemorial.com?subject=Concierge") && !htmlFree.includes("hyperagent.com/s/aBadvO39KhiuGhTHgfi93g"));
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);
