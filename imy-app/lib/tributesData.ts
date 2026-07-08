@@ -10,7 +10,7 @@ const SELECT =
   "tribute_timeline(year,title,body,sort)," +
   "tribute_photos(url,caption,sort)," +
   "tribute_videos(url,caption,sort)," +
-  "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,hearts,created_at," +
+  "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,hearts,created_at,deleted_at," +
   "tribute_memory_comments(author_name,relation,body,status,created_at,deleted_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_audio(url,kind)," +
@@ -68,7 +68,7 @@ function rowToTribute(r: any): Tribute {
     loved: lovedThings.map((l: any) => ({ label: l.label })),
     reel: (r.tribute_videos || []).slice().sort(bySort).map((v: any) => ({ label: v.caption || "" })),
     memories: (r.tribute_memories || [])
-      .filter((m: any) => m.status === "approved")
+      .filter((m: any) => m.status === "approved" && !m.deleted_at)
       .map((m: any) => ({
         id: m.id,
         text: m.body,
