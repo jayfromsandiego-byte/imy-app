@@ -44,6 +44,21 @@ export async function moderateMemory(formData: FormData) {
   revalidatePath(`/dashboard/tributes/${tributeId}`);
 }
 
+/** Words left under memories moderate exactly like memories: approve · keep for family · soft-remove. */
+export async function moderateComment(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const id = String(formData.get("id") || "");
+  const tributeId = String(formData.get("tributeId") || "");
+  const action = String(formData.get("action") || "");
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, tributeId, user))) return;
+  if (action === "approve") await db.from("tribute_memory_comments").update({ status: "approved" }).eq("id", id).eq("tribute_id", tributeId);
+  else if (action === "hide") await db.from("tribute_memory_comments").update({ status: "hidden" }).eq("id", id).eq("tribute_id", tributeId);
+  else if (action === "delete") await db.from("tribute_memory_comments").update({ deleted_at: new Date().toISOString() }).eq("id", id).eq("tribute_id", tributeId);
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+}
+
 // ===== Photos / media manager =====
 
 /** Append uploaded photo URLs (newline-separated) to a tribute's gallery. */

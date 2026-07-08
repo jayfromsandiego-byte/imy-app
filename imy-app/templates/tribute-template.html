@@ -1401,7 +1401,7 @@ var curG='all',memPage=0,ID=null;
 GROUPS.forEach(function(g,i){var b=document.createElement('button');b.className='memtab'+(i===0?' on':'');var n=g[0]==='all'?MEMS.length:MEMS.filter(function(m){return m.g===g[0]}).length;b.innerHTML=g[1]+' <b>'+n+'</b>';b.onclick=function(){document.querySelectorAll('.memtab').forEach(function(x){x.classList.remove('on')});b.classList.add('on');curG=g[0];memPage=0;renderMems()};memTabs.appendChild(b)});
 function memCard(m){
   var cms=(m.cm||[]).map(function(x){return '<div class="c1"><b>'+x[0]+'</b><span class="r">'+x[1]+'</span><br>'+x[2]+'</div>'}).join('');
-  return '<div class="mem-card'+(m.jj?' enter':'')+'"><span class="pin2"></span>'
+  return '<div class="mem-card'+(m.jj?' enter':'')+'"'+(m.id?' data-mid="'+m.id+'"':'')+'><span class="pin2"></span>'
    +'<div class="mem-head"><div class="mem-av">'+m.av+'</div><div><div class="mem-nm">'+m.nm+'</div><div class="mem-rel">'+m.rel+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
    +'<div class="mem-text">&ldquo;'+m.tx+'&rdquo;</div>'
    +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"'+(m.id?' data-id="'+m.id+'"':'')+'><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
@@ -1418,7 +1418,22 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
     var d=btn.closest('.mem-card').querySelector('.cdrawer');d.classList.toggle('open')})});
   track.querySelectorAll('.cdrawer .addc2 button').forEach(function(bp){bp.addEventListener('click',function(){
     var inp=bp.parentNode.querySelector('input'),t=inp.value.trim();if(!t)return;
-    requireId(function(){var d=document.createElement('div');d.className='c1';d.innerHTML='<b>'+ID.fn+'</b><span class="r">'+ID.relLabel+'</span><br>'+t.replace(/</g,'&lt;');bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value=''})})});
+    var card=bp.closest('.mem-card'),mid=(card&&card.getAttribute('data-mid'))||'';
+    requireId(function(){
+      if(T&&mid){
+        /* production: a word goes to the family first — it joins the page when they welcome it in */
+        bp.disabled=true;
+        fetch('/api/tribute/'+SLUG+'/memory/comment',{method:'POST',headers:{'content-type':'application/json'},
+          body:JSON.stringify({memoryId:mid,name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:t,company:''})})
+        .then(function(r){return r.json()}).then(function(j){bp.disabled=false;
+          if(j&&j.ok){var d=document.createElement('div');d.className='c1';d.style.opacity='.62';
+            d.innerHTML='<b>'+ID.fn+'</b><span class="r">waiting for the family</span><br>'+t.replace(/</g,'&lt;');
+            bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value='';
+            say('Kept, '+ID.fn+'. Your words go to the family first &mdash; they join the page the moment they welcome them in.',false)}
+          else say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)})
+        .catch(function(){bp.disabled=false;say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)});
+        return}
+      var d=document.createElement('div');d.className='c1';d.innerHTML='<b>'+ID.fn+'</b><span class="r">'+ID.relLabel+'</span><br>'+t.replace(/</g,'&lt;');bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value=''})})});
 }
 renderMems();
 document.getElementById('memNext').onclick=function(){memPage++;renderMems()};

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
-import { saveTribute, moderateMemory } from "@/app/dashboard/actions";
+import { saveTribute, moderateMemory, moderateComment } from "@/app/dashboard/actions";
 import MediaManager from "@/components/MediaManager";
 
 export const dynamic = "force-dynamic";
@@ -34,9 +34,21 @@ export default async function EditTribute({ params }: { params: { id: string } }
     .eq("tribute_id", t.id)
     .is("deleted_at", null)
     .order("sort", { ascending: true });
+  const { data: comments } = await db
+    .from("tribute_memory_comments")
+    .select("id,memory_id,author_name,relation,body,status,created_at")
+    .eq("tribute_id", t.id)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false });
   const photoCount = (photos || []).length;
   const pending = (memories || []).filter((m: any) => m.status === "pending");
   const approved = (memories || []).filter((m: any) => m.status === "approved");
+  const pendingComments = (comments || []).filter((c: any) => c.status === "pending");
+  const memoryExcerpt = (memoryId: string) => {
+    const m = (memories || []).find((x: any) => x.id === memoryId);
+    const body = m?.body || "";
+    return body.length > 90 ? `${body.slice(0, 90)}…` : body;
+  };
 
   function timeAgo(iso: string) {
     const then = new Date(iso).getTime();
@@ -81,7 +93,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
           Read each one before deciding. Nothing here is visible to anyone until you choose.
         </p>
 
-        {pending.length === 0 ? (
+        {pending.length === 0 && pendingComments.length === 0 ? (
           <div className="empty-desk">
             <p className="line1">You&rsquo;ve read everything.</p>
             <p className="line2">Nothing waits for you today.</p>
@@ -112,6 +124,44 @@ export default async function EditTribute({ params }: { params: { id: string } }
                   </form>
                   <form action={moderateMemory}>
                     <input type="hidden" name="id" value={m.id} />
+                    <input type="hidden" name="tributeId" value={t.id} />
+                    <input type="hidden" name="action" value="hide" />
+                    <button type="submit" className="btn quiet">
+                      Keep for family
+                    </button>
+                  </form>
+                </div>
+              </article>
+            ))}
+            {pendingComments.map((c: any) => (
+              <article key={c.id} className="letter">
+                <div className="letter-top">
+                  <div className="letter-meta">
+                    <span className="letter-kind mono">A word</span>
+                    <span className="letter-from">
+                      {c.author_name}
+                      {c.relation ? ` · ${c.relation}` : ""}
+                    </span>
+                  </div>
+                  <span className="letter-when mono">{timeAgo(c.created_at)}</span>
+                </div>
+                <p className="letter-body quote">{`"${c.body}"`}</p>
+                {memoryExcerpt(c.memory_id) ? (
+                  <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 6 }}>
+                    left under: &ldquo;{memoryExcerpt(c.memory_id)}&rdquo;
+                  </p>
+                ) : null}
+                <div className="letter-actions">
+                  <form action={moderateComment}>
+                    <input type="hidden" name="id" value={c.id} />
+                    <input type="hidden" name="tributeId" value={t.id} />
+                    <input type="hidden" name="action" value="approve" />
+                    <button type="submit" className="btn primary">
+                      Share on the page
+                    </button>
+                  </form>
+                  <form action={moderateComment}>
+                    <input type="hidden" name="id" value={c.id} />
                     <input type="hidden" name="tributeId" value={t.id} />
                     <input type="hidden" name="action" value="hide" />
                     <button type="submit" className="btn quiet">

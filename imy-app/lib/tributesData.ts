@@ -10,7 +10,8 @@ const SELECT =
   "tribute_timeline(year,title,body,sort)," +
   "tribute_photos(url,caption,sort)," +
   "tribute_videos(url,caption,sort)," +
-  "tribute_memories(id,author_name,relation,body,status,photo_url,hearts,created_at)," +
+  "tribute_memories(id,author_name,relation,body,status,photo_url,hearts,created_at," +
+  "tribute_memory_comments(author_name,relation,body,status,created_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_audio(url,kind)," +
   "tribute_service(starts_at,venue,address,charity_name,charity_url)";
@@ -75,6 +76,10 @@ function rowToTribute(r: any): Tribute {
         rel: m.relation || "",
         hearts: m.hearts ?? 0,
         photos: m.photo_url ? [m.photo_url] : undefined,
+        comments: (m.tribute_memory_comments || [])
+          .filter((c: any) => c.status === "approved" && !c.deleted_at)
+          .sort((a: any, b: any) => String(a.created_at).localeCompare(String(b.created_at)))
+          .map((c: any) => ({ name: c.author_name, rel: c.relation || "", text: c.body })),
       })),
     lovedThings: lovedThings.map((l: any) => ({ label: l.label, motifKey: l.motif_key, note: l.note })),
     service: r.tribute_service

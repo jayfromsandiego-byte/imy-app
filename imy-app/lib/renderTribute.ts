@@ -18,7 +18,8 @@ export type TimelineItem = { year: string; title: string; text: string };
 export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
 export type PhotoItem = { url?: string; cap?: string };
-export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; photos?: string[] };
+export type MemoryComment = { name: string; rel: string; text: string };
+export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; comments?: MemoryComment[]; photos?: string[] };
 export type ReelItem = { poster?: string; label?: string; url?: string };
 
 export type Tribute = {
@@ -143,7 +144,7 @@ export function renderTribute(template: string, t: Tribute): string {
     rel: m.rel || "",
     tx: m.text || "",
     h: Math.max(0, m.hearts ?? 0),
-    cm: [] as unknown[],
+    cm: (m.comments || []).map((c) => [c.name || "A friend", c.rel || "", c.text || ""]).filter((c) => c[2]),
   })).filter((m) => m.tx);
 
   const CAP = 10;
