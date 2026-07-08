@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
 import { saveTribute, moderateMemory, moderateComment } from "@/app/dashboard/actions";
+import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
 
 export const dynamic = "force-dynamic";
@@ -44,6 +45,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
   const pending = (memories || []).filter((m: any) => m.status === "pending");
   const approved = (memories || []).filter((m: any) => m.status === "approved");
   const pendingComments = (comments || []).filter((c: any) => c.status === "pending");
+  const pn = pronounSet(t.pronouns);
   const memoryExcerpt = (memoryId: string) => {
     const m = (memories || []).find((x: any) => x.id === memoryId);
     const body = m?.body || "";
@@ -126,7 +128,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
                     <input type="hidden" name="tributeId" value={t.id} />
                     <input type="hidden" name="action" value="approve" />
                     <button type="submit" className="btn primary">
-                      Share on her page
+                      Share on {pn.pos} page
                     </button>
                   </form>
                   <form action={moderateMemory}>
@@ -200,7 +202,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
           The pictures
         </h2>
         <p className="panel-sub" style={{ marginBottom: 20 }}>
-          The first photo becomes her Memorial Stone and portrait.
+          The first photo becomes {pn.pos} Memorial Stone and portrait.
         </p>
         <MediaManager tributeId={t.id} photos={(photos as any) || []} />
       </section>
@@ -214,13 +216,13 @@ export default async function EditTribute({ params }: { params: { id: string } }
         <span className="stem-line" />
       </div>
 
-      {/* ---------- Her story ---------- */}
+      {/* ---------- Their story ---------- */}
       <section style={{ marginTop: 8 }}>
         <h2 className="panel-title" style={{ fontSize: 20, marginBottom: 6 }}>
-          Her story
+          {pn.Pos} story
         </h2>
         <p className="panel-sub" style={{ marginBottom: 20 }}>
-          A few core details for her page. Save whenever you like — nothing here is urgent.
+          A few core details for {pn.pos} page. Save whenever you like — nothing here is urgent.
         </p>
         <form action={saveTribute} className="story-room">
           <input type="hidden" name="id" value={t.id} />

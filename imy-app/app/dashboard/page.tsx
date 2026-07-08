@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { moderateMemory } from "@/app/dashboard/actions";
+import { pronounSet } from "@/lib/renderTribute";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +53,7 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
   const orFilter = email ? `owner_id.eq.${user.id},owner_email.eq.${email}` : `owner_id.eq.${user.id}`;
   const { data: tributesData } = await db
     .from("tributes")
-    .select("id,slug,loved_one_name,tier,status,candle_count,flower_count,died_on,story,created_at")
+    .select("id,slug,loved_one_name,pronouns,tier,status,candle_count,flower_count,died_on,story,created_at")
     .or(orFilter)
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
@@ -104,6 +105,7 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
   const anniv = daysUntilAnniversary(t.died_on);
   const name = t.loved_one_name || "them";
   const possessive = /s$/i.test(name.split(" ")[0] || "") ? `${name}'` : `${name}'s`;
+  const pn = pronounSet(t.pronouns);
 
   return (
     <section className="panel-head stagger">
@@ -153,7 +155,7 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
                   <input type="hidden" name="tributeId" value={t.id} />
                   <input type="hidden" name="action" value="approve" />
                   <button type="submit" className="btn primary small">
-                    Share on her page
+                    Share on {pn.pos} page
                   </button>
                 </form>
                 <form action={moderateMemory}>
@@ -234,7 +236,7 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
           </p>
           <div className="card-foot">
             <Link href={`/dashboard/tributes/${t.id}`} className="btn quiet">
-              Visit her story
+              Visit {pn.pos} story
             </Link>
           </div>
         </div>
@@ -278,7 +280,7 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
           </p>
           <div className="card-foot">
             <Link href={`/sites/${t.slug}`} target="_blank" rel="noopener noreferrer" className="btn quiet">
-              See how her page is tended
+              See how {pn.pos} page is tended
             </Link>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
+import { pronounSet } from "@/lib/renderTribute";
 import A11yBar from "./_components/A11yBar";
 import { MobileTopbar, SidebarScrim, PagesSwitcher } from "./_components/StudySidebarChrome";
 import "./study.css";
@@ -40,7 +41,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     const orFilter = email ? `owner_id.eq.${user.id},owner_email.eq.${email}` : `owner_id.eq.${user.id}`;
     const { data } = await db
       .from("tributes")
-      .select("id,slug,loved_one_name,born_on,died_on,tier,status,candle_count,created_at")
+      .select("id,slug,loved_one_name,pronouns,born_on,died_on,tier,status,candle_count,created_at")
       .or(orFilter)
       .is("deleted_at", null)
       .order("created_at", { ascending: false });
@@ -138,7 +139,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
           {first ? (
             <a className="see-page-link mono" href={`/sites/${first.slug}`} target="_blank" rel="noopener noreferrer">
-              See her page {"→"}
+              See {pronounSet(first.pronouns).pos} page {"→"}
             </a>
           ) : null}
 
@@ -194,10 +195,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             <div className="plan-strip mono">
               {first ? (
                 <>
-                  {first.tier === "free" || !first.tier ? "Free plan" : "Plus plan"} {"·"} her page stays online, <b>always</b>
+                  {first.tier === "free" || !first.tier ? "Free plan" : "Plus plan"} {"·"} {pronounSet(first.pronouns).pos} page stays online, <b>always</b>
                 </>
               ) : (
-                "her page stays online, always"
+                "every page stays online, always"
               )}
             </div>
             <form action="/auth/signout" method="post">

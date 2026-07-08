@@ -95,8 +95,9 @@ function classifyGroup(rel: string): string {
   return "friends";
 }
 
-/** The words a page uses for its person. Default is they/them — never a guess. */
-function pronounSet(p?: string) {
+/** The words a page uses for its person. Default is they/them — never a guess.
+ *  Exported so the dashboard speaks the same words the page does. */
+export function pronounSet(p?: string) {
   if (p === "he") return { sub: "he", Sub: "He", obj: "him", pos: "his", Pos: "His" };
   if (p === "she") return { sub: "she", Sub: "She", obj: "her", pos: "her", Pos: "Her" };
   return { sub: "they", Sub: "They", obj: "them", pos: "their", Pos: "Their" };

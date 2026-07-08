@@ -75,7 +75,7 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
           </h1>
         </div>
         <p className="panel-sub">
-          Plus is a one-time $97 (or $12/month, with a 3-day free trial). Her page stays online no matter what — we never charge
+          Plus is a one-time $97 (or $12/month, with a 3-day free trial). Every page stays online no matter what — we never charge
           a family to keep a memory.
         </p>
       </div>
@@ -107,7 +107,7 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
 
               {trialing ? (
                 <div className="trial-banner" style={{ marginTop: 14 }}>
-                  <b>Her trial ends soon</b> — it becomes $12/month unless you cancel before it ends.
+                  <b>This trial ends soon</b> — it becomes $12/month unless you cancel before it ends.
                 </div>
               ) : null}
 
