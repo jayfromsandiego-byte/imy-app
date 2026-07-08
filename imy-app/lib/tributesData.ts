@@ -11,7 +11,7 @@ const SELECT =
   "tribute_photos(url,caption,sort)," +
   "tribute_videos(url,caption,sort)," +
   "tribute_memories(id,author_name,relation,body,status,photo_url,hearts,created_at," +
-  "tribute_memory_comments(author_name,relation,body,status,created_at))," +
+  "tribute_memory_comments(author_name,relation,body,status,created_at,deleted_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_audio(url,kind)," +
   "tribute_service(starts_at,venue,address,charity_name,charity_url)";
