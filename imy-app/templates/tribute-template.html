@@ -1032,7 +1032,7 @@ body.a11y-nomotion .living{opacity:0!important}
         <div class="addingas" id="addingAs"></div>
           <p class="safekeep" id="safekeepLine" hidden>Write it now — your words are kept safe. They will join the wall the moment someone opens it for everyone.</p>
         <textarea id="memInput" placeholder="What do you remember?"></textarea>
-        <div class="share-row"><button class="ghostadd">＋ Add photos &amp; video</button><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
+        <div class="share-row"><button class="ghostadd">＋ Add photos &amp; video</button><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
         <div class="chatbox" id="chatbox" style="display:none">
           <div class="ch-h">Tell me one true thing about Eleanor, and we will shape it together.<span class="mono">Closer to a friend than a form · it never writes for you</span></div>
           <div class="ch-b" id="chatBody"><div class="cmsg bot">What is one small thing you don&#39;t want to forget about her?</div></div>
@@ -1404,6 +1404,7 @@ function memCard(m){
   return '<div class="mem-card'+(m.jj?' enter':'')+'"'+(m.id?' data-mid="'+m.id+'"':'')+'><span class="pin2"></span>'
    +'<div class="mem-head"><div class="mem-av">'+m.av+'</div><div><div class="mem-nm">'+m.nm+'</div><div class="mem-rel">'+m.rel+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
    +'<div class="mem-text">&ldquo;'+m.tx+'&rdquo;</div>'
+   +(m.au?'<audio controls preload="none" src="'+m.au+'" aria-label="A voice memory" style="width:100%;display:block;margin:10px 0 2px;height:34px"></audio><div class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--ink-soft);margin-bottom:6px">a voice, kept</div>':'')
    +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"'+(m.id?' data-id="'+m.id+'"':'')+'><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
    +'<div class="cdrawer">'+(cms||'<div class="c1" style="color:var(--ink-soft)">Be the first to leave a word.</div>')
    +'<div class="addc2"><input placeholder="Leave a word&hellip;"/><button type="button">Post</button></div></div></div>'}
@@ -1438,6 +1439,26 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
 renderMems();
 document.getElementById('memNext').onclick=function(){memPage++;renderMems()};
 document.getElementById('memPrev').onclick=function(){memPage--;renderMems()};
+/* a voice memory · Plus — a voicemail kept, a story told aloud; it waits for the family like any other memory */
+var VOICE={url:''};
+var vBtn=document.getElementById('voiceAdd'),vFile=document.getElementById('voiceFile');
+if(vBtn&&vFile){
+  vBtn.onclick=function(){
+    if(!T){say('On a live memorial, this attaches a real recording. This is the demo.',false);return}
+    if(body.dataset.tier==='free'){say('Voice memories live on Plus pages. Every photo and note stays free, forever.',false);return}
+    requireId(function(){vFile.click()})};
+  vFile.addEventListener('change',function(){
+    var f=vFile.files&&vFile.files[0];if(!f)return;
+    if(f.size>25*1024*1024){say('That recording is over 25MB. A shorter clip will land just fine.',false);vFile.value='';return}
+    vBtn.disabled=true;vBtn.textContent='Keeping the voice safe…';
+    var fd=new FormData();fd.append('files',f);
+    fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
+      vBtn.disabled=false;
+      if(j&&j.ok&&j.urls&&j.urls[0]){VOICE.url=j.urls[0];vBtn.textContent='♪ A voice is attached · change'}
+      else{vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
+    }).catch(function(){vBtn.disabled=false;vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
+    vFile.value=''});
+}
 document.getElementById('shareBtn').onclick=function(){
   requireId(function(){
     var tx=document.getElementById('memInput').value.trim();
@@ -1446,10 +1467,11 @@ document.getElementById('shareBtn').onclick=function(){
       /* production: memories go to the family first — every word waits for their yes */
       var btn=document.getElementById('shareBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Keeping it safe…';
       fetch('/api/tribute/'+SLUG+'/memory',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:''})})
+        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',audioUrl:VOICE.url||''})})
       .then(function(r){return r.json()}).then(function(j){
         btn.disabled=false;btn.textContent=old;
         if(j&&j.ok){document.getElementById('memInput').value='';
+          VOICE.url='';if(vBtn)vBtn.textContent='＋ Add a voice memory';
           say('Kept, '+ID.fn+'. Your memory goes to the family first — it joins the wall the moment they welcome it in.',false)}
         else say('That didn&rsquo;t save. Give it a moment and try again — nothing you wrote is lost.',false)})
       .catch(function(){btn.disabled=false;btn.textContent=old;

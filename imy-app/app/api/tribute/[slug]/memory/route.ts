@@ -36,6 +36,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   const name = clean(body.name, 80) || "A friend";
   const relation = clean(body.relation, 60) || null;
   const photoUrl = /^https:\/\//.test(String(body.photoUrl || "")) ? clean(body.photoUrl, 600) : null;
+  const audioUrl = /^https:\/\//.test(String(body.audioUrl || "")) ? clean(body.audioUrl, 600) : null;
   if (text.length < 2) return NextResponse.json({ ok: false, error: "empty" }, { status: 400 });
 
   const ip = clientIp(req);
@@ -45,12 +46,16 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   const db = supabaseAdmin();
   const { data: trib } = await db
     .from("tributes")
-    .select("id, loved_one_name, owner_email")
+    .select("id, loved_one_name, owner_email, tier")
     .eq("slug", slug)
     .eq("status", "published")
     .is("deleted_at", null)
     .maybeSingle();
   if (!trib) return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
+
+  // "Their voice" is a Plus promise — on a free page the words still land, the
+  // recording quietly doesn't (the composer never offers it there anyway).
+  const isPlus = trib.tier === "plus" || trib.tier === "heirloom";
 
   const { error } = await db.from("tribute_memories").insert({
     tribute_id: trib.id,
@@ -58,6 +63,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
     relation,
     body: text,
     photo_url: photoUrl,
+    audio_url: isPlus ? audioUrl : null,
     status: "pending",
   });
   if (error) return NextResponse.json({ ok: false, error: "failed" }, { status: 500 });

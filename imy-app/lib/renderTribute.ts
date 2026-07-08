@@ -19,7 +19,7 @@ export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
 export type PhotoItem = { url?: string; cap?: string };
 export type MemoryComment = { name: string; rel: string; text: string };
-export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; comments?: MemoryComment[]; photos?: string[] };
+export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; comments?: MemoryComment[]; photos?: string[] };
 export type ReelItem = { poster?: string; label?: string; url?: string };
 
 export type Tribute = {
@@ -144,6 +144,8 @@ export function renderTribute(template: string, t: Tribute): string {
     rel: m.rel || "",
     tx: m.text || "",
     h: Math.max(0, m.hearts ?? 0),
+    // Their voice is a Plus promise: on a resting (free) page recordings sleep — kept, not shown.
+    au: tier === "plus" && m.audio && /^https:\/\//.test(m.audio) ? m.audio : "",
     cm: (m.comments || []).map((c) => [c.name || "A friend", c.rel || "", c.text || ""]).filter((c) => c[2]),
   })).filter((m) => m.tx);
 

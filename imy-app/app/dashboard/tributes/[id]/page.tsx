@@ -113,6 +113,13 @@ export default async function EditTribute({ params }: { params: { id: string } }
                   <span className="letter-when mono">{timeAgo(m.created_at)}</span>
                 </div>
                 <p className="letter-body quote">{`"${m.body}"`}</p>
+                {m.audio_url ? (
+                  <div style={{ margin: "6px 0 2px" }}>
+                    {/* a voice came with this memory — listen before deciding */}
+                    <audio controls preload="none" src={m.audio_url} style={{ width: "100%", height: 34, display: "block" }} />
+                    <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 4 }}>a voice came with this memory</p>
+                  </div>
+                ) : null}
                 <div className="letter-actions">
                   <form action={moderateMemory}>
                     <input type="hidden" name="id" value={m.id} />
