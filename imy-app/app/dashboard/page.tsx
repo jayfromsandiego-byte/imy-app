@@ -284,6 +284,21 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
             </Link>
           </div>
         </div>
+
+        {/* Plus, quietly — only on free pages, only ever an offer */}
+        {t.tier === "free" || !t.tier ? (
+          <div className="s-card full stagger" style={{ animationDelay: ".3s" }}>
+            <p className="sentence">
+              This page is free, forever — that promise holds. <b>Plus keeps more</b>: {pn.pos} voice, living
+              pictures, every photograph, the whole wall, an exact-name address. $97 once, or $12 a month.
+            </p>
+            <div className="card-foot">
+              <Link href="/dashboard/billing" className="btn quiet">
+                Keep everything
+              </Link>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className="leaf-divider" aria-hidden="true">

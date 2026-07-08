@@ -335,6 +335,35 @@ export function renderTribute(template: string, t: Tribute): string {
   ];
   for (const [from, to] of table) html = html.split(from).join(to);
 
+  // 6b) The quiet Plus band — free pages only, standing just above the concierge
+  // band. The pledge leads, the offer follows; two real checkout forms, no theatre.
+  // Injected here (never in the locked template) so plus pages never carry it.
+  if (tier === "free" && slug) {
+    const bandAnchor = '<div class="gw-band">';
+    const bandIdx = html.indexOf(bandAnchor);
+    if (bandIdx > -1) {
+      const checkoutForm = (plan: string, cls: string, label: string) =>
+        `<form method="POST" action="/api/stripe/checkout" style="display:inline-block;margin:0">` +
+        `<input type="hidden" name="plan" value="${plan}"/>` +
+        `<input type="hidden" name="slug" value="${esc(slug)}"/>` +
+        `<input type="hidden" name="returnTo" value="/sites/${esc(slug)}"/>` +
+        `<button type="submit" class="${cls}">${label}</button></form>`;
+      const band =
+        `<section id="plus-band" aria-label="Plus" style="background:#F3ECDD;border-top:1px solid #E4D9C4;border-bottom:1px solid #E4D9C4;padding:56px 5%;text-align:center">` +
+        `<div style="max-width:620px;margin:0 auto">` +
+        `<div class="mono" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8A7C6D;margin-bottom:14px">Keeping more of ${esc(first)}</div>` +
+        `<h3 style="font-family:'Besley',serif;font-weight:500;font-size:clamp(22px,3.4vw,30px);line-height:1.25;margin:0 0 10px;color:#2C2520">Everything here is free, forever. <em style="color:#A87C5F">Plus</em> keeps more.</h3>` +
+        `<p style="color:#5A4F45;font-size:15.5px;line-height:1.65;margin:0 0 24px">${pn.Pos} voice. Living pictures. Every photograph, the whole wall, an exact-name address. One choice, made once.</p>` +
+        `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">` +
+        checkoutForm("plus_once", "btn solid", "Keep everything · $97 once") +
+        checkoutForm("plus_monthly", "btn", "$12 a month · 3 days free") +
+        `</div>` +
+        `<div class="mono" style="font-size:11px;letter-spacing:.14em;color:#8A7C6D;margin-top:18px">the pledge holds · if plus ever rests, the page stays · nothing is ever taken down</div>` +
+        `</div></section>`;
+      html = html.slice(0, bandIdx) + band + html.slice(bandIdx);
+    }
+  }
+
   // 7) Sections with nothing real to show, rest quietly.
   {
     const hides: string[] = [];
