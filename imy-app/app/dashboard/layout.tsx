@@ -179,8 +179,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               }
             />
             <NavItem
-              href="/dashboard"
-              label="Settings"
+              href="/dashboard/account"
+              label="Account"
               icon={
                 <>
                   <circle cx="12" cy="12" r="3" />
