@@ -5,6 +5,7 @@ import { supabaseAdmin } from "@/lib/supabaseServer";
 import { saveTribute, moderateMemory, moderateComment } from "@/app/dashboard/actions";
 import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
+import PlacementsManager from "@/components/PlacementsManager";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,11 @@ export default async function EditTribute({ params }: { params: { id: string } }
     .select("id,url,sort")
     .eq("tribute_id", t.id)
     .is("deleted_at", null)
+    .order("sort", { ascending: true });
+  const { data: timeline } = await db
+    .from("tribute_timeline")
+    .select("id,year,title,sort")
+    .eq("tribute_id", t.id)
     .order("sort", { ascending: true });
   const { data: comments } = await db
     .from("tribute_memory_comments")
@@ -205,6 +211,27 @@ export default async function EditTribute({ params }: { params: { id: string } }
           The first photo becomes {pn.pos} Memorial Stone and portrait.
         </p>
         <MediaManager tributeId={t.id} photos={(photos as any) || []} />
+      </section>
+
+      <div className="leaf-divider" aria-hidden="true">
+        <span className="stem-line" />
+        <svg viewBox="0 0 26 16">
+          <path d="M13 8c-4-3-8-3-11 0 3 3 7 3 11 0z" fill="none" stroke="currentColor" strokeWidth="1.1" />
+          <path d="M13 8c4-3 8-3 11 0-3 3-7 3-11 0z" fill="none" stroke="currentColor" strokeWidth="1.1" />
+        </svg>
+        <span className="stem-line" />
+      </div>
+
+      {/* ---------- Where each photograph lives ---------- */}
+      <section style={{ marginTop: 8 }}>
+        <PlacementsManager
+          tributeId={t.id}
+          photos={((photos as any) || []).map((p: any) => ({ id: String(p.id), url: p.url }))}
+          timeline={((timeline as any) || []).map((r: any) => ({ id: String(r.id), year: r.year || "", title: r.title || "" }))}
+          placements={(t.placements as any) || null}
+          bornYear={t.born_on ? Number(String(t.born_on).slice(0, 4)) : undefined}
+          diedYear={t.died_on ? Number(String(t.died_on).slice(0, 4)) : undefined}
+        />
       </section>
 
       <div className="leaf-divider" aria-hidden="true">

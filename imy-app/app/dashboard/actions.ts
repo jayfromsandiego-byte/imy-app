@@ -140,3 +140,83 @@ export async function moveTributePhoto(formData: FormData) {
   await db.from("tribute_photos").update({ sort: a.sort }).eq("id", b.id);
   revalidatePath(`/dashboard/tributes/${tributeId}`);
 }
+
+// ── Where each photograph lives (fix 3 + fix 4 + fix 8) ──────────────────────
+// One save carries the family's placements (quote · board · chapters) and their
+// edited timeline (years checked server-side: inside the life, 1900–now).
+// Implausible years are set aside quietly; the words are always kept.
+export async function savePlacements(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, tributeId, user))) return;
+
+  const { data: t } = await db.from("tributes").select("id,born_on,died_on,placements").eq("id", tributeId).maybeSingle();
+  if (!t) return;
+  const { data: photoRows } = await db.from("tribute_photos").select("id").eq("tribute_id", tributeId).is("deleted_at", null);
+  const photoIds = new Set((photoRows || []).map((p: any) => String(p.id)));
+
+  let pl: any = {};
+  let rows: any[] = [];
+  try { pl = JSON.parse(String(formData.get("placements") || "{}")) || {}; } catch { pl = {}; }
+  try { rows = JSON.parse(String(formData.get("timeline") || "[]")) || []; } catch { rows = []; }
+  if (!Array.isArray(rows)) rows = [];
+  rows = rows.slice(0, 40);
+
+  // Timeline sync: update kept rows, insert new ones, remove the rest.
+  const nowYear = new Date().getFullYear();
+  const bY = t.born_on ? Number(String(t.born_on).slice(0, 4)) : 1900;
+  const dY = t.died_on ? Number(String(t.died_on).slice(0, 4)) : nowYear;
+  const lo = Math.max(1900, bY);
+  const hi = Math.min(nowYear, dY);
+  const cleanYear = (v: any): string => {
+    const s = String(v ?? "").trim();
+    if (!/^\d{4}$/.test(s)) return "";
+    const y = Number(s);
+    return y >= lo && y <= hi ? s : "";
+  };
+
+  const { data: existing } = await db.from("tribute_timeline").select("id").eq("tribute_id", tributeId);
+  const existingIds = new Set((existing || []).map((r: any) => String(r.id)));
+  const keptIds = new Set<string>();
+  const keyToId: Record<string, string> = {};
+
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i] || {};
+    const title = String(r.title || "").slice(0, 140).trim();
+    const year = cleanYear(r.year);
+    if (!title && !year) continue; // an empty line is not a moment
+    if (r.id && existingIds.has(String(r.id))) {
+      keptIds.add(String(r.id));
+      await db.from("tribute_timeline").update({ year, title, sort: i }).eq("id", r.id).eq("tribute_id", tributeId);
+    } else if (!r.id) {
+      const { data: ins } = await db.from("tribute_timeline")
+        .insert({ tribute_id: tributeId, year, title, body: "", sort: i })
+        .select("id").single();
+      if (ins?.id && r.k) keyToId[String(r.k)] = String(ins.id);
+      if (ins?.id) keptIds.add(String(ins.id));
+    }
+  }
+  const toRemove = [...existingIds].filter((id) => !keptIds.has(id));
+  if (toRemove.length) {
+    await db.from("tribute_timeline").delete().in("id", toRemove).eq("tribute_id", tributeId);
+  }
+
+  // Placements: only this tribute's photos, only known shapes.
+  const quote = typeof pl.quote === "string" && photoIds.has(pl.quote) ? pl.quote : undefined;
+  const board = Array.isArray(pl.board) ? pl.board.filter((id: any) => typeof id === "string" && photoIds.has(id)).slice(0, 24) : [];
+  const chaptersIn = pl.chapters && typeof pl.chapters === "object" ? pl.chapters : {};
+  const chapters: Record<string, string[]> = {};
+  for (const [key, val] of Object.entries(chaptersIn)) {
+    const realKey = keyToId[key] || key;
+    if (realKey !== "_group" && !keptIds.has(realKey) && !existingIds.has(realKey)) continue;
+    const ids = (Array.isArray(val) ? val : []).filter((id: any) => typeof id === "string" && photoIds.has(id)).slice(0, 6);
+    if (realKey === "_group" || ids.length) chapters[realKey] = realKey === "_group" ? (Array.isArray(val) ? val.filter((id: any) => photoIds.has(id)) : []) : ids;
+  }
+
+  const placements = { ...(quote ? { quote } : {}), board, chapters };
+  await db.from("tributes").update({ placements }).eq("id", tributeId);
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+  revalidatePath("/dashboard");
+}
