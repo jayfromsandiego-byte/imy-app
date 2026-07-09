@@ -21,6 +21,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Tell me one true thing to start." }, { status: 400 });
   }
 
+  // The open door: any OpenAI-compatible provider (Groq, OpenRouter, Cerebras —
+  // free keys serving open models). Configured, it is tried first — an explicit
+  // choice. ASSIST_BASE_URL like https://api.groq.com/openai/v1.
+  const aKey = process.env.ASSIST_API_KEY;
+  const aBase = (process.env.ASSIST_BASE_URL || "").replace(/\/+$/, "");
+  if (aKey && aBase) {
+    try {
+      const res = await fetch(`${aBase}/chat/completions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${aKey}` },
+        body: JSON.stringify({
+          model: process.env.ASSIST_MODEL || "llama-3.3-70b-versatile",
+          temperature: 0.7,
+          messages: [
+            { role: "system", content: SYSTEM },
+            { role: "user", content: `About ${name}. ${prompt}` },
+          ],
+        }),
+      });
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content?.trim();
+      if (text) return NextResponse.json({ ok: true, text });
+    } catch {
+      /* fall through to the next provider */
+    }
+  }
+
   const key = process.env.OPENAI_API_KEY;
   if (key) {
     try {
