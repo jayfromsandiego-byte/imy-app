@@ -1343,18 +1343,18 @@ function setCh(i,manual){chI=(i+CH.length)%CH.length;phI=0;
   document.querySelectorAll('.period').forEach(function(x,k){x.classList.toggle('on',k===chI)});
   var c=CH[chI];
   moBox.innerHTML=c.mo.map(function(m,k){return '<div class="mo'+(k===0?' on':'')+'" data-k="'+k+'"><span class="yr">'+m[0]+'</span><div class="tx">'+m[1]+'</div></div>'}).join('');
-  moBox.querySelectorAll('.mo').forEach(function(m){m.onclick=function(){moBox.querySelectorAll('.mo').forEach(function(x){x.classList.remove('on')});m.classList.add('on');var k=Math.min(+m.dataset.k,c.ph.length-1);setPh(k,true)}});
-  car.innerHTML=c.ph.map(function(pp,k){return '<div class="ci'+(k===0?' on':'')+'"><img src="'+IMGS[pp[0]]+'" alt=""/>'+(body.dataset.tier==='plus'&&LIV[pp[0]]?'<video class="living" src="'+LIV[pp[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video>':'')+'<div class="cv"></div><div class="cc">'+pp[1]+'</div></div>'}).join('');
+  moBox.querySelectorAll('.mo').forEach(function(m){m.onclick=function(){moBox.querySelectorAll('.mo').forEach(function(x){x.classList.remove('on')});m.classList.add('on');if(!c.ph.length)return;var k=Math.min(+m.dataset.k,c.ph.length-1);setPh(k,true)}});
+  car.innerHTML=(c.ph.length?c.ph:[null]).map(function(pp,k){if(!pp)return '<div class="ci'+(k===0?' on':'')+'" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 30%,#F7F0E1,#EFE6D2)"><div class="cc" style="position:static;text-align:center;opacity:.75">no photograph for this moment · yet</div></div>';return '<div class="ci'+(k===0?' on':'')+'"><img src="'+IMGS[pp[0]]+'" alt=""/>'+(body.dataset.tier==='plus'&&LIV[pp[0]]?'<video class="living" src="'+LIV[pp[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video>':'')+'<div class="cv"></div><div class="cc">'+pp[1]+'</div></div>'}).join('');
   carDots.innerHTML=c.ph.map(function(_,k){return '<button'+(k===0?' class="on"':'')+' aria-label="Photo '+(k+1)+'"></button>'}).join('');
   [].forEach.call(carDots.children,function(d,k){d.onclick=function(){setPh(k,true)}});
-  carCap.textContent=c.name+' · '+c.yrs+' · '+c.ph.length+' pictures';if(typeof syncLiving==='function')syncLiving();
+  var _n=c.ph.filter(function(x){return x}).length;carCap.textContent=c.name+' · '+c.yrs+(_n?' · '+_n+' pictures':'');if(typeof syncLiving==='function')syncLiving();
   if(manual)restart(9000)}
-function setPh(k,manual){var c=CH[chI];phI=(k+c.ph.length)%c.ph.length;
+function setPh(k,manual){var c=CH[chI];if(!c.ph.length)return;phI=(k+c.ph.length)%c.ph.length;
   [].forEach.call(car.children,function(x,j){x.classList.toggle('on',j===phI)});
   [].forEach.call(carDots.children,function(x,j){x.classList.toggle('on',j===phI)});
   var mos=moBox.querySelectorAll('.mo');mos.forEach(function(x,j){x.classList.toggle('on',j===Math.min(phI,mos.length-1))});
   if(manual)restart(9000)}
-function tickCh(){var c=CH[chI];if(phI+1<c.ph.length)setPh(phI+1,false);else setCh(chI+1,false)}
+function tickCh(){var c=CH[chI];if(c.ph.length&&phI+1<c.ph.length)setPh(phI+1,false);else setCh(chI+1,false)}
 function restart(ms){clearTimeout(auto);if(!noMo())auto=setTimeout(function(){tickCh();restart(4200)},ms||4200)}
 if(CH.length){setCh(0,false);restart(4600)}else{var _st=document.getElementById('story');if(_st)_st.style.display='none'}
 renderGal();

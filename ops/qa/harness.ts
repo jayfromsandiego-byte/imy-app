@@ -1,6 +1,7 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
-// the footer address, flower persistence, and truthful presence. 53 checks.
+// the footer address, flower persistence, truthful presence, and photo
+// placements. 65 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -154,6 +155,32 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("template hydrates today's count from boot", html.includes("if(T&&T.fwt)"));
   t("lay POST consumes the server's today count", html.includes("if(j&&j.ok&&j.today)"));
   t("negative today count clamps to zero", boot(renderTribute(template, { ...jonny, flowerToday: -3 })).fwt === 0);
+}
+
+// ── 11 · placements: every photograph knows its place (July 8) ────────────────
+{
+  const phA = { id: "ph-a", url: "https://x/p0.jpg" }, phB = { id: "ph-b", url: "https://x/p1.jpg", cap: "the bench" };
+  const tlA = { id: "tl-a", year: "1968", title: "Married" }, tlB = { id: "tl-b", year: "1975", title: "The house" };
+  const base = { ...jonny, photos: [phA, phB], timeline: [tlA, tlB] };
+  const aligned = boot(renderTribute(template, { ...base, placements: { chapters: { "tl-a": ["ph-b"] } } }));
+  t("aligned chapters flag on", aligned.ch[0].al === 1);
+  t("a moment's own photo sits at its index", JSON.stringify(aligned.ch[0].ph[0]) === JSON.stringify(["p1", "the bench"]));
+  t("an unassigned moment is a quiet null", aligned.ch[0].ph[1] === null);
+  const legacy = boot(renderTribute(template, { ...base, placements: { chapters: { _group: ["ph-a", "ph-b"] } } }));
+  t("legacy group keeps the pre-placements look", !legacy.ch[0].al && legacy.ch[0].ph.length === 2 && legacy.ch[0].ph[0][0] === "p0");
+  const bareB = boot(renderTribute(template, base));
+  t("no placements → chapters carry no photos", Array.isArray(bareB.ch[0].ph) && bareB.ch[0].ph.length === 0);
+  t("no placements → no board built from the gallery", (bareB.boards || []).length === 0);
+  const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
+  t("quote band without a placement carries no photo", bareHtml.includes('<section class="band rev" style="background:#241711">'));
+  const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
+  t("quote band uses the placed photograph", withQ.includes('<div class="bgi"><img src="https://x/p1.jpg"'));
+  const pinned = boot(renderTribute(template, { ...base, placements: { board: ["ph-b", "ph-a"] } }));
+  t("board follows the family's order", pinned.boards[0].items[0].img === "https://x/p1.jpg" && pinned.boards[0].items[1].img === "https://x/p0.jpg");
+  const keeps = boot(renderTribute(template, { ...base, memories: [{ ...mem("99999999-9999-4999-8999-999999999999", "Ana", "a neighbour", "The bench he built.", 2), photos: ["https://x/keep.jpg"] }] }));
+  t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
+  t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
+  t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
 }
 
 // ── 10 · presence is real or silent — never simulated (July 8) ───────────────

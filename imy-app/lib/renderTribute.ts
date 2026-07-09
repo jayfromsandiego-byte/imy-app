@@ -14,10 +14,16 @@
 
 import { type LovedThing } from "./lovedThings";
 
-export type TimelineItem = { year: string; title: string; text: string };
+export type TimelineItem = { id?: string; year: string; title: string; text: string };
 export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
-export type PhotoItem = { url?: string; cap?: string };
+export type PhotoItem = { id?: string; url?: string; cap?: string };
+// Every photo slot the family controls (fix 4): no slot ever auto-fills.
+export type Placements = {
+  quote?: string; // photo id behind their words
+  board?: string[]; // bulletin board, owner-placed (ordered photo ids)
+  chapters?: Record<string, string[]>; // timeline row id → photo ids ("_group" = legacy shared set)
+};
 export type MemoryComment = { name: string; rel: string; text: string };
 export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; comments?: MemoryComment[]; photos?: string[] };
 export type ReelItem = { poster?: string; label?: string; url?: string };
@@ -56,6 +62,7 @@ export type Tribute = {
   voiceUrl?: string;
   reel?: ReelItem[];
   memories?: MemoryItem[];
+  placements?: Placements;
   sponsor?: { name?: string; photoUrl?: string; message?: string };
 };
 
@@ -128,13 +135,33 @@ export function renderTribute(template: string, t: Tribute): string {
   const liv: Record<string, string> = {};
   videos.forEach((v, i) => { if (imgs[`p${i}`]) liv[`p${i}`] = v.url; });
 
+  // ── placements (fix 4): the family assigns every slot; nothing auto-fills ──
+  const pl = t.placements;
+  const byId: Record<string, { key: string; url: string; cap: string }> = {};
+  photos.forEach((p, i) => { if (p.id) byId[p.id] = { key: `p${i}`, url: p.url as string, cap: p.cap || "" }; });
+
   const timeline = t.timeline || [];
+  // Chapters (fix 3): a photo belongs to its moment. Per-moment assignments render
+  // aligned (ph[k] is mo[k]'s photograph, null = a quiet empty state). The legacy
+  // "_group" set reproduces the pre-placements look for pages sealed before 0013.
+  const chAssign = pl?.chapters || undefined;
+  const perMoment = !!chAssign && timeline.some((m) => m.id && Array.isArray(chAssign[m.id]) && chAssign[m.id].some((x) => byId[x]));
+  const groupIds = (chAssign?.["_group"] || []).filter((x) => byId[x]);
+  const chPh: (unknown[] | null)[] = perMoment
+    ? timeline.map((m) => {
+        const id = ((m.id && chAssign?.[m.id]) || []).find((x) => byId[x]);
+        return id ? [byId[id].key, byId[id].cap] : null;
+      })
+    : groupIds.length
+      ? groupIds.map((x) => [byId[x].key, byId[x].cap])
+      : [];
   const ch = timeline.length
     ? [{
         name: `${first}'s life`,
         yrs: "in moments",
         mo: timeline.map((m) => [m.year || "", m.title || m.text || ""]),
-        ph: gal.slice(0, 3).length ? gal.slice(0, 3) : (photos[0] ? [["p0", photos[0].cap || ""]] : []),
+        ph: chPh,
+        ...(perMoment ? { al: 1 } : {}),
       }]
     : [];
 
@@ -159,15 +186,26 @@ export function renderTribute(template: string, t: Tribute): string {
 
   const words = (t.lovedThings || []).map((l) => String(l.label || "").toLowerCase()).filter(Boolean).slice(0, 8);
 
-  const boards = photos.length
-    ? [{
-        key: "photos",
-        label: "Photographs",
-        items: photos.slice(0, 8).map((p, i) => ({
-          t: "photo", img: p.url, ttl: p.cap || "", who: "", rel: "",
-          date: "", h: 0, r: (i % 2 ? 3 : -3) + (i % 3), c: [] as unknown[],
-        })),
-      }]
+  // The bulletin board (fix 5) is its own place: owner-placed keepsakes first
+  // (placements.board, in the family's order), then visitor-left photographs
+  // from approved memories. It never mirrors the gallery on its own.
+  const ownerPins = (pl?.board || [])
+    .map((id) => byId[id])
+    .filter(Boolean)
+    .map((p, i) => ({
+      t: "photo", img: p.url, ttl: p.cap, who: "", rel: "",
+      date: "", h: 0, r: (i % 2 ? 3 : -3) + (i % 3), c: [] as unknown[],
+    }));
+  const visitorPins = (t.memories || [])
+    .filter((m) => m.photos && m.photos[0] && /^https:\/\//.test(m.photos[0]))
+    .slice(0, 8)
+    .map((m, i) => ({
+      t: "photo", img: m.photos![0], ttl: (m.text || "").slice(0, 80), who: m.name || "", rel: m.rel || "",
+      date: "", h: Math.max(0, m.hearts ?? 0), r: (i % 2 ? -3 : 3) + (i % 3), c: [] as unknown[],
+    }));
+  const boardItems = [...ownerPins, ...visitorPins];
+  const boards = boardItems.length
+    ? [{ key: "photos", label: "Photographs", items: boardItems }]
     : [];
 
   const boot = {
@@ -257,9 +295,13 @@ export function renderTribute(template: string, t: Tribute): string {
       const secStart = html.lastIndexOf('<section class="band rev">', qIdx);
       const secEnd = html.indexOf("</section>", qIdx);
       if (secStart > -1 && secEnd > -1) {
-        const bandPhoto = photos[1]?.url || photos[0]?.url || cover;
+        // Fix 4: the photograph behind their words is chosen, never guessed.
+        // No placement → a warm quiet ground carries the quote alone.
+        const qPhoto = pl?.quote ? byId[pl.quote] : undefined;
         const band = t.quote
-          ? `<section class="band rev"><div class="bgi"><img src="${esc(bandPhoto)}" alt=""></div><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
+          ? (qPhoto
+              ? `<section class="band rev"><div class="bgi"><img src="${esc(qPhoto.url)}" alt=""></div><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
+              : `<section class="band rev" style="background:#241711"><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`)
           : "";
         html = html.slice(0, secStart) + band + html.slice(secEnd + "</section>".length);
       }
