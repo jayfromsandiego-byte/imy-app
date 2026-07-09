@@ -7,6 +7,7 @@ import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
 import PlacementsManager from "@/components/PlacementsManager";
 import VideosManager from "@/components/VideosManager";
+import ArrangeManager from "@/components/ArrangeManager";
 
 export const dynamic = "force-dynamic";
 
@@ -249,6 +250,11 @@ export default async function EditTribute({ params }: { params: { id: string } }
           living={(((t.placements as any) || {}).living as Record<string, string>) || {}}
           tier={t.tier || "free"}
         />
+      </section>
+
+      {/* ---------- The order of the rooms ---------- */}
+      <section style={{ marginTop: 20 }}>
+        <ArrangeManager tributeId={t.id} sections={(t.sections as any) || null} />
       </section>
 
       <div className="leaf-divider" aria-hidden="true">

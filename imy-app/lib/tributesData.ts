@@ -71,6 +71,8 @@ function rowToTribute(r: any): Tribute {
     photos: photos.map((p: any) => ({ id: p.id, url: p.url, cap: p.caption || undefined })),
     // Every photo slot the family controls (0013): quote · board · chapters.
     placements: r.placements || undefined,
+    // The page's rooms in the family's order (0014).
+    sections: r.sections || undefined,
     // "What they loved most" cards come from the family's chosen interests.
     loved: lovedThings.map((l: any) => ({ label: l.label })),
     reel: (r.tribute_videos || []).slice().sort(bySort).map((v: any) => ({ label: v.caption || "" })),

@@ -26,6 +26,9 @@ export type Placements = {
   living?: Record<string, string>; // photo id → video id (Living pictures, chosen — never index luck)
 };
 
+// The page's rooms, in the family's order (fix 7). Absent = the design's arc.
+export type SectionPlan = { order?: string[]; hidden?: string[] };
+
 // A recognized YouTube/Vimeo link becomes a quiet embed; anything else is a file.
 export function embedSrc(url: string): string | null {
   const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,20})/);
@@ -73,6 +76,7 @@ export type Tribute = {
   reel?: ReelItem[];
   memories?: MemoryItem[];
   placements?: Placements;
+  sections?: SectionPlan;
   sponsor?: { name?: string; photoUrl?: string; message?: string };
 };
 
@@ -329,8 +333,8 @@ export function renderTribute(template: string, t: Tribute): string {
         const qPhoto = pl?.quote ? byId[pl.quote] : undefined;
         const band = t.quote
           ? (qPhoto
-              ? `<section class="band rev"><div class="bgi"><img src="${esc(qPhoto.url)}" alt=""></div><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
-              : `<section class="band rev" style="background:#241711"><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`)
+              ? `<section class="band rev" id="quoteband"><div class="bgi"><img src="${esc(qPhoto.url)}" alt=""></div><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
+              : `<section class="band rev" id="quoteband" style="background:#241711"><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`)
           : "";
         html = html.slice(0, secStart) + band + html.slice(secEnd + "</section>".length);
       }
@@ -468,6 +472,63 @@ export function renderTribute(template: string, t: Tribute): string {
         rows.push(`<div class="shelfrow"${last ? ' style="border-bottom:none;margin-bottom:10px"' : ""}>${cells.slice(i, i + 3).join("")}</div>`);
       }
       html = html.slice(0, svIdx) + `<div class="shelfview">` + rows.join("") + html.slice(capIdx);
+    }
+  }
+
+  // ═══ the arranger (fix 7) ══════════════════════════════════════════════════
+  // The page's rooms in the family's order. Absent = the design's narrative
+  // arc, byte for byte. Hidden rooms rest by CSS so every script keeps its
+  // bearings; nothing is removed, nothing is lost.
+  {
+    const KNOWN = ["story", "quote", "gallery", "really", "memories", "keep"];
+    const MARK: Record<string, string> = {
+      story: 'id="story"', quote: 'id="quoteband"', gallery: 'id="gallery"',
+      really: 'id="really"', memories: 'id="memories"', keep: 'id="keep"',
+    };
+    const plan = t.sections;
+    const wantOrder = (Array.isArray(plan?.order) ? plan!.order! : [])
+      .filter((k, i, a) => KNOWN.includes(k) && a.indexOf(k) === i);
+    if (wantOrder.length) {
+      type Blk = { key: string; start: number; end: number };
+      const blocks: Blk[] = [];
+      for (const key of KNOWN) {
+        const mIdx = html.indexOf(MARK[key]);
+        if (mIdx < 0) continue; // e.g. no quote → no band on this page
+        const start = html.lastIndexOf("<section", mIdx);
+        const end = html.indexOf("</section>", mIdx);
+        if (start < 0 || end < 0) continue;
+        blocks.push({ key, start, end: end + "</section>".length });
+      }
+      blocks.sort((a, b) => a.start - b.start);
+      if (blocks.length > 1) {
+        const present = blocks.map((b) => b.key);
+        const finalOrder = [
+          ...wantOrder.filter((k) => present.includes(k)),
+          ...present.filter((k) => !wantOrder.includes(k)),
+        ];
+        if (finalOrder.join() !== present.join()) {
+          const byKey: Record<string, string> = {};
+          blocks.forEach((b) => { byKey[b.key] = html.slice(b.start, b.end); });
+          const gaps: string[] = [];
+          for (let i = 0; i < blocks.length - 1; i++) gaps.push(html.slice(blocks[i].end, blocks[i + 1].start));
+          const head = html.slice(0, blocks[0].start);
+          const tail = html.slice(blocks[blocks.length - 1].end);
+          let mid = "";
+          finalOrder.forEach((k, i) => { mid += byKey[k]; if (i < gaps.length) mid += gaps[i]; });
+          html = head + mid + tail;
+        }
+      }
+    }
+    const hiddenKeys = (Array.isArray(plan?.hidden) ? plan!.hidden! : []).filter((k) => KNOWN.includes(k));
+    if (hiddenKeys.length) {
+      const sel: Record<string, string> = {
+        story: "#story", quote: "#quoteband", gallery: "#gallery",
+        really: "#really", memories: "#memories", keep: "#keep",
+      };
+      const css = hiddenKeys.map((k) => `${sel[k]}{display:none!important}`).join("")
+        + (hiddenKeys.includes("keep") ? ".bbfab{display:none!important}" : "");
+      const hi = html.lastIndexOf("</head>");
+      if (hi > -1) html = html.slice(0, hi) + `<style>${css}</style>` + html.slice(hi);
     }
   }
 

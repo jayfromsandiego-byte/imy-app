@@ -1,7 +1,7 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
-// and the tape shelf. 75 checks.
+// the tape shelf, and the arranger. 82 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -172,7 +172,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("no placements → chapters carry no photos", Array.isArray(bareB.ch[0].ph) && bareB.ch[0].ph.length === 0);
   t("no placements → no board built from the gallery", (bareB.boards || []).length === 0);
   const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
-  t("quote band without a placement carries no photo", bareHtml.includes('<section class="band rev" style="background:#241711">'));
+  t("quote band without a placement carries no photo", bareHtml.includes('<section class="band rev" id="quoteband" style="background:#241711">'));
   const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
   t("quote band uses the placed photograph", withQ.includes('<div class="bgi"><img src="https://x/p1.jpg"'));
   const pinned = boot(renderTribute(template, { ...base, placements: { board: ["ph-b", "ph-a"] } }));
@@ -181,6 +181,26 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
+}
+
+// ── 13 · the page in the family's order (July 8) ──────────────────────────────
+{
+  const withQuote = { ...jonny, quote: "Measure twice.", timeline: [{ id: "tl-a", year: "1968", title: "Married" }] };
+  const seq = (html: string) => ["story", "quoteband", "gallery", "really", "memories", "keep"]
+    .map((id) => [id, html.indexOf(`id="${id}"`)] as const)
+    .filter(([, i]) => i > -1)
+    .sort((a, b) => a[1] - b[1])
+    .map(([id]) => id);
+  const def = renderTribute(template, withQuote);
+  t("no plan → the design's arc, untouched", JSON.stringify(seq(def)) === JSON.stringify(["story", "quoteband", "gallery", "really", "memories", "keep"]));
+  const rearranged = renderTribute(template, { ...withQuote, sections: { order: ["memories", "quote", "story", "gallery", "really", "keep"] } });
+  t("the rooms follow the family's order", JSON.stringify(seq(rearranged)) === JSON.stringify(["memories", "quoteband", "story", "gallery", "really", "keep"]));
+  t("reordering loses no room", ["story", "quoteband", "gallery", "really", "memories", "keep"].every((id) => rearranged.includes(`id="${id}"`)));
+  t("junk keys are ignored", JSON.stringify(seq(renderTribute(template, { ...withQuote, sections: { order: ["hero", "story"] } }))) === JSON.stringify(["story", "quoteband", "gallery", "really", "memories", "keep"]));
+  const resting = renderTribute(template, { ...withQuote, sections: { hidden: ["gallery", "keep"] } });
+  t("a resting room hides by css, stays in the page", resting.includes("#gallery{display:none!important}") && resting.includes(`id="gallery"`));
+  t("resting the keeping place rests its fab too", resting.includes(".bbfab{display:none!important}"));
+  t("the gold thread sews top-down whatever the order", template.includes("pts.sort(function(a,b){return a[1]-b[1]})"));
 }
 
 // ── 12 · the tape shelf holds real tapes (July 8) ─────────────────────────────

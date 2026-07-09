@@ -330,3 +330,23 @@ export async function saveLivingPairs(formData: FormData) {
   await db.from("tributes").update({ placements: { ...prev, living } }).eq("id", tributeId);
   revalidatePath(`/dashboard/tributes/${tributeId}`);
 }
+
+// ── The order of the rooms (fix 7) ────────────────────────────────────────────
+// The family's arrangement: order (their sequence) and hidden (rooms resting).
+// Only known rooms are kept; the Memorial Stone is never part of the list.
+export async function saveSections(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, tributeId, user))) return;
+  const KNOWN = ["story", "quote", "gallery", "really", "memories", "keep"];
+  let plan: any = {};
+  try { plan = JSON.parse(String(formData.get("sections") || "{}")) || {}; } catch { plan = {}; }
+  const order = (Array.isArray(plan.order) ? plan.order : [])
+    .filter((k: any, i: number, a: any[]) => KNOWN.includes(k) && a.indexOf(k) === i);
+  const hidden = (Array.isArray(plan.hidden) ? plan.hidden : [])
+    .filter((k: any, i: number, a: any[]) => KNOWN.includes(k) && a.indexOf(k) === i);
+  await db.from("tributes").update({ sections: { order, hidden } }).eq("id", tributeId);
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+}
