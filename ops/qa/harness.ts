@@ -2,7 +2,7 @@
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, and the demo's ask.
-// 93 checks.
+// 94 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -181,6 +181,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const keeps = boot(renderTribute(template, { ...base, memories: [{ ...mem("99999999-9999-4999-8999-999999999999", "Ana", "a neighbour", "The bench he built.", 2), photos: ["https://x/keep.jpg"] }] }));
   t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
+  t("one flower number is enough", renderTribute(template, jonny).includes(".wr-count{display:none!important}"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
 }
 

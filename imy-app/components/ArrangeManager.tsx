@@ -78,14 +78,23 @@ export default function ArrangeManager({
                 <strong style={{ fontSize: 14.5 }}>{meta.label}</strong>
                 <span style={{ color: C.inkSoft, fontSize: 13 }}> · {meta.note}</span>
               </div>
+              <span style={{ fontFamily: "'Sometype Mono',monospace", fontSize: 10, letterSpacing: ".08em", textTransform: "uppercase", color: resting ? "#8C5A3F" : "#5F7050", background: resting ? "#F7EDE2" : "#EFF3E6", border: `1px solid ${C.line}`, borderRadius: 12, padding: "3px 9px" }}>
+                {resting ? "resting · hidden" : "shown on the page"}
+              </span>
               <button type="button" style={{ ...mini, color: resting ? C.terra : C.inkSoft }} onClick={() => toggle(key)}>
-                {resting ? "resting · show it" : "shown · let it rest"}
+                {resting ? "Show it again" : "Let it rest"}
               </button>
             </div>
           );
         })}
       </div>
 
+      {hidden.length === order.length && (
+        <p style={{ color: "#8C2F2A", fontSize: 13.5, marginTop: 12, lineHeight: 1.5 }}>
+          Every room is resting — visitors would see only the wreath. Show at least
+          one room before saving, unless that is truly what you want.
+        </p>
+      )}
       {dirty && (
         <form action={saveSections} onSubmit={() => setDirty(false)} style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 12 }}>
           <input type="hidden" name="tributeId" value={tributeId} />

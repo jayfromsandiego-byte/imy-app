@@ -539,6 +539,9 @@ export function renderTribute(template: string, t: Tribute): string {
   // 7) Sections with nothing real to show, rest quietly.
   {
     const hides: string[] = [];
+    // One number is enough (July 9): the big all-time count and the Lay a
+    // flower button carry the ritual; the today line was saying it twice.
+    hides.push(".wr-count{display:none!important}");
     if (!videos.length || tier !== "plus") hides.push("#keep .shelfview{display:none!important}");
     if (!words.length) hides.push(".cyc{display:none!important}");
     if (!detailCards.length) hides.push("#really{display:none!important}");
