@@ -2,7 +2,7 @@
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, and the demo's ask.
-// 92 checks.
+// 93 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -261,6 +261,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "anon-key-for-harness";
   const wired = renderTribute(template, jonny);
   t("realtime module ships with keys", wired.includes("supabase-js@2/+esm") && wired.includes('"presence-"+"jonny"'));
+  t("presence wears the live-chip when it shows", wired.includes("presence, noticed (July 9)"));
   t("module only speaks from two upward", wired.includes("if(n>=2)"));
   t("demo simulation intact in the raw design file", template.includes("/* presence line — no one mourns alone */"));
   delete process.env.NEXT_PUBLIC_SUPABASE_URL;

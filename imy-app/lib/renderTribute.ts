@@ -566,7 +566,11 @@ export function renderTribute(template: string, t: Tribute): string {
     const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
     const sbAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
     if (sbUrl && sbAnon && t.slug) {
-      const presenceModule = `<script type="module">/* presence — real people, truthfully counted */
+      const presenceModule = `<style>/* presence, noticed (July 9) — a quiet live-chip; real company is worth seeing */
+.presence{font-size:13px;letter-spacing:.14em;color:#4A4038;background:rgba(243,236,221,.88);border:1px solid #E4D9C4;border-radius:100px;padding:8px 16px;margin-top:14px;gap:10px}
+.presence i{width:11px;height:11px}
+@media(min-width:880px){.presence{font-size:14.5px;padding:9px 19px;margin-top:16px}.presence i{width:12px;height:12px}}
+</style><script type="module">/* presence — real people, truthfully counted */
 try{
 const m=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
 const el=document.getElementById("presenceTxt"),box=el&&el.parentElement;
