@@ -1274,7 +1274,7 @@ function layFlower(want){
   if(noMo()){d.style.opacity='1';d.style.transform='translate(-50%,-50%) scale(1) rotate('+rot+'deg)'}
   else requestAnimationFrame(function(){d.classList.add('in')});
   wplaced[spot.lane].push(spot.a);wn++;wreathCt.textContent=wn;
-  if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){var big=document.querySelector('.wr-big b');if(big)big.textContent=Number(j.count).toLocaleString()}}).catch(function(){})}catch(e){}}
+  if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){var big=document.querySelector('.wr-big b');if(big)big.textContent=Number(j.count).toLocaleString()}if(j&&j.ok&&j.today){wn=Number(j.today);wreathCt.textContent=wn}}).catch(function(){})}catch(e){}}
 }
 wrHero.addEventListener('click',function(e){
   if(e.target.closest('button,a,.wr-plate'))return;
@@ -1288,6 +1288,7 @@ document.querySelectorAll('[data-count]').forEach(cu);
 /* ===== production data · injected by the server as window.__TRIBUTE__ ; the inline demo keeps the standalone preview alive ===== */
 var T=window.__TRIBUTE__||null;
 var SLUG=(T&&T.slug)||'example';
+if(T&&T.fwt){wn=Number(T.fwt)||0;if(wreathCt)wreathCt.textContent=wn}
 /* gallery · family-curated, paged (scales to 50 without the scroll) */
 var GAL=(T&&T.gal)||[['dawn','Summer, 1979'],['coffee','Black coffee, no sugar'],['laugh','That laugh'],['kitchen','Her kitchen'],['garden','Walking the rows'],['letters','Golden hour'],['porch','On the porch, 1998'],['dawn','First light, again'],['garden','Best in show, 2018'],['coffee','The crossword hour'],['letters','A letter a week'],['kitchen','Sunday bread']];
 var galPage=0,galGrid=document.getElementById('galGrid'),galPg=document.getElementById('galPg');

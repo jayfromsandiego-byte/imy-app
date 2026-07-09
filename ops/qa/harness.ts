@@ -1,6 +1,6 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
-// identity safety, tier behavior, hearts, comments, voice, the Plus band, and
-// the footer address. 43 checks.
+// identity safety, tier behavior, hearts, comments, voice, the Plus band,
+// the footer address, and flower persistence. 47 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -32,7 +32,7 @@ const jonny: Tribute = {
     mem("aaaaaaaa-1111-4111-8111-111111111111", "Maria", "his daughter", "He built my first bookshelf.", 4),
     mem("bbbbbbbb-2222-4222-8222-222222222222", "Sam", "a neighbour", "Best fence on the street.", 0),
   ],
-  flowerCount: 12, candleCount: 3,
+  flowerCount: 12, candleCount: 3, flowerToday: 4,
 };
 
 const freeShe: Tribute = {
@@ -144,6 +144,16 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const htmlPlus = renderTribute(template, jonny);
   t("plus pages never carry the band", !htmlPlus.includes('id="plus-band"'));
   t("concierge cta is a real intake, not the old mockup", htmlFree.includes("mailto:hello@imissyoumemorial.com?subject=Concierge") && !htmlFree.includes("hyperagent.com/s/aBadvO39KhiuGhTHgfi93g"));
+}
+
+// ── 9 · flowers persist — today's wreath hydrates from the ground truth ──────
+{
+  const html = renderTribute(template, jonny);
+  const b = boot(html);
+  t("boot carries today's wreath count", b.fwt === 4);
+  t("template hydrates today's count from boot", html.includes("if(T&&T.fwt)"));
+  t("lay POST consumes the server's today count", html.includes("if(j&&j.ok&&j.today)"));
+  t("negative today count clamps to zero", boot(renderTribute(template, { ...jonny, flowerToday: -3 })).fwt === 0);
 }
 
 // ── 8 · the footer speaks each page's own address (July 8) ───────────────────

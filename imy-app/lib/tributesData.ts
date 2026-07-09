@@ -47,6 +47,11 @@ function rowToTribute(r: any): Tribute {
     quote: r.portrait_quote || undefined,
     candleCount: r.candle_count ?? 0,
     flowerCount: r.flower_count ?? 0,
+    // Today's wreath count is only truthful while it is still today (LA mornings).
+    flowerToday:
+      r.flower_day === new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+        ? r.flower_day_count ?? 0
+        : 0,
     sponsor: (r.sponsor_name || r.sponsor_message)
       ? { name: r.sponsor_name || undefined, photoUrl: r.sponsor_photo_url || undefined, message: r.sponsor_message || undefined }
       : undefined,

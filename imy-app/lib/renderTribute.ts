@@ -37,6 +37,7 @@ export type Tribute = {
   story?: string;
   candleCount?: number;
   flowerCount?: number;
+  flowerToday?: number;
   tier?: string; // "free" | "plus" | "heirloom"
   theme?: string;
   motif?: string;
@@ -173,6 +174,7 @@ export function renderTribute(template: string, t: Tribute): string {
     slug, tier,
     gal, imgs, liv, ch, mems, seedw, words, boards,
     waiting: seedw.length,
+    fwt: Math.max(0, t.flowerToday ?? 0),
   };
 
   // ── conditional blocks ──

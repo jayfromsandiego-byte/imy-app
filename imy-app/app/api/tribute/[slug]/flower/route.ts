@@ -25,10 +25,16 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   try {
     const { data, error } = await supabaseAdmin().rpc("lay_flower", { p_slug: slug });
     if (error) return NextResponse.json({ ok: false, error: "failed" }, { status: 500 });
-    if (data === null || data === undefined) {
+    // Migration 0012: lay_flower() returns rows of { total, today }.
+    // The pre-0012 integer shape is handled too, so deploy order never matters.
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row === null || row === undefined) {
       return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
     }
-    return NextResponse.json({ ok: true, count: Number(data) });
+    if (typeof row === "object") {
+      return NextResponse.json({ ok: true, count: Number(row.total), today: Number(row.today) });
+    }
+    return NextResponse.json({ ok: true, count: Number(row) });
   } catch {
     return NextResponse.json({ ok: false, error: "failed" }, { status: 500 });
   }
