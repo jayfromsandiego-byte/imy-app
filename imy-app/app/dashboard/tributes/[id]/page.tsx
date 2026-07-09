@@ -6,6 +6,7 @@ import { saveTribute, moderateMemory, moderateComment } from "@/app/dashboard/ac
 import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
 import PlacementsManager from "@/components/PlacementsManager";
+import VideosManager from "@/components/VideosManager";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,11 @@ export default async function EditTribute({ params }: { params: { id: string } }
     .select("id,url,sort")
     .eq("tribute_id", t.id)
     .is("deleted_at", null)
+    .order("sort", { ascending: true });
+  const { data: videos } = await db
+    .from("tribute_videos")
+    .select("id,url,caption,sort")
+    .eq("tribute_id", t.id)
     .order("sort", { ascending: true });
   const { data: timeline } = await db
     .from("tribute_timeline")
@@ -231,6 +237,17 @@ export default async function EditTribute({ params }: { params: { id: string } }
           placements={(t.placements as any) || null}
           bornYear={t.born_on ? Number(String(t.born_on).slice(0, 4)) : undefined}
           diedYear={t.died_on ? Number(String(t.died_on).slice(0, 4)) : undefined}
+        />
+      </section>
+
+      {/* ---------- The tape shelf ---------- */}
+      <section style={{ marginTop: 20 }}>
+        <VideosManager
+          tributeId={t.id}
+          videos={((videos as any) || []).map((v: any) => ({ id: String(v.id), url: v.url, caption: v.caption }))}
+          photos={((photos as any) || []).map((p: any) => ({ id: String(p.id), url: p.url }))}
+          living={(((t.placements as any) || {}).living as Record<string, string>) || {}}
+          tier={t.tier || "free"}
         />
       </section>
 

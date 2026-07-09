@@ -1,7 +1,7 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
-// the footer address, flower persistence, truthful presence, and photo
-// placements. 65 checks.
+// the footer address, flower persistence, truthful presence, photo placements,
+// and the tape shelf. 75 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -181,6 +181,30 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
+}
+
+// ── 12 · the tape shelf holds real tapes (July 8) ─────────────────────────────
+{
+  const vids = [
+    { id: "v-1", url: "https://x/first.mp4", cap: "The wedding toast" },
+    { id: "v-2", url: "https://youtu.be/dQw4w9WgXcQ", cap: "The garden, filmed" },
+  ];
+  const onePhoto = [{ id: "ph-a", url: "https://x/p0.jpg" }];
+  const plusPage = renderTribute(template, { ...jonny, videos: vids, photos: onePhoto, placements: { living: { "ph-a": "v-1" }, board: [], chapters: {} } });
+  const bp = boot(plusPage);
+  t("demo tapes never reach a real page", !plusPage.includes("First baseball game, with Grandpa"));
+  t("real tapes stand on the shelf", plusPage.includes('data-v="0"') && plusPage.includes("The wedding toast"));
+  t("a paired tape wears its photograph", plusPage.includes('<div class="tapeobj" data-v="0"><div class="win"><img src="https://x/p0.jpg"'));
+  t("the digitizing card stays", plusPage.includes("we help you digitize anything"));
+  t("boot carries playable tapes", bp.vids.length === 2 && bp.vids[0].u === "https://x/first.mp4" && !bp.vids[0].e);
+  t("a youtube link becomes a quiet embed", bp.vids[1].e === "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ");
+  t("the room is ready to fill", plusPage.includes('id="tvroom"'));
+  t("living pairs are chosen, not index luck", bp.liv.p0 === "https://x/first.mp4");
+  const freePage = renderTribute(template, { ...jonny, tier: "free", videos: vids, photos: onePhoto });
+  const bf = boot(freePage);
+  t("free pages rest their tapes", bf.vids.length === 0 && !freePage.includes('id="tvroom"') && freePage.includes("#keep .shelfview{display:none!important}"));
+  const legacy = boot(renderTribute(template, { ...jonny, videos: [{ id: "v-1", url: "https://x/first.mp4" }], photos: onePhoto }));
+  t("pages from before the choice keep index pairing", legacy.liv.p0 === "https://x/first.mp4");
 }
 
 // ── 10 · presence is real or silent — never simulated (July 8) ───────────────

@@ -56,7 +56,7 @@ function rowToTribute(r: any): Tribute {
       ? { name: r.sponsor_name || undefined, photoUrl: r.sponsor_photo_url || undefined, message: r.sponsor_message || undefined }
       : undefined,
     voiceUrl: ((r.tribute_audio || []).find((a: any) => a.kind === "voice") || {}).url || undefined,
-    videos: (r.tribute_videos || []).slice().sort(bySort).map((v: any) => ({ url: v.url, cap: v.caption || undefined })).filter((v: any) => v.url),
+    videos: (r.tribute_videos || []).slice().sort(bySort).map((v: any) => ({ id: v.id, url: v.url, cap: v.caption || undefined })).filter((v: any) => v.url),
     tier: r.tier || "free",
     theme: r.theme || undefined,
     motif: r.motif || undefined,

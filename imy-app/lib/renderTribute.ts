@@ -23,7 +23,17 @@ export type Placements = {
   quote?: string; // photo id behind their words
   board?: string[]; // bulletin board, owner-placed (ordered photo ids)
   chapters?: Record<string, string[]>; // timeline row id → photo ids ("_group" = legacy shared set)
+  living?: Record<string, string>; // photo id → video id (Living pictures, chosen — never index luck)
 };
+
+// A recognized YouTube/Vimeo link becomes a quiet embed; anything else is a file.
+export function embedSrc(url: string): string | null {
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,20})/);
+  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}`;
+  const vm = url.match(/vimeo\.com\/(?:video\/)?(\d{6,15})/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return null;
+}
 export type MemoryComment = { name: string; rel: string; text: string };
 export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; comments?: MemoryComment[]; photos?: string[] };
 export type ReelItem = { poster?: string; label?: string; url?: string };
@@ -58,7 +68,7 @@ export type Tribute = {
   lovedThings?: LovedThing[];
   timeline?: TimelineItem[];
   photos?: PhotoItem[];
-  videos?: { url: string; cap?: string }[];
+  videos?: { id?: string; url: string; cap?: string }[];
   voiceUrl?: string;
   reel?: ReelItem[];
   memories?: MemoryItem[];
@@ -131,14 +141,26 @@ export function renderTribute(template: string, t: Tribute): string {
   const imgs: Record<string, string> = {};
   photos.forEach((p, i) => { imgs[`p${i}`] = p.url as string; });
   const gal = photos.map((p, i) => [`p${i}`, p.cap || ""]);
-  // Living pictures: pair video i with photo i (dashboard can re-pair later).
-  const liv: Record<string, string> = {};
-  videos.forEach((v, i) => { if (imgs[`p${i}`]) liv[`p${i}`] = v.url; });
 
   // ── placements (fix 4): the family assigns every slot; nothing auto-fills ──
   const pl = t.placements;
   const byId: Record<string, { key: string; url: string; cap: string }> = {};
   photos.forEach((p, i) => { if (p.id) byId[p.id] = { key: `p${i}`, url: p.url as string, cap: p.cap || "" }; });
+  const vidById: Record<string, { url: string; cap: string }> = {};
+  videos.forEach((v) => { if (v.id) vidById[v.id] = { url: v.url, cap: v.cap || "" }; });
+
+  // Living pictures (fix 6): chosen pairs first (placements.living); the old
+  // index pairing only carries pages from before the choice existed.
+  const liv: Record<string, string> = {};
+  if (pl?.living && Object.keys(pl.living).length) {
+    for (const [phId, vidId] of Object.entries(pl.living)) {
+      const p = byId[phId];
+      const v = vidById[vidId];
+      if (p && v && !embedSrc(v.url)) liv[p.key] = v.url;
+    }
+  } else if (!pl?.living) {
+    videos.forEach((v, i) => { if (imgs[`p${i}`] && !embedSrc(v.url)) liv[`p${i}`] = v.url; });
+  }
 
   const timeline = t.timeline || [];
   // Chapters (fix 3): a photo belongs to its moment. Per-moment assignments render
@@ -213,6 +235,13 @@ export function renderTribute(template: string, t: Tribute): string {
     gal, imgs, liv, ch, mems, seedw, words, boards,
     waiting: seedw.length,
     fwt: Math.max(0, t.flowerToday ?? 0),
+    // The tape shelf's real tapes (fix 6). Free pages rest their videos — kept,
+    // not shown. Only clean https urls ever reach the page.
+    vids: tier === "plus"
+      ? videos
+          .filter((v) => /^https:\/\/[^"'<>\s]+$/.test(v.url))
+          .map((v) => ({ u: v.url, e: embedSrc(v.url), t: v.cap || "" }))
+      : [],
   };
 
   // ── conditional blocks ──
@@ -413,10 +442,39 @@ export function renderTribute(template: string, t: Tribute): string {
     }
   }
 
+  // 6c) The tape shelf holds THIS family's tapes (fix 6) — same wood, same
+  // handwritten labels; the demo's furniture never reaches a real page, even
+  // from source. The concierge "add a tape" card stays: digitizing is real help.
+  {
+    const svIdx = html.indexOf('<div class="shelfview">');
+    const capIdx = svIdx > -1 ? html.indexOf('<div class="shelfcap">', svIdx) : -1;
+    if (svIdx > -1 && capIdx > -1) {
+      const pairImgByVid: Record<string, string> = {};
+      if (pl?.living) {
+        for (const [phId, vId] of Object.entries(pl.living)) {
+          if (byId[phId] && vId) pairImgByVid[vId] = byId[phId].url;
+        }
+      }
+      const addTape = `<div class="tapeobj addtape" role="button" tabindex="0"><div class="hand">＋ Add a tape</div><div class="m2">wedding film · old 8mm · a phone video<br>we help you digitize anything</div></div>`;
+      const tape = (v: { id?: string; url: string; cap?: string }, i: number) => {
+        const kind = embedSrc(v.url) ? (/vimeo/.test(v.url) ? "vimeo · kept" : "youtube · kept") : "home video · kept";
+        const win = v.id && pairImgByVid[v.id] ? `<img src="${esc(pairImgByVid[v.id])}" alt="">` : "";
+        return `<div class="tapeobj" data-v="${i}"><div class="win">${win}</div><div class="lbl"><div class="t">${esc(v.cap || "A video")}</div><div class="m">${kind}</div></div></div>`;
+      };
+      const cells = videos.map((v, i) => tape(v, i)).concat([addTape]);
+      const rows: string[] = [];
+      for (let i = 0; i < cells.length; i += 3) {
+        const last = i + 3 >= cells.length;
+        rows.push(`<div class="shelfrow"${last ? ' style="border-bottom:none;margin-bottom:10px"' : ""}>${cells.slice(i, i + 3).join("")}</div>`);
+      }
+      html = html.slice(0, svIdx) + `<div class="shelfview">` + rows.join("") + html.slice(capIdx);
+    }
+  }
+
   // 7) Sections with nothing real to show, rest quietly.
   {
     const hides: string[] = [];
-    if (!videos.length) hides.push("#keep .shelfview{display:none!important}");
+    if (!videos.length || tier !== "plus") hides.push("#keep .shelfview{display:none!important}");
     if (!words.length) hides.push(".cyc{display:none!important}");
     if (!detailCards.length) hides.push("#really{display:none!important}");
     if (hides.length) {
@@ -464,6 +522,30 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
 </script>`;
       html = html.replace("</body>", presenceModule + "\n</body>");
     }
+  }
+
+  // ═══ the room fills (fix 6) ════════════════════════════════════════════════
+  // Pull a tape down and it plays in a quiet paper frame on a darkened room —
+  // never a black chrome box floating on cream. Plus pages with tapes only.
+  if (tier === "plus" && videos.length) {
+    const tvRoom = `<div id="tvroom" style="position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(26,19,13,.93);padding:4vw" role="dialog" aria-modal="true" aria-label="A tape plays">
+<button id="tvx" aria-label="Close" style="position:absolute;top:16px;right:22px;background:none;border:none;color:#F4E9D4;font-size:30px;cursor:pointer;line-height:1">×</button>
+<div style="max-width:min(920px,94vw);width:100%;background:#FAF5EC;border-radius:12px;padding:14px 14px 8px;box-shadow:0 60px 140px -40px rgba(0,0,0,.85)">
+<div id="tvslot" style="border-radius:8px;overflow:hidden;background:#171009;aspect-ratio:16/9"></div>
+<div id="tvcap" style="font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#5A4F45;padding:10px 4px 6px;text-align:center"></div>
+</div></div>
+<script>(function(){var T=window.__TRIBUTE__||null;if(!T||!T.vids||!T.vids.length)return;
+var room=document.getElementById('tvroom'),slot=document.getElementById('tvslot'),cap=document.getElementById('tvcap'),x=document.getElementById('tvx');
+if(!room||!slot)return;
+function shut(){slot.innerHTML='';room.style.display='none';document.body.style.overflow=''}
+function open(i){var v=T.vids[i];if(!v)return;
+slot.innerHTML=v.e?'<iframe src="'+v.e+'?autoplay=1" style="width:100%;height:100%;border:0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="A kept video"></iframe>':'<video src="'+v.u+'" controls autoplay playsinline style="width:100%;height:100%;display:block;background:#171009"></video>';
+cap.textContent=v.t||'';room.style.display='flex';document.body.style.overflow='hidden'}
+if(x)x.onclick=shut;room.onclick=function(e){if(e.target===room)shut()};
+addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
+document.querySelectorAll('.tapeobj[data-v]').forEach(function(tp){tp.onclick=function(){open(+tp.getAttribute('data-v'))}});
+})();</script>`;
+    html = html.replace("</body>", tvRoom + "\n</body>");
   }
 
   return html;
