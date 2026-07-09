@@ -1,7 +1,7 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
-// the tape shelf, and the arranger. 82 checks.
+// the tape shelf, the arranger, and the composer's doors. 88 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -181,6 +181,17 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
+}
+
+// ── 14 · the composer's doors are real (July 8) ───────────────────────────────
+{
+  const page = renderTribute(template, jonny);
+  t("photo attach is wired, honestly labelled", template.includes('id="photoAdd"') && template.includes("＋ Add a photograph"));
+  t("a memory can carry its photograph", template.includes("photoUrl:PHOTO.url||''"));
+  t("the helper calls the real api on live pages", template.includes("fetch('/api/assist'"));
+  t("a quiet way home on every page", page.includes(">tend this page</a>"));
+  t("the demo add-a-moment never reaches a real page", !page.includes("＋ Add a key moment · a year, a line, a photograph") && template.includes("＋ Add a key moment"));
+  t("demo binder skips the wired buttons", template.includes("if(g.id)return;"));
 }
 
 // ── 13 · the page in the family's order (July 8) ──────────────────────────────

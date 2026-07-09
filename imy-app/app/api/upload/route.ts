@@ -4,12 +4,21 @@
 // to upload directly to R2 instead of proxying bytes through this function.
 import { NextRequest, NextResponse } from "next/server";
 import { r2Configured, uploadToR2 } from "@/lib/r2";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
 const MAX_BYTES = 25 * 1024 * 1024; // 25MB per file through this proxied route
 
 export async function POST(req: NextRequest) {
+  // Visitors attach photographs to memories, so this stays public — but gently
+  // limited per IP, like every other public door on the site.
+  {
+    const ip = clientIp(req);
+    const { allowed } = rateLimit(`upload:${ip}`, 30, 600_000);
+    if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
+  }
+
   const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 
   if (!r2Configured && !hasBlob) {

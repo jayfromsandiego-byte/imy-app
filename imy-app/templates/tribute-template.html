@@ -1032,7 +1032,7 @@ body.a11y-nomotion .living{opacity:0!important}
         <div class="addingas" id="addingAs"></div>
           <p class="safekeep" id="safekeepLine" hidden>Write it now — your words are kept safe. They will join the wall the moment someone opens it for everyone.</p>
         <textarea id="memInput" placeholder="What do you remember?"></textarea>
-        <div class="share-row"><button class="ghostadd">＋ Add photos &amp; video</button><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
+        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
         <div class="chatbox" id="chatbox" style="display:none">
           <div class="ch-h">Tell me one true thing about Eleanor, and we will shape it together.<span class="mono">Closer to a friend than a form · it never writes for you</span></div>
           <div class="ch-b" id="chatBody"><div class="cmsg bot">What is one small thing you don&#39;t want to forget about her?</div></div>
@@ -1441,6 +1441,25 @@ renderMems();
 document.getElementById('memNext').onclick=function(){memPage++;renderMems()};
 document.getElementById('memPrev').onclick=function(){memPage--;renderMems()};
 /* a voice memory · Plus — a voicemail kept, a story told aloud; it waits for the family like any other memory */
+/* a photograph rides with a memory — pinned to the board when the family says yes */
+var PHOTO={url:''};
+var pBtn=document.getElementById('photoAdd'),pFile=document.getElementById('photoFile');
+if(pBtn&&pFile){
+  pBtn.onclick=function(){
+    if(!T){say('On a live memorial, this pins a real photograph to your memory. This is the demo.',false);return}
+    requireId(function(){pFile.click()})};
+  pFile.addEventListener('change',function(){
+    var f=pFile.files&&pFile.files[0];if(!f)return;
+    if(f.size>25*1024*1024){say('That photograph is over 25MB. A smaller one will land just fine.',false);pFile.value='';return}
+    pBtn.disabled=true;pBtn.textContent='Keeping it safe…';
+    var fd=new FormData();fd.append('files',f);
+    fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
+      pBtn.disabled=false;
+      if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change'}
+      else{pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
+    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
+    pFile.value=''});
+}
 var VOICE={url:''};
 var vBtn=document.getElementById('voiceAdd'),vFile=document.getElementById('voiceFile');
 if(vBtn&&vFile){
@@ -1468,11 +1487,12 @@ document.getElementById('shareBtn').onclick=function(){
       /* production: memories go to the family first — every word waits for their yes */
       var btn=document.getElementById('shareBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Keeping it safe…';
       fetch('/api/tribute/'+SLUG+'/memory',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',audioUrl:VOICE.url||''})})
+        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',audioUrl:VOICE.url||'',photoUrl:PHOTO.url||''})})
       .then(function(r){return r.json()}).then(function(j){
         btn.disabled=false;btn.textContent=old;
         if(j&&j.ok){document.getElementById('memInput').value='';
           VOICE.url='';if(vBtn)vBtn.textContent='＋ Add a voice memory';
+          PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photograph';
           say('Kept, '+ID.fn+'. Your memory goes to the family first — it joins the wall the moment they welcome it in.',false)}
         else say('That didn&rsquo;t save. Give it a moment and try again — nothing you wrote is lost.',false)})
       .catch(function(){btn.disabled=false;btn.textContent=old;
@@ -1493,8 +1513,17 @@ document.getElementById('shareBtn').onclick=function(){
 var chatbox=document.getElementById('chatbox'),chatBody=document.getElementById('chatBody'),chatInput=document.getElementById('chatInput');
 document.getElementById('helpBtn').onclick=function(){chatbox.style.display=chatbox.style.display==='none'?'block':'none';if(chatbox.style.display==='block')chatInput.focus()};
 
-function craft(t){t=t.trim();if(!t)return;var me=document.createElement('div');me.className='cmsg me';me.textContent=t;chatBody.appendChild(me);chatInput.value='';
-setTimeout(function(){var r=document.createElement('div');r.className='cmsg bot';r.innerHTML='That is the kind of small, true thing that says everything: <em>“'+t.replace(/</g,'&lt;')+'”</em>. Keep it in your words · would you like to say where, or when?';chatBody.appendChild(r);chatBody.scrollTop=chatBody.scrollHeight;document.getElementById('memInput').value=t},460);chatBody.scrollTop=chatBody.scrollHeight}
+function craft(t){t=t.trim();if(!t)return;var me=document.createElement('div');me.className='cmsg me';me.textContent=t;chatBody.appendChild(me);chatInput.value='';chatBody.scrollTop=chatBody.scrollHeight;
+if(T){/* production: the real helper shapes with them — it never writes for them */
+  var hold=document.createElement('div');hold.className='cmsg bot';hold.textContent='…';chatBody.appendChild(hold);chatBody.scrollTop=chatBody.scrollHeight;
+  var who=(document.title.split(' — ')[0]||'them').trim();
+  fetch('/api/assist',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt:t,name:who})})
+  .then(function(r){return r.json()}).then(function(j){
+    hold.innerHTML=(j&&j.ok&&j.text)?String(j.text).replace(/</g,'&lt;').replace(/\n/g,'<br>'):'Keep it in your words · add one more small, true detail.';
+    document.getElementById('memInput').value=t;chatBody.scrollTop=chatBody.scrollHeight})
+  .catch(function(){hold.textContent='Keep it in your words · add one more small, true detail.';document.getElementById('memInput').value=t});
+  return}
+setTimeout(function(){var r=document.createElement('div');r.className='cmsg bot';r.innerHTML='That is the kind of small, true thing that says everything: <em>“'+t.replace(/</g,'&lt;')+'”</em>. Keep it in your words · would you like to say where, or when?';chatBody.appendChild(r);chatBody.scrollTop=chatBody.scrollHeight;document.getElementById('memInput').value=t},460)}
 document.getElementById('chatSend').onclick=function(){craft(chatInput.value)};
 chatInput.addEventListener('keydown',function(e){if(e.key==='Enter')craft(chatInput.value)});
 /* ===== keeping place modes ===== */
@@ -1524,7 +1553,7 @@ document.getElementById('idGo').onclick=function(){
 document.getElementById('idmClose').onclick=function(){idm.classList.remove('open');idCb=null};
 idm.addEventListener('click',function(e){if(e.target===idm){idm.classList.remove('open');idCb=null}});
 document.getElementById('addMemTop').onclick=function(){requireId(function(){document.getElementById('memories').scrollIntoView({behavior:noMo()?'auto':'smooth'});setTimeout(function(){document.getElementById('memInput').focus()},400)})};
-document.querySelectorAll('.ghostadd').forEach(function(g){g.addEventListener('click',function(){requireId(function(){say('Signed in as '+ID.fn+' · choose the photos or the moment to add, and it carries your name.',false)})})});
+document.querySelectorAll('.ghostadd').forEach(function(g){if(g.id)return;g.addEventListener('click',function(){requireId(function(){say('Signed in as '+ID.fn+' · choose the photos or the moment to add, and it carries your name.',false)})})});
 setAddingAs();
 /* ===== boards · flip through, grouped by relation ===== */
 var BIMG=IMGS;

@@ -585,6 +585,16 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
     }
   }
 
+  // A quiet way home: every production page carries one whisper of a link to
+  // the study. Families kept asking how to get back in; now the door is there,
+  // top right, saying only "tend this page".
+  if (t.slug) {
+    const tend = `<a href="/signin" style="position:fixed;top:14px;right:16px;z-index:60;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;background:rgba(250,245,236,.92);border:1px solid #E4D9C4;border-radius:20px;padding:6px 12px;text-decoration:none;opacity:.85">tend this page</a>`;
+    html = html.replace("</body>", tend + "\n</body>");
+    // The chapters' demo "add a key moment" button is study work, not page work.
+    html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
+  }
+
   // ═══ the room fills (fix 6) ════════════════════════════════════════════════
   // Pull a tape down and it plays in a quiet paper frame on a darkened room —
   // never a black chrome box floating on cream. Plus pages with tapes only.
