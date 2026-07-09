@@ -173,7 +173,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("no placements → chapters carry no photos", Array.isArray(bareB.ch[0].ph) && bareB.ch[0].ph.length === 0);
   t("no placements → no board built from the gallery", (bareB.boards || []).length === 0);
   const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
-  t("quote band without a placement carries no photo", bareHtml.includes('<section class="band rev" id="quoteband" style="background:#241711">'));
+  t("quote band without a placement rests among flowers on cream", bareHtml.includes('id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)"') && bareHtml.includes("/art/mum2-34d609.png") && !bareHtml.includes('id="quoteband"><div class="bgi">'));
   const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
   t("quote band uses the placed photograph", withQ.includes('<div class="bgi"><img src="https://x/p1.jpg"'));
   const pinned = boot(renderTribute(template, { ...base, placements: { board: ["ph-b", "ph-a"] } }));

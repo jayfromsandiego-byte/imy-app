@@ -329,12 +329,16 @@ export function renderTribute(template: string, t: Tribute): string {
       const secEnd = html.indexOf("</section>", qIdx);
       if (secStart > -1 && secEnd > -1) {
         // Fix 4: the photograph behind their words is chosen, never guessed.
-        // No placement → a warm quiet ground carries the quote alone.
+        // No placement → their words rest on warm cream, with the wreath's own
+        // pressed flowers laid beside them (July 9 — flowers, not flat brown).
         const qPhoto = pl?.quote ? byId[pl.quote] : undefined;
         const band = t.quote
           ? (qPhoto
               ? `<section class="band rev" id="quoteband"><div class="bgi"><img src="${esc(qPhoto.url)}" alt=""></div><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
-              : `<section class="band rev" id="quoteband" style="background:#241711"><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`)
+              : `<section class="band rev" id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)">` +
+                `<img src="/art/mum2-34d609.png" alt="" style="position:absolute;left:5%;top:50%;transform:translateY(-50%) rotate(-9deg);width:clamp(64px,9vw,118px);opacity:.92"/>` +
+                `<img src="/art/lily2-f5e2ef.png" alt="" style="position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(11deg);width:clamp(58px,8vw,104px);opacity:.88"/>` +
+                `<div class="inb" style="position:relative;z-index:2"><div class="q" style="color:#2C2520;text-shadow:none">“${esc(t.quote)}”</div><div class="s" style="color:#7A6A58;text-shadow:none">the thing ${pn.sub} always said</div></div></section>`)
           : "";
         html = html.slice(0, secStart) + band + html.slice(secEnd + "</section>".length);
       }
