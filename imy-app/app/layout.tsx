@@ -1,4 +1,5 @@
 import Analytics from "@/components/Analytics";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
