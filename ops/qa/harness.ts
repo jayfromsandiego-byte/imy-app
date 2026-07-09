@@ -1,6 +1,6 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
-// the footer address, and flower persistence. 47 checks.
+// the footer address, flower persistence, and truthful presence. 53 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -154,6 +154,24 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("template hydrates today's count from boot", html.includes("if(T&&T.fwt)"));
   t("lay POST consumes the server's today count", html.includes("if(j&&j.ok&&j.today)"));
   t("negative today count clamps to zero", boot(renderTribute(template, { ...jonny, flowerToday: -3 })).fwt === 0);
+}
+
+// ── 10 · presence is real or silent — never simulated (July 8) ───────────────
+{
+  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const bare = renderTribute(template, jonny);
+  t("simulation never survives a server render", !bare.includes("' people are here with you now'") && !bare.includes("var cur=2+Math.floor"));
+  t("presence rests hidden without realtime config", bare.includes("presence rests until real people are counted") && bare.includes('hidden style="display:none"'));
+  t("no realtime module without keys", !bare.includes("supabase-js@2/+esm"));
+  process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "anon-key-for-harness";
+  const wired = renderTribute(template, jonny);
+  t("realtime module ships with keys", wired.includes("supabase-js@2/+esm") && wired.includes('"presence-"+"jonny"'));
+  t("module only speaks from two upward", wired.includes("if(n>=2)"));
+  t("demo simulation intact in the raw design file", template.includes("/* presence line — no one mourns alone */"));
+  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 }
 
 // ── 8 · the footer speaks each page's own address (July 8) ───────────────────

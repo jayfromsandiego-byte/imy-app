@@ -229,7 +229,7 @@ export function renderTribute(template: string, t: Tribute): string {
     .split("{{SPONSOR_PLAQUE}}").join(sponsorPlaque)
     .split("{{ARCH_VIDEO}}").join(archVideo)
     .split("{{ARCH_LIVETAG}}").join(archLivetag)
-    .split("{{PRESENCE_HIDDEN}}").join("hidden")
+    .split("{{PRESENCE_HIDDEN}}").join('hidden style="display:none"')
     .split("{{PRESENCE_LINE}}").join("");
 
   // ── name pass: the template's UI strings speak the person's real name ──
@@ -380,6 +380,47 @@ export function renderTribute(template: string, t: Tribute): string {
     if (hides.length) {
       const hi = html.lastIndexOf("</head>");
       if (hi > -1) html = html.slice(0, hi) + `<style>${hides.join("")}</style>` + html.slice(hi);
+    }
+  }
+
+  // ═══ presence pass (July 8) ═══════════════════════════════════════════════
+  // The design file simulates company ("two people are here with you now").
+  // Trust is the entire product: on every server render the simulation leaves
+  // the page, and a Realtime module below speaks only when at least two people
+  // are actually here. No fabricated number can ever reach a family's page.
+  {
+    const pAnchor = "/* presence line — no one mourns alone */";
+    const pIdx = html.indexOf(pAnchor);
+    if (pIdx > -1) {
+      const pEndMark = "},14000)})();";
+      const pEnd = html.indexOf(pEndMark, pIdx);
+      if (pEnd > -1) {
+        const rest = `/* presence rests until real people are counted */
+(function(){var el=document.getElementById('presenceTxt');if(!el)return;var b=el.parentElement;if(b){b.setAttribute('hidden','');b.style.display='none'}})();`;
+        html = html.slice(0, pIdx) + rest + html.slice(pEnd + pEndMark.length);
+      }
+    }
+  }
+  {
+    const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+    const sbAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+    if (sbUrl && sbAnon && t.slug) {
+      const presenceModule = `<script type="module">/* presence — real people, truthfully counted */
+try{
+const m=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+const el=document.getElementById("presenceTxt"),box=el&&el.parentElement;
+if(el&&box){
+const words=["two","three","four","five","six","seven","eight","nine"];
+const show=(n)=>{if(n>=2){el.textContent=(n<10?words[n-2]:String(n))+" people are here with you now";box.removeAttribute("hidden");box.style.display="inline-flex"}else{box.setAttribute("hidden","");box.style.display="none"}};
+const c=m.createClient(${JSON.stringify(sbUrl)},${JSON.stringify(sbAnon)});
+const ch=c.channel("presence-"+${JSON.stringify(t.slug)},{config:{presence:{key:Math.random().toString(36).slice(2)}}});
+ch.on("presence",{event:"sync"},()=>{try{show(Object.keys(ch.presenceState()).length)}catch(e){}});
+ch.subscribe((st)=>{if(st==="SUBSCRIBED"){try{ch.track({t:Date.now()})}catch(e){}}});
+addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
+}
+}catch(e){}
+</script>`;
+      html = html.replace("</body>", presenceModule + "\n</body>");
     }
   }
 
