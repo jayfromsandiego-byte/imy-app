@@ -40,6 +40,31 @@ export async function POST(req: NextRequest) {
       const text = data?.choices?.[0]?.message?.content?.trim();
       if (text) return NextResponse.json({ ok: true, text });
     } catch {
+      /* fall through to the next provider */
+    }
+  }
+
+  // Second door: Gemini through its OpenAI-compatible endpoint. The free tier
+  // answers well — the helper should never stay asleep over a billing page.
+  const gkey = process.env.GEMINI_API_KEY;
+  if (gkey) {
+    try {
+      const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${gkey}` },
+        body: JSON.stringify({
+          model: process.env.ASSIST_MODEL_GEMINI || "gemini-2.5-flash",
+          temperature: 0.7,
+          messages: [
+            { role: "system", content: SYSTEM },
+            { role: "user", content: `About ${name}. ${prompt}` },
+          ],
+        }),
+      });
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content?.trim();
+      if (text) return NextResponse.json({ ok: true, text });
+    } catch {
       /* fall through to fallback */
     }
   }
