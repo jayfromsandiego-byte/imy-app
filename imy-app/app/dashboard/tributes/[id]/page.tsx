@@ -233,11 +233,11 @@ export default async function EditTribute({ params }: { params: { id: string } }
           <div className="field-row">
             <label>
               <span className="field-label">Born</span>
-              <input className="field-input" type="date" name="born_on" defaultValue={t.born_on || ""} />
+              <input className="field-input" type="date" name="born_on" defaultValue={t.born_on || ""} min="1900-01-01" max={new Date().toISOString().slice(0, 10)} />
             </label>
             <label>
               <span className="field-label">Passed</span>
-              <input className="field-input" type="date" name="died_on" defaultValue={t.died_on || ""} />
+              <input className="field-input" type="date" name="died_on" defaultValue={t.died_on || ""} min={t.born_on || "1900-01-01"} max={new Date().toISOString().slice(0, 10)} />
             </label>
           </div>
           <label style={{ marginTop: 14, display: "block" }}>

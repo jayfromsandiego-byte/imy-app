@@ -15,10 +15,23 @@ export async function saveTribute(formData: FormData) {
   const id = String(formData.get("id") || "");
   const db = supabaseAdmin();
   if (!(await ownsTribute(db, id, user))) return;
+  // Years must be plausible (fix 8): 1900 through this year, passing not before
+  // birth. An implausible date never overwrites what the family already has —
+  // the field is simply left unchanged.
+  const nowYear = new Date().getFullYear();
+  const plausible = (v: string): string | null | undefined => {
+    if (!v) return null; // cleared on purpose
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return undefined;
+    const y = Number(v.slice(0, 4));
+    return y >= 1900 && y <= nowYear ? v : undefined;
+  };
+  let bornOn = plausible(String(formData.get("born_on") || ""));
+  let diedOn = plausible(String(formData.get("died_on") || ""));
+  if (typeof bornOn === "string" && typeof diedOn === "string" && diedOn < bornOn) diedOn = undefined;
   const upd: any = {
     loved_one_name: String(formData.get("loved_one_name") || "").slice(0, 120),
-    born_on: String(formData.get("born_on") || "") || null,
-    died_on: String(formData.get("died_on") || "") || null,
+    ...(bornOn !== undefined ? { born_on: bornOn } : {}),
+    ...(diedOn !== undefined ? { died_on: diedOn } : {}),
     place: String(formData.get("place") || "").slice(0, 120) || null,
     portrait_quote: String(formData.get("portrait_quote") || "").slice(0, 300) || null,
     story: String(formData.get("story") || "").slice(0, 8000) || null,

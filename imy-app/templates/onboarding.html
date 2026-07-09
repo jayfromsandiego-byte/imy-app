@@ -623,8 +623,8 @@ var ENGINE=(function(){
       case 'pronouns':
         return '<div class="chips" id="pnChips">'+[['he','He · his story'],['she','She · her story'],['they','They · their story']].map(function(o){return '<button type="button" class="chip'+(A.pronouns===o[0]?' on':'')+'" data-pn="'+o[0]+'">'+o[1]+'</button>'}).join('')+'</div>';
       case 'dates':
-        return '<div class="grid2"><div class="fgroup"><label class="small">when they were born</label><input type="date" data-key="birth" max="2026-12-31"></div>'+
-               '<div class="fgroup"><label class="small">when they passed</label><input type="date" data-key="passing" max="2026-12-31"></div></div>';
+        return '<div class="grid2"><div class="fgroup"><label class="small">when they were born</label><input type="date" data-key="birth" min="1900-01-01" max="2026-12-31"></div>'+
+               '<div class="fgroup"><label class="small">when they passed</label><input type="date" data-key="passing" min="1900-01-01" max="2026-12-31"></div></div>';
       case 'chips':
         var opts=['Mother','Father','Grandmother','Grandfather','Wife','Husband','Partner','Sister','Brother','Daughter','Son','Friend'];
         return '<div class="chips">'+opts.map(function(o){return '<button type="button" class="chip" data-chip="'+o+'">'+o+'</button>'}).join('')+'</div>'+
@@ -884,9 +884,30 @@ var ENGINE=(function(){
     }
   }
   function valid(st,s){
+    /* years live inside a life (fix 8) — quiet, specific, never blocking an empty year */
+    if(st.type==='moments'){
+      var nowY=new Date().getFullYear();
+      var bY=A.birth?+String(A.birth).slice(0,4):1900,pY=A.passing?+String(A.passing).slice(0,4):nowY;
+      var lo=Math.max(1900,bY),hi=Math.min(nowY,pY),bad=false;
+      s.querySelectorAll('.m-row').forEach(function(r){
+        var yEl=r.querySelector('.m-year'),y=yEl?yEl.value.trim():'';
+        var ok=!y||(/^\d{4}$/.test(y)&&+y>=lo&&+y<=hi);
+        if(yEl)yEl.style.borderColor=ok?'':'#b0653f';
+        if(!ok)bad=true;
+      });
+      if(bad){var em=s.querySelector('.err');if(em)em.textContent='a year between '+lo+' and '+hi+' · or leave it empty';return false}
+      return true;
+    }
     if(!st.req)return true;
     if(st.type==='chips')return !!(s.querySelector('#relInput').value.trim());
-    if(st.type==='dates'){return !!(s.querySelector('[data-key="birth"]').value&&s.querySelector('[data-key="passing"]').value)}
+    if(st.type==='dates'){
+      var b=s.querySelector('[data-key="birth"]').value,p=s.querySelector('[data-key="passing"]').value;
+      if(!b||!p)return false;
+      var e2=s.querySelector('.err'),nY=new Date().getFullYear(),by=+b.slice(0,4),py=+p.slice(0,4);
+      if(by<1900||by>nY||py<1900||py>nY){if(e2)e2.textContent='those years reach outside 1900–'+nY+' · a gentle check of the dates';return false}
+      if(p<b){if(e2)e2.textContent='the passing date lands before the birth · a gentle check of the dates';return false}
+      return true;
+    }
     if(st.type==='contact'){var e=s.querySelector('[data-key="email"]').value.trim();return /.+@.+\..+/.test(e)}
     var el=s.querySelector('[data-key]');
     return !!(el&&el.value.trim());

@@ -61,12 +61,26 @@ export async function POST(req: NextRequest) {
 
   const claim = token();
 
+  // Years must be plausible (fix 8): 1900 through this year, passing not before
+  // birth. An implausible date is set aside (null) rather than failing the seal —
+  // the family can set it right in their study; the letter validates inline too.
+  const nowYear = new Date().getFullYear();
+  const plausibleDate = (v: string): string | null => {
+    const s = S(v, 10);
+    if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+    const y = Number(s.slice(0, 4));
+    return y >= 1900 && y <= nowYear ? s : null;
+  };
+  let bornOn = plausibleDate(body.birth);
+  let diedOn = plausibleDate(body.passing);
+  if (bornOn && diedOn && diedOn < bornOn) diedOn = null;
+
   const { data: trib, error } = await db.from("tributes").insert({
     slug,
     loved_one_name: name,
     aka: S(body.aka, 80),
-    born_on: S(body.birth, 10),
-    died_on: S(body.passing, 10),
+    born_on: bornOn,
+    died_on: diedOn,
     place: S(body.place, 120),
     story: S(body.story, 8000),
     portrait_quote: S(body.quote, 300),
@@ -99,9 +113,19 @@ export async function POST(req: NextRequest) {
 
   const moments = Array.isArray(body.moments) ? body.moments.slice(0, 40) : [];
   if (moments.length) {
+    // A moment's year must sit inside the life (fix 8). An implausible year is
+    // quietly set aside — the words are always kept, never the junk number.
+    const bY = bornOn ? Number(bornOn.slice(0, 4)) : 1900;
+    const dY = diedOn ? Number(diedOn.slice(0, 4)) : nowYear;
+    const momentYear = (v: any): string => {
+      const s = (S(v, 12) || "").trim();
+      if (!/^\d{4}$/.test(s)) return "";
+      const y = Number(s);
+      return y >= Math.max(1900, bY) && y <= Math.min(nowYear, dY) ? s : "";
+    };
     await db.from("tribute_timeline").insert(
       moments.map((m: any, i: number) => ({
-        tribute_id: tid, year: S(m.year, 12), title: S(m.title, 140) || S(m.body, 140) || "", body: S(m.body, 600), sort: i,
+        tribute_id: tid, year: momentYear(m.year), title: S(m.title, 140) || S(m.body, 140) || "", body: S(m.body, 600), sort: i,
       })).filter((r: any) => r.title)
     );
   }
