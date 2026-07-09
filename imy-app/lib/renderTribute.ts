@@ -54,6 +54,7 @@ export type Tribute = {
   portraitCap?: string;
   quote?: string;
   story?: string;
+  obituary?: string;
   candleCount?: number;
   flowerCount?: number;
   flowerToday?: number;
@@ -476,6 +477,34 @@ export function renderTribute(template: string, t: Tribute): string {
         rows.push(`<div class="shelfrow"${last ? ' style="border-bottom:none;margin-bottom:10px"' : ""}>${cells.slice(i, i + 3).join("")}</div>`);
       }
       html = html.slice(0, svIdx) + `<div class="shelfview">` + rows.join("") + html.slice(capIdx);
+    }
+  }
+
+  // ═══ the obituary and the kept voice (July 9) ═══════════════════════════════
+  // The formal notice on its own quiet sheet, and their actual voice — both
+  // standing between who they really were and the memories wall.
+  {
+    const memAnchor = '<section class="section rev sheetdeep" id="memories"';
+    const mIdx = html.indexOf(memAnchor);
+    if (mIdx > -1) {
+      let add = "";
+      if (t.obituary && t.obituary.trim()) {
+        add +=
+          `<section class="section rev" id="obituary" style="padding:64px 5% 26px">` +
+          `<div style="max-width:720px;margin:0 auto;background:#FDFAF3;border:1px solid #E9DFC9;border-radius:14px;box-shadow:0 30px 70px -44px rgba(60,40,15,.3);padding:clamp(28px,5vw,54px)">` +
+          `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:16px">The obituary</div>` +
+          `<div style="font-family:'Besley',serif;font-size:16.5px;line-height:1.85;color:#2C2520;white-space:pre-line">${esc(t.obituary.trim())}</div>` +
+          `</div></section>`;
+      }
+      if (tier === "plus" && t.voiceUrl && /^https:\/\//.test(t.voiceUrl)) {
+        add +=
+          `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
+          `<div style="max-width:560px;margin:0 auto">` +
+          `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">Their voice · kept</div>` +
+          `<audio controls preload="none" src="${esc(t.voiceUrl)}" style="width:100%;display:block"></audio>` +
+          `</div></section>`;
+      }
+      if (add) html = html.slice(0, mIdx) + add + html.slice(mIdx);
     }
   }
 

@@ -8,6 +8,7 @@ import MediaManager from "@/components/MediaManager";
 import PlacementsManager from "@/components/PlacementsManager";
 import VideosManager from "@/components/VideosManager";
 import ArrangeManager from "@/components/ArrangeManager";
+import VoiceKeeper from "@/components/VoiceKeeper";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,12 @@ export default async function EditTribute({ params }: { params: { id: string } }
     .eq("tribute_id", t.id)
     .is("deleted_at", null)
     .order("sort", { ascending: true });
+  const { data: voiceRow } = await db
+    .from("tribute_audio")
+    .select("url")
+    .eq("tribute_id", t.id)
+    .eq("kind", "voice")
+    .maybeSingle();
   const { data: videos } = await db
     .from("tribute_videos")
     .select("id,url,caption,sort")
@@ -252,6 +259,11 @@ export default async function EditTribute({ params }: { params: { id: string } }
         />
       </section>
 
+      {/* ---------- Their voice ---------- */}
+      <section style={{ marginTop: 20 }}>
+        <VoiceKeeper tributeId={t.id} voiceUrl={(voiceRow as any)?.url || null} tier={t.tier || "free"} />
+      </section>
+
       {/* ---------- The order of the rooms ---------- */}
       <section style={{ marginTop: 20 }}>
         <ArrangeManager tributeId={t.id} sections={(t.sections as any) || null} />
@@ -301,6 +313,10 @@ export default async function EditTribute({ params }: { params: { id: string } }
           <label style={{ marginTop: 14, display: "block" }}>
             <span className="field-label">Their story</span>
             <textarea className="field-input" name="story" defaultValue={t.story || ""} />
+          </label>
+          <label style={{ marginTop: 14, display: "block" }}>
+            <span className="field-label">The obituary · the formal notice, shown on its own quiet sheet</span>
+            <textarea className="field-input" name="obituary" defaultValue={t.obituary || ""} placeholder="In loving memory… survived by… services will be held…" style={{ minHeight: 140 }} />
           </label>
           <div className="field-row">
             <label>

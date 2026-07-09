@@ -44,6 +44,7 @@ function rowToTribute(r: any): Tribute {
     passing: dateOnly(r.died_on),
     place: r.place || undefined,
     story: r.story || undefined,
+    obituary: r.obituary || undefined,
     quote: r.portrait_quote || undefined,
     candleCount: r.candle_count ?? 0,
     flowerCount: r.flower_count ?? 0,

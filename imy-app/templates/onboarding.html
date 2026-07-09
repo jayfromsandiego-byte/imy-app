@@ -511,6 +511,7 @@ var ENGINE=(function(){
     {id:'rel',ch:'who they were',q:'Who were they <em>to you?</em>',type:'chips',key:'relationship',req:true},
     {id:'photo',ch:'their portrait',q:'A photograph for their <em>Memorial Stone.</em>',sub:'It rests in the arch at the top of their page, with their name. Choose one where they look like themselves.',type:'photo',skip:'I’ll add one later'},
     {id:'story',ch:'their story',q:'Tell us a little of <em>their story.</em>',sub:'In your own words. A few sentences are enough.',type:'story',key:'story',req:true},
+    {id:'obituary',ch:'their story',q:'The obituary, if you <em>would like one.</em>',sub:'The formal notice, in its fullness — the services, the survived-by, their life as the paper would print it. Skip freely; their page is already theirs.',type:'obituary',skip:'skip for now'},
     {id:'small',ch:'their story',q:'The small things that were theirs.',sub:'A phrase they always said. A song that brings them back. Both are optional.',type:'two',skip:'nothing right now · skip'},
     {id:'voice',ch:'their story',q:'A voice you want <em>to keep.</em>',sub:'A voicemail, a recording, a laugh. Recordings are part of the Plus plan · kept safe either way.',type:'voice',plus:true,skip:'not right now · skip'},
     {id:'moments',ch:'their story',q:'A few moments from <em>their life.</em>',sub:'A year, and what happened. Add as many as you like.',type:'moments',skip:'skip for now'},
@@ -544,7 +545,7 @@ var ENGINE=(function(){
     gFiles.forEach(function(f){if(f.__url){if((f.type||'').indexOf('video')===0)vids.push(f.__url);else imgs.push(f.__url)}});
     return {
       fullName:A.fullName||'',aka:A.aka||A.nickname||'',pronouns:A.pronouns||'',birth:A.birth||'',passing:A.passing||'',place:A.place||A.home||'',
-      story:A.story||'',quote:A.quote||'',song:A.song||'',voiceUrl:A.voiceUpURL||'',
+      story:A.story||'',obituary:A.obituary||'',quote:A.quote||'',song:A.song||'',voiceUrl:A.voiceUpURL||'',
       moments:(A.moments||[]).map(function(m){return {year:m.year||'',title:m.text||'',body:''}}),
       lovedThings:(A.lovedThings||[]).map(function(l){return {label:l}}),
       photos:imgs,videos:vids,coverPhotoUrl:A.photoUpURL||'',
@@ -649,6 +650,8 @@ var ENGINE=(function(){
         return '<div class="drop" id="vDrop"><button type="button" class="lockb" data-lock="voice" aria-label="part of plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg></button><div class="plus">＋</div><div class="t">Add a recording</div><div class="s">a voicemail · a voice memo · tap to choose</div></div>'+
                '<input type="file" id="vInput" accept="audio/*" hidden>'+
                '<div class="cass" id="vCass" style="display:none"><div class="c-body"><div class="c-row"><span class="spool"></span><span class="c-win"></span><span class="spool"></span></div><div class="c-lbl" id="vLbl"></div></div><div class="c-note">kept safe in their keeping place · plays with plus</div></div>';
+      case 'obituary':
+        return '<textarea data-key="obituary" placeholder="In loving memory… survived by… services will be held…"></textarea>';
       case 'moments':
         return '<div id="mRows"></div><button type="button" class="addrow" id="mAdd">＋ add a moment</button>';
       case 'tiles':

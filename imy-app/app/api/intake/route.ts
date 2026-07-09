@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
     died_on: diedOn,
     place: S(body.place, 120),
     story: S(body.story, 8000),
+    obituary: S(body.obituary, 12000),
     portrait_quote: S(body.quote, 300),
     theme: "wreath",
     motif: null,

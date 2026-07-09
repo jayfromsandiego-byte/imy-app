@@ -1,8 +1,8 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
-// the tape shelf, the arranger, the composer's doors, and the demo's ask.
-// 94 checks.
+// the tape shelf, the arranger, the composer's doors, the demo's ask, and the
+// obituary with the kept voice. 99 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -183,6 +183,17 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
   t("one flower number is enough", renderTribute(template, jonny).includes(".wr-count{display:none!important}"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
+}
+
+// ── 16 · the obituary and the kept voice (July 9) ─────────────────────────────
+{
+  const withOb = renderTribute(template, { ...jonny, obituary: "In loving memory of Jon.\nSurvived by his family.", voiceUrl: "https://x/voice.mp3" });
+  t("the obituary stands on its own sheet", withOb.includes('id="obituary"') && withOb.includes("In loving memory of Jon."));
+  t("obituary line breaks are kept", withOb.includes("white-space:pre-line"));
+  t("their kept voice plays on plus", withOb.includes('id="theirvoice"') && withOb.includes('src="https://x/voice.mp3"'));
+  const freeV = renderTribute(template, { ...jonny, tier: "free", obituary: "In loving memory.", voiceUrl: "https://x/voice.mp3" });
+  t("a free page keeps the voice resting", !freeV.includes('id="theirvoice"') && freeV.includes('id="obituary"'));
+  t("no obituary → no empty sheet", !renderTribute(template, jonny).includes('id="obituary"'));
 }
 
 // ── 15 · the example sells the beginning; family pages never do (July 9) ──────

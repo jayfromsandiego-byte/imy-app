@@ -35,6 +35,7 @@ export async function saveTribute(formData: FormData) {
     place: String(formData.get("place") || "").slice(0, 120) || null,
     portrait_quote: String(formData.get("portrait_quote") || "").slice(0, 300) || null,
     story: String(formData.get("story") || "").slice(0, 8000) || null,
+    obituary: String(formData.get("obituary") || "").slice(0, 12000) || null,
     status: String(formData.get("status") || "draft"),
     visibility: String(formData.get("visibility") || "public"),
   };
@@ -346,5 +347,31 @@ export async function saveSections(formData: FormData) {
   const hidden = (Array.isArray(plan.hidden) ? plan.hidden : [])
     .filter((k: any, i: number, a: any[]) => KNOWN.includes(k) && a.indexOf(k) === i);
   await db.from("tributes").update({ sections: { order, hidden } }).eq("id", tributeId);
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+}
+
+// ── Their voice (July 9) ──────────────────────────────────────────────────────
+// The tribute's own kept recording — one voice, replaceable, never lost by
+// accident (replacing swaps the row; the old file itself is never destroyed).
+export async function setTributeVoice(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const url = String(formData.get("url") || "");
+  if (!/^https:\/\//.test(url)) return;
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, tributeId, user))) return;
+  await db.from("tribute_audio").delete().eq("tribute_id", tributeId).eq("kind", "voice");
+  await db.from("tribute_audio").insert({ tribute_id: tributeId, url: url.slice(0, 600), kind: "voice", caption: "A voice to keep" });
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+}
+
+export async function removeTributeVoice(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, tributeId, user))) return;
+  await db.from("tribute_audio").delete().eq("tribute_id", tributeId).eq("kind", "voice");
   revalidatePath(`/dashboard/tributes/${tributeId}`);
 }
