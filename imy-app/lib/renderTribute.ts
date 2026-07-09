@@ -585,14 +585,41 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
     }
   }
 
-  // A quiet way home: every production page carries one whisper of a link to
-  // the study. Families kept asking how to get back in; now the door is there,
-  // top right, saying only "tend this page".
+  // A quiet way home: every family page carries one whisper of a link to the
+  // study. Families kept asking how to get back in; now the door is there,
+  // top right, saying only "tend this page". The demo instead carries the
+  // beginning — visitors there are not the family.
   if (t.slug) {
-    const tend = `<a href="/signin" style="position:fixed;top:14px;right:16px;z-index:60;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;background:rgba(250,245,236,.92);border:1px solid #E4D9C4;border-radius:20px;padding:6px 12px;text-decoration:none;opacity:.85">tend this page</a>`;
-    html = html.replace("</body>", tend + "\n</body>");
+    if (slug !== "eleanor") {
+      const tend = `<a href="/signin" style="position:fixed;top:14px;right:16px;z-index:60;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;background:rgba(250,245,236,.92);border:1px solid #E4D9C4;border-radius:20px;padding:6px 12px;text-decoration:none;opacity:.85">tend this page</a>`;
+      html = html.replace("</body>", tend + "\n</body>");
+    }
     // The chapters' demo "add a key moment" button is study work, not page work.
     html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
+  }
+
+  // ═══ the example sells the beginning (July 9) ═══════════════════════════════
+  // Only the demo carries an ask. A family's memorial never asks a visitor for
+  // money on someone else's grief — but the showroom may point at the door,
+  // after everything has been seen, in the house voice.
+  if (slug === "eleanor") {
+    const demoBand =
+      `<section id="begin-band" aria-label="Begin a page" style="background:linear-gradient(180deg,#2a1c11,#241711);padding:76px 5% 66px;text-align:center">` +
+      `<div style="max-width:660px;margin:0 auto">` +
+      `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#C9A572;margin-bottom:18px">This page is the example</div>` +
+      `<h2 style="font-family:'Besley',serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.2;color:#FAF5EC;margin:0 0 14px">Make one for someone <em style="color:#C9A572">you</em> miss.</h2>` +
+      `<p style="font-family:'Besley',serif;font-size:16.5px;line-height:1.65;color:rgba(250,245,236,.82);margin:0 0 30px">Begin free — their page is online in ten quiet minutes, and it stays forever. Everything you just saw here, the Living pictures, her voice, every photograph in motion: that is Plus.</p>` +
+      `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">` +
+      `<a href="/onboarding?plan=plus" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;background:#C9A572;color:#241711;border-radius:100px;padding:14px 26px;text-decoration:none">Begin with Plus · $97 once</a>` +
+      `<a href="/onboarding" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;border:1.5px solid rgba(201,165,114,.65);color:#F4E9D4;border-radius:100px;padding:14px 26px;text-decoration:none">Begin free · $0</a>` +
+      `</div>` +
+      `<div style="font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(201,165,114,.75);margin-top:26px">$0 · $97 once or $12/month · Concierge from $499 · never deleted, never expired</div>` +
+      `</div></section>`;
+    const gw = html.indexOf('<div class="gw-band">');
+    if (gw > -1) html = html.slice(0, gw) + demoBand + html.slice(gw);
+    const beginPill =
+      `<a href="/onboarding?plan=plus" id="begin-pill" style="position:fixed;top:14px;right:16px;z-index:60;font-family:'Besley',serif;font-weight:600;font-size:13.5px;background:#A87C5F;color:#fff;border-radius:100px;padding:9px 18px;text-decoration:none;box-shadow:0 14px 30px -12px rgba(60,38,10,.5)">Make one for someone you miss</a>`;
+    html = html.replace("</body>", beginPill + "\n</body>");
   }
 
   // ═══ the room fills (fix 6) ════════════════════════════════════════════════

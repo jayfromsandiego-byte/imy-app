@@ -1,7 +1,8 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
-// the tape shelf, the arranger, and the composer's doors. 88 checks.
+// the tape shelf, the arranger, the composer's doors, and the demo's ask.
+// 92 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -181,6 +182,16 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
+}
+
+// ── 15 · the example sells the beginning; family pages never do (July 9) ──────
+{
+  const demo = renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" });
+  t("the demo carries the begin band", demo.includes('id="begin-band"') && demo.includes("Make one for someone"));
+  t("the demo's pill leads with plus intent", demo.includes('href="/onboarding?plan=plus" id="begin-pill"'));
+  t("the demo never says tend this page", !demo.includes(">tend this page</a>"));
+  const family = renderTribute(template, jonny);
+  t("a family page never carries the ask", !family.includes('id="begin-band"') && !family.includes('id="begin-pill"'));
 }
 
 // ── 14 · the composer's doors are real (July 8) ───────────────────────────────
