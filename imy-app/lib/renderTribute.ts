@@ -235,6 +235,11 @@ export function renderTribute(template: string, t: Tribute): string {
   html = html.replace(/Eleanor(&#39;s|'s)/g, `${esc(first)}$1`);
   html = html.split("Eleanor").join(esc(first));
 
+  // The footer's address line speaks THIS page's own home (July 8: the demo's
+  // lowercase subdomain slipped past the capital-E pass above and reached
+  // every live footer).
+  if (t.slug) html = html.split("eleanor.imissyoumemorial.com").join(`${esc(t.slug)}.imissyoumemorial.com`);
+
   // ═══ identity pass (July 7) ══════════════════════════════════════════════
   // The design file is Eleanor's demo. Two real families taught us what leaks:
   // her pronouns, her quote band, her "who she really was" cards, her wall

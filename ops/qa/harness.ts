@@ -1,5 +1,6 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
-// identity safety, tier behavior, hearts, comments, voice, and the Plus band. 40 checks.
+// identity safety, tier behavior, hearts, comments, voice, the Plus band, and
+// the footer address. 43 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -143,6 +144,15 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const htmlPlus = renderTribute(template, jonny);
   t("plus pages never carry the band", !htmlPlus.includes('id="plus-band"'));
   t("concierge cta is a real intake, not the old mockup", htmlFree.includes("mailto:hello@imissyoumemorial.com?subject=Concierge") && !htmlFree.includes("hyperagent.com/s/aBadvO39KhiuGhTHgfi93g"));
+}
+
+// ── 8 · the footer speaks each page's own address (July 8) ───────────────────
+{
+  const htmlJonny = renderTribute(template, jonny);
+  t("footer speaks the page's own address", htmlJonny.includes("jonny.imissyoumemorial.com"));
+  t("no demo address leak", !htmlJonny.includes("eleanor.imissyoumemorial.com"));
+  const htmlEleanor = renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" });
+  t("eleanor keeps her own address", htmlEleanor.includes("eleanor.imissyoumemorial.com"));
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);
