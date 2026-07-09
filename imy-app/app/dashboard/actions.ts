@@ -165,16 +165,14 @@ export async function savePlacements(formData: FormData) {
   rows = rows.slice(0, 40);
 
   // Timeline sync: update kept rows, insert new ones, remove the rest.
+  // Years are plausible (1900–now), not life-bound — timelines legitimately
+  // hold family history from before a birth and moments from after.
   const nowYear = new Date().getFullYear();
-  const bY = t.born_on ? Number(String(t.born_on).slice(0, 4)) : 1900;
-  const dY = t.died_on ? Number(String(t.died_on).slice(0, 4)) : nowYear;
-  const lo = Math.max(1900, bY);
-  const hi = Math.min(nowYear, dY);
   const cleanYear = (v: any): string => {
     const s = String(v ?? "").trim();
     if (!/^\d{4}$/.test(s)) return "";
     const y = Number(s);
-    return y >= lo && y <= hi ? s : "";
+    return y >= 1900 && y <= nowYear ? s : "";
   };
 
   const { data: existing } = await db.from("tribute_timeline").select("id").eq("tribute_id", tributeId);

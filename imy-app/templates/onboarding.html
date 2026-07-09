@@ -886,9 +886,10 @@ var ENGINE=(function(){
   function valid(st,s){
     /* years live inside a life (fix 8) — quiet, specific, never blocking an empty year */
     if(st.type==='moments'){
+      /* plausible years only — the life range was a trap when dates are wrong,
+         and real timelines hold family history and after-moments too */
       var nowY=new Date().getFullYear();
-      var bY=A.birth?+String(A.birth).slice(0,4):1900,pY=A.passing?+String(A.passing).slice(0,4):nowY;
-      var lo=Math.max(1900,bY),hi=Math.min(nowY,pY),bad=false;
+      var lo=1900,hi=nowY,bad=false;
       s.querySelectorAll('.m-row').forEach(function(r){
         var yEl=r.querySelector('.m-year'),y=yEl?yEl.value.trim():'';
         var ok=!y||(/^\d{4}$/.test(y)&&+y>=lo&&+y<=hi);

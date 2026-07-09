@@ -32,8 +32,10 @@ export default function PlacementsManager({
   const [rows, setRows] = useState<Row[]>(timeline.map((r) => ({ id: r.id, year: r.year || "", title: r.title || "" })));
   const [saved, setSaved] = useState(false);
 
-  const lo = Math.max(1900, bornYear || 1900);
-  const hi = Math.min(NOW_YEAR, diedYear || NOW_YEAR);
+  // Plausible years only (1900–now). Not life-bound: timelines hold family
+  // history from before a birth, and moments from after, kindly.
+  const lo = 1900;
+  const hi = NOW_YEAR;
   const yearError = (y: string) => {
     const v = y.trim();
     if (!v) return "";
@@ -42,7 +44,7 @@ export default function PlacementsManager({
     if (n < lo || n > hi) return `a year between ${lo} and ${hi}`;
     return "";
   };
-  const errors = useMemo(() => rows.map((r) => yearError(r.year)), [rows, lo, hi]);
+  const errors = useMemo(() => rows.map((r) => yearError(r.year)), [rows]);
   const hasErrors = errors.some(Boolean);
 
   const toggleBoard = (id: string) =>
@@ -122,8 +124,8 @@ export default function PlacementsManager({
       <h3 style={h3}>A life, in chapters</h3>
       <p style={sub}>
         Each moment can hold its own photograph. A moment without one shows a quiet
-        empty state — never a photo that doesn&rsquo;t belong to it.
-        {bornYear || diedYear ? ` Years live between ${lo} and ${hi}.` : ""}
+        empty state — never a photo that doesn&rsquo;t belong to it. Years live
+        between {lo} and {hi}.
       </p>
       {rows.map((r, i) => {
         const rowKey = r.id || r.k || `new-${i}`;

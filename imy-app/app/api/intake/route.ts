@@ -113,15 +113,15 @@ export async function POST(req: NextRequest) {
 
   const moments = Array.isArray(body.moments) ? body.moments.slice(0, 40) : [];
   if (moments.length) {
-    // A moment's year must sit inside the life (fix 8). An implausible year is
-    // quietly set aside — the words are always kept, never the junk number.
-    const bY = bornOn ? Number(bornOn.slice(0, 4)) : 1900;
-    const dY = diedOn ? Number(diedOn.slice(0, 4)) : nowYear;
+    // A moment's year must be plausible (fix 8): 1900 through this year.
+    // Not bound to the life — timelines legitimately hold family history from
+    // before a birth. An implausible year is quietly set aside; the words
+    // are always kept, never the junk number.
     const momentYear = (v: any): string => {
       const s = (S(v, 12) || "").trim();
       if (!/^\d{4}$/.test(s)) return "";
       const y = Number(s);
-      return y >= Math.max(1900, bY) && y <= Math.min(nowYear, dY) ? s : "";
+      return y >= 1900 && y <= nowYear ? s : "";
     };
     await db.from("tribute_timeline").insert(
       moments.map((m: any, i: number) => ({
