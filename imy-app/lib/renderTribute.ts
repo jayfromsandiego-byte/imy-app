@@ -665,15 +665,18 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
     }
   }
 
-  // A quiet way home: every family page carries one whisper of a link to the
-  // study. Families kept asking how to get back in; now the door is there,
-  // top right, saying only "tend this page". The demo instead carries the
-  // beginning — visitors there are not the family.
+  // A quiet way home (July 10, founder ask): the door into the study is a real
+  // log-in pill now, living in the sticky bar beside the memorial book on every
+  // tribute page — demo included — and the memory door steps back a size so the
+  // bar breathes. One door, always visible, through /signin. The old floating
+  // "tend this page" whisper retires; two doors in one corner was noise.
   if (t.slug) {
-    if (slug !== "eleanor") {
-      const tend = `<a href="/signin" style="position:fixed;top:14px;right:16px;z-index:60;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;background:rgba(250,245,236,.92);border:1px solid #E4D9C4;border-radius:20px;padding:6px 12px;text-decoration:none;opacity:.85">tend this page</a>`;
-      html = html.replace("</body>", tend + "\n</body>");
-    }
+    const loginBtn = `<a id="loginTop" href="/signin" style="display:inline-flex;align-items:center;font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;border:1px solid #E4D9C4;border-radius:20px;padding:8px 14px;text-decoration:none;background:transparent;white-space:nowrap">log in</a>`;
+    html = html.replace("Buy a memorial book</button></span>", "Buy a memorial book</button>" + loginBtn + "</span>");
+    html = html.replace(
+      '<button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">',
+      '<button class="btn" id="addMemTop" style="font-size:11.5px;padding:7px 13px">'
+    );
     // The chapters' demo "add a key moment" button is study work, not page work.
     html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
   }

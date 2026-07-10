@@ -2,7 +2,7 @@
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
-// obituary with the kept voice, and a life in chapters. 111 checks.
+// obituary with the kept voice, a life in chapters, and the log-in door. 114 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -203,9 +203,10 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const demo = renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" });
   t("the demo carries the begin band", demo.includes('id="begin-band"') && demo.includes("Make one for someone"));
   t("the demo's pill leads with plus intent", demo.includes('href="/onboarding?plan=plus" id="begin-pill"'));
-  t("the demo never says tend this page", !demo.includes(">tend this page</a>"));
+  t("the old whisper stays retired", !demo.includes(">tend this page</a>"));
   const family = renderTribute(template, jonny);
   t("a family page never carries the ask", !family.includes('id="begin-band"') && !family.includes('id="begin-pill"'));
+  t("the demo carries the log-in door too", demo.includes('id="loginTop"'));
 }
 
 // ── 14 · the composer's doors are real (July 8) ───────────────────────────────
@@ -214,7 +215,9 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("photo attach is wired, honestly labelled", template.includes('id="photoAdd"') && template.includes("＋ Add a photograph"));
   t("a memory can carry its photograph", template.includes("photoUrl:PHOTO.url||''"));
   t("the helper calls the real api on live pages", template.includes("fetch('/api/assist'"));
-  t("a quiet way home on every page", page.includes(">tend this page</a>"));
+  t("a quiet way home on every page (July 10: a real door)", page.includes('id="loginTop" href="/signin"') && !page.includes(">tend this page</a>"));
+  t("the log-in door sits beside the memorial book", page.includes('Buy a memorial book</button><a id="loginTop"'));
+  t("the memory door steps back a size", page.includes('id="addMemTop" style="font-size:11.5px;padding:7px 13px"') && template.includes('id="addMemTop" style="font-size:12.5px;padding:9px 16px"'));
   t("the demo add-a-moment never reaches a real page", !page.includes("＋ Add a key moment · a year, a line, a photograph") && template.includes("＋ Add a key moment"));
   t("demo binder skips the wired buttons", template.includes("if(g.id)return;"));
 }
