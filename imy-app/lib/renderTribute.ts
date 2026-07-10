@@ -697,9 +697,20 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
     }
 
     // A missing wall element must never take the page's wiring down with it.
+    // The plaque only exists when a sponsor does; the waiting line only when
+    // words wait. renderWall touches both — each touch minds the absence.
     html = html.replace(
       "function renderWall(){\n  var gate=wallGateActive(),unlocked=wallState==='unlocked';",
       "function renderWall(){\n  if(!wallCt||!wchips||!inviteCard)return;\n  var gate=wallGateActive(),unlocked=wallState==='unlocked';"
+    );
+    html = html.replace("  plaqueEl.hidden=!unlocked;", "  if(plaqueEl)plaqueEl.hidden=!unlocked;");
+    html = html.replace(
+      "  gsWaitLine.textContent=wcap(wnum(WAITING.length))+' waiting '+(WAITING.length===1?'memory comes':'memories come')+' home';",
+      "  if(gsWaitLine)gsWaitLine.textContent=wcap(wnum(WAITING.length))+' waiting '+(WAITING.length===1?'memory comes':'memories come')+' home';"
+    );
+    html = html.replace(
+      "  gsWaitLine.style.display=WAITING.length?'flex':'none';",
+      "  if(gsWaitLine)gsWaitLine.style.display=WAITING.length?'flex':'none';"
     );
 
     // ═══ the gift sheet speaks of them (July 10, founder ask) ════════════════
@@ -723,7 +734,9 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
       html = html.split("Dave Alvarez · shown on the wall").join("Your name · shown on the wall");
       const wWord = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"][gsWait] || String(gsWait);
       html = html.replace(/<li id="gsWaitLine">[^<]*<\/li>/,
-        () => (gsWait > 0 ? `<li id="gsWaitLine">${wWord} waiting ${gsWait === 1 ? "memory comes" : "memories come"} home</li>` : ""));
+        () => (gsWait > 0
+          ? `<li id="gsWaitLine">${wWord} waiting ${gsWait === 1 ? "memory comes" : "memories come"} home</li>`
+          : `<li id="gsWaitLine" style="display:none"></li>`));
     }
 
     // ═══ share the date (July 10, founder ask) ═══════════════════════════════

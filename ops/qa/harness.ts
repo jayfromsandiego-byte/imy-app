@@ -4,7 +4,7 @@
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
 // obituary with the kept voice, a life in chapters, the log-in doors
 // (tribute bar + landing), share the date, the visitor's gift note, the
-// safe board shape, and the personalized gift sheet. 139 checks.
+// safe board shape, and the personalized gift sheet. 140 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -330,6 +330,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("the word ticker rests when there are no words", bare.includes(".tick9{display:none!important}"));
   t("the top fold art is asked for first", bare.includes('rel="preload" as="image" href="/art/wreath2-64e82a.png"') && bare.includes('rel="preload" as="image" href="https://x/only.jpg"'));
   t("a missing wall element never takes the wiring down", bare.includes("if(!wallCt||!wchips||!inviteCard)return;"));
+  t("the plaque and the waiting line mind their absence", bare.includes("if(plaqueEl)plaqueEl.hidden=!unlocked;") && bare.includes("if(gsWaitLine)gsWaitLine.textContent=") && bare.includes("if(gsWaitLine)gsWaitLine.style.display="));
   const pinned = renderTribute(template, { ...jonny, photos: [{ id: "ph-a", url: "https://x/p0.jpg" }], placements: { board: ["ph-a"] } });
   t("a pinned board keeps its pill", !pinned.includes(".bbfab{display:none!important}"));
 }
@@ -343,7 +344,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("the demo giver's name never reaches a real page", !freePage.includes("Dave Alvarez") && freePage.includes("Your name · shown on the wall"));
   t("the waiting line tells the truth", freePage.includes('<li id="gsWaitLine">Three waiting memories come home</li>'));
   const noneWaiting = renderTribute(template, { ...freeShe, memories: (freeShe.memories || []).slice(0, 2) });
-  t("no waiting memories · the line rests", !noneWaiting.includes('id="gsWaitLine"'));
+  t("no waiting memories · the line rests but the element stays", noneWaiting.includes('<li id="gsWaitLine" style="display:none"></li>'));
   t("the raw design file keeps its demo sheet", template.includes("Dave Alvarez · shown on the wall"));
 }
 
