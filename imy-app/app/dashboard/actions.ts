@@ -162,10 +162,48 @@ export async function savePlacements(formData: FormData) {
 
   let pl: any = {};
   let rows: any[] = [];
+  let chapterList: any[] = [];
   try { pl = JSON.parse(String(formData.get("placements") || "{}")) || {}; } catch { pl = {}; }
   try { rows = JSON.parse(String(formData.get("timeline") || "[]")) || []; } catch { rows = []; }
+  try { chapterList = JSON.parse(String(formData.get("chapters") || "[]")) || []; } catch { chapterList = []; }
   if (!Array.isArray(rows)) rows = [];
+  if (!Array.isArray(chapterList)) chapterList = [];
   rows = rows.slice(0, 40);
+  chapterList = chapterList.slice(0, 12);
+
+  // Chapters sync (0017): update kept titles in order, welcome new ones,
+  // release the removed (their moments quietly become unplaced — set null).
+  const { data: existingCh } = await db.from("tribute_chapters").select("id").eq("tribute_id", tributeId);
+  const existingChIds = new Set((existingCh || []).map((c: any) => String(c.id)));
+  const keptChIds = new Set<string>();
+  const ckToChId: Record<string, string> = {};
+  for (let i = 0; i < chapterList.length; i++) {
+    const c = chapterList[i] || {};
+    const title = String(c.title || "").slice(0, 80).trim();
+    if (!title) continue; // a chapter with no name is not yet a chapter
+    if (c.id && existingChIds.has(String(c.id))) {
+      keptChIds.add(String(c.id));
+      await db.from("tribute_chapters").update({ title, sort: i }).eq("id", c.id).eq("tribute_id", tributeId);
+    } else if (!c.id) {
+      const { data: insCh } = await db.from("tribute_chapters")
+        .insert({ tribute_id: tributeId, title, sort: i })
+        .select("id").single();
+      if (insCh?.id) {
+        keptChIds.add(String(insCh.id));
+        if (c.ck) ckToChId[String(c.ck)] = String(insCh.id);
+      }
+    }
+  }
+  const chToRemove = [...existingChIds].filter((id) => !keptChIds.has(id));
+  if (chToRemove.length) {
+    await db.from("tribute_chapters").delete().in("id", chToRemove).eq("tribute_id", tributeId);
+  }
+  const chapterIdFor = (v: any): string | null => {
+    const key = String(v || "");
+    if (!key) return null;
+    const real = ckToChId[key] || key;
+    return keptChIds.has(real) ? real : null;
+  };
 
   // Timeline sync: update kept rows, insert new ones, remove the rest.
   // Years are plausible (1900–now), not life-bound — timelines legitimately
@@ -190,10 +228,10 @@ export async function savePlacements(formData: FormData) {
     if (!title && !year) continue; // an empty line is not a moment
     if (r.id && existingIds.has(String(r.id))) {
       keptIds.add(String(r.id));
-      await db.from("tribute_timeline").update({ year, title, sort: i }).eq("id", r.id).eq("tribute_id", tributeId);
+      await db.from("tribute_timeline").update({ year, title, sort: i, chapter_id: chapterIdFor(r.ch) }).eq("id", r.id).eq("tribute_id", tributeId);
     } else if (!r.id) {
       const { data: ins } = await db.from("tribute_timeline")
-        .insert({ tribute_id: tributeId, year, title, body: "", sort: i })
+        .insert({ tribute_id: tributeId, year, title, body: "", sort: i, chapter_id: chapterIdFor(r.ch) })
         .select("id").single();
       if (ins?.id && r.k) keyToId[String(r.k)] = String(ins.id);
       if (ins?.id) keptIds.add(String(ins.id));

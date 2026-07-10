@@ -112,6 +112,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // The chapters of the life (0017), named in the letter. Distinct titles only,
+  // in the family's order; each moment may name the chapter it belongs to.
+  const chapterTitles: string[] = Array.from(new Set(
+    (Array.isArray(body.chapters) ? body.chapters : [])
+      .map((c: any) => (S(c, 80) || "").trim())
+      .filter(Boolean)
+  )).slice(0, 12) as string[];
+  const chapterIdByTitle: Record<string, string> = {};
+  if (chapterTitles.length) {
+    const { data: chIns } = await db.from("tribute_chapters")
+      .insert(chapterTitles.map((title, i) => ({ tribute_id: tid, title, sort: i })))
+      .select("id,title");
+    for (const c of chIns || []) chapterIdByTitle[String(c.title)] = String(c.id);
+  }
+
   const moments = Array.isArray(body.moments) ? body.moments.slice(0, 40) : [];
   if (moments.length) {
     // A moment's year must be plausible (fix 8): 1900 through this year.
@@ -127,6 +142,7 @@ export async function POST(req: NextRequest) {
     await db.from("tribute_timeline").insert(
       moments.map((m: any, i: number) => ({
         tribute_id: tid, year: momentYear(m.year), title: S(m.title, 140) || S(m.body, 140) || "", body: S(m.body, 600), sort: i,
+        chapter_id: chapterIdByTitle[(S(m.chapter, 80) || "").trim()] || null,
       })).filter((r: any) => r.title)
     );
   }

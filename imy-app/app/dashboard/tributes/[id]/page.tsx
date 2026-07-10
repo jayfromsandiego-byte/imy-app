@@ -52,7 +52,12 @@ export default async function EditTribute({ params }: { params: { id: string } }
     .order("sort", { ascending: true });
   const { data: timeline } = await db
     .from("tribute_timeline")
-    .select("id,year,title,sort")
+    .select("id,year,title,sort,chapter_id")
+    .eq("tribute_id", t.id)
+    .order("sort", { ascending: true });
+  const { data: chapterRows } = await db
+    .from("tribute_chapters")
+    .select("id,title,sort")
     .eq("tribute_id", t.id)
     .order("sort", { ascending: true });
   const { data: comments } = await db
@@ -157,7 +162,8 @@ export default async function EditTribute({ params }: { params: { id: string } }
         <PlacementsManager
           tributeId={t.id}
           photos={((photos as any) || []).map((p: any) => ({ id: String(p.id), url: p.url }))}
-          timeline={((timeline as any) || []).map((r: any) => ({ id: String(r.id), year: r.year || "", title: r.title || "" }))}
+          timeline={((timeline as any) || []).map((r: any) => ({ id: String(r.id), year: r.year || "", title: r.title || "", ch: r.chapter_id ? String(r.chapter_id) : "" }))}
+          chapterRows={((chapterRows as any) || []).map((c: any) => ({ id: String(c.id), title: c.title || "" }))}
           placements={(t.placements as any) || null}
           bornYear={t.born_on ? Number(String(t.born_on).slice(0, 4)) : undefined}
           diedYear={t.died_on ? Number(String(t.died_on).slice(0, 4)) : undefined}
@@ -200,7 +206,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
           {pn.Pos} story
         </h2>
         <p className="panel-sub" style={{ marginBottom: 20 }}>
-          A few core details for {pn.pos} page. Save whenever you like — nothing here is urgent.
+          A few core details for {pn.pos} page. Save whenever you like · nothing here is urgent.
         </p>
         <form action={saveTribute} className="story-room">
           <input type="hidden" name="id" value={t.id} />

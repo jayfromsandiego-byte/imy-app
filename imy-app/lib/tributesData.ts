@@ -7,7 +7,8 @@ import { recordToTribute, type Tribute } from "./renderTribute";
 const SELECT =
   "*," +
   "tribute_detail_cards(label,value,sort)," +
-  "tribute_timeline(id,year,title,body,sort)," +
+  "tribute_chapters(id,title,sort)," +
+  "tribute_timeline(id,year,title,body,sort,chapter_id)," +
   "tribute_photos(id,url,caption,sort)," +
   "tribute_videos(id,url,caption,sort)," +
   "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,hearts,created_at,deleted_at," +
@@ -68,7 +69,9 @@ function rowToTribute(r: any): Tribute {
     portrait: photos[0]?.url || undefined,
     message: r.message_from_them ? { text: r.message_from_them, sign: firstName(r.loved_one_name) } : undefined,
     details: (r.tribute_detail_cards || []).slice().sort(bySort).map((d: any) => ({ k: d.label, v: d.value })),
-    timeline: (r.tribute_timeline || []).slice().sort(bySort).map((t: any) => ({ id: t.id, year: t.year, title: t.title, text: t.body })),
+    timeline: (r.tribute_timeline || []).slice().sort(bySort).map((t: any) => ({ id: t.id, year: t.year, title: t.title, text: t.body, chapterId: t.chapter_id || undefined })),
+    // The family's chapters (0017), in their order. Absent = the single-chapter look.
+    chapters: (r.tribute_chapters || []).slice().sort(bySort).map((c: any) => ({ id: c.id, title: c.title, sort: c.sort })),
     photos: photos.map((p: any) => ({ id: p.id, url: p.url, cap: p.caption || undefined })),
     // Every photo slot the family controls (0013): quote · board · chapters.
     placements: r.placements || undefined,

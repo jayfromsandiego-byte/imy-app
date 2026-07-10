@@ -1,8 +1,8 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
-// the tape shelf, the arranger, the composer's doors, the demo's ask, and the
-// obituary with the kept voice. 101 checks.
+// the tape shelf, the arranger, the composer's doors, the demo's ask, the
+// obituary with the kept voice, and a life in chapters. 111 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -289,6 +289,30 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("no demo address leak", !htmlJonny.includes("eleanor.imissyoumemorial.com"));
   const htmlEleanor = renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" });
   t("eleanor keeps her own address", htmlEleanor.includes("eleanor.imissyoumemorial.com"));
+}
+
+// ── 12 · a life in chapters — every chapter the family writes renders (0017) ─
+{
+  const phA = { id: "ph-a", url: "https://x/p0.jpg" }, phB = { id: "ph-b", url: "https://x/p1.jpg", cap: "the bench" };
+  const tlA = { id: "tl-a", year: "1968", title: "Married", chapterId: "ch-1" };
+  const tlB = { id: "tl-b", year: "1975", title: "The house", chapterId: "ch-1" };
+  const tlC = { id: "tl-c", year: "1990", title: "Retired" };
+  const chapters = [{ id: "ch-1", title: "A love, a family", sort: 0 }, { id: "ch-2", title: "The quiet years", sort: 1 }];
+  const base = { ...jonny, photos: [phA, phB], timeline: [tlA, tlB, tlC], chapters };
+  const b = boot(renderTribute(template, base));
+  t("chapters render as the family wrote them", b.ch.length === 2 && b.ch[0].name === "A love, a family");
+  t("a chapter holds its own moments only", b.ch[0].mo.length === 2 && b.ch[0].mo[0][1] === "Married");
+  t("chapter years derive from its moments", b.ch[0].yrs === "1968 to 1975");
+  t("a chapter with no moments waits quietly", !b.ch.some((c: any) => c.name === "The quiet years"));
+  t("unplaced moments gather at the end", b.ch[1].mo.length === 1 && /days$/.test(b.ch[1].name));
+  t("a single-year chapter speaks one year", b.ch[1].yrs === "1990");
+  const withPhoto = boot(renderTribute(template, { ...base, placements: { chapters: { "tl-a": ["ph-b"] } } }));
+  t("a moment's photo aligns inside its chapter", withPhoto.ch[0].al === 1 && JSON.stringify(withPhoto.ch[0].ph[0]) === JSON.stringify(["p1", "the bench"]) && withPhoto.ch[0].ph[1] === null);
+  t("a chapter with no photos rests its carousel", Array.isArray(withPhoto.ch[1].ph) && withPhoto.ch[1].ph.length === 0);
+  const noCh = boot(renderTribute(template, { ...base, chapters: [] }));
+  t("no chapters keeps the single-chapter look — zero drift", noCh.ch.length === 1 && noCh.ch[0].yrs === "in moments" && noCh.ch[0].mo.length === 3);
+  const sheTail = boot(renderTribute(template, { ...base, pronouns: "she" }));
+  t("the unplaced tail speaks her pronouns", sheTail.ch[1].name === "More of her days");
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);

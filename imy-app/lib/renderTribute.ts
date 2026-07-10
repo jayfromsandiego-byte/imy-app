@@ -14,7 +14,9 @@
 
 import { type LovedThing } from "./lovedThings";
 
-export type TimelineItem = { id?: string; year: string; title: string; text: string };
+export type TimelineItem = { id?: string; year: string; title: string; text: string; chapterId?: string };
+// A chapter of the life (0017): the family writes the titles, in their order.
+export type ChapterItem = { id?: string; title: string; sort?: number };
 export type DetailItem = { k: string; v: string };
 export type LovedItem = { label: string; photo?: string };
 export type PhotoItem = { id?: string; url?: string; cap?: string };
@@ -71,6 +73,7 @@ export type Tribute = {
   loved?: LovedItem[];
   lovedThings?: LovedThing[];
   timeline?: TimelineItem[];
+  chapters?: ChapterItem[];
   photos?: PhotoItem[];
   videos?: { id?: string; url: string; cap?: string }[];
   voiceUrl?: string;
@@ -172,25 +175,62 @@ export function renderTribute(template: string, t: Tribute): string {
   // aligned (ph[k] is mo[k]'s photograph, null = a quiet empty state). The legacy
   // "_group" set reproduces the pre-placements look for pages sealed before 0013.
   const chAssign = pl?.chapters || undefined;
-  const perMoment = !!chAssign && timeline.some((m) => m.id && Array.isArray(chAssign[m.id]) && chAssign[m.id].some((x) => byId[x]));
-  const groupIds = (chAssign?.["_group"] || []).filter((x) => byId[x]);
-  const chPh: (unknown[] | null)[] = perMoment
-    ? timeline.map((m) => {
-        const id = ((m.id && chAssign?.[m.id]) || []).find((x) => byId[x]);
-        return id ? [byId[id].key, byId[id].cap] : null;
-      })
-    : groupIds.length
-      ? groupIds.map((x) => [byId[x].key, byId[x].cap])
-      : [];
-  const ch = timeline.length
-    ? [{
-        name: `${first}'s life`,
-        yrs: "in moments",
-        mo: timeline.map((m) => [m.year || "", m.title || m.text || ""]),
-        ph: chPh,
-        ...(perMoment ? { al: 1 } : {}),
-      }]
-    : [];
+  const momentPhoto = (m: TimelineItem): [string, string] | null => {
+    const id = ((m.id && chAssign?.[m.id]) || []).find((x) => byId[x]);
+    return id ? [byId[id].key, byId[id].cap] : null;
+  };
+
+  // A life in chapters (0017): the family's own chapters, every one rendered.
+  // Moments group under their chapter in the family's order; moments not yet
+  // placed gather quietly at the end. Pages without chapters keep the
+  // single-chapter look exactly as before — zero drift on family pages.
+  type ChapterBoot = { name: string; yrs: string; mo: string[][]; ph: (unknown[] | null)[]; al?: number };
+  const chapterRows = (t.chapters || []).filter((c) => String(c.title || "").trim());
+  const chapterYears = (mos: TimelineItem[]): string => {
+    const ys = mos.map((m) => (String(m.year || "").match(/^\d{4}$/) || [])[0]).filter(Boolean) as string[];
+    if (!ys.length) return "in moments";
+    const lo = ys.reduce((a, b) => (b < a ? b : a));
+    const hi = ys.reduce((a, b) => (b > a ? b : a));
+    return lo === hi ? lo : `${lo} to ${hi}`;
+  };
+  const chapterEntry = (name: string, mos: TimelineItem[]): ChapterBoot => {
+    const anyPhoto = mos.some((m) => momentPhoto(m));
+    return {
+      name,
+      yrs: chapterYears(mos),
+      mo: mos.map((m) => [m.year || "", m.title || m.text || ""]),
+      ph: anyPhoto ? mos.map((m) => momentPhoto(m)) : [],
+      ...(anyPhoto ? { al: 1 } : {}),
+    };
+  };
+
+  let ch: ChapterBoot[] = [];
+  if (timeline.length && chapterRows.length) {
+    const placed = new Set<string>();
+    for (const c of chapterRows) {
+      const mos = timeline.filter((m) => c.id && m.chapterId === c.id);
+      mos.forEach((m) => { if (m.id) placed.add(m.id); });
+      if (mos.length) ch.push(chapterEntry(String(c.title).trim(), mos));
+    }
+    const rest = timeline.filter((m) => !(m.id && placed.has(m.id)));
+    if (rest.length) ch.push(chapterEntry(ch.length ? `More of ${pronounSet(t.pronouns).pos} days` : `${first}'s life`, rest));
+  } else if (timeline.length) {
+    // The pre-chapters look, unchanged: one chapter holding the whole life.
+    const perMoment = !!chAssign && timeline.some((m) => m.id && Array.isArray(chAssign[m.id]) && chAssign[m.id].some((x) => byId[x]));
+    const groupIds = (chAssign?.["_group"] || []).filter((x) => byId[x]);
+    const chPh: (unknown[] | null)[] = perMoment
+      ? timeline.map((m) => momentPhoto(m))
+      : groupIds.length
+        ? groupIds.map((x) => [byId[x].key, byId[x].cap])
+        : [];
+    ch = [{
+      name: `${first}'s life`,
+      yrs: "in moments",
+      mo: timeline.map((m) => [m.year || "", m.title || m.text || ""]),
+      ph: chPh,
+      ...(perMoment ? { al: 1 } : {}),
+    }];
+  }
 
   const approved = (t.memories || []).map((m) => ({
     id: m.id || "",

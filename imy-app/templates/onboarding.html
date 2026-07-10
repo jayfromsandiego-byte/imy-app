@@ -179,6 +179,12 @@
   .m-row{display:grid;grid-template-columns:92px 1fr 32px;gap:12px;align-items:end;margin-bottom:10px}
   .m-row .x{background:none;border:none;color:var(--field);font-size:1.2rem;cursor:pointer;padding-bottom:8px}
   .m-row .x:hover{color:var(--terra-deep)}
+  .m-row.withch{grid-template-columns:92px 1fr 168px 32px}
+  @media (max-width:600px){.m-row.withch{grid-template-columns:92px 1fr 32px}.m-row.withch .m-chcell{grid-column:1/-1;margin-top:-4px}}
+  .ch-row{display:grid;grid-template-columns:1fr 32px;gap:12px;align-items:end;margin-bottom:10px}
+  .ch-row .x{background:none;border:none;color:var(--field);font-size:1.2rem;cursor:pointer;padding-bottom:8px}
+  .ch-row .x:hover{color:var(--terra-deep)}
+  .m-ch{font-size:.95rem}
   .addrow{background:transparent;border:1.5px dashed var(--terra);color:var(--terra-deep);font-family:'Sometype Mono',monospace;font-weight:700;font-size:.72rem;letter-spacing:.1em;padding:10px 18px;border-radius:30px;cursor:pointer;margin-top:8px;transition:.2s}
   .addrow:hover{background:var(--cream);transform:translateY(-1px)}
 
@@ -524,7 +530,7 @@ var ENGINE=(function(){
   ];
 
   var planIntent=(function(){try{return new URLSearchParams(location.search).get('plan')==='plus'?'plus':''}catch(err){return ''}})();
-  var A={lovedThings:[],moments:[],galleryCount:0,galleryImgs:0,galleryVids:0,photo:false,voiceName:'',plan:planIntent||'free',addressChoice:planIntent==='plus'?'plus':'free',slugRandom:'',slugCustom:'',plusItems:[],plusAck:{}};
+  var A={lovedThings:[],moments:[],chapters:[],galleryCount:0,galleryImgs:0,galleryVids:0,photo:false,voiceName:'',plan:planIntent||'free',addressChoice:planIntent==='plus'?'plus':'free',slugRandom:'',slugCustom:'',plusItems:[],plusAck:{}};
   var cur=-1,maxDone=0,slugEdited=false,finished=false,navLock=false,checkoutOpen=false;
 
   /* ---------- production wiring · July 5 (uploads, autosave, real seal, real checkout) ---------- */
@@ -546,7 +552,8 @@ var ENGINE=(function(){
     return {
       fullName:A.fullName||'',aka:A.aka||A.nickname||'',pronouns:A.pronouns||'',birth:A.birth||'',passing:A.passing||'',place:A.place||A.home||'',
       story:A.story||'',obituary:A.obituary||'',quote:A.quote||'',song:A.song||'',voiceUrl:A.voiceUpURL||'',
-      moments:(A.moments||[]).map(function(m){return {year:m.year||'',title:m.text||'',body:''}}),
+      moments:(A.moments||[]).map(function(m){return {year:m.year||'',title:m.text||'',body:'',chapter:m.chapter||''}}),
+      chapters:(A.chapters||[]),
       lovedThings:(A.lovedThings||[]).map(function(l){return {label:l}}),
       photos:imgs,videos:vids,coverPhotoUrl:A.photoUpURL||'',
       slug:chosenSlug(),visibility:privacyKey(),email:A.email||'',
@@ -653,7 +660,7 @@ var ENGINE=(function(){
       case 'obituary':
         return '<textarea data-key="obituary" placeholder="In loving memory… survived by… services will be held…"></textarea>';
       case 'moments':
-        return '<div id="mRows"></div><button type="button" class="addrow" id="mAdd">＋ add a moment</button>';
+        return '<div id="mRows"></div><button type="button" class="addrow" id="mAdd">＋ add a moment</button><div id="chRows" style="margin-top:22px"></div><button type="button" class="addrow" id="chAdd">＋ add a chapter · to group the moments</button>';
       case 'tiles':
         var t=MOTIFS.map(function(m){return '<button type="button" class="tile" data-tile="'+m.k+'" data-label="'+m.label+'"><svg viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+m.svg+'</svg><span class="nm">'+m.label+'</span></button>'}).join('');
         t+='<button type="button" class="tile" id="tileOther"><svg viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M24,12 V28 M16,20 H32"/></svg><span class="nm">Something else</span></button>';
@@ -882,8 +889,10 @@ var ENGINE=(function(){
       A.moments=[];
       s.querySelectorAll('.m-row').forEach(function(r){
         var y=r.querySelector('.m-year').value.trim(),t=r.querySelector('.m-text').value.trim();
-        if(y||t)A.moments.push({year:y,text:t});
+        var cEl=r.querySelector('.m-ch'),c=cEl?cEl.value:'';
+        if(y||t)A.moments.push({year:y,text:t,chapter:c});
       });
+      A.chapters=chapterTitles();
     }
   }
   function valid(st,s){
@@ -1080,6 +1089,7 @@ var ENGINE=(function(){
     if(t.closest('#stone')){document.getElementById('photoInput').click();return}
     if(t.closest('#assistBtn')){spBuild();document.getElementById('assistBox').classList.toggle('open');return}
     if(t.closest('#mAdd')){addMoment();return}
+    if(t.closest('#chAdd')){addChapter();return}
     var tile=t.closest('.tile');
     if(tile&&tile.id!=='tileOther'&&tile.hasAttribute('data-tile')){toggleTile(tile);return}
     if(t.closest('#tileOther')){document.getElementById('otherRow').classList.toggle('open');var oi=document.getElementById('otherInput');if(document.getElementById('otherRow').classList.contains('open'))oi.focus();return}
@@ -1145,6 +1155,43 @@ var ENGINE=(function(){
                 '<button type="button" class="x" aria-label="remove">×</button>';
     r.querySelector('.x').addEventListener('click',function(){r.remove()});
     w.appendChild(r);
+    syncChapterSelects();
+  }
+  /* chapters of the life (0017) · optional titles that group the moments.
+     A chapter with no name is not yet a chapter; the words are always kept. */
+  function addChapter(){
+    var w=document.getElementById('chRows');if(!w)return;
+    var r=document.createElement('div');
+    r.className='ch-row';
+    r.innerHTML='<div><label class="small">a chapter of their life</label><input type="text" class="ch-title" maxlength="80" placeholder="The girl by the sea"></div>'+
+                '<button type="button" class="x" aria-label="remove">×</button>';
+    r.querySelector('.x').addEventListener('click',function(){r.remove();syncChapterSelects()});
+    r.querySelector('.ch-title').addEventListener('input',syncChapterSelects);
+    w.appendChild(r);
+    r.querySelector('.ch-title').focus();
+  }
+  function chapterTitles(){
+    var t=[];document.querySelectorAll('#chRows .ch-title').forEach(function(i){
+      var v=i.value.trim();if(v&&t.indexOf(v)<0)t.push(v)});
+    return t;
+  }
+  function syncChapterSelects(){
+    var titles=chapterTitles();
+    document.querySelectorAll('#mRows .m-row').forEach(function(r){
+      var cell=r.querySelector('.m-chcell');
+      if(!titles.length){if(cell)cell.remove();r.classList.remove('withch');return}
+      r.classList.add('withch');
+      if(!cell){
+        cell=document.createElement('div');
+        cell.className='m-chcell';
+        cell.innerHTML='<label class="small">chapter</label><select class="m-ch"></select>';
+        r.insertBefore(cell,r.querySelector('.x'));
+      }
+      var sel=cell.querySelector('.m-ch'),cur=sel.value;
+      sel.innerHTML='<option value="">no chapter · yet</option>'+titles.map(function(t){
+        var e=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+        return '<option value="'+e+'"'+(t===cur?' selected':'')+'>'+e+'</option>'}).join('');
+    });
   }
   var MAXL=6;
   function lovedCount(){return A.lovedThings.length}
