@@ -799,7 +799,7 @@ function show(){if(shown)return;shown=true;el.hidden=false}
 function hide(){el.hidden=true}
 function maybe(){if(seen&&Date.now()-t0>=30000)show()}
 try{var mem=document.getElementById('memories');
-if(mem&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){seen=true;maybe()}})},{threshold:.15});io.observe(mem);setTimeout(maybe,31000)}
+if(mem&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){seen=true;maybe()}})},{threshold:0});io.observe(mem);setTimeout(maybe,31000);setInterval(maybe,5000)}
 }catch(e){}
 setTimeout(show,75000);
 document.getElementById('knClose').addEventListener('click',function(){mark();hide()});
