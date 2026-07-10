@@ -2,7 +2,8 @@
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
-// obituary with the kept voice, a life in chapters, and the log-in door. 114 checks.
+// obituary with the kept voice, a life in chapters, and the log-in doors
+// (tribute bar + landing). 116 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -292,6 +293,14 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("no demo address leak", !htmlJonny.includes("eleanor.imissyoumemorial.com"));
   const htmlEleanor = renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" });
   t("eleanor keeps her own address", htmlEleanor.includes("eleanor.imissyoumemorial.com"));
+}
+
+// ── 16 · the landing carries the log-in door too (July 10) ────────────────────
+{
+  const landing = readFileSync((process.env.IMY_REPO_ROOT || ".") + "/imy-app/templates/landing.html", "utf8");
+  t("the landing's log-in door stands beside start a tribute",
+    landing.includes('Start a tribute</a>\n    <a class="mw-login" href="/signin">log in</a>'));
+  t("the landing door dresses for the hero photo", landing.includes(".mwhero .mw-login{"));
 }
 
 // ── 12 · a life in chapters — every chapter the family writes renders (0017) ─
