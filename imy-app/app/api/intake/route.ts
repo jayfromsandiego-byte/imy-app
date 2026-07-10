@@ -128,23 +128,31 @@ export async function POST(req: NextRequest) {
   }
 
   const moments = Array.isArray(body.moments) ? body.moments.slice(0, 40) : [];
-  if (moments.length) {
-    // A moment's year must be plausible (fix 8): 1900 through this year.
-    // Not bound to the life — timelines legitimately hold family history from
-    // before a birth. An implausible year is quietly set aside; the words
-    // are always kept, never the junk number.
-    const momentYear = (v: any): string => {
-      const s = (S(v, 12) || "").trim();
-      if (!/^\d{4}$/.test(s)) return "";
-      const y = Number(s);
-      return y >= 1900 && y <= nowYear ? s : "";
-    };
-    await db.from("tribute_timeline").insert(
-      moments.map((m: any, i: number) => ({
+  // A moment's year must be plausible (fix 8): 1900 through this year.
+  // Not bound to the life — timelines legitimately hold family history from
+  // before a birth. An implausible year is quietly set aside; the words
+  // are always kept, never the junk number.
+  const momentYear = (v: any): string => {
+    const s = (S(v, 12) || "").trim();
+    if (!/^\d{4}$/.test(s)) return "";
+    const y = Number(s);
+    return y >= 1900 && y <= nowYear ? s : "";
+  };
+  // Each moment may carry its own photograph (July 10): kept alongside so the
+  // inserted row ids can be paired with photo rows further down.
+  const tlRows = moments
+    .map((m: any, i: number) => ({
+      row: {
         tribute_id: tid, year: momentYear(m.year), title: S(m.title, 140) || S(m.body, 140) || "", body: S(m.body, 600), sort: i,
         chapter_id: chapterIdByTitle[(S(m.chapter, 80) || "").trim()] || null,
-      })).filter((r: any) => r.title)
-    );
+      },
+      photoUrl: URLish(m.photoUrl) || "",
+    }))
+    .filter((r: any) => r.row.title);
+  let tlIns: any[] = [];
+  if (tlRows.length) {
+    const { data } = await db.from("tribute_timeline").insert(tlRows.map((r: any) => r.row)).select("id");
+    tlIns = data || [];
   }
 
   const photos: string[] = (Array.isArray(body.photos) ? body.photos : []).map((u: any) => URLish(u)).filter(Boolean).slice(0, 400) as string[];
@@ -152,6 +160,26 @@ export async function POST(req: NextRequest) {
   const allPhotos = cover ? [cover, ...photos.filter((u) => u !== cover)] : photos;
   if (allPhotos.length) {
     await db.from("tribute_photos").insert(allPhotos.map((url, i) => ({ tribute_id: tid, url, sort: i })));
+  }
+
+  // A moment's own photograph (July 10): the letter attached it, the page
+  // shows it beside its moment. Each becomes a photo row, then the placement
+  // map points the moment at it — the renderer does the rest.
+  const momentPhotoPairs = tlRows
+    .map((r: any, i: number) => ({ url: r.photoUrl, tlId: tlIns[i]?.id }))
+    .filter((p: any) => p.url && p.tlId);
+  if (momentPhotoPairs.length) {
+    const { data: phIns } = await db.from("tribute_photos")
+      .insert(momentPhotoPairs.map((p: any, i: number) => ({ tribute_id: tid, url: p.url, sort: allPhotos.length + i })))
+      .select("id");
+    const chaptersMap: Record<string, string[]> = {};
+    momentPhotoPairs.forEach((p: any, i: number) => {
+      const ph = phIns?.[i]?.id;
+      if (ph) chaptersMap[String(p.tlId)] = [String(ph)];
+    });
+    if (Object.keys(chaptersMap).length) {
+      await db.from("tributes").update({ placements: { chapters: chaptersMap } }).eq("id", tid);
+    }
   }
 
   const videos: string[] = (Array.isArray(body.videos) ? body.videos : []).map((u: any) => URLish(u)).filter(Boolean).slice(0, 40) as string[];

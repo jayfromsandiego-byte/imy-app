@@ -112,6 +112,8 @@
   .hint{font-family:'Sometype Mono',monospace;font-weight:600;font-size:.7rem;letter-spacing:.12em;color:var(--ink-soft)}
   @media(pointer:coarse){.hint{display:none}}
   .skip{font-family:'Sometype Mono',monospace;font-weight:700;font-size:.76rem;letter-spacing:.1em;color:var(--ink-soft);background:none;border:none;border-bottom:1.5px dotted var(--field);padding:2px 1px;cursor:pointer;margin-left:auto;transition:color .2s}
+  .navback{font-family:'Sometype Mono',monospace;font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);background:none;border:1.5px solid var(--field);border-radius:30px;padding:13px 18px;cursor:pointer;transition:.2s}
+  .navback:hover{color:var(--terra-deep);border-color:var(--terra)}
   .skip:hover{color:var(--terra)}
   .err{display:none;font-family:'Sometype Mono',monospace;font-weight:700;font-size:.72rem;letter-spacing:.06em;color:var(--terra-deep);margin:-8px 0 14px}
   .err.show{display:block}
@@ -181,6 +183,11 @@
   .m-row .x:hover{color:var(--terra-deep)}
   .m-row.withch{grid-template-columns:92px 1fr 168px 32px}
   @media (max-width:600px){.m-row.withch{grid-template-columns:92px 1fr 32px}.m-row.withch .m-chcell{grid-column:1/-1;margin-top:-4px}}
+  .m-photo{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:2px;min-height:24px}
+  .m-padd{background:none;border:none;font-family:'Sometype Mono',monospace;font-weight:700;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);cursor:pointer;padding:0 0 1px;border-bottom:1.5px dotted var(--terra)}
+  .m-padd:hover{color:var(--terra-deep)}
+  .m-pthumb{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1.5px solid var(--field)}
+  .m-prm{background:none;border:none;color:var(--ink-soft);font-size:1.05rem;cursor:pointer;padding:2px 6px}
   .ch-row{display:grid;grid-template-columns:1fr 32px;gap:12px;align-items:end;margin-bottom:10px}
   .ch-row .x{background:none;border:none;color:var(--field);font-size:1.2rem;cursor:pointer;padding-bottom:8px}
   .ch-row .x:hover{color:var(--terra-deep)}
@@ -534,7 +541,7 @@ var ENGINE=(function(){
   var cur=-1,maxDone=0,slugEdited=false,finished=false,navLock=false,checkoutOpen=false;
 
   /* ---------- production wiring · July 5 (uploads, autosave, real seal, real checkout) ---------- */
-  var SEAL=null,UPQ=[];
+  var SEAL=null,UPQ=[],MP=[]; /* MP · a moment's own photograph, kept for retry */
   function upload(f){
     var fd=new FormData();fd.append('files',f);
     var p=fetch('/api/upload',{method:'POST',body:fd})
@@ -552,7 +559,7 @@ var ENGINE=(function(){
     return {
       fullName:A.fullName||'',aka:A.aka||A.nickname||'',pronouns:A.pronouns||'',birth:A.birth||'',passing:A.passing||'',place:A.place||A.home||'',
       story:A.story||'',obituary:A.obituary||'',quote:A.quote||'',song:A.song||'',voiceUrl:A.voiceUpURL||'',
-      moments:(A.moments||[]).map(function(m){return {year:m.year||'',title:m.text||'',body:'',chapter:m.chapter||''}}),
+      moments:(A.moments||[]).map(function(m){return {year:m.year||'',title:m.text||'',body:'',chapter:m.chapter||'',photoUrl:m.photoUrl||''}}),
       chapters:(A.chapters||[]),
       lovedThings:(A.lovedThings||[]).map(function(l){return {label:l}}),
       photos:imgs,videos:vids,coverPhotoUrl:A.photoUpURL||'',
@@ -568,8 +575,11 @@ var ENGINE=(function(){
       /* a photograph that failed its upload gets one more chance before the
          seal · a slow connection must not quietly lose it */
       var missing=gFiles.filter(function(f){return !f.__url});
-      if(!missing.length)return null;
-      return Promise.all(missing.map(function(f){return upload(f).then(function(u){if(u)f.__url=u})}));
+      var mpMissing=MP.filter(function(r){return r.f&&!r.url});
+      if(!missing.length&&!mpMissing.length)return null;
+      return Promise.all(
+        missing.map(function(f){return upload(f).then(function(u){if(u)f.__url=u})})
+        .concat(mpMissing.map(function(r){return upload(r.f).then(function(u){if(u)r.url=u})})));
     }).then(function(){
       return fetch('/api/intake',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload())});
     }).then(function(r){return r.json()}).then(function(j){
@@ -692,8 +702,7 @@ var ENGINE=(function(){
       case 'service':
         return '<div class="grid2"><div class="fgroup"><label class="small">service date</label><input type="date" data-key="serviceDate"></div>'+
                '<div class="fgroup"><label class="small">service time</label><input type="time" data-key="serviceTime"></div></div>'+
-               '<div class="fgroup"><label class="small">service location</label><input type="text" data-key="serviceLocation" placeholder="Place and address"></div>'+
-               '<div class="fgroup"><label class="small">donations in their name</label><select data-key="charity"><option value="">No charity · decide later</option><option>American Cancer Society</option><option>American Red Cross</option><option>Alzheimer’s Association</option><option>St. Jude Children’s Research Hospital</option><option>AARP Foundation</option></select></div>';
+               '<div class="fgroup"><label class="small">service location</label><input type="text" data-key="serviceLocation" placeholder="Place and address"></div>';
       case 'contact':
         return '<div class="fgroup"><label class="small">your email</label><input type="email" data-key="email" placeholder="you@example.com" style="font-family:\'Sometype Mono\',monospace;font-size:1.02rem"></div>'+
                '<div class="fgroup"><label class="small">who can visit their page</label><select data-key="privacy"><option>Public · anyone with the link</option><option>Unlisted · only people you share it with</option><option>Password · protected</option></select></div>';
@@ -713,7 +722,7 @@ var ENGINE=(function(){
     if(st.sub)h+='<p class="sub">'+st.sub+'</p>';
     h+='<div class="body">'+body(st)+'</div>';
     h+='<div class="err" id="err-'+st.id+'">we need this one to build their page</div>';
-    h+='<div class="nav"><button type="button" class="btn" data-next>'+(isFinal?'Seal it · create their memorial':'Continue')+'</button><span class="hint">press Enter ↵</span>';
+    h+='<div class="nav"><button type="button" class="navback" data-back aria-label="Back one step">← back</button><button type="button" class="btn" data-next>'+(isFinal?'Seal it · create their memorial':'Continue')+'</button><span class="hint">'+(isFinal?'the button seals it · Enter never will':'press Enter ↵')+'</span>';
     if(st.skip)h+='<button type="button" class="skip" data-skip>'+st.skip+'</button>';
     h+='</div>';
     if(isFinal)h+='<div class="reassure">begin free · we email you the link</div>';
@@ -896,7 +905,7 @@ var ENGINE=(function(){
       s.querySelectorAll('.m-row').forEach(function(r){
         var y=r.querySelector('.m-year').value.trim(),t=r.querySelector('.m-text').value.trim();
         var cEl=r.querySelector('.m-ch'),c=cEl?cEl.value:'';
-        if(y||t)A.moments.push({year:y,text:t,chapter:c});
+        if(y||t)A.moments.push({year:y,text:t,chapter:c,photoUrl:(r.__mp&&r.__mp.url)||''});
       });
       A.chapters=chapterTitles();
     }
@@ -1060,6 +1069,7 @@ var ENGINE=(function(){
     if(t.closest('#ckOnce')){checkoutHop('plus_once');return}
     if(t.closest('#ckMonthly')){checkoutHop('plus_monthly');return}
     if(t.closest('#ckFree')){A.plan='free';closeCheckout();finale();return}
+    if(t.closest('[data-back]')){back();return}
     if(t.closest('[data-next]')){next();return}
     if(t.closest('[data-skip]')){skip();return}
     var pl=t.closest('.plan');
@@ -1125,6 +1135,8 @@ var ENGINE=(function(){
   });
   document.addEventListener('keydown',function(e){
     if(e.key!=='Enter'||finished||e.repeat||checkoutOpen||plockOpen)return;
+    /* the seal is a decision, not a keystroke · Enter never submits the letter */
+    if(cur>=0&&STEPS[cur]&&STEPS[cur].type==='final')return;
     var tag=e.target?(e.target.tagName||''):'';
     if(tag==='SELECT'||tag==='BUTTON')return;
     if(tag==='TEXTAREA'){if(e.metaKey||e.ctrlKey){e.preventDefault();next()}return}
@@ -1158,8 +1170,23 @@ var ENGINE=(function(){
     r.className='m-row';
     r.innerHTML='<div><label class="small">year</label><input type="text" class="m-year" inputmode="numeric" placeholder="1968"></div>'+
                 '<div><label class="small">what happened</label><input type="text" class="m-text" placeholder="Married the love of her life"></div>'+
-                '<button type="button" class="x" aria-label="remove">×</button>';
+                '<button type="button" class="x" aria-label="remove">×</button>'+
+                '<div class="m-photo"><input type="file" accept="image/*" class="m-pin" hidden><button type="button" class="m-padd">＋ a photograph for this moment</button></div>';
     r.querySelector('.x').addEventListener('click',function(){r.remove()});
+    /* a moment can hold its own photograph · it rides the seal into the
+       page's chapters, beside its year */
+    var pin=r.querySelector('.m-pin'),padd=r.querySelector('.m-padd'),box=r.querySelector('.m-photo');
+    padd.addEventListener('click',function(){pin.click()});
+    pin.addEventListener('change',function(){
+      var f=pin.files&&pin.files[0];if(!f)return;
+      var rec={f:f,url:''};r.__mp=rec;MP.push(rec);
+      box.innerHTML='';box.appendChild(pin);
+      var img=document.createElement('img');img.className='m-pthumb';img.alt='';img.src=URL.createObjectURL(f);
+      var rm=document.createElement('button');rm.type='button';rm.className='m-prm';rm.setAttribute('aria-label','remove the photograph');rm.textContent='×';
+      rm.addEventListener('click',function(){r.__mp=null;pin.value='';box.innerHTML='';box.appendChild(pin);box.appendChild(padd)});
+      box.appendChild(img);box.appendChild(rm);
+      upload(f).then(function(u){if(u){rec.url=u;persist()}});
+    });
     w.appendChild(r);
     syncChapterSelects();
   }
