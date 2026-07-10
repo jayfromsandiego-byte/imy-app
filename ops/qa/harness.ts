@@ -3,7 +3,8 @@
 // the footer address, flower persistence, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
 // obituary with the kept voice, a life in chapters, the log-in doors
-// (tribute bar + landing), share the date, and the visitor's gift note. 126 checks.
+// (tribute bar + landing), share the date, the visitor's gift note, the
+// safe board shape, and the personalized gift sheet. 139 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -172,7 +173,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("legacy group keeps the pre-placements look", !legacy.ch[0].al && legacy.ch[0].ph.length === 2 && legacy.ch[0].ph[0][0] === "p0");
   const bareB = boot(renderTribute(template, base));
   t("no placements → chapters carry no photos", Array.isArray(bareB.ch[0].ph) && bareB.ch[0].ph.length === 0);
-  t("no placements → no board built from the gallery", (bareB.boards || []).length === 0);
+  t("no placements → no board built from the gallery, but the shape stays safe",
+    bareB.boards.length === 1 && bareB.boards[0].items.length === 0);
   const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
   t("quote band without a placement rests among flowers on cream", bareHtml.includes('id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)"') && bareHtml.includes("/art/mum2-34d609.png") && !bareHtml.includes('id="quoteband"><div class="bgi">'));
   const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
@@ -312,6 +314,37 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("a quieter wall gets the forward-looking words", fewMem.includes("so every memory to come has a home"));
   t("a plus page never carries the note", !renderTribute(template, jonny).includes('id="keepnote"'));
   t("the demo never carries the note", !renderTribute(template, { ...freeShe, slug: "eleanor" }).includes('id="keepnote"'));
+}
+
+// ── 18 · a brand-new page stands whole (July 10) ──────────────────────────────
+// The template's engine indexes BOARDS[0] unconditionally, and an empty array
+// is truthy — so boards must never ship bare. One exception there killed the
+// ticker, the gift sheet's options, and the checkout wiring on every page
+// without a pin. This block keeps that lesson.
+{
+  const bare = renderTribute(template, { slug: "new-4444", fullName: "Ana Reyes", tier: "free", status: "published",
+    photos: [{ id: "ph-n", url: "https://x/only.jpg" }] });
+  const bb = boot(bare);
+  t("boards never ship empty-but-truthy", Array.isArray(bb.boards) && bb.boards.length === 1 && bb.boards[0].items.length === 0);
+  t("the board pill rests when nothing is pinned", bare.includes(".bbfab{display:none!important}"));
+  t("the word ticker rests when there are no words", bare.includes(".tick9{display:none!important}"));
+  t("the top fold art is asked for first", bare.includes('rel="preload" as="image" href="/art/wreath2-64e82a.png"') && bare.includes('rel="preload" as="image" href="https://x/only.jpg"'));
+  t("a missing wall element never takes the wiring down", bare.includes("if(!wallCt||!wchips||!inviteCard)return;"));
+  const pinned = renderTribute(template, { ...jonny, photos: [{ id: "ph-a", url: "https://x/p0.jpg" }], placements: { board: ["ph-a"] } });
+  t("a pinned board keeps its pill", !pinned.includes(".bbfab{display:none!important}"));
+}
+
+// ── 19 · the gift sheet speaks of them (July 10) ──────────────────────────────
+{
+  const freePage = renderTribute(template, { ...freeShe, photos: [{ id: "ph-r", url: "https://x/rose.jpg" }] });
+  t("their face tops the gift sheet", freePage.includes('class="gs-face" src="https://x/rose.jpg"') && freePage.includes(".gs-face{display:block"));
+  t("no photograph · the sheet stays quiet about it", !renderTribute(template, freeShe).includes('class="gs-face"'));
+  t("the sheet asks to keep their memory alive", freePage.includes("Help keep Rose&#39;s memory alive"));
+  t("the demo giver's name never reaches a real page", !freePage.includes("Dave Alvarez") && freePage.includes("Your name · shown on the wall"));
+  t("the waiting line tells the truth", freePage.includes('<li id="gsWaitLine">Three waiting memories come home</li>'));
+  const noneWaiting = renderTribute(template, { ...freeShe, memories: (freeShe.memories || []).slice(0, 2) });
+  t("no waiting memories · the line rests", !noneWaiting.includes('id="gsWaitLine"'));
+  t("the raw design file keeps its demo sheet", template.includes("Dave Alvarez · shown on the wall"));
 }
 
 // ── 16 · the landing carries the log-in door too (July 10) ────────────────────

@@ -271,9 +271,13 @@ export function renderTribute(template: string, t: Tribute): string {
       date: "", h: Math.max(0, m.hearts ?? 0), r: (i % 2 ? -3 : 3) + (i % 3), c: [] as unknown[],
     }));
   const boardItems = [...ownerPins, ...visitorPins];
-  const boards = boardItems.length
-    ? [{ key: "photos", label: "Photographs", items: boardItems }]
-    : [];
+  // The board always keeps a safe shape (July 10): the template's engine calls
+  // setB(0) unconditionally and an empty array is truthy, so a bare [] skips
+  // the demo fallback and indexes into nothing — one exception there took the
+  // whole page's wiring down (ticker, gift sheet, all of it) on every brand-new
+  // page. One quiet empty board keeps the engine standing; the board pill
+  // rests below when there is nothing pinned yet.
+  const boards = [{ key: "photos", label: "Photographs", items: boardItems }];
 
   const boot = {
     slug, tier,
@@ -613,7 +617,8 @@ export function renderTribute(template: string, t: Tribute): string {
     // flower button carry the ritual; the today line was saying it twice.
     hides.push(".wr-count{display:none!important}");
     if (!videos.length || tier !== "plus") hides.push("#keep .shelfview{display:none!important}");
-    if (!words.length) hides.push(".cyc{display:none!important}");
+    if (!words.length) hides.push(".cyc{display:none!important}", ".tick9{display:none!important}");
+    if (!boardItems.length) hides.push(".bbfab{display:none!important}");
     if (!detailCards.length) hides.push("#really{display:none!important}");
     if (hides.length) {
       const hi = html.lastIndexOf("</head>");
@@ -680,6 +685,46 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
     );
     // The chapters' demo "add a key moment" button is study work, not page work.
     html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
+
+    // The top fold arrives together (July 10): the wreath art and the portrait
+    // are asked for first, so a slow connection never shows a bare arch.
+    {
+      const cover = (t.photos || []).map((p) => p.url).find(Boolean) || "";
+      const preload = `<link rel="preload" as="image" href="/art/wreath2-64e82a.png"/>` +
+        (cover ? `<link rel="preload" as="image" href="${esc(cover)}"/>` : "");
+      const hi = html.indexOf("</head>");
+      if (hi > -1) html = html.slice(0, hi) + preload + html.slice(hi);
+    }
+
+    // A missing wall element must never take the page's wiring down with it.
+    html = html.replace(
+      "function renderWall(){\n  var gate=wallGateActive(),unlocked=wallState==='unlocked';",
+      "function renderWall(){\n  if(!wallCt||!wchips||!inviteCard)return;\n  var gate=wallGateActive(),unlocked=wallState==='unlocked';"
+    );
+
+    // ═══ the gift sheet speaks of them (July 10, founder ask) ════════════════
+    // Their face at the top, their name in the headline, and only the truth in
+    // the waiting line. The named option promises the giver's own name — never
+    // the demo's.
+    {
+      const gsWait = seedw.length;
+      const gsFace = (t.photos || []).map((p) => p.url).find(Boolean) || "";
+      if (gsFace) {
+        html = html.replace(
+          '<div class="gs-kick">A gift to the whole family</div>',
+          `<img class="gs-face" src="${esc(gsFace)}" alt=""/><div class="gs-kick">A gift to the whole family</div>`
+        );
+        const gsCss = `<style>.gs-face{display:block;width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 12px;border:3px solid #FFFDF6;box-shadow:0 10px 24px -10px rgba(26,19,13,.55),0 0 0 1px rgba(201,165,114,.45)}</style>`;
+        const hi2 = html.lastIndexOf("</head>");
+        if (hi2 > -1) html = html.slice(0, hi2) + gsCss + html.slice(hi2);
+      }
+      html = html.replace(/(<h3 class="gs-head">)[^<]*(<\/h3>)/,
+        (_m, a, b) => `${a}Help keep ${esc(first)}&#39;s memory alive${b}`);
+      html = html.split("Dave Alvarez · shown on the wall").join("Your name · shown on the wall");
+      const wWord = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"][gsWait] || String(gsWait);
+      html = html.replace(/<li id="gsWaitLine">[^<]*<\/li>/,
+        () => (gsWait > 0 ? `<li id="gsWaitLine">${wWord} waiting ${gsWait === 1 ? "memory comes" : "memories come"} home</li>` : ""));
+    }
 
     // ═══ share the date (July 10, founder ask) ═══════════════════════════════
     // The service strip carries a quiet "Share the date" door. It opens a paper
