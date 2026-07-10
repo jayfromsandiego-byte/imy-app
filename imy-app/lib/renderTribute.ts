@@ -602,11 +602,11 @@ export function renderTribute(template: string, t: Tribute): string {
     const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
     const sbAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
     if (sbUrl && sbAnon && t.slug) {
-      const presenceModule = `<style>/* presence, noticed (July 9) — a quiet live-chip; real company is worth seeing */
+      const presenceModule = `<style>/* presence, noticed (July 9) · a quiet live-chip; real company is worth seeing */
 .presence{font-size:13px;letter-spacing:.14em;color:#4A4038;background:rgba(243,236,221,.88);border:1px solid #E4D9C4;border-radius:100px;padding:8px 16px;margin-top:14px;gap:10px}
 .presence i{width:11px;height:11px}
 @media(min-width:880px){.presence{font-size:14.5px;padding:9px 19px;margin-top:16px}.presence i{width:12px;height:12px}}
-</style><script type="module">/* presence — real people, truthfully counted */
+</style><script type="module">/* presence · real people, truthfully counted */
 try{
 const m=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
 const el=document.getElementById("presenceTxt"),box=el&&el.parentElement;
@@ -648,7 +648,7 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
       `<div style="max-width:660px;margin:0 auto">` +
       `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#C9A572;margin-bottom:18px">This page is the example</div>` +
       `<h2 style="font-family:'Besley',serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.2;color:#FAF5EC;margin:0 0 14px">Make one for someone <em style="color:#C9A572">you</em> miss.</h2>` +
-      `<p style="font-family:'Besley',serif;font-size:16.5px;line-height:1.65;color:rgba(250,245,236,.82);margin:0 0 30px">Begin free — their page is online in ten quiet minutes, and it stays forever. Everything you just saw here, the Living pictures, her voice, every photograph in motion: that is Plus.</p>` +
+      `<p style="font-family:'Besley',serif;font-size:16.5px;line-height:1.65;color:rgba(250,245,236,.82);margin:0 0 30px">Begin free · their page is online in ten quiet minutes, and it stays forever. Everything you just saw here, the Living pictures, her voice, every photograph in motion: that is Plus.</p>` +
       `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">` +
       `<a href="/onboarding?plan=plus" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;background:#C9A572;color:#241711;border-radius:100px;padding:14px 26px;text-decoration:none">Begin with Plus · $97 once</a>` +
       `<a href="/onboarding" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;border:1.5px solid rgba(201,165,114,.65);color:#F4E9D4;border-radius:100px;padding:14px 26px;text-decoration:none">Begin free · $0</a>` +
