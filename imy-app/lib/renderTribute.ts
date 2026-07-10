@@ -140,6 +140,11 @@ export function renderTribute(template: string, t: Tribute): string {
   const died = fmtDate(t.passing);
   const datesBits = [born && died ? `${born} · ${died}` : born || died, t.place].filter(Boolean);
   const datesLine = esc(datesBits.join(" · ")) || "&nbsp;";
+  // Make a donation (July 10, founder ask): the giving door lives under their
+  // name on the stone plate, plainly labelled — no longer in the service strip.
+  const donateUnderName = t.service?.charity
+    ? `<div class="n2" style="margin-top:7px"><a href="${esc(t.service.charityUrl || `https://www.google.com/search?q=${encodeURIComponent(t.service.charity + " donate")}`)}" target="_blank" rel="noopener noreferrer" style="font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A87C5F;text-decoration:underline;text-underline-offset:3px">Make a donation</a></div>`
+    : "";
 
   // ── boot data for the template's engine ──
   // Free keeps about thirty photographs (the pricing promise); Plus is unlimited.
@@ -186,6 +191,14 @@ export function renderTribute(template: string, t: Tribute): string {
   // single-chapter look exactly as before — zero drift on family pages.
   type ChapterBoot = { name: string; yrs: string; mo: string[][]; ph: (unknown[] | null)[]; al?: number };
   const chapterRows = (t.chapters || []).filter((c) => String(c.title || "").trim());
+  // The site auto-corrects the order of a life (July 10, founder ask): moments
+  // with years render chronologically; moments without a year keep the
+  // family's own order, gathered after the dated ones. Stable throughout.
+  const chrono = (mos: TimelineItem[]): TimelineItem[] =>
+    mos
+      .map((m, i) => ({ m, i, y: /^\d{4}$/.test(String(m.year || "").trim()) ? Number(String(m.year).trim()) : Infinity }))
+      .sort((a, b) => (a.y - b.y) || (a.i - b.i))
+      .map((x) => x.m);
   const chapterYears = (mos: TimelineItem[]): string => {
     const ys = mos.map((m) => (String(m.year || "").match(/^\d{4}$/) || [])[0]).filter(Boolean) as string[];
     if (!ys.length) return "in moments";
@@ -193,7 +206,8 @@ export function renderTribute(template: string, t: Tribute): string {
     const hi = ys.reduce((a, b) => (b > a ? b : a));
     return lo === hi ? lo : `${lo} to ${hi}`;
   };
-  const chapterEntry = (name: string, mos: TimelineItem[]): ChapterBoot => {
+  const chapterEntry = (name: string, unordered: TimelineItem[]): ChapterBoot => {
+    const mos = chrono(unordered);
     const anyPhoto = mos.some((m) => momentPhoto(m));
     return {
       name,
@@ -215,18 +229,20 @@ export function renderTribute(template: string, t: Tribute): string {
     const rest = timeline.filter((m) => !(m.id && placed.has(m.id)));
     if (rest.length) ch.push(chapterEntry(ch.length ? `More of ${pronounSet(t.pronouns).pos} days` : `${first}'s life`, rest));
   } else if (timeline.length) {
-    // The pre-chapters look, unchanged: one chapter holding the whole life.
-    const perMoment = !!chAssign && timeline.some((m) => m.id && Array.isArray(chAssign[m.id]) && chAssign[m.id].some((x) => byId[x]));
+    // The pre-chapters look — one chapter holding the whole life — now in
+    // chronological order like everything else (July 10).
+    const ordered = chrono(timeline);
+    const perMoment = !!chAssign && ordered.some((m) => m.id && Array.isArray(chAssign[m.id]) && chAssign[m.id].some((x) => byId[x]));
     const groupIds = (chAssign?.["_group"] || []).filter((x) => byId[x]);
     const chPh: (unknown[] | null)[] = perMoment
-      ? timeline.map((m) => momentPhoto(m))
+      ? ordered.map((m) => momentPhoto(m))
       : groupIds.length
         ? groupIds.map((x) => [byId[x].key, byId[x].cap])
         : [];
     ch = [{
       name: `${first}'s life`,
       yrs: "in moments",
-      mo: timeline.map((m) => [m.year || "", m.title || m.text || ""]),
+      mo: ordered.map((m) => [m.year || "", m.title || m.text || ""]),
       ph: chPh,
       ...(perMoment ? { al: 1 } : {}),
     }];
@@ -299,7 +315,6 @@ export function renderTribute(template: string, t: Tribute): string {
   <span class="lab">Service</span>
   <span class="what">${esc([fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "))}${t.service.place ? ` <span class="mono">· ${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
   ${t.service.date ? `<button class="mini" id="shareDateBtn" type="button" style="text-decoration:underline">Share the date</button>` : ""}
-  ${t.service.charity ? `<a class="mini" href="${esc(t.service.charityUrl || `https://www.google.com/search?q=${encodeURIComponent(t.service.charity + " donate")}`)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center">Give in ${esc(first)}'s name</a>` : ""}
   </div></div>`
     : "";
 
@@ -336,7 +351,7 @@ export function renderTribute(template: string, t: Tribute): string {
     .split("{{COVER_URL}}").join(esc(cover))
     .split("{{NAME_PLAIN}}").join(esc(t.fullName))
     .split("{{NAME_HTML}}").join(nameHtml(t.fullName))
-    .split("{{DATES_LINE}}").join(datesLine)
+    .split("{{DATES_LINE}}").join(datesLine + donateUnderName)
     .split("{{EPIGRAPH}}").join(esc(t.quote || t.aka || "Loved, and remembered."))
     .split("{{FLOWER_COUNT}}").join(String(Math.max(0, t.flowerCount ?? 0)))
     .split("{{THEIR}}").join("their")

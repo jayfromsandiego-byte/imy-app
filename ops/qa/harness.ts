@@ -4,7 +4,7 @@
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
 // obituary with the kept voice, a life in chapters, the log-in doors
 // (tribute bar + landing), share the date, the visitor's gift note, the
-// safe board shape, and the personalized gift sheet. 140 checks.
+// safe board shape, and the personalized gift sheet, and the chronological order of a life. 144 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -379,6 +379,32 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("no chapters keeps the single-chapter look — zero drift", noCh.ch.length === 1 && noCh.ch[0].yrs === "in moments" && noCh.ch[0].mo.length === 3);
   const sheTail = boot(renderTribute(template, { ...base, pronouns: "she" }));
   t("the unplaced tail speaks her pronouns", sheTail.ch[1].name === "More of her days");
+}
+
+// ── 20 · the order of a life corrects itself (July 10) ────────────────────────
+{
+  const scrambled = [
+    { id: "tl-1", year: "1990", title: "The middle" },
+    { id: "tl-2", year: "1969", title: "The start" },
+    { id: "tl-3", year: "", title: "No year, placed by hand" },
+    { id: "tl-4", year: "2012", title: "The later years" },
+    { id: "tl-5", year: "1969", title: "The same spring" },
+  ];
+  const b = boot(renderTribute(template, { ...jonny, timeline: scrambled }));
+  const order = b.ch[0].mo.map((m: any) => m[1]);
+  t("years order the page chronologically",
+    JSON.stringify(order) === JSON.stringify(["The start", "The same spring", "The middle", "The later years", "No year, placed by hand"]));
+  t("a tie keeps the family's own order", order[0] === "The start" && order[1] === "The same spring");
+  t("chapter years still derive after the sort", b.ch[0].yrs === "in moments");
+  const chaptered = boot(renderTribute(template, {
+    ...jonny,
+    timeline: [
+      { id: "tl-a", year: "1999", title: "Second", chapterId: "ch-1" },
+      { id: "tl-b", year: "1970", title: "First", chapterId: "ch-1" },
+    ],
+    chapters: [{ id: "ch-1", title: "A chapter", sort: 0 }],
+  }));
+  t("a chapter's moments sort by year too", chaptered.ch[0].mo[0][1] === "First" && chaptered.ch[0].yrs === "1970 to 1999");
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);

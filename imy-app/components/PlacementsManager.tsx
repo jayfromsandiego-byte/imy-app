@@ -5,7 +5,7 @@
 // edited here too, with quiet inline checks (fix 8). Nothing auto-fills.
 // A life in chapters (0017): the family writes chapter titles, orders them,
 // and places each moment inside one — every chapter renders on the page.
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { savePlacements } from "@/app/dashboard/actions";
 
 type Photo = { id: string; url: string };
@@ -67,6 +67,57 @@ export default function PlacementsManager({
   const removeRow = (i: number) =>
     setRows((rs) => rs.filter((_, k) => k !== i));
   const addRow = () => setRows((rs) => [...rs, { k: "new-" + Math.random().toString(36).slice(2, 8), year: "", title: "", ch: "" }]);
+
+  // The order of a life corrects itself (July 10): rows with plausible years
+  // sort chronologically; rows without a year keep their hand-placed order,
+  // gathered after the dated ones. Runs when a year is committed and when a
+  // drag ends — the page renders the same order.
+  const chrono = (rs: Row[]): Row[] =>
+    rs
+      .map((r, i) => ({ r, i, y: /^\d{4}$/.test(r.year.trim()) ? Number(r.year.trim()) : Infinity }))
+      .sort((a, b) => (a.y - b.y) || (a.i - b.i))
+      .map((x) => x.r);
+  const settleChrono = () => setRows((rs) => chrono(rs));
+
+  // Hold the three dots and carry a moment up or down. Pointer-based, so a
+  // finger works as well as a mouse.
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const dragFrom = useRef<number | null>(null);
+  const [dragging, setDragging] = useState<number | null>(null);
+  const gripDown = (i: number) => (e: React.PointerEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try { (e.target as HTMLElement).setPointerCapture(e.pointerId); } catch { /* fine */ }
+    dragFrom.current = i;
+    setDragging(i);
+  };
+  const gripMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const from = dragFrom.current;
+    if (from == null) return;
+    const y = e.clientY;
+    let to = from;
+    for (let k = 0; k < rowRefs.current.length; k++) {
+      const el = rowRefs.current[k];
+      if (!el || k === from) continue;
+      const rect = el.getBoundingClientRect();
+      if (y >= rect.top && y <= rect.bottom) { to = k; break; }
+    }
+    if (to !== from) {
+      setRows((rs) => {
+        const next = rs.slice();
+        const [moved] = next.splice(from, 1);
+        next.splice(to, 0, moved);
+        return next;
+      });
+      dragFrom.current = to;
+      setDragging(to);
+    }
+  };
+  const gripUp = () => {
+    if (dragFrom.current == null) return;
+    dragFrom.current = null;
+    setDragging(null);
+    settleChrono();
+  };
 
   // The chapters themselves: add, rename, reorder, let one go.
   const chKey = (c: Chapter) => c.id || c.ck || "";
@@ -176,18 +227,35 @@ export default function PlacementsManager({
       <p style={sub}>
         Each moment can hold its own photograph. A moment without one shows a quiet
         empty state · never a photo that doesn&rsquo;t belong to it. Years live
-        between {lo} and {hi}.
+        between {lo} and {hi}, and they set the order on the page · hold the ⋮⋮ dots
+        to carry a moment up or down among those that share a year or have none.
       </p>
       {rows.map((r, i) => {
         const rowKey = r.id || r.k || `new-${i}`;
         const chosen = (chapters[rowKey] || [])[0] || null;
         return (
-          <div key={rowKey} style={{ border: `1px solid ${C.line}`, borderRadius: 11, padding: 14, marginTop: 12, background: "#FDFAF3" }}>
+          <div
+            key={rowKey}
+            ref={(el) => { rowRefs.current[i] = el; }}
+            style={{ border: `1px solid ${dragging === i ? C.terra : C.line}`, borderRadius: 11, padding: 14, marginTop: 12, background: "#FDFAF3", boxShadow: dragging === i ? "0 14px 30px -14px rgba(90,60,30,.45)" : "none" }}
+          >
             <div style={{ display: "flex", gap: 10, alignItems: "flex-start", flexWrap: "wrap" }}>
+              <button
+                type="button"
+                aria-label="Hold and drag to move this moment"
+                onPointerDown={gripDown(i)}
+                onPointerMove={gripMove}
+                onPointerUp={gripUp}
+                onPointerCancel={gripUp}
+                style={{ touchAction: "none", cursor: dragging === i ? "grabbing" : "grab", background: "none", border: `1px solid ${C.line}`, borderRadius: 8, padding: "8px 6px", color: C.inkSoft, fontFamily: "'Sometype Mono',monospace", fontSize: 14, lineHeight: 1, letterSpacing: 1, alignSelf: "center", userSelect: "none" }}
+              >
+                ⋮⋮
+              </button>
               <div>
                 <input
                   value={r.year}
                   onChange={(e) => editRow(i, { year: e.target.value })}
+                  onBlur={settleChrono}
                   placeholder="1968"
                   inputMode="numeric"
                   aria-label="Year"
