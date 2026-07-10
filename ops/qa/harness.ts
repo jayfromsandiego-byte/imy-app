@@ -298,9 +298,10 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
 // ── 16 · the landing carries the log-in door too (July 10) ────────────────────
 {
   const landing = readFileSync((process.env.IMY_REPO_ROOT || ".") + "/imy-app/templates/landing.html", "utf8");
-  t("the landing's log-in door stands beside start a tribute",
-    landing.includes('Start a tribute</a>\n    <a class="mw-login" href="/signin">log in</a>'));
-  t("the landing door dresses for the hero photo", landing.includes(".mwhero .mw-login{"));
+  t("the landing's log-in door stands left of start a tribute",
+    landing.includes('<a class="mw-login" href="/signin">Log in</a>\n    <a class="mw-navcta" href="/onboarding">Start a tribute</a>'));
+  t("the landing door matches the tribute button's size",
+    landing.includes(".mwhero .mw-login{margin-left:auto;font-weight:600;font-size:14px;") && landing.includes("padding:10px 20px") && landing.includes(".mwhero .mw-login+.mw-navcta{margin-left:0}"));
 }
 
 // ── 12 · a life in chapters — every chapter the family writes renders (0017) ─
