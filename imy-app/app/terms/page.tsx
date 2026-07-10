@@ -1,4 +1,4 @@
-// /terms — Terms of Service. Plain, dignified language in the brand voice.
+// /terms · Terms of Service. Plain, dignified language in the brand voice.
 // Carries the canonical soft Permanence Pledge (never a fixed-year guarantee).
 // This is a clear, good-faith starting point; have counsel review before launch.
 export const metadata = {
@@ -46,8 +46,8 @@ export default function TermsPage() {
 
         <h2>Your words and photos are yours</h2>
         <p>
-          Everything you add to a tribute — names, stories, photographs, recordings, the small details that
-          made a person themselves — belongs to you and your family. You grant us only the permission we need
+          Everything you add to a tribute · names, stories, photographs, recordings, the small details that
+          made a person themselves · belongs to you and your family. You grant us only the permission we need
           to host it, display it on the tribute page, and back it up safely. You can export your content at any
           time, and you can ask us to remove it.
         </p>
@@ -55,7 +55,7 @@ export default function TermsPage() {
         <h2>Creating a tribute</h2>
         <p>
           By creating a tribute, you confirm you have the standing to memorialize the person and to share what
-          you upload. Tribute pages you publish are public by design — they are meant to be shared with the people
+          you upload. Tribute pages you publish are public by design · they are meant to be shared with the people
           who loved them. You can keep a tribute unlisted or take it down at any time from your dashboard.
         </p>
 
@@ -68,21 +68,21 @@ export default function TermsPage() {
 
         <h2>Plans, payments, and refunds</h2>
         <ul>
-          <li><b>Free</b> — a complete tribute page, online for as long as we exist.</li>
-          <li><b>Plus</b> — $97 once, or $12 a month: unlimited photos and video, audio memories, a custom design built around what they loved, a custom web address, and no footer credit.</li>
-          <li><b>Concierge</b> — from $499: done for you. We meet with you, build a fully custom site, produce a memorial film, and mail a printed keepsake book and a framed portrait.</li>
+          <li><b>Free</b> · a complete tribute page, online for as long as we exist.</li>
+          <li><b>Plus</b> · $97 once, or $12 a month: unlimited photos and video, audio memories, a custom design built around what they loved, a custom web address, and no footer credit.</li>
+          <li><b>Concierge</b> · from $499: done for you. We meet with you, build a fully custom site, produce a memorial film, and mail a printed keepsake book and a framed portrait.</li>
         </ul>
         <p>
           Payments are handled securely by Stripe; we never see or store your card details. If something isn't
           right, write to us within 30 days of a purchase and we'll make it right, including a refund where fair.
-          A lapsed Plus subscription never takes a page offline — premium features simply rest, and the tribute
+          A lapsed Plus subscription never takes a page offline · premium features simply rest, and the tribute
           stays.
         </p>
 
         <h2>The Permanence Pledge</h2>
         <div className="label">Our promise</div>
         <div className="pledge">
-          Your tribute stays online for as long as we exist — backed by a dedicated reserve fund and an independent
+          Your tribute stays online for as long as we exist · backed by a dedicated reserve fund and an independent
           backup archive, and your photos and words are always yours to export. If we ever had to close, we'd give
           at least 90 days' notice and a complete copy of everything. We will never charge a family to keep a memory alive.
         </div>
@@ -115,7 +115,7 @@ export default function TermsPage() {
         <h2>Talk to us</h2>
         <p>
           If anything here is unclear, or you need help with a tribute, write to{" "}
-          <a href="mailto:hello@imissyoumemorial.com">hello@imissyoumemorial.com</a>. A person will answer.
+          <a href="mailto:imissyoumemorial@gmail.com">imissyoumemorial@gmail.com</a>. A person will answer.
         </p>
 
         <footer>

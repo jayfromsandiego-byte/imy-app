@@ -26,7 +26,6 @@ export default function PlacementsManager({
   diedYear?: number;
 }) {
   const pl = placements || {};
-  const [quote, setQuote] = useState<string | null>(pl.quote && photos.some((p) => p.id === pl.quote) ? pl.quote : null);
   const [board, setBoard] = useState<string[]>((pl.board || []).filter((id) => photos.some((p) => p.id === id)));
   const [chapters, setChapters] = useState<Record<string, string[]>>(pl.chapters || {});
   const [rows, setRows] = useState<Row[]>(timeline.map((r) => ({ id: r.id, year: r.year || "", title: r.title || "" })));
@@ -92,17 +91,6 @@ export default function PlacementsManager({
         <p style={{ ...sub, marginTop: 16 }}>Add photographs above first — then choose where each one lives.</p>
       ) : (
         <>
-          <h3 style={h3}>Behind their words</h3>
-          <p style={sub}>The photograph behind the line they always said. Or let the words rest alone on warm ground.</p>
-          <div style={strip}>
-            <div style={noneChip(quote === null)} onClick={() => setQuote(null)} role="button" aria-label="No photograph — their words alone">
-              their words alone
-            </div>
-            {photos.map((p) => (
-              <div key={p.id} style={thumb(p, quote === p.id)} onClick={() => setQuote(quote === p.id ? null : p.id)} role="button" aria-label="Choose this photograph" />
-            ))}
-          </div>
-
           <h3 style={h3}>The bulletin board</h3>
           <p style={sub}>
             Pin the photographs you want on the board, in the order you tap them.
@@ -180,7 +168,7 @@ export default function PlacementsManager({
         style={{ marginTop: 22, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}
       >
         <input type="hidden" name="tributeId" value={tributeId} />
-        <input type="hidden" name="placements" value={JSON.stringify({ ...(quote ? { quote } : {}), board, chapters })} />
+        <input type="hidden" name="placements" value={JSON.stringify({ board, chapters })} />
         <input type="hidden" name="timeline" value={JSON.stringify(rows)} />
         <button type="submit" disabled={hasErrors}
           style={{ background: hasErrors ? "#C9BBA8" : C.terra, color: "#fff", border: "none", fontFamily: "inherit", fontWeight: 600, fontSize: 14, padding: "10px 20px", borderRadius: 30, cursor: hasErrors ? "not-allowed" : "pointer" }}>

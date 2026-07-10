@@ -23,7 +23,7 @@ function Concierge() {
   return (
     <p className="panel-sub" style={{ marginTop: 14, fontSize: 14 }}>
       Want it done for you?{" "}
-      <a href="mailto:hello@imissyoumemorial.com?subject=Concierge">Concierge — from $499</a>: we meet with you, build a fully
+      <a href="mailto:imissyoumemorial@gmail.com?subject=Concierge">Concierge · from $499</a>: we meet with you, build a fully
       custom tribute, produce a memorial film, and mail a printed keepsake book and framed portrait.
     </p>
   );
@@ -75,14 +75,14 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
           </h1>
         </div>
         <p className="panel-sub">
-          Plus is a one-time $97 (or $12/month, with a 3-day free trial). Every page stays online no matter what — we never charge
+          Plus is a one-time $97 (or $12/month, with a 3-day free trial). Every page stays online no matter what · we never charge
           a family to keep a memory.
         </p>
       </div>
 
       {searchParams.upgraded ? (
         <p className="plan-card" style={{ marginTop: 4, marginBottom: 20 }}>
-          Thank you. Your upgrade is being applied — it can take a moment to appear.
+          Thank you. Your upgrade is being applied · it can take a moment to appear.
         </p>
       ) : null}
       {searchParams.error ? (
@@ -107,14 +107,14 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
 
               {trialing ? (
                 <div className="trial-banner" style={{ marginTop: 14 }}>
-                  <b>This trial ends soon</b> — it becomes $12/month unless you cancel before it ends.
+                  <b>This trial ends soon</b> · it becomes $12/month unless you cancel before it ends.
                 </div>
               ) : null}
 
               {paid ? (
                 <>
                   <p className="panel-sub" style={{ marginTop: 14 }}>
-                    They&rsquo;re on Plus — everything is unlocked. Thank you.
+                    They&rsquo;re on Plus · everything is unlocked. Thank you.
                   </p>
                   <Concierge />
                 </>

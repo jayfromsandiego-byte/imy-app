@@ -1,4 +1,4 @@
-// /privacy — Privacy Policy. Same quiet voice as the rest of the product.
+// /privacy · Privacy Policy. Same quiet voice as the rest of the product.
 // A good-faith, accurate description of how data is handled; have counsel review.
 export const metadata = {
   title: "Privacy Policy · I Miss You Memorial",
@@ -44,24 +44,24 @@ export default function PrivacyPage() {
 
         <h2>What we keep</h2>
         <ul>
-          <li><b>Your account</b> — the email you sign in with. We use magic links, so we don't store passwords.</li>
-          <li><b>Tribute content</b> — the names, dates, stories, photos, video, and audio you choose to add.</li>
-          <li><b>Memories and candles</b> — words others leave, the name they sign, and a simple count of candles lit.</li>
-          <li><b>Basic, aggregate usage</b> — only if analytics is enabled, and only in a cookieless, anonymous form (see below).</li>
+          <li><b>Your account</b> · the email you sign in with. We use magic links, so we don't store passwords.</li>
+          <li><b>Tribute content</b> · the names, dates, stories, photos, video, and audio you choose to add.</li>
+          <li><b>Memories and candles</b> · words others leave, the name they sign, and a simple count of candles lit.</li>
+          <li><b>Basic, aggregate usage</b> · only if analytics is enabled, and only in a cookieless, anonymous form (see below).</li>
         </ul>
 
         <h2>What we never do</h2>
         <ul>
           <li>We never sell your data, or a loved one's memory, to anyone.</li>
           <li>We never use your content to target advertising, and we run no ad trackers.</li>
-          <li>We never email you to "re-engage." We write only when it matters — a receipt, a security note, an answer.</li>
+          <li>We never email you to "re-engage." We write only when it matters · a receipt, a security note, an answer.</li>
         </ul>
 
         <h2>Cookies and analytics</h2>
         <p>
           We use a single essential cookie to keep you signed in. We do not use advertising or cross-site tracking
           cookies. If site analytics is enabled, it is a privacy-friendly, cookieless measure of page views in
-          aggregate — it does not build a profile of you and does not follow you across the web.
+          aggregate · it does not build a profile of you and does not follow you across the web.
         </p>
 
         <h2>Who helps us run the service</h2>
@@ -69,11 +69,11 @@ export default function PrivacyPage() {
           We rely on a small number of trusted providers, each only for what they do:
         </p>
         <ul>
-          <li><b>Supabase</b> — secure database, sign-in, and storage.</li>
-          <li><b>Cloudflare R2</b> — durable storage and delivery of photos and video.</li>
-          <li><b>Stripe</b> — payments. Your card details go to Stripe, never to us.</li>
-          <li><b>Resend</b> — sending sign-in links and receipts.</li>
-          <li><b>Vercel</b> — hosting the application.</li>
+          <li><b>Supabase</b> · secure database, sign-in, and storage.</li>
+          <li><b>Cloudflare R2</b> · durable storage and delivery of photos and video.</li>
+          <li><b>Stripe</b> · payments. Your card details go to Stripe, never to us.</li>
+          <li><b>Resend</b> · sending sign-in links and receipts.</li>
+          <li><b>Vercel</b> · hosting the application.</li>
         </ul>
         <p>These providers process data on our behalf under their own strong security commitments.</p>
 
@@ -105,7 +105,7 @@ export default function PrivacyPage() {
         <p>
           If we update this policy in a meaningful way, we'll say so. For any question about your privacy, or to
           request an export or deletion, write to{" "}
-          <a href="mailto:hello@imissyoumemorial.com">hello@imissyoumemorial.com</a>.
+          <a href="mailto:imissyoumemorial@gmail.com">imissyoumemorial@gmail.com</a>.
         </p>
 
         <footer>

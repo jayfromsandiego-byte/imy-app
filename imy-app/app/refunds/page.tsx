@@ -1,4 +1,4 @@
-// /refunds — the refund policy, written the way we actually behave.
+// /refunds · the refund policy, written the way we actually behave.
 // The generous stance already lives in code (a refund rests features and the
 // page stays up); this page says it out loud. Have counsel read before leaning on it.
 export const metadata = {
@@ -46,7 +46,7 @@ export default function RefundsPage() {
 
         <h2>Plus, paid once ($97)</h2>
         <p>
-          If Plus is not what you hoped, write to us within 30 days and we will refund it in full —
+          If Plus is not what you hoped, write to us within 30 days and we will refund it in full · 
           no forms, no questions that make you justify your grief. The page returns to the free plan:
           premium features rest, everything you added is kept, and nothing is deleted.
         </p>
@@ -54,7 +54,7 @@ export default function RefundsPage() {
         <h2>Plus, monthly ($12 a month)</h2>
         <p>
           The first three days are free, and we send a note before the first charge. Cancel any time
-          from Billing — the month you paid for stays yours to the end, and we do not charge again.
+          from Billing · the month you paid for stays yours to the end, and we do not charge again.
           If a charge lands that you did not mean to keep, tell us within 14 days and we will return it.
         </p>
 
@@ -74,7 +74,7 @@ export default function RefundsPage() {
 
         <h2>How to ask</h2>
         <p>
-          Reply to any receipt, or write to <a href="mailto:hello@imissyoumemorial.com">hello@imissyoumemorial.com</a>.
+          Reply to any receipt, or write to <a href="mailto:imissyoumemorial@gmail.com">imissyoumemorial@gmail.com</a>.
           Refunds return to the card that paid within 5&ndash;10 business days, through Stripe.
         </p>
 

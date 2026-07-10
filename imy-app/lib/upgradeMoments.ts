@@ -26,7 +26,7 @@ export type Moment = {
 };
 
 const PLUS = "/dashboard/billing";
-const CONCIERGE = "mailto:hello@imissyoumemorial.com?subject=Concierge";
+const CONCIERGE = "mailto:imissyoumemorial@gmail.com?subject=Concierge";
 
 export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
   photos: {

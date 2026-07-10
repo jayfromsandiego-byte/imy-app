@@ -2,7 +2,7 @@
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, the demo's ask, and the
-// obituary with the kept voice. 99 checks.
+// obituary with the kept voice. 101 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -145,7 +145,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("band defaults to their voice (no pronouns)", htmlSkipped.includes("Their voice. Living pictures."));
   const htmlPlus = renderTribute(template, jonny);
   t("plus pages never carry the band", !htmlPlus.includes('id="plus-band"'));
-  t("concierge cta is a real intake, not the old mockup", htmlFree.includes("mailto:hello@imissyoumemorial.com?subject=Concierge") && !htmlFree.includes("hyperagent.com/s/aBadvO39KhiuGhTHgfi93g"));
+  t("concierge cta is a real intake, not the old mockup", htmlFree.includes("mailto:imissyoumemorial@gmail.com?subject=Concierge") && !htmlFree.includes("hyperagent.com/s/aBadvO39KhiuGhTHgfi93g"));
 }
 
 // ── 9 · flowers persist — today's wreath hydrates from the ground truth ──────
@@ -175,7 +175,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
   t("quote band without a placement rests among flowers on cream", bareHtml.includes('id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)"') && bareHtml.includes("/art/mum2-34d609.png") && !bareHtml.includes('id="quoteband"><div class="bgi">'));
   const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
-  t("quote band uses the placed photograph", withQ.includes('<div class="bgi"><img src="https://x/p1.jpg"'));
+  t("the banner never wears uploaded photographs", withQ.includes('id="quoteband" style="background:linear-gradient') && !withQ.includes('id="quoteband"><div class="bgi">'));
   const pinned = boot(renderTribute(template, { ...base, placements: { board: ["ph-b", "ph-a"] } }));
   t("board follows the family's order", pinned.boards[0].items[0].img === "https://x/p1.jpg" && pinned.boards[0].items[1].img === "https://x/p0.jpg");
   const keeps = boot(renderTribute(template, { ...base, memories: [{ ...mem("99999999-9999-4999-8999-999999999999", "Ana", "a neighbour", "The bench he built.", 2), photos: ["https://x/keep.jpg"] }] }));
@@ -190,6 +190,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const withOb = renderTribute(template, { ...jonny, obituary: "In loving memory of Jon.\nSurvived by his family.", voiceUrl: "https://x/voice.mp3" });
   t("the obituary stands on its own sheet", withOb.includes('id="obituary"') && withOb.includes("In loving memory of Jon."));
   t("obituary line breaks are kept", withOb.includes("white-space:pre-line"));
+  t("long unbroken words stay inside the card", withOb.includes("overflow-wrap:anywhere;word-break:break-word"));
+  t("the obituary sits directly below the wreath", withOb.indexOf('id="obituary"') < withOb.indexOf('<section class="section rev" id="story"'));
   t("their kept voice plays on plus", withOb.includes('id="theirvoice"') && withOb.includes('src="https://x/voice.mp3"'));
   const freeV = renderTribute(template, { ...jonny, tier: "free", obituary: "In loving memory.", voiceUrl: "https://x/voice.mp3" });
   t("a free page keeps the voice resting", !freeV.includes('id="theirvoice"') && freeV.includes('id="obituary"'));

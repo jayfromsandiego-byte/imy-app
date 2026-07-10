@@ -363,7 +363,7 @@
   }
 </style>
 <style>
-/* mobile pass · July 5 — on phones the garland gets its own full row; the ritual keeps its width */
+/* mobile pass · July 5 · on phones the garland gets its own full row; the ritual keeps its width */
 @media(max-width:640px){
   .top{flex-wrap:wrap;gap:4px 10px;padding:7px 14px 5px}
   .top .prog{margin-left:auto}
@@ -505,13 +505,13 @@ var ENGINE=(function(){
   var STEPS=[
     {id:'name',ch:'who they were',q:'What was their <em>name?</em>',sub:'As it will appear at the top of their page.',type:'text',key:'fullName',ph:'Their full name',req:true},
     {id:'aka',ch:'who they were',q:'Did they go by another name?',sub:'The name the people who loved them used.',type:'text',key:'aka',ph:'A nickname, if there was one',skip:'they didn’t · skip'},
-    {id:'pronouns',ch:'who they were',q:'How should their page <em>speak of them?</em>',sub:'Small words matter — his story, her story, their story.',type:'pronouns',key:'pronouns',skip:'their story is right · skip'},
+    {id:'pronouns',ch:'who they were',q:'How should their page <em>speak of them?</em>',sub:'Small words matter · his story, her story, their story.',type:'pronouns',key:'pronouns',skip:'their story is right · skip'},
     {id:'dates',ch:'who they were',q:'The dates that <em>held their life.</em>',sub:'Take your time. There is no rush here.',type:'dates',req:true},
     {id:'home',ch:'who they were',q:'Where did they call <em>home?</em>',sub:'The place you picture them.',type:'text',key:'place',ph:'City, state',skip:'skip this'},
     {id:'rel',ch:'who they were',q:'Who were they <em>to you?</em>',type:'chips',key:'relationship',req:true},
     {id:'photo',ch:'their portrait',q:'A photograph for their <em>Memorial Stone.</em>',sub:'It rests in the arch at the top of their page, with their name. Choose one where they look like themselves.',type:'photo',skip:'I’ll add one later'},
     {id:'story',ch:'their story',q:'Tell us a little of <em>their story.</em>',sub:'In your own words. A few sentences are enough.',type:'story',key:'story',req:true},
-    {id:'obituary',ch:'their story',q:'The obituary, if you <em>would like one.</em>',sub:'The formal notice, in its fullness — the services, the survived-by, their life as the paper would print it. Skip freely; their page is already theirs.',type:'obituary',skip:'skip for now'},
+    {id:'obituary',ch:'their story',q:'The obituary, if you <em>would like one.</em>',sub:'The formal notice, in its fullness · the services, the survived-by, their life as the paper would print it. Skip freely; their page is already theirs.',type:'obituary',skip:'skip for now'},
     {id:'small',ch:'their story',q:'The small things that were theirs.',sub:'A phrase they always said. A song that brings them back. Both are optional.',type:'two',skip:'nothing right now · skip'},
     {id:'voice',ch:'their story',q:'A voice you want <em>to keep.</em>',sub:'A voicemail, a recording, a laugh. Recordings are part of the Plus plan · kept safe either way.',type:'voice',plus:true,skip:'not right now · skip'},
     {id:'moments',ch:'their story',q:'A few moments from <em>their life.</em>',sub:'A year, and what happened. Add as many as you like.',type:'moments',skip:'skip for now'},
@@ -567,7 +567,7 @@ var ENGINE=(function(){
       else{finale()}
     }).catch(function(){
       if(btn){btn.disabled=false;btn.textContent=(A.plan==='plus')?'Seal it · continue to checkout':'Seal it · create their memorial'}
-      if(s){var er=s.querySelector('.err');if(er){er.textContent='That didn’t save — check your connection and try once more. Every answer is still here.';er.classList.add('show')}}
+      if(s){var er=s.querySelector('.err');if(er){er.textContent='That didn’t save · check your connection and try once more. Every answer is still here.';er.classList.add('show')}}
     });
   }
   function checkoutHop(plan){
@@ -887,9 +887,9 @@ var ENGINE=(function(){
     }
   }
   function valid(st,s){
-    /* years live inside a life (fix 8) — quiet, specific, never blocking an empty year */
+    /* years live inside a life (fix 8) · quiet, specific, never blocking an empty year */
     if(st.type==='moments'){
-      /* plausible years only — the life range was a trap when dates are wrong,
+      /* plausible years only · the life range was a trap when dates are wrong,
          and real timelines hold family history and after-moments too */
       var nowY=new Date().getFullYear();
       var lo=1900,hi=nowY,bad=false;
@@ -952,8 +952,8 @@ var ENGINE=(function(){
     var loved=A.lovedThings.join(' · ');
     var photos=A.galleryCount+(A.photo?1:0);
     var rows=[
-      ['name',A.fullName||'—'],
-      ['years',years||'—'],
+      ['name',A.fullName||' · '],
+      ['years',years||' · '],
       ['page',chosenSlug()+'.imissyoumemorial.com'],
       ['loved',loved||'to be added'],
       ['photos',photos+' added'],

@@ -135,7 +135,7 @@ export function renderTribute(template: string, t: Tribute): string {
   // ── dates line ──
   const born = fmtDate(t.birth);
   const died = fmtDate(t.passing);
-  const datesBits = [born && died ? `${born} — ${died}` : born || died, t.place].filter(Boolean);
+  const datesBits = [born && died ? `${born} · ${died}` : born || died, t.place].filter(Boolean);
   const datesLine = esc(datesBits.join(" · ")) || "&nbsp;";
 
   // ── boot data for the template's engine ──
@@ -266,7 +266,7 @@ export function renderTribute(template: string, t: Tribute): string {
     ? `<div class="plaque rev" id="plaque">
         ${t.sponsor.photoUrl ? `<img class="pl-photo" id="plPhoto" src="${esc(t.sponsor.photoUrl)}" alt="${esc(t.sponsor.name || "The giver")}"/>` : ""}
         <div><div class="pl-line" id="plLine">${t.sponsor.name
-          ? `The full memorial — a gift from ${esc(t.sponsor.name)}, so every memory has a home.`
+          ? `The full memorial · a gift from ${esc(t.sponsor.name)}, so every memory has a home.`
           : "Someone who loves this family opened the wall for everyone."}</div>
         ${t.sponsor.message ? `<div class="pl-line" style="font-weight:400;font-size:13.5px;margin-top:4px">&ldquo;${esc(t.sponsor.message)}&rdquo;</div>` : ""}
         <div class="pl-date" id="plDate">Given with love</div></div>
@@ -279,14 +279,14 @@ export function renderTribute(template: string, t: Tribute): string {
   const archLivetag = archVideo ? `<span class="livetag" id="archLiveTag">Living portrait</span>` : "";
 
   const metaDescription = (t.story || "").replace(/\s+/g, " ").trim().slice(0, 155) ||
-    `A place to remember ${t.fullName} — photos, stories, and the voices of everyone who loved ${first}.`;
+    `A place to remember ${t.fullName} · photos, stories, and the voices of everyone who loved ${first}.`;
 
   const boot_script = `<script>window.__TRIBUTE__=${JSON.stringify(boot).replace(/</g, "\\u003c")};</script>`;
 
   // ── token pass ──
   let html = template
     .split("{{TRIBUTE_BOOT}}").join(boot_script)
-    .split("{{TITLE}}").join(esc(`${t.fullName} — I Miss You Memorial`))
+    .split("{{TITLE}}").join(esc(`${t.fullName} · I Miss You Memorial`))
     .split("{{META_DESCRIPTION}}").join(esc(metaDescription))
     .split("{{COVER_URL}}").join(esc(cover))
     .split("{{NAME_PLAIN}}").join(esc(t.fullName))
@@ -329,17 +329,14 @@ export function renderTribute(template: string, t: Tribute): string {
       const secStart = html.lastIndexOf('<section class="band rev">', qIdx);
       const secEnd = html.indexOf("</section>", qIdx);
       if (secStart > -1 && secEnd > -1) {
-        // Fix 4: the photograph behind their words is chosen, never guessed.
-        // No placement → their words rest on warm cream, with the wreath's own
-        // pressed flowers laid beside them (July 9 — flowers, not flat brown).
-        const qPhoto = pl?.quote ? byId[pl.quote] : undefined;
+        // July 9: the banner never wears uploaded photographs — one on-brand
+        // pressed-flower ground for every page; their pictures live in the
+        // gallery, the chapters, and the board.
         const band = t.quote
-          ? (qPhoto
-              ? `<section class="band rev" id="quoteband"><div class="bgi"><img src="${esc(qPhoto.url)}" alt=""></div><div class="v"></div><div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
-              : `<section class="band rev" id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)">` +
-                `<img src="/art/mum2-34d609.png" alt="" style="position:absolute;left:5%;top:50%;transform:translateY(-50%) rotate(-9deg);width:clamp(64px,9vw,118px);opacity:.92"/>` +
-                `<img src="/art/lily2-f5e2ef.png" alt="" style="position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(11deg);width:clamp(58px,8vw,104px);opacity:.88"/>` +
-                `<div class="inb" style="position:relative;z-index:2"><div class="q" style="color:#2C2520;text-shadow:none">“${esc(t.quote)}”</div><div class="s" style="color:#7A6A58;text-shadow:none">the thing ${pn.sub} always said</div></div></section>`)
+          ? `<section class="band rev" id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)">` +
+            `<img src="/art/mum2-34d609.png" alt="" style="position:absolute;left:5%;top:50%;transform:translateY(-50%) rotate(-9deg);width:clamp(64px,9vw,118px);opacity:.92"/>` +
+            `<img src="/art/lily2-f5e2ef.png" alt="" style="position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(11deg);width:clamp(58px,8vw,104px);opacity:.88"/>` +
+            `<div class="inb" style="position:relative;z-index:2"><div class="q" style="color:#2C2520;text-shadow:none">“${esc(t.quote)}”</div><div class="s" style="color:#7A6A58;text-shadow:none">the thing ${pn.sub} always said</div></div></section>`
           : "";
         html = html.slice(0, secStart) + band + html.slice(secEnd + "</section>".length);
       }
@@ -481,30 +478,33 @@ export function renderTribute(template: string, t: Tribute): string {
   }
 
   // ═══ the obituary and the kept voice (July 9) ═══════════════════════════════
-  // The formal notice on its own quiet sheet, and their actual voice — both
-  // standing between who they really were and the memories wall.
+  // The obituary sits directly below the wreath and its flowers (its own quiet
+  // sheet, long words wrapped, never off the card). Their voice stands just
+  // before the memories wall.
   {
-    const memAnchor = '<section class="section rev sheetdeep" id="memories"';
-    const mIdx = html.indexOf(memAnchor);
-    if (mIdx > -1) {
-      let add = "";
-      if (t.obituary && t.obituary.trim()) {
-        add +=
-          `<section class="section rev" id="obituary" style="padding:64px 5% 26px">` +
-          `<div style="max-width:720px;margin:0 auto;background:#FDFAF3;border:1px solid #E9DFC9;border-radius:14px;box-shadow:0 30px 70px -44px rgba(60,40,15,.3);padding:clamp(28px,5vw,54px)">` +
-          `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:16px">The obituary</div>` +
-          `<div style="font-family:'Besley',serif;font-size:16.5px;line-height:1.85;color:#2C2520;white-space:pre-line">${esc(t.obituary.trim())}</div>` +
-          `</div></section>`;
-      }
-      if (tier === "plus" && t.voiceUrl && /^https:\/\//.test(t.voiceUrl)) {
-        add +=
+    if (t.obituary && t.obituary.trim()) {
+      const ob =
+        `<section class="section rev" id="obituary" style="padding:56px 5% 26px">` +
+        `<div style="max-width:720px;margin:0 auto;background:#FDFAF3;border:1px solid #E9DFC9;border-radius:14px;box-shadow:0 30px 70px -44px rgba(60,40,15,.3);padding:clamp(28px,5vw,54px)">` +
+        `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:16px">The obituary</div>` +
+        `<div style="font-family:'Besley',serif;font-size:16.5px;line-height:1.85;color:#2C2520;white-space:pre-line;overflow-wrap:anywhere;word-break:break-word">${esc(t.obituary.trim())}</div>` +
+        `</div></section>`;
+      const storyIdx = html.indexOf('<section class="section rev" id="story"');
+      const fallbackIdx = html.indexOf('<section class="section rev sheetdeep" id="memories"');
+      const at = storyIdx > -1 ? storyIdx : fallbackIdx;
+      if (at > -1) html = html.slice(0, at) + ob + html.slice(at);
+    }
+    if (tier === "plus" && t.voiceUrl && /^https:\/\//.test(t.voiceUrl)) {
+      const mIdx = html.indexOf('<section class="section rev sheetdeep" id="memories"');
+      if (mIdx > -1) {
+        const voice =
           `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
           `<div style="max-width:560px;margin:0 auto">` +
           `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">Their voice · kept</div>` +
           `<audio controls preload="none" src="${esc(t.voiceUrl)}" style="width:100%;display:block"></audio>` +
           `</div></section>`;
+        html = html.slice(0, mIdx) + voice + html.slice(mIdx);
       }
-      if (add) html = html.slice(0, mIdx) + add + html.slice(mIdx);
     }
   }
 
