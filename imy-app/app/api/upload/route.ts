@@ -12,10 +12,13 @@ const MAX_BYTES = 25 * 1024 * 1024; // 25MB per file through this proxied route
 
 export async function POST(req: NextRequest) {
   // Visitors attach photographs to memories, so this stays public — but gently
-  // limited per IP, like every other public door on the site.
+  // limited per IP, like every other public door on the site. A family in a
+  // funeral week legitimately brings a lifetime of photographs in one sitting;
+  // 30 per ten minutes silently dropped most of a gallery (July 10). Generous
+  // for grief, still a wall against abuse.
   {
     const ip = clientIp(req);
-    const { allowed } = rateLimit(`upload:${ip}`, 30, 600_000);
+    const { allowed } = rateLimit(`upload:${ip}`, 150, 600_000);
     if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }
 

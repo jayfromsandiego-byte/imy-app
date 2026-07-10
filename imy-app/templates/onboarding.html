@@ -565,6 +565,12 @@ var ENGINE=(function(){
     var s=scrAt(cur),btn=s&&s.querySelector('[data-next]');
     if(btn){btn.disabled=true;btn.textContent='Sealing…'}
     waitUploads().then(function(){
+      /* a photograph that failed its upload gets one more chance before the
+         seal · a slow connection must not quietly lose it */
+      var missing=gFiles.filter(function(f){return !f.__url});
+      if(!missing.length)return null;
+      return Promise.all(missing.map(function(f){return upload(f).then(function(u){if(u)f.__url=u})}));
+    }).then(function(){
       return fetch('/api/intake',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload())});
     }).then(function(r){return r.json()}).then(function(j){
       if(!(j&&j.ok))throw new Error('intake');
