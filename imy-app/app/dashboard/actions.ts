@@ -56,6 +56,7 @@ export async function moderateMemory(formData: FormData) {
   else if (action === "hide") await db.from("tribute_memories").update({ status: "hidden" }).eq("id", id);
   else if (action === "delete") await db.from("tribute_memories").update({ deleted_at: new Date().toISOString() }).eq("id", id);
   revalidatePath(`/dashboard/tributes/${tributeId}`);
+  revalidatePath("/dashboard/waiting");
 }
 
 /** Words left under memories moderate exactly like memories: approve · keep for family · soft-remove. */
@@ -71,6 +72,7 @@ export async function moderateComment(formData: FormData) {
   else if (action === "hide") await db.from("tribute_memory_comments").update({ status: "hidden" }).eq("id", id).eq("tribute_id", tributeId);
   else if (action === "delete") await db.from("tribute_memory_comments").update({ deleted_at: new Date().toISOString() }).eq("id", id).eq("tribute_id", tributeId);
   revalidatePath(`/dashboard/tributes/${tributeId}`);
+  revalidatePath("/dashboard/waiting");
 }
 
 // ===== Photos / media manager =====

@@ -36,6 +36,8 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   const text = clean(body.body, 500);
   const name = clean(body.name, 80) || "A friend";
   const relation = clean(body.relation, 60) || null;
+  // Kept private to the family, never rendered publicly (0016).
+  const authorEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(body.email || "")) ? clean(body.email, 200) : null;
   if (!UUID.test(memoryId)) return NextResponse.json({ ok: false, error: "bad_request" }, { status: 400 });
   if (text.length < 2) return NextResponse.json({ ok: false, error: "empty" }, { status: 400 });
 
@@ -70,6 +72,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
     tribute_id: trib.id,
     author_name: name,
     relation,
+    author_email: authorEmail,
     body: text,
     status: "pending",
   });

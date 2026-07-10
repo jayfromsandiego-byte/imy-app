@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
-import { saveTribute, moderateMemory, moderateComment } from "@/app/dashboard/actions";
+import { saveTribute } from "@/app/dashboard/actions";
 import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
 import PlacementsManager from "@/components/PlacementsManager";
@@ -104,104 +104,20 @@ export default async function EditTribute({ params }: { params: { id: string } }
         </p>
       </div>
 
-      {/* ---------- Waiting for you — letters on the desk ---------- */}
+      {/* ---------- Waiting for you · one desk for every page, at /dashboard/waiting ---------- */}
       <section style={{ marginTop: 32 }}>
         <div className="panel-title-row">
           <h2 className="panel-title" style={{ fontSize: 20 }}>
-            Waiting for you{pending.length > 0 ? ` · ${pending.length}` : ""}
+            Waiting for you{pending.length + pendingComments.length > 0 ? ` · ${pending.length + pendingComments.length}` : ""}
           </h2>
         </div>
-        <p className="panel-sub" style={{ marginBottom: 20 }}>
-          Read each one before deciding. Nothing here is visible to anyone until you choose.
+        <p className="panel-sub" style={{ marginBottom: 14 }}>
+          Every memory, word, photograph, and voice now waits on a single desk, for all
+          your pages together. Nothing appears on the live page until you welcome it in.
         </p>
-
-        {pending.length === 0 && pendingComments.length === 0 ? (
-          <div className="empty-desk">
-            <p className="line1">You&rsquo;ve read everything.</p>
-            <p className="line2">Nothing waits for you today.</p>
-          </div>
-        ) : (
-          <div className="letter-stack">
-            {pending.map((m: any) => (
-              <article key={m.id} className="letter">
-                <div className="letter-top">
-                  <div className="letter-meta">
-                    <span className="letter-kind mono">Memory</span>
-                    <span className="letter-from">
-                      {m.author_name}
-                      {m.relation ? ` · ${m.relation}` : ""}
-                    </span>
-                  </div>
-                  <span className="letter-when mono">{timeAgo(m.created_at)}</span>
-                </div>
-                <p className="letter-body quote">{`"${m.body}"`}</p>
-                {m.audio_url ? (
-                  <div style={{ margin: "6px 0 2px" }}>
-                    {/* a voice came with this memory — listen before deciding */}
-                    <audio controls preload="none" src={m.audio_url} style={{ width: "100%", height: 34, display: "block" }} />
-                    <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 4 }}>a voice came with this memory</p>
-                  </div>
-                ) : null}
-                <div className="letter-actions">
-                  <form action={moderateMemory}>
-                    <input type="hidden" name="id" value={m.id} />
-                    <input type="hidden" name="tributeId" value={t.id} />
-                    <input type="hidden" name="action" value="approve" />
-                    <button type="submit" className="btn primary">
-                      Share on {pn.pos} page
-                    </button>
-                  </form>
-                  <form action={moderateMemory}>
-                    <input type="hidden" name="id" value={m.id} />
-                    <input type="hidden" name="tributeId" value={t.id} />
-                    <input type="hidden" name="action" value="hide" />
-                    <button type="submit" className="btn quiet">
-                      Keep for family
-                    </button>
-                  </form>
-                </div>
-              </article>
-            ))}
-            {pendingComments.map((c: any) => (
-              <article key={c.id} className="letter">
-                <div className="letter-top">
-                  <div className="letter-meta">
-                    <span className="letter-kind mono">A word</span>
-                    <span className="letter-from">
-                      {c.author_name}
-                      {c.relation ? ` · ${c.relation}` : ""}
-                    </span>
-                  </div>
-                  <span className="letter-when mono">{timeAgo(c.created_at)}</span>
-                </div>
-                <p className="letter-body quote">{`"${c.body}"`}</p>
-                {memoryExcerpt(c.memory_id) ? (
-                  <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 6 }}>
-                    left under: &ldquo;{memoryExcerpt(c.memory_id)}&rdquo;
-                  </p>
-                ) : null}
-                <div className="letter-actions">
-                  <form action={moderateComment}>
-                    <input type="hidden" name="id" value={c.id} />
-                    <input type="hidden" name="tributeId" value={t.id} />
-                    <input type="hidden" name="action" value="approve" />
-                    <button type="submit" className="btn primary">
-                      Share on the page
-                    </button>
-                  </form>
-                  <form action={moderateComment}>
-                    <input type="hidden" name="id" value={c.id} />
-                    <input type="hidden" name="tributeId" value={t.id} />
-                    <input type="hidden" name="action" value="hide" />
-                    <button type="submit" className="btn quiet">
-                      Keep for family
-                    </button>
-                  </form>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+        <Link href="/dashboard/waiting" className="btn primary" style={{ display: "inline-block", textDecoration: "none" }}>
+          {pending.length + pendingComments.length > 0 ? `Read what waits · ${pending.length + pendingComments.length}` : "Open the waiting desk"}
+        </Link>
         <p className="mono" style={{ fontSize: 12, color: "var(--ink-soft)", marginTop: 18 }}>
           {approved.length} {approved.length === 1 ? "memory" : "memories"} shared
         </p>

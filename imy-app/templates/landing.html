@@ -999,5 +999,25 @@ document.addEventListener('keydown', function(e) {
 <script>
 (function(){try{var m=location.search.match(/[?&]ref=([A-Za-z0-9-]{3,40})/);if(m){document.cookie='imyref='+encodeURIComponent(m[1].toUpperCase())+';path=/;max-age=2592000;samesite=lax'}}catch(e){}})();
 </script>
+<script>
+/* the memory writes itself until you reach for it (restored July 9) */
+(function(){
+var f=document.querySelector('.excomposer .field');if(!f)return;
+var lines=['You taught me to ride a bike on Maple St','Your kitchen always smelled like cinnamon','You never missed a single Sunday call','I can still hear your laugh in the garden'];
+var li=0,ci=0,dir=1,t=null,stopped=false;
+function tick(){
+  if(stopped)return;
+  var line=lines[li];
+  if(dir>0){ci++;if(ci>=line.length){f.setAttribute('placeholder',line);dir=0;t=setTimeout(function(){dir=-1;tick()},1900);return}}
+  else if(dir<0){ci--;if(ci<=0){dir=1;li=(li+1)%lines.length;ci=0;f.setAttribute('placeholder','');t=setTimeout(tick,420);return}}
+  f.setAttribute('placeholder',line.slice(0,ci));
+  t=setTimeout(tick,dir>0?46+Math.random()*40:22);
+}
+function stop(){if(stopped)return;stopped=true;clearTimeout(t);f.setAttribute('placeholder','What do you remember?')}
+f.addEventListener('focus',stop);f.addEventListener('pointerdown',stop);
+try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){f.setAttribute('placeholder',lines[0]);return}}catch(e){}
+t=setTimeout(tick,900);
+})();
+</script>
 </body>
 </html>

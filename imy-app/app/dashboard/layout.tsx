@@ -65,20 +65,18 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     coverUrl = photo?.url || null;
   }
 
-  // Badge count: total pending memories across every tribute the owner has.
+  // Badge count: everything truly waiting (pending memories AND pending words)
+  // across every tribute the owner has. The same filters the waiting page uses,
+  // so the number on the shelf always matches the letters on the desk.
   let pendingTotal = 0;
   if (supabaseConfigured && tributes.length) {
     const db = supabaseAdmin();
-    const { count } = await db
-      .from("tribute_memories")
-      .select("id", { count: "exact", head: true })
-      .in(
-        "tribute_id",
-        tributes.map((t) => t.id)
-      )
-      .eq("status", "pending")
-      .is("deleted_at", null);
-    pendingTotal = count || 0;
+    const ids = tributes.map((t) => t.id);
+    const [{ count: memCount }, { count: cmCount }] = await Promise.all([
+      db.from("tribute_memories").select("id", { count: "exact", head: true }).in("tribute_id", ids).eq("status", "pending").is("deleted_at", null),
+      db.from("tribute_memory_comments").select("id", { count: "exact", head: true }).in("tribute_id", ids).eq("status", "pending").is("deleted_at", null),
+    ]);
+    pendingTotal = (memCount || 0) + (cmCount || 0);
   }
 
   const pageOptions = tributes.map((t, i) => ({
@@ -147,7 +145,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             <div className="shelf-label mono">The desk</div>
             <NavItem href="/dashboard" label="Overview" icon={<path d="M4 12L12 5l8 7M6 10v9h12v-9" />} />
             <NavItem
-              href={first ? `/dashboard/tributes/${first.id}` : "/dashboard"}
+              href="/dashboard/waiting"
               label="Waiting for you"
               count={pendingTotal}
               icon={

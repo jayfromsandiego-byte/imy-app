@@ -1128,6 +1128,7 @@ body.a11y-nomotion .living{opacity:0!important}
     <h3>Tell the family <em>who you are</em>.</h3>
     <div class="sub">Asked once. Your name travels with everything you add, so people can find you on her page.</div>
     <div class="frow"><input id="fnIn" placeholder="First name" autocomplete="given-name"/><input id="lnIn" placeholder="Last name" autocomplete="family-name"/></div>
+    <input id="emIn" type="email" placeholder="Your email" autocomplete="email" inputmode="email" style="margin-bottom:9px"/>
     <select id="relSel">
       <option value="">How did you know Eleanor?</option>
       <option value="family">Family</option>
@@ -1140,7 +1141,7 @@ body.a11y-nomotion .living{opacity:0!important}
     <input id="relTxt" placeholder="In your own words · e.g. her student, Room 4, 1989" style="margin-top:9px"/>
     <label class="human"><input type="checkbox" id="humanChk"/> I'm a real person · every memorial is protected from spam</label>
     <button class="btn solid go" id="idGo">Continue</button>
-    <div class="note2">first name shown · last name kept private to the family<br>no account needed · nothing is shared without you</div>
+    <div class="note2">first name shown · last name and email kept private to the family<br>your email is never shown publicly · no account needed · asked once</div>
   </div>
 </div>
 
@@ -1399,6 +1400,8 @@ var MEMS=(T&&T.mems)||[
 var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbours'],['students','Her students']];
 var memTabs=document.getElementById('memTabs'),track=document.getElementById('memTrack');
 var curG='all',memPage=0,ID=null;
+/* asked once, truly · the introduction is remembered on this device (July 9) */
+try{var _idKeep=JSON.parse(localStorage.getItem('imy-id')||'null');if(_idKeep&&_idKeep.fn&&_idKeep.ln&&_idKeep.em)ID=_idKeep}catch(e){}
 GROUPS.forEach(function(g,i){var b=document.createElement('button');b.className='memtab'+(i===0?' on':'');var n=g[0]==='all'?MEMS.length:MEMS.filter(function(m){return m.g===g[0]}).length;b.innerHTML=g[1]+' <b>'+n+'</b>';b.onclick=function(){document.querySelectorAll('.memtab').forEach(function(x){x.classList.remove('on')});b.classList.add('on');curG=g[0];memPage=0;renderMems()};memTabs.appendChild(b)});
 function memCard(m){
   var cms=(m.cm||[]).map(function(x){return '<div class="c1"><b>'+x[0]+'</b><span class="r">'+x[1]+'</span><br>'+x[2]+'</div>'}).join('');
@@ -1426,7 +1429,7 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
         /* production: a word goes to the family first · it joins the page when they welcome it in */
         bp.disabled=true;
         fetch('/api/tribute/'+SLUG+'/memory/comment',{method:'POST',headers:{'content-type':'application/json'},
-          body:JSON.stringify({memoryId:mid,name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:t,company:''})})
+          body:JSON.stringify({memoryId:mid,name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:t,company:'',email:ID.em||''})})
         .then(function(r){return r.json()}).then(function(j){bp.disabled=false;
           if(j&&j.ok){var d=document.createElement('div');d.className='c1';d.style.opacity='.62';
             d.innerHTML='<b>'+ID.fn+'</b><span class="r">waiting for the family</span><br>'+t.replace(/</g,'&lt;');
@@ -1487,7 +1490,7 @@ document.getElementById('shareBtn').onclick=function(){
       /* production: memories go to the family first · every word waits for their yes */
       var btn=document.getElementById('shareBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Keeping it safe…';
       fetch('/api/tribute/'+SLUG+'/memory',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',audioUrl:VOICE.url||'',photoUrl:PHOTO.url||''})})
+        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',email:ID.em||'',audioUrl:VOICE.url||'',photoUrl:PHOTO.url||''})})
       .then(function(r){return r.json()}).then(function(j){
         btn.disabled=false;btn.textContent=old;
         if(j&&j.ok){document.getElementById('memInput').value='';
@@ -1543,11 +1546,13 @@ function setAddingAs(){var el=document.getElementById('addingAs');if(!el)return;
   el.innerHTML=ID?'<span>Adding as <b>'+ID.fn+' '+ID.ln[0].toUpperCase()+'. · '+ID.relLabel+'</b></span><button id="idChange">change</button>':'<span>Adding as <b>a visitor</b> · introduce yourself first</span><button id="idChange">who am I?</button>';
   document.getElementById('idChange').onclick=function(){ID=null;idm.classList.add('open')}}
 document.getElementById('idGo').onclick=function(){
-  var fn=document.getElementById('fnIn').value.trim(),ln=document.getElementById('lnIn').value.trim(),rv=document.getElementById('relSel').value,rt=document.getElementById('relTxt').value.trim(),hu=document.getElementById('humanChk').checked;
+  var fn=document.getElementById('fnIn').value.trim(),ln=document.getElementById('lnIn').value.trim(),em=(document.getElementById('emIn')?document.getElementById('emIn').value.trim():''),rv=document.getElementById('relSel').value,rt=document.getElementById('relTxt').value.trim(),hu=document.getElementById('humanChk').checked;
   if(!fn||!ln){say('Your first and last name, so the family knows who was here.',false);return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){say('Your email, so the family can reach you if they wish. It is never shown publicly.',false);return}
   if(!rv){say('Choose how you knew her. It keeps her page organized.',false);return}
   if(!hu){say('Tick the box so we know you are a real person. Memorials stay protected from spam.',false);return}
-  ID={fn:fn,ln:ln,g:(rv==='friends2'||rv==='friends3')?'friends':rv,relLabel:rt||REL_LABEL[rv]};
+  ID={fn:fn,ln:ln,em:em,g:(rv==='friends2'||rv==='friends3')?'friends':rv,relLabel:rt||REL_LABEL[rv]};
+  try{localStorage.setItem('imy-id',JSON.stringify(ID))}catch(e){}
   idm.classList.remove('open');setAddingAs();
   if(idCb){var cb=idCb;idCb=null;cb()}else say('Welcome, '+fn+'. Everything you add now carries your name.',false)};
 document.getElementById('idmClose').onclick=function(){idm.classList.remove('open');idCb=null};
