@@ -729,7 +729,7 @@ function arch(ctx,x,y,w,h){var r=w/2;ctx.beginPath();ctx.moveTo(x-r,y+h);ctx.lin
 function build(){
 document.fonts.ready.then(function(){return Promise.all([document.fonts.load('600 68px Besley'),document.fonts.load("italic 500 32px Besley"),document.fonts.load("700 26px 'Sometype Mono'"),document.fonts.load("500 22px 'Sometype Mono'")]).catch(function(){})}).then(function(){
 withQR(function(hasQR){loadImg(D.photo).then(function(photo){
-var W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+var W=1080,H=1440,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
 x.fillStyle='#FAF5EC';x.fillRect(0,0,W,H);
 x.strokeStyle='rgba(201,165,114,.55)';x.lineWidth=2;x.strokeRect(36,36,W-72,H-72);
 try{x.letterSpacing='6px'}catch(e){}
