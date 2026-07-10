@@ -294,6 +294,7 @@ export function renderTribute(template: string, t: Tribute): string {
     ? `<div class="svcrow"><div class="svcrow-in">
   <span class="lab">Service</span>
   <span class="what">${esc([fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "))}${t.service.place ? ` <span class="mono">· ${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
+  ${t.service.date ? `<button class="mini" id="shareDateBtn" type="button" style="text-decoration:underline">Share the date</button>` : ""}
   ${t.service.charity ? `<a class="mini" href="${esc(t.service.charityUrl || `https://www.google.com/search?q=${encodeURIComponent(t.service.charity + " donate")}`)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center">Give in ${esc(first)}'s name</a>` : ""}
   </div></div>`
     : "";
@@ -679,6 +680,139 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
     );
     // The chapters' demo "add a key moment" button is study work, not page work.
     html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
+
+    // ═══ share the date (July 10, founder ask) ═══════════════════════════════
+    // The service strip carries a quiet "Share the date" door. It opens a paper
+    // frame holding a keepsake flyer drawn on the spot: their photograph in the
+    // arch, their name, the service line, and a code that opens this page.
+    // Send by text (the flyer itself where the phone allows, the link where it
+    // does not), download it, or copy the address. Everything is drawn in the
+    // browser; nothing is uploaded anywhere.
+    if (t.service?.date) {
+      const flyerData = {
+        name: t.fullName,
+        years: [yearOf(t.birth), yearOf(t.passing)].filter(Boolean).join(" · "),
+        dateLine: [fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "),
+        venue: t.service.place || "",
+        address: t.service.address || "",
+        photo: (t.photos || []).map((p) => p.url).find(Boolean) || "",
+        url: `https://${slug}.imissyoumemorial.com`,
+      };
+      const sdOverlay = `<div id="sharedate" style="position:fixed;inset:0;z-index:130;display:none;align-items:center;justify-content:center;background:rgba(26,19,13,.93);padding:4vw" role="dialog" aria-modal="true" aria-label="Share the date">
+<div style="background:#FAF5EC;border:1px solid rgba(201,165,114,.4);border-radius:14px;max-width:460px;width:100%;max-height:92vh;overflow:auto;padding:20px 20px 16px;box-shadow:0 40px 90px -30px rgba(0,0,0,.8)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+<span style="font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#A87C5F">Share the date</span>
+<button id="sdClose" aria-label="Close" style="background:none;border:1px solid #E4D9C4;border-radius:16px;padding:4px 10px;cursor:pointer;color:#5A4F45;font-size:13px">✕</button></div>
+<img id="sdPreview" alt="The flyer · ${esc(t.fullName)}" style="display:none;width:100%;border-radius:8px;border:1px solid #E4D9C4;box-shadow:0 14px 34px -18px rgba(26,19,13,.5)"/>
+<div id="sdStatus" style="font-family:'Sometype Mono',monospace;font-size:11px;color:#7A6A58;padding:34px 0;text-align:center">Making the flyer…</div>
+<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:14px">
+<button id="sdText" class="btn solid" style="font-size:13px;padding:9px 16px">Send by text</button>
+<a id="sdDown" class="btn" download="share-the-date.png" style="font-size:13px;padding:9px 16px">Download</a>
+<button id="sdCopy" class="btn" style="font-size:13px;padding:9px 16px">Copy the link</button></div>
+<div style="font-family:'Sometype Mono',monospace;font-size:10px;color:#7A6A58;margin-top:12px">the code on the flyer opens ${esc(slug)}.imissyoumemorial.com</div>
+</div></div>`;
+      const sdModule = `<script>
+(function(){
+var D=${JSON.stringify(flyerData).replace(/</g, "\\u003c")};
+var ov=document.getElementById('sharedate'),btn=document.getElementById('shareDateBtn');
+if(!ov||!btn)return;
+var built=false,flyerBlob=null,lastFocus=null;
+function open(){lastFocus=document.activeElement;ov.style.display='flex';document.getElementById('sdClose').focus();if(!built)build()}
+function close(){ov.style.display='none';try{if(lastFocus)lastFocus.focus()}catch(e){}}
+btn.addEventListener('click',open);
+document.getElementById('sdClose').addEventListener('click',close);
+ov.addEventListener('click',function(e){if(e.target===ov)close()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.display!=='none')close()});
+function withQR(cb){if(window.QrCreator)return cb(true);var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/dist/qr-creator.min.js';s.onload=function(){cb(true)};s.onerror=function(){cb(false)};document.head.appendChild(s)}
+function loadImg(src){return new Promise(function(res){if(!src)return res(null);var im=new Image();if(/^https?:/.test(src))im.crossOrigin='anonymous';im.onload=function(){res(im)};im.onerror=function(){res(null)};im.src=src})}
+function arch(ctx,x,y,w,h){var r=w/2;ctx.beginPath();ctx.moveTo(x-r,y+h);ctx.lineTo(x-r,y+r);ctx.arc(x,y+r,r,Math.PI,0);ctx.lineTo(x+r,y+h);ctx.closePath()}
+function build(){
+document.fonts.ready.then(function(){return Promise.all([document.fonts.load('600 68px Besley'),document.fonts.load("italic 500 32px Besley"),document.fonts.load("700 26px 'Sometype Mono'"),document.fonts.load("500 22px 'Sometype Mono'")]).catch(function(){})}).then(function(){
+withQR(function(hasQR){loadImg(D.photo).then(function(photo){
+var W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+x.fillStyle='#FAF5EC';x.fillRect(0,0,W,H);
+x.strokeStyle='rgba(201,165,114,.55)';x.lineWidth=2;x.strokeRect(36,36,W-72,H-72);
+try{x.letterSpacing='6px'}catch(e){}
+x.fillStyle='#A87C5F';x.font="700 26px 'Sometype Mono'";x.textAlign='center';x.fillText('IN LOVING MEMORY',W/2,118);
+try{x.letterSpacing='0px'}catch(e){}
+var px=W/2,py=170,pw=520,ph=620;
+x.save();x.shadowColor='rgba(26,19,13,.28)';x.shadowBlur=34;x.shadowOffsetY=14;x.fillStyle='#fff';arch(x,px,py-8,pw+16,ph+16);x.fill();x.restore();
+if(photo){x.save();arch(x,px,py,pw,ph);x.clip();var s=Math.max(pw/photo.width,ph/photo.height),dw=photo.width*s,dh=photo.height*s;x.drawImage(photo,px-dw/2,py+(ph-dh)/2,dw,dh);x.restore()}
+else{x.save();arch(x,px,py,pw,ph);x.clip();x.fillStyle='#F3ECDD';x.fillRect(px-pw/2,py,pw,ph);x.restore()}
+x.fillStyle='#2C2520';x.textAlign='center';var fs=64,name=D.name;x.font='600 '+fs+'px Besley';
+while(x.measureText(name).width>900&&fs>40){fs-=4;x.font='600 '+fs+'px Besley'}
+x.fillText(name,W/2,895);
+if(D.years){x.fillStyle='#7A6A58';x.font="500 24px 'Sometype Mono'";x.fillText(D.years,W/2,938)}
+x.strokeStyle='rgba(201,165,114,.7)';x.lineWidth=1.5;x.beginPath();x.moveTo(W/2-130,972);x.lineTo(W/2-14,972);x.moveTo(W/2+14,972);x.lineTo(W/2+130,972);x.stroke();
+x.fillStyle='#C9A572';x.beginPath();x.arc(W/2,972,4,0,7);x.fill();
+x.fillStyle='#A87C5F';x.font='italic 500 32px Besley';x.fillText('Join us to remember',W/2,1030);
+x.fillStyle='#2C2520';x.font='600 42px Besley';x.fillText(D.dateLine,W/2,1086);
+if(D.venue){x.fillStyle='#5A4F45';x.font='500 30px Besley';x.fillText(D.venue,W/2,1132)}
+if(D.address){x.fillStyle='#7A6A58';x.font="500 22px 'Sometype Mono'";x.fillText(D.address,W/2,1168)}
+if(hasQR&&window.QrCreator){try{var q=document.createElement('canvas');window.QrCreator.render({text:D.url,radius:0,ecLevel:'M',fill:'#2C2520',background:'#FAF5EC',size:336},q);x.drawImage(q,72,H-244,164,164);x.textAlign='left';x.fillStyle='#7A6A58';x.font="500 22px 'Sometype Mono'";x.fillText('scan to visit · leave a memory,',260,H-176);x.fillText('light a candle, lay a flower',260,H-144)}catch(e){}}
+x.textAlign='center';x.fillStyle='#2C2520';x.font='600 26px Besley';
+var w1=x.measureText('I ').width,w2=x.measureText('Miss').width,w3=x.measureText(' You Memorial').width,bx=W/2-(w1+w2+w3)/2;
+x.textAlign='left';x.fillText('I ',bx,H-64);x.fillStyle='#A87C5F';x.font='italic 600 26px Besley';x.fillText('Miss',bx+w1,H-64);x.fillStyle='#2C2520';x.font='600 26px Besley';x.fillText(' You Memorial',bx+w1+w2,H-64);
+try{c.toBlob(function(b){if(b){flyerBlob=b;var u=URL.createObjectURL(b);var pv=document.getElementById('sdPreview');pv.src=u;pv.style.display='block';document.getElementById('sdDown').href=u;document.getElementById('sdStatus').style.display='none';built=true}else{fail()}},'image/png')}catch(e){fail()}
+})})})}
+function fail(){var st=document.getElementById('sdStatus');st.textContent='The flyer could not be drawn here · the link below still carries everything.';built=true}
+function smsBody(){return 'Join us to remember '+D.name+'. '+D.dateLine+(D.venue?', '+D.venue:'')+'. The memorial page: '+D.url}
+document.getElementById('sdText').addEventListener('click',function(){
+if(flyerBlob&&navigator.canShare){try{var f=new File([flyerBlob],'share-the-date.png',{type:'image/png'});if(navigator.canShare({files:[f]})){navigator.share({files:[f],text:smsBody()}).catch(function(){});return}}catch(e){}}
+location.href='sms:?&body='+encodeURIComponent(smsBody())});
+document.getElementById('sdCopy').addEventListener('click',function(){var b=this;
+try{navigator.clipboard.writeText(D.url).then(function(){b.textContent='Copied · ready to paste';setTimeout(function(){b.textContent='Copy the link'},2200)})}catch(e){window.prompt('The page address',D.url)}});
+})();
+</script>`;
+      html = html.replace("</body>", sdOverlay + "\n" + sdModule + "\n</body>");
+    }
+
+    // ═══ if you knew them (July 10, founder ask) ═════════════════════════════
+    // On a free page, a visitor who has read the wall may want to help. One
+    // quiet note, once per browser, after they have actually spent time with
+    // the memories — never on arrival. Its door opens the existing gift sheet:
+    // the same $97 family unlock, guest checkout, the same sponsor badge.
+    if (tier === "free" && slug !== "eleanor") {
+      const nWord = (n: number) => ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"][n] || String(n);
+      const waiting = seedw.length;
+      const noteBody = waiting > 0
+        ? `${nWord(waiting)} more ${waiting === 1 ? "memory is" : "memories are"} waiting to join the wall. One gift opens the full memorial for the whole family: every memory, every photograph, ${pn.pos} voice.`
+        : `The first ten memories live here free, forever. One gift opens the full memorial for the whole family, so every memory to come has a home.`;
+      const keepnote = `<div id="keepnote" hidden style="position:fixed;right:16px;bottom:16px;z-index:96;max-width:min(340px,calc(100vw - 32px));background:#FAF5EC;border:1px solid #E4D9C4;border-radius:14px;box-shadow:0 26px 60px -20px rgba(26,19,13,.5);padding:16px 16px 13px" role="dialog" aria-label="Help keep every memory">
+<button id="knClose" aria-label="Not now" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#B7A48B;font-size:14px;cursor:pointer;padding:2px 6px">✕</button>
+<div style="font-family:'Sometype Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#A87C5F;margin-bottom:6px">If you knew ${esc(first)}</div>
+<div style="font-family:'Besley',serif;font-weight:600;font-size:16.5px;color:#2C2520;line-height:1.35;margin-bottom:6px">You can help keep every memory.</div>
+<div style="font-family:'Besley',serif;font-size:13.5px;color:#5A4F45;line-height:1.55;margin-bottom:12px">${noteBody}</div>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<button id="knGive" class="btn solid" style="font-size:12.5px;padding:8px 14px">Give the full memorial · $97, once</button>
+<button id="knLater" class="mini" style="text-decoration:underline">Not now</button></div>
+<div style="font-family:'Sometype Mono',monospace;font-size:9.5px;color:#7A6A58;margin-top:10px">No subscription · nothing is ever taken down</div>
+</div>
+<script>
+(function(){
+var el=document.getElementById('keepnote');if(!el)return;
+var K='imy-note-'+${JSON.stringify(slug)};
+try{if(localStorage.getItem(K))return}catch(e){}
+var t0=Date.now(),shown=false,seen=false;
+function mark(){try{localStorage.setItem(K,'1')}catch(e){}}
+function show(){if(shown)return;shown=true;el.hidden=false}
+function hide(){el.hidden=true}
+function maybe(){if(seen&&Date.now()-t0>=30000)show()}
+try{var mem=document.getElementById('memories');
+if(mem&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){seen=true;maybe()}})},{threshold:.15});io.observe(mem);setTimeout(maybe,31000)}
+}catch(e){}
+setTimeout(show,75000);
+document.getElementById('knClose').addEventListener('click',function(){mark();hide()});
+document.getElementById('knLater').addEventListener('click',function(){mark();hide()});
+document.getElementById('knGive').addEventListener('click',function(){mark();hide();
+var gs=document.getElementById('giftSheet');
+if(gs){gs.classList.add('open');var g=document.getElementById('gsGive');if(g)g.focus();return}
+var inv=document.getElementById('invCta');if(inv){inv.scrollIntoView({behavior:'smooth'});return}
+var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smooth'})});
+})();
+</script>`;
+      html = html.replace("</body>", keepnote + "\n</body>");
+    }
   }
 
   // ═══ the example sells the beginning (July 9) ═══════════════════════════════

@@ -2,8 +2,8 @@
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
 // the footer address, flower persistence, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
-// obituary with the kept voice, a life in chapters, and the log-in doors
-// (tribute bar + landing). 116 checks.
+// obituary with the kept voice, a life in chapters, the log-in doors
+// (tribute bar + landing), share the date, and the visitor's gift note. 126 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -293,6 +293,25 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("no demo address leak", !htmlJonny.includes("eleanor.imissyoumemorial.com"));
   const htmlEleanor = renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" });
   t("eleanor keeps her own address", htmlEleanor.includes("eleanor.imissyoumemorial.com"));
+}
+
+// ── 17 · share the date + if you knew them (July 10) ──────────────────────────
+{
+  const svc = { date: "2026-06-13", time: "6:00 PM", place: "Linden Community Chapel", address: "142 Seaside Avenue, Half Moon Bay, CA 94019" };
+  const withSvc = renderTribute(template, { ...jonny, service: svc });
+  t("the service strip carries share the date", withSvc.includes('id="shareDateBtn"'));
+  t("the flyer room is ready", withSvc.includes('id="sharedate"') && withSvc.includes("Making the flyer…") && withSvc.includes("share-the-date.png"));
+  t("the flyer speaks the page's own address", withSvc.includes("https://jonny.imissyoumemorial.com"));
+  const noSvc = renderTribute(template, jonny);
+  t("no service · no flyer door", !noSvc.includes('id="shareDateBtn"') && !noSvc.includes('id="sharedate"'));
+  const freePage = renderTribute(template, freeShe);
+  t("a free page carries the quiet note", freePage.includes('id="keepnote"') && freePage.includes("If you knew Rose"));
+  t("the note tells the truth about what waits", freePage.includes("Three more memories are waiting"));
+  t("the note opens the real gift sheet, remembered once", freePage.includes("getElementById('giftSheet')") && freePage.includes("imy-note-"));
+  const fewMem = renderTribute(template, { ...freeShe, memories: (freeShe.memories || []).slice(0, 2) });
+  t("a quieter wall gets the forward-looking words", fewMem.includes("so every memory to come has a home"));
+  t("a plus page never carries the note", !renderTribute(template, jonny).includes('id="keepnote"'));
+  t("the demo never carries the note", !renderTribute(template, { ...freeShe, slug: "eleanor" }).includes('id="keepnote"'));
 }
 
 // ── 16 · the landing carries the log-in door too (July 10) ────────────────────
