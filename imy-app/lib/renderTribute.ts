@@ -778,7 +778,7 @@ try{navigator.clipboard.writeText(D.url).then(function(){b.textContent='Copied Â
       const noteBody = waiting > 0
         ? `${nWord(waiting)} more ${waiting === 1 ? "memory is" : "memories are"} waiting to join the wall. One gift opens the full memorial for the whole family: every memory, every photograph, ${pn.pos} voice.`
         : `The first ten memories live here free, forever. One gift opens the full memorial for the whole family, so every memory to come has a home.`;
-      const keepnote = `<div id="keepnote" hidden style="position:fixed;right:16px;bottom:16px;z-index:96;max-width:min(340px,calc(100vw - 32px));background:#FAF5EC;border:1px solid #E4D9C4;border-radius:14px;box-shadow:0 26px 60px -20px rgba(26,19,13,.5);padding:16px 16px 13px" role="dialog" aria-label="Help keep every memory">
+      const keepnote = `<div id="keepnote" hidden style="position:fixed;right:16px;bottom:74px;z-index:96;max-width:min(340px,calc(100vw - 32px));background:#FAF5EC;border:1px solid #E4D9C4;border-radius:14px;box-shadow:0 26px 60px -20px rgba(26,19,13,.5);padding:16px 16px 13px" role="dialog" aria-label="Help keep every memory">
 <button id="knClose" aria-label="Not now" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#B7A48B;font-size:14px;cursor:pointer;padding:2px 6px">âœ•</button>
 <div style="font-family:'Sometype Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#A87C5F;margin-bottom:6px">If you knew ${esc(first)}</div>
 <div style="font-family:'Besley',serif;font-weight:600;font-size:16.5px;color:#2C2520;line-height:1.35;margin-bottom:6px">You can help keep every memory.</div>
