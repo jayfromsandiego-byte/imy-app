@@ -50,6 +50,9 @@ export function injectSeo(html: string, opts: SeoOptions): string {
   if (opts.ogUrl && !/property="og:url"/i.test(head)) {
     tags.push(`<meta property="og:url" content="${esc(opts.ogUrl)}"/>`);
   }
+  if (!/rel="icon"/i.test(head)) {
+    tags.push('<link rel="icon" href="/icon.svg" type="image/svg+xml"/>');
+  }
   if (!/property="og:site_name"/i.test(head)) {
     tags.push('<meta property="og:site_name" content="I Miss You Memorial"/>');
   }
@@ -67,4 +70,43 @@ export function injectSeo(html: string, opts: SeoOptions): string {
 
   if (!tags.length) return html;
   return html.slice(0, hi) + tags.join("\n") + "\n" + html.slice(hi);
+}
+
+/** Build FAQPage JSON-LD from the landing page's own FAQ markup, so the
+ *  structured data can never drift from the words on the page. Pairs each
+ *  <summary> with its answer div; anything unpaired (the compare-table
+ *  toggle) is skipped. Returns null rather than ever guessing. */
+export function faqJsonLdFromHtml(html: string): object | null {
+  try {
+    const strip = (s: string) =>
+      s
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .replace(/[+\u2192]\s*$/g, "")
+        .trim();
+    const pairs: { q: string; a: string }[] = [];
+    const detailsRe = /<details[^>]*>([\s\S]*?)<\/details>/gi;
+    let m: RegExpExecArray | null;
+    while ((m = detailsRe.exec(html))) {
+      const block = m[1];
+      const q = block.match(/<summary[^>]*>([\s\S]*?)<\/summary>/i);
+      const a = block.match(/<div class="a"[^>]*>([\s\S]*?)<\/div>/i);
+      if (!q || !a) continue;
+      const question = strip(q[1]);
+      const answer = strip(a[1]);
+      if (question && answer && question.length < 200) pairs.push({ q: question, a: answer });
+    }
+    if (!pairs.length) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: pairs.map((p) => ({
+        "@type": "Question",
+        name: p.q,
+        acceptedAnswer: { "@type": "Answer", text: p.a },
+      })),
+    };
+  } catch {
+    return null;
+  }
 }

@@ -39,8 +39,10 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
 
   const canonical = `${SITE}/sites/${encodeURIComponent(tribute.slug || slug)}`;
   const isPublic = !tribute.visibility || tribute.visibility === "public";
+  // Search engines see a tribute only when the family has chosen that (0020).
+  // Public-by-link remains the default; discovery is an explicit opt-in.
+  const isDiscoverable = isPublic && tribute.discoverable === true;
   const person: Record<string, unknown> = {
-    "@context": "https://schema.org",
     "@type": "Person",
     name: tribute.fullName,
     url: canonical,
@@ -48,14 +50,22 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
   };
   if (tribute.birth) person.birthDate = String(tribute.birth).slice(0, 10);
   if (tribute.passing) person.deathDate = String(tribute.passing).slice(0, 10);
-  if (tribute.coverPhoto || tribute.portrait) person.image = tribute.coverPhoto || tribute.portrait;
+  const personImage = tribute.coverPhoto || tribute.portrait;
+  if (personImage) person.image = personImage.startsWith("/") ? `${SITE}${personImage}` : personImage;
+  const profilePage: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": canonical,
+    url: canonical,
+    mainEntity: person,
+  };
 
   html = injectSeo(html, {
     canonical,
     ogUrl: canonical,
     twitterCard: "summary_large_image",
-    noindex: !isPublic,
-    jsonLd: isPublic ? [person] : [],
+    noindex: !isDiscoverable,
+    jsonLd: isDiscoverable ? [profilePage] : [],
   });
   html = injectTracking(html);
 
