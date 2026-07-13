@@ -1114,6 +1114,8 @@ body.a11y-nomotion .living{opacity:0!important}
       <div class="fm wm">I <em>Miss</em> You Memorial</div>
       <div class="pledge">Eleanor's tribute stays online for as long as we exist. We will never charge a family to keep a memory alive.</div>
       <div class="price"><span class="p2">Plus <b>$97 once · $12/mo</b></span><span class="p2">Concierge <b>from $499</b></span><span class="p2">Memorial book <b>every plan</b></span></div>
+      <button class="btn solid" id="footGive" type="button" style="margin-top:18px">Give this page for the whole family · $97, once</button>
+      <div class="pledge" style="margin-top:10px;margin-bottom:0">A gift anyone can give · no account needed · it only ever needs to be given once</div>
       <div class="credit">Made with love</div>
       <div class="url">eleanor.imissyoumemorial.com</div>
     </div>
@@ -1794,6 +1796,7 @@ document.querySelectorAll('#wallSeg button').forEach(function(b){b.addEventListe
 })});
 /* invitation → gift sheet */
 document.getElementById('invCta').addEventListener('click',function(){gsheet.classList.add('open');document.getElementById('gsGive').focus()});
+var footG=document.getElementById('footGive');if(footG)footG.addEventListener('click',function(){gsheet.classList.add('open');document.getElementById('gsGive').focus()});
 document.getElementById('gsClose').addEventListener('click',function(){gsheet.classList.remove('open')});
 gsheet.addEventListener('click',function(e){if(e.target===gsheet)gsheet.classList.remove('open')});
 document.querySelectorAll('.gs-opt').forEach(function(o){o.addEventListener('click',function(){
