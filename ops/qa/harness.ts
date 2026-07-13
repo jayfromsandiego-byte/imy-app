@@ -4,7 +4,7 @@
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
 // obituary with the kept voice, a life in chapters, the log-in doors
 // (tribute bar + landing), share the date, the visitor's gift note, the
-// safe board shape, and the personalized gift sheet, the chronological order of a life, and network deadlines. 146 checks.
+// safe board shape, and the personalized gift sheet, the chronological order of a life, network deadlines, and titles that know their person. 149 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -346,6 +346,15 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const noneWaiting = renderTribute(template, { ...freeShe, memories: (freeShe.memories || []).slice(0, 2) });
   t("no waiting memories · the line rests but the element stays", noneWaiting.includes('<li id="gsWaitLine" style="display:none"></li>'));
   t("the raw design file keeps its demo sheet", template.includes("Dave Alvarez · shown on the wall"));
+}
+
+// ── 22 · a link knows who it carries (July 12) ────────────────────────────────
+{
+  const titled = renderTribute(template, jonny);
+  t("the title speaks years and place", titled.includes("<title>Jon Alvarez · 1948 to 2026 · San Diego · I Miss You Memorial</title>"));
+  t("the link preview matches", titled.includes('og:title" content="Jon Alvarez · 1948 to 2026 · San Diego · I Miss You Memorial"'));
+  const bareTitle = renderTribute(template, skipped);
+  t("no dates, no place · the title stays plain", bareTitle.includes("<title>Jay Río · I Miss You Memorial</title>"));
 }
 
 // ── 21 · every wait has an end (July 12) ──────────────────────────────────────

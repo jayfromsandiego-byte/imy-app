@@ -346,7 +346,15 @@ export function renderTribute(template: string, t: Tribute): string {
   // ── token pass ──
   let html = template
     .split("{{TRIBUTE_BOOT}}").join(boot_script)
-    .split("{{TITLE}}").join(esc(`${t.fullName} · I Miss You Memorial`))
+    .split("{{TITLE}}").join(esc((() => {
+      // Two people can share a name; a texted link should still know which
+      // one it carries (July 12, founder decision). Years and place join the
+      // title, so the preview identifies the right person unopened.
+      const by = yearOf(t.birth), py = yearOf(t.passing);
+      const yearsBit = by && py ? `${by} to ${py}` : (py || by || "");
+      const placeBit = String(t.place || "").split(",")[0].trim();
+      return [t.fullName, yearsBit, placeBit, "I Miss You Memorial"].filter(Boolean).join(" · ");
+    })()))
     .split("{{META_DESCRIPTION}}").join(esc(metaDescription))
     .split("{{COVER_URL}}").join(esc(cover))
     .split("{{NAME_PLAIN}}").join(esc(t.fullName))
