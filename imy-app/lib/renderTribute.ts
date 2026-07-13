@@ -65,6 +65,7 @@ export type Tribute = {
   motif?: string;
   visibility?: string; // "public" | "unlisted" | "private" — SEO only, never rendering
   status?: string;
+  discoverable?: boolean; // family opt-in to sitemap + search indexing (0020) — SEO only, never rendering
   pronouns?: string; // "he" | "she" | "they" — how the page speaks of them
   showAnnounce?: boolean;
   message?: { text: string; sign?: string };
@@ -132,7 +133,10 @@ export function pronounSet(p?: string) {
 export function renderTribute(template: string, t: Tribute): string {
   const tier = t.tier === "plus" || t.tier === "heirloom" ? "plus" : "free";
   const first = firstName(t.fullName);
-  const cover = t.coverPhoto || t.portrait || FALLBACK_COVER;
+  // Stored covers are often site-relative ("/photos/…"); og:image must be
+  // absolute to be valid. Same-origin absolute URL — identical rendering.
+  const coverRaw = t.coverPhoto || t.portrait || FALLBACK_COVER;
+  const cover = coverRaw.startsWith("/") ? `${SITE}${coverRaw}` : coverRaw;
   const slug = t.slug || "example";
 
   // ── dates line ──

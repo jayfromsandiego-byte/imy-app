@@ -67,6 +67,7 @@ function rowToTribute(r: any): Tribute {
     motif: r.motif || undefined,
     visibility: r.visibility || undefined,
     status: r.status || undefined,
+    discoverable: r.discoverable === true,
     pronouns: r.pronouns || undefined,
     coverPhoto: photos[0]?.url || undefined,
     portrait: photos[0]?.url || undefined,
