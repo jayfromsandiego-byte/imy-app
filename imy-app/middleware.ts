@@ -14,6 +14,13 @@ export const config = {
 export async function middleware(req: NextRequest) {
   const host = (req.headers.get("host") || "").split(":")[0];
 
+  // Static files pass straight through on every host (July 12): a path whose
+  // last segment carries an extension is an asset — the wreath art, the
+  // pressed flowers, a photograph — never a page. Rewriting those to the
+  // tribute page starved every shared subdomain link of its art: the wreath
+  // vanished on other people's computers while /sites/ looked perfect.
+  if (/\.[^/]+$/.test(req.nextUrl.pathname)) return NextResponse.next();
+
   // 1) Tribute subdomain -> /sites/{slug}
   if (host.endsWith(`.${ROOT}`)) {
     const sub = host.slice(0, -1 * (ROOT.length + 1));
