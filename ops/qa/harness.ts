@@ -4,7 +4,7 @@
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
 // obituary with the kept voice, a life in chapters, the log-in doors
 // (tribute bar + landing), share the date, the visitor's gift note, the
-// safe board shape, and the personalized gift sheet, and the chronological order of a life. 144 checks.
+// safe board shape, and the personalized gift sheet, the chronological order of a life, and network deadlines. 146 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -346,6 +346,14 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const noneWaiting = renderTribute(template, { ...freeShe, memories: (freeShe.memories || []).slice(0, 2) });
   t("no waiting memories · the line rests but the element stays", noneWaiting.includes('<li id="gsWaitLine" style="display:none"></li>'));
   t("the raw design file keeps its demo sheet", template.includes("Dave Alvarez · shown on the wall"));
+}
+
+// ── 21 · every wait has an end (July 12) ──────────────────────────────────────
+{
+  const letter = readFileSync((process.env.IMY_REPO_ROOT || ".") + "/imy-app/templates/onboarding.html", "utf8");
+  t("the gift checkout returns the button on a hung request", template.includes("if(ac)setTimeout(function(){try{ac.abort()}catch(e){}},15000);"));
+  t("the letter's checkout and uploads carry their own deadlines",
+    letter.includes("},15000);") && letter.includes("},45000):null;"));
 }
 
 // ── 16 · the landing carries the log-in door too (July 10) ────────────────────

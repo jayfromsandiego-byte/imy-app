@@ -543,11 +543,16 @@ var ENGINE=(function(){
   /* ---------- production wiring · July 5 (uploads, autosave, real seal, real checkout) ---------- */
   var SEAL=null,UPQ=[],MP=[]; /* MP · a moment's own photograph, kept for retry */
   function upload(f){
+    /* every network wait has an end (July 12) · a hung request must never
+       hold the seal hostage — 45s per photograph, then the retry gets it */
     var fd=new FormData();fd.append('files',f);
-    var p=fetch('/api/upload',{method:'POST',body:fd})
+    var ac=('AbortController' in window)?new AbortController():null;
+    var tm=ac?setTimeout(function(){try{ac.abort()}catch(e){}},45000):null;
+    var p=fetch('/api/upload',{method:'POST',body:fd,signal:ac?ac.signal:undefined})
       .then(function(r){return r.json()})
       .then(function(j){return (j&&j.ok&&j.urls&&j.urls[0])||''})
-      .catch(function(){return ''});
+      .catch(function(){return ''})
+      .then(function(u){if(tm)clearTimeout(tm);return u});
     UPQ.push(p);return p;
   }
   function waitUploads(){return Promise.all(UPQ.slice())}
@@ -597,7 +602,9 @@ var ENGINE=(function(){
     var b=document.getElementById(plan==='plus_once'?'ckOnce':'ckMonthly');
     if(b){b.disabled=true;b.textContent='Opening a secure checkout…'}
     var slg=(SEAL&&SEAL.slug)||chosenSlug();
-    fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},
+    var ac=('AbortController' in window)?new AbortController():null;
+    if(ac)setTimeout(function(){try{ac.abort()}catch(e){}},15000);
+    fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},signal:ac?ac.signal:undefined,
       body:JSON.stringify({plan:plan,tributeId:(SEAL&&SEAL.tributeId)||'',slug:slg,email:A.email||'',ref:getRef(),returnTo:'/sites/'+slg})})
     .then(function(r){return r.json()}).then(function(j){
       if(j&&j.ok&&j.url){location.href=j.url}else{throw 0}})

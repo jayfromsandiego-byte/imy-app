@@ -44,12 +44,26 @@ export async function POST(req: NextRequest) {
         tributeId = data?.id || null;
       }
 
+      // Money moved but no page could be found: never let that be silent.
+      // A tribute-less order row keeps the payment on the books for a human
+      // to reconcile — the alternative was Stripe saying paid and the app
+      // remembering nothing (found in the July 12 audit).
+      if (db && !tributeId) {
+        await db.from("orders").upsert({
+          tribute_id: null, kind: plan || "unknown", amount_cents: s.amount_total ?? null,
+          currency: s.currency || "usd", stripe_session_id: s.id,
+          stripe_payment_intent: s.payment_intent || null, status: "paid_unmatched",
+        }, { onConflict: "stripe_session_id" });
+      }
+
       if (db && tributeId) {
-        await db.from("orders").insert({
+        // Upsert, not insert: Stripe delivers at least once, and a replayed
+        // event must never book the same gift twice (unique since 0018).
+        await db.from("orders").upsert({
           tribute_id: tributeId, kind: plan, amount_cents: s.amount_total ?? null,
           currency: s.currency || "usd", stripe_session_id: s.id,
           stripe_payment_intent: s.payment_intent || null, status: "paid",
-        });
+        }, { onConflict: "stripe_session_id" });
 
         if (tier) {
           const patch: Record<string, unknown> = { tier };
@@ -114,6 +128,13 @@ export async function POST(req: NextRequest) {
       const ch = event.data.object;
       if (db && ch.payment_intent) {
         await db.from("orders").update({ status: "refunded" }).eq("stripe_payment_intent", ch.payment_intent);
+      }
+    } else if (event.type === "charge.dispute.created") {
+      // A dispute never touches the page (the pledge holds) — but the books
+      // must know it exists, so support sees it without opening Stripe.
+      const dp = event.data.object;
+      if (db && dp.payment_intent) {
+        await db.from("orders").update({ status: "disputed" }).eq("stripe_payment_intent", dp.payment_intent);
       }
     }
   } catch {

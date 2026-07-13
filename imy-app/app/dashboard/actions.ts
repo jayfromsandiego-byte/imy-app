@@ -173,7 +173,7 @@ export async function savePlacements(formData: FormData) {
 
   // Chapters sync (0017): update kept titles in order, welcome new ones,
   // release the removed (their moments quietly become unplaced — set null).
-  const { data: existingCh } = await db.from("tribute_chapters").select("id").eq("tribute_id", tributeId);
+  const { data: existingCh } = await db.from("tribute_chapters").select("id").eq("tribute_id", tributeId).is("deleted_at", null);
   const existingChIds = new Set((existingCh || []).map((c: any) => String(c.id)));
   const keptChIds = new Set<string>();
   const ckToChId: Record<string, string> = {};
@@ -196,7 +196,10 @@ export async function savePlacements(formData: FormData) {
   }
   const chToRemove = [...existingChIds].filter((id) => !keptChIds.has(id));
   if (chToRemove.length) {
-    await db.from("tribute_chapters").delete().in("id", chToRemove).eq("tribute_id", tributeId);
+    // Chapters rest, they are not destroyed (0018) — and their moments are
+    // quietly released back to the unplaced gathering.
+    await db.from("tribute_chapters").update({ deleted_at: new Date().toISOString() }).in("id", chToRemove).eq("tribute_id", tributeId);
+    await db.from("tribute_timeline").update({ chapter_id: null }).in("chapter_id", chToRemove).eq("tribute_id", tributeId);
   }
   const chapterIdFor = (v: any): string | null => {
     const key = String(v || "");
@@ -216,7 +219,7 @@ export async function savePlacements(formData: FormData) {
     return y >= 1900 && y <= nowYear ? s : "";
   };
 
-  const { data: existing } = await db.from("tribute_timeline").select("id").eq("tribute_id", tributeId);
+  const { data: existing } = await db.from("tribute_timeline").select("id").eq("tribute_id", tributeId).is("deleted_at", null);
   const existingIds = new Set((existing || []).map((r: any) => String(r.id)));
   const keptIds = new Set<string>();
   const keyToId: Record<string, string> = {};
@@ -239,7 +242,9 @@ export async function savePlacements(formData: FormData) {
   }
   const toRemove = [...existingIds].filter((id) => !keptIds.has(id));
   if (toRemove.length) {
-    await db.from("tribute_timeline").delete().in("id", toRemove).eq("tribute_id", tributeId);
+    // A moment a family removes still rests in the ground, never destroyed —
+    // the same mark every other kind of content carries (0018).
+    await db.from("tribute_timeline").update({ deleted_at: new Date().toISOString() }).in("id", toRemove).eq("tribute_id", tributeId);
   }
 
   // Placements: only this tribute's photos, only known shapes.

@@ -4,6 +4,7 @@
 // Body: { prompt: string, name?: string }
 
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -13,6 +14,12 @@ const SYSTEM =
   "Never flowery, never churchy, never clichéd. Short. The words stay theirs.";
 
 export async function POST(req: NextRequest) {
+  // The helper spends the operator's model keys — generous for a grieving
+  // writer, closed to a script (July 12 audit).
+  {
+    const { allowed } = rateLimit(`assist:${clientIp(req)}`, 30, 600_000);
+    if (!allowed) return NextResponse.json({ ok: false, error: "A quiet moment, please — try again shortly." }, { status: 429 });
+  }
   let body: any = {};
   try { body = await req.json(); } catch {}
   const prompt = (body.prompt || "").toString().slice(0, 1200);

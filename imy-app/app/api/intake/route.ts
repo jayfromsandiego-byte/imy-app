@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { createRecord } from "@/lib/airtable";
 import { sendSealEmail } from "@/lib/email";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -24,6 +25,13 @@ function token() {
 }
 
 export async function POST(req: NextRequest) {
+  // A family seals a letter once, maybe twice on a shaky connection. A script
+  // sealing hundreds is not a family (July 12 audit) — and every unchecked
+  // seal is a published page and a spent slug.
+  {
+    const { allowed } = rateLimit(`intake:${clientIp(req)}`, 10, 3_600_000);
+    if (!allowed) return NextResponse.json({ ok: false, error: "Too many pages from this connection · please try again in an hour." }, { status: 429 });
+  }
   let body: any;
   try { body = await req.json(); } catch { return NextResponse.json({ ok: false, error: "Invalid request." }, { status: 400 }); }
 

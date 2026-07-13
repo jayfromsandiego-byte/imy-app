@@ -1794,7 +1794,10 @@ document.getElementById('gsGive').addEventListener('click',function(){
     var go=function(){
       var sponsorName=(giftChoice==='named'&&ID)?(ID.fn+' '+ID.ln):'';
       var b=document.getElementById('gsGive');b.disabled=true;b.textContent='Opening a safe checkout…';
-      fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},
+      /* every wait has an end (July 12) · a hung request returns the button in 15s */
+      var ac=('AbortController' in window)?new AbortController():null;
+      if(ac)setTimeout(function(){try{ac.abort()}catch(e){}},15000);
+      fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},signal:ac?ac.signal:undefined,
         body:JSON.stringify({plan:'family_unlock',slug:SLUG,sponsorName:sponsorName,sponsorMessage:'',returnTo:'/sites/'+SLUG})})
       .then(function(r){return r.json()}).then(function(j){
         if(j&&j.ok&&j.url){location.href=j.url}

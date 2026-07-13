@@ -54,11 +54,13 @@ export default async function EditTribute({ params }: { params: { id: string } }
     .from("tribute_timeline")
     .select("id,year,title,sort,chapter_id")
     .eq("tribute_id", t.id)
+    .is("deleted_at", null)
     .order("sort", { ascending: true });
   const { data: chapterRows } = await db
     .from("tribute_chapters")
     .select("id,title,sort")
     .eq("tribute_id", t.id)
+    .is("deleted_at", null)
     .order("sort", { ascending: true });
   const { data: comments } = await db
     .from("tribute_memory_comments")
