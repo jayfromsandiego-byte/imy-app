@@ -351,7 +351,7 @@ export function renderTribute(template: string, t: Tribute): string {
       // one it carries (July 12, founder decision). Years and place join the
       // title, so the preview identifies the right person unopened.
       const by = yearOf(t.birth), py = yearOf(t.passing);
-      const yearsBit = by && py ? `${by} to ${py}` : (py || by || "");
+      const yearsBit = by && py ? (by === py ? by : `${by} to ${py}`) : (py || by || "");
       const placeBit = String(t.place || "").split(",")[0].trim();
       return [t.fullName, yearsBit, placeBit, "I Miss You Memorial"].filter(Boolean).join(" · ");
     })()))
