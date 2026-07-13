@@ -181,6 +181,11 @@
   .m-row{display:grid;grid-template-columns:92px 1fr 32px;gap:12px;align-items:end;margin-bottom:10px}
   .m-row .x{background:none;border:none;color:var(--field);font-size:1.2rem;cursor:pointer;padding-bottom:8px}
   .m-row .x:hover{color:var(--terra-deep)}
+  #mRows{padding-left:24px}
+  .m-row{position:relative}
+  .m-drag{position:absolute;left:-24px;top:50%;transform:translateY(-50%);background:none;border:none;color:#b7a48b;font-size:16px;cursor:grab;padding:6px 5px;line-height:1}
+  .m-drag:active{cursor:grabbing;color:var(--terra-deep)}
+  .m-row.dragging{opacity:.5}
   .m-row.withch{grid-template-columns:92px 1fr 168px 32px}
   @media (max-width:600px){.m-row.withch{grid-template-columns:92px 1fr 32px}.m-row.withch .m-chcell{grid-column:1/-1;margin-top:-4px}}
   .m-photo{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:2px;min-height:24px}
@@ -435,7 +440,7 @@
       <div class="hand">a letter for the one you miss</div>
       <h1>Let’s write down<br><em>who they were.</em></h1>
       <div class="wrows">
-        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>seventeen small questions · each answer lays a flower on the garland</span></div>
+        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>eighteen small questions · each answer lays a flower on the garland</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9.2" y="9" width="5.6" height="12" rx="1.6"/><path d="M12,9 V7.4"/><path d="M12,6.6 q1.7,-2.1 0,-3.6 q-1.7,1.5 0,3.6"/></svg><span>about ten quiet minutes · it saves as you go, change anything later</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $97 once</b></span></div>
       </div>
@@ -456,7 +461,7 @@
     </div>
     <div class="fin-hand">sealed with love</div>
     <div class="fin-msg">
-      <div class="cap" id="finCap">seventeen flowers laid · the garland is full</div>
+      <div class="cap" id="finCap">eighteen flowers laid · the garland is full</div>
       <h2>Their memorial is ready.</h2>
       <span class="url" id="finUrl"></span>
       <p>We saved every word as you wrote it. Open the page when you are ready, and shape it together with family. It stays online forever. That is a promise.</p>
@@ -772,7 +777,7 @@ var ENGINE=(function(){
       document.getElementById('gfill').style.strokeDashoffset=(100-(k/n)*100).toFixed(1);
       var gs=items.children;
       for(var i=0;i<gs.length;i++){gs[i].classList.toggle('on',i<k)}
-      document.getElementById('qcount').innerHTML='<b>'+pad(k)+'</b> / '+n;
+      /* the fraction follows the card (nº of 18) · set on every step change; the garland alone counts answers */
       document.getElementById('plabel').textContent=k===0?'a flower for every answer':(k>=n?'the garland is full':'flowers laid on the garland');
     }
     return {set:set,total:n};
@@ -788,7 +793,7 @@ var ENGINE=(function(){
   }
   function show(i){
     document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
-    var s=scrAt(i);s.classList.add('active');cur=i;
+    var s=scrAt(i);s.classList.add('active');cur=i;try{document.getElementById('qcount').innerHTML='<b>'+pad(i+1)+'</b> / '+STEPS.length}catch(e){}
     document.getElementById('backBtn').classList.add('show');
     onShow(STEPS[i],s);
     window.scrollTo(0,0);
@@ -1042,7 +1047,7 @@ var ENGINE=(function(){
     var fo=document.getElementById('finOpen');
     if(fo)fo.href=(SEAL&&SEAL.path)||('/sites/'+realSlug);
     var fn=(A.fullName||'').trim();
-    document.getElementById('finCap').textContent='seventeen flowers laid'+(fn?' for '+fn:' · the garland is full');
+    document.getElementById('finCap').textContent='eighteen flowers laid'+(fn?' for '+fn:' · the garland is full');
     var st=document.getElementById('finStone'),init=document.getElementById('fsInit');
     var veil=st.querySelector('.fs-veil');
     if(A.photoURL){st.style.backgroundImage='url('+A.photoURL+')';init.style.display='none';if(veil)veil.style.display='block'}
@@ -1172,14 +1177,40 @@ var ENGINE=(function(){
     document.getElementById('vLbl').textContent=f.name.replace(/\.[^.]+$/,'');
     plusAdd('voice','the voice you kept');
   }
+  /* the moments find their order · drag to arrange, and years settle ascending on their own (July 12) */
+  function sortMoments(){
+    var w=document.getElementById('mRows');if(!w)return;
+    var rows=[].slice.call(w.querySelectorAll('.m-row'));
+    var keyed=rows.map(function(r,i){var y=parseInt((r.querySelector('.m-year')||{value:''}).value,10);return {r:r,y:isNaN(y)?Infinity:y,i:i}});
+    keyed.sort(function(a,b){return a.y===b.y?a.i-b.i:a.y-b.y});
+    keyed.forEach(function(k){w.appendChild(k.r)});
+    if(typeof persist==='function')persist();
+  }
+  (function(){var w=document.getElementById('mRows');if(!w)return;
+    w.addEventListener('dragover',function(e){e.preventDefault();
+      var drag=w.querySelector('.m-row.dragging');if(!drag)return;
+      var rows=[].slice.call(w.querySelectorAll('.m-row:not(.dragging)'));var next=null;
+      for(var i=0;i<rows.length;i++){var b=rows[i].getBoundingClientRect();if(e.clientY<b.top+b.height/2){next=rows[i];break}}
+      if(next)w.insertBefore(drag,next);else w.appendChild(drag)});
+    w.addEventListener('drop',function(e){e.preventDefault();if(typeof persist==='function')persist()});
+  })();
   function addMoment(){
     var w=document.getElementById('mRows'),r=document.createElement('div');
     r.className='m-row';
-    r.innerHTML='<div><label class="small">year</label><input type="text" class="m-year" inputmode="numeric" placeholder="1968"></div>'+
+    r.innerHTML='<button type="button" class="m-drag" aria-label="drag to reorder this moment" title="drag to reorder">\u2261</button>'+
+                '<div><label class="small">year</label><input type="text" class="m-year" inputmode="numeric" placeholder="1968"></div>'+
                 '<div><label class="small">what happened</label><input type="text" class="m-text" placeholder="Married the love of her life"></div>'+
                 '<button type="button" class="x" aria-label="remove">×</button>'+
                 '<div class="m-photo"><input type="file" accept="image/*" class="m-pin" hidden><button type="button" class="m-padd">＋ a photograph for this moment</button></div>';
     r.querySelector('.x').addEventListener('click',function(){r.remove()});
+    var dh=r.querySelector('.m-drag');
+    dh.addEventListener('mousedown',function(){r.setAttribute('draggable','true')});
+    dh.addEventListener('touchstart',function(){r.setAttribute('draggable','true')},{passive:true});
+    r.addEventListener('dragstart',function(e){r.classList.add('dragging');try{e.dataTransfer.setData('text/plain','moment')}catch(_e){}});
+    r.addEventListener('dragend',function(){r.classList.remove('dragging');r.removeAttribute('draggable')});
+    var yIn=r.querySelector('.m-year');
+    yIn.addEventListener('change',sortMoments);
+    yIn.addEventListener('input',function(){if(this.value.trim().length>=4)sortMoments()});
     /* a moment can hold its own photograph · it rides the seal into the
        page's chapters, beside its year */
     var pin=r.querySelector('.m-pin'),padd=r.querySelector('.m-padd'),box=r.querySelector('.m-photo');

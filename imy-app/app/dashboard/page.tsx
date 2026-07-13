@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
-import { moderateMemory } from "@/app/dashboard/actions";
+import { moderateMemory, wakeTribute } from "@/app/dashboard/actions";
 import { pronounSet } from "@/lib/renderTribute";
 
 export const dynamic = "force-dynamic";
@@ -59,6 +59,16 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
     .order("created_at", { ascending: false });
 
   const list = tributesData || [];
+
+  // Resting pages (July 12): soft-deleted by the family, never gone. They wait
+  // at the bottom of the desk, whole, until someone returns them to the light.
+  const { data: restingData } = await db
+    .from("tributes")
+    .select("id,slug,loved_one_name,tier,deleted_at")
+    .or(orFilter)
+    .not("deleted_at", "is", null)
+    .order("deleted_at", { ascending: false });
+  const resting = restingData || [];
 
   if (list.length === 0) {
     return (
@@ -300,6 +310,25 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
           </div>
         ) : null}
       </div>
+
+      {resting.length > 0 ? (
+        <div className="card-grid" style={{ marginTop: 26 }}>
+          <div className="s-card full">
+            <div className="panel-kicker mono">Resting pages</div>
+            <p className="sentence" style={{ marginTop: 8 }}>
+              {resting.length === 1 ? "One page rests here" : `${resting.length} pages rest here`} — off the
+              public web, kept whole. Nothing is ever deleted.
+            </p>
+            {resting.map((r: any) => (
+              <form key={r.id} action={wakeTribute} style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 10, flexWrap: "wrap" }}>
+                <input type="hidden" name="id" value={r.id} />
+                <span className="sentence" style={{ margin: 0 }}><b>{r.loved_one_name || "A page"}</b> · {r.slug}</span>
+                <button type="submit" className="btn quiet">Return it to the light</button>
+              </form>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="leaf-divider" aria-hidden="true">
         <span className="stem-line" />

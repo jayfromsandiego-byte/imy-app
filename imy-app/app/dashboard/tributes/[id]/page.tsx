@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
-import { saveTribute } from "@/app/dashboard/actions";
+import { saveTribute, restTribute, setYearLetterDate } from "@/app/dashboard/actions";
 import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
 import PlacementsManager from "@/components/PlacementsManager";
@@ -16,7 +16,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
   const user = await getUser();
   if (!user) redirect("/signin");
   const db = supabaseAdmin();
-  const { data: t } = await db.from("tributes").select("*").eq("id", params.id).maybeSingle();
+  const { data: t } = await db.from("tributes").select("*,year_letter_md").eq("id", params.id).maybeSingle();
   if (!t || (t.owner_id !== user.id && t.owner_email !== user.email)) {
     return (
       <section className="panel-head stagger">
@@ -263,6 +263,71 @@ export default async function EditTribute({ params }: { params: { id: string } }
             Save changes
           </button>
         </form>
+      </section>
+
+      {/* ---------- The keepsakes (Plus · July 12) ---------- */}
+      <section className="panel-block">
+        <h2 className="panel-title" style={{ fontSize: 24 }}>The keepsakes</h2>
+        {t.tier === "plus" || t.tier === "heirloom" ? (
+          <>
+            <p className="panel-sub" style={{ marginBottom: 16 }}>
+              Two quiet things that come with Plus. Nothing here ever expires.
+            </p>
+            <div className="s-card full" style={{ marginBottom: 14 }}>
+              <p className="sentence">
+                <b>The Archive.</b> Every photograph at full resolution, every memory, every voice
+                recording — arranged, with a cover. Yours, in your hands, forever.
+              </p>
+              <div className="card-foot">
+                <a className="btn quiet" href={`/api/tribute/${t.slug}/archive`}>
+                  Download the Archive
+                </a>
+              </div>
+            </div>
+            <div className="s-card full">
+              <p className="sentence">
+                <b>The Year Letter.</b> Once a year, on the day you choose, one quiet email — what the
+                year held: new memories, flowers, candles. Leave the day empty and it arrives on {pn.pos} birthday.
+              </p>
+              <form action={setYearLetterDate} className="card-foot" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                <input type="hidden" name="id" value={t.id} />
+                <input
+                  className="field-input"
+                  style={{ maxWidth: 140 }}
+                  name="year_letter_md"
+                  placeholder="MM-DD"
+                  pattern="(\d{4}-)?\d{2}-\d{2}"
+                  defaultValue={t.year_letter_md || ""}
+                  aria-label="The Year Letter's day, as month and day"
+                />
+                <button type="submit" className="btn quiet">Keep this day</button>
+              </form>
+            </div>
+          </>
+        ) : (
+          <p className="panel-sub">
+            The Archive and the Year Letter come with Plus — along with {pn.pos} voice, living pictures,
+            and the whole wall. <Link href="/dashboard/billing">Keep everything</Link>.
+          </p>
+        )}
+      </section>
+
+      {/* ---------- Rest this page (July 12) ---------- */}
+      <section className="panel-block">
+        <details>
+          <summary className="panel-sub" style={{ cursor: "pointer" }}>Rest this page</summary>
+          <div className="s-card full" style={{ marginTop: 12 }}>
+            <p className="sentence">
+              Resting takes {pn.pos} page off the public web and out of your desk&rsquo;s main list.
+              Nothing is deleted — every photograph, memory, and voice stays exactly as it is,
+              and you can return the page to the light whenever you wish, from the bottom of your desk.
+            </p>
+            <form action={restTribute} className="card-foot">
+              <input type="hidden" name="id" value={t.id} />
+              <button type="submit" className="btn quiet">I understand · rest the page</button>
+            </form>
+          </div>
+        </details>
       </section>
     </div>
   );

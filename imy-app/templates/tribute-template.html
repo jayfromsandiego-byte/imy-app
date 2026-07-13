@@ -599,7 +599,7 @@ body.a11y-contrast .motifbg{display:none}
 .addingas b{color:var(--terra)}
 .addingas button{background:none;border:none;color:var(--terra);text-decoration:underline;cursor:pointer;font-family:'Sometype Mono',monospace;font-size:9.5px}
 /* identity modal */
-.idm{position:fixed;inset:0;z-index:450;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(20,13,8,.8);backdrop-filter:blur(4px)}
+.idm{position:fixed;inset:0;z-index:470;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(20,13,8,.8);backdrop-filter:blur(4px)}
 .idm.open{display:flex}
 .idm .card{position:relative;background:linear-gradient(180deg,#FFFDF6,#FBF4E4);max-width:440px;width:100%;border-radius:6px;padding:30px 30px 26px;box-shadow:0 40px 90px -30px #000;transform:rotate(-.5deg)}
 .idm .pin{position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e26a5a,#8a2a1e);box-shadow:0 3px 5px rgba(0,0,0,.4)}
@@ -609,6 +609,15 @@ body.a11y-contrast .motifbg{display:none}
 .idm .frow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
 .idm input,.idm select{border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-family:'Besley',serif;font-size:14px;color:var(--ink);outline:none;background:#fff;width:100%}
 .idm select{appearance:auto}
+
+/* ── July 12 release · the first ten ───────────────────────────────────── */
+/* the identity sheet must sit above the gift sheet (z 460) · a named giver
+   introduces themselves ON TOP of the gift, never invisibly beneath it */
+.inv-trial{display:inline-block;margin-top:12px;background:none;border:none;cursor:pointer;font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--terra);text-decoration:underline;text-underline-offset:3px}
+.inv-trial:disabled{opacity:.6;cursor:default}
+.mem-ph{display:block;width:100%;max-height:190px;object-fit:cover;border-radius:8px;margin:10px 0 4px;border:1px solid rgba(201,165,114,.45)}
+body[data-tier="plus"] .stone{box-shadow:0 50px 120px -36px rgba(60,38,10,.6),0 0 0 9px rgba(201,165,114,.30),0 0 46px rgba(201,165,114,.26),0 10px 26px rgba(60,38,10,.16)}
+
 .idm .human{margin:12px 0 16px}
 .idm .go{width:100%;justify-content:center}
 .idm .note2{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.8}
@@ -749,7 +758,7 @@ body.a11y-nomotion .tick9 .run{animation:none}
 
 /* ===== v9.3 adjustments ===== */
 /* T8 · the BIG living number */
-.wr-big{font-weight:700;font-size:clamp(34px,4.6vw,54px);color:var(--terra);font-variant-numeric:tabular-nums;line-height:1;margin-top:16px}
+.wr-big{font-family:'Sometype Mono',monospace;font-weight:700;font-size:clamp(30px,4.2vw,48px);letter-spacing:.02em;color:var(--terra);font-variant-numeric:tabular-nums;line-height:1;margin-top:16px}
 .wr-biglab{font-family:'Sometype Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
 .presence{font-size:12.5px;font-weight:700;margin-top:12px}
 .presence i{width:10px;height:10px}
@@ -1025,6 +1034,7 @@ body.a11y-nomotion .living{opacity:0!important}
         <p class="inv-body" id="invBody">Sarah and two others have written memories that don&#39;t yet have room. One gift opens the wall for the whole family · every memory, every photo, every video, for as long as this page stands.</p>
         <button class="btn solid inv-cta" id="invCta">Open the wall for everyone · $97, once</button>
         <div class="inv-trust">No subscription · Nothing is ever taken down · The first ten stay free, always</div>
+        <button class="inv-trial" id="invTrial" type="button">Or see it open free for three days · $12/month after · cancel anytime</button>
       </div>
       <div class="memkeep">every memory is kept · nothing scrolls away · grouped so no one is lost in the pile</div>
       <div class="share">
@@ -1295,7 +1305,7 @@ var GAL=(T&&T.gal)||[['dawn','Summer, 1979'],['coffee','Black coffee, no sugar']
 var galPage=0,galGrid=document.getElementById('galGrid'),galPg=document.getElementById('galPg');
 function renderGal(){var pages=Math.ceil(GAL.length/6);galPage=Math.max(0,Math.min(galPage,pages-1));
   galGrid.innerHTML=GAL.slice(galPage*6,galPage*6+6).map(function(g,i){return '<figure class="print" style="--r:'+((i%3-1)*1.6+(galPage%2?0.4:-0.4))+'deg"><span class="pin"></span><img src="'+IMGS[g[0]]+'" alt="'+g[1]+'"/>'+(body.dataset.tier==='plus'&&LIV[g[0]]?'<video class="living" src="'+LIV[g[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="livetag">Living · hover</span>':'')+'<div class="cap">'+g[1]+'</div></figure>'}).join('');
-  galPg.textContent='page '+(galPage+1)+' of '+pages+' · '+GAL.length+' photographs · holds fifty without the scroll';if(typeof syncLiving==='function')syncLiving()}
+  galPg.textContent='page '+(galPage+1)+' of '+pages+' · '+GAL.length+' photographs · holds fifty without the scroll';if(body.dataset.tier==='free'&&T&&T.phw>0){galPg.textContent='page '+(galPage+1)+' of '+pages+' · the album holds ten · '+T.phw+' more kept safe, waiting'}if(typeof syncLiving==='function')syncLiving()}
 document.getElementById('galNext').onclick=function(){galPage++;renderGal()};
 document.getElementById('galPrev').onclick=function(){galPage--;renderGal()};
 
@@ -1408,6 +1418,7 @@ function memCard(m){
   return '<div class="mem-card'+(m.jj?' enter':'')+'"'+(m.id?' data-mid="'+m.id+'"':'')+'><span class="pin2"></span>'
    +'<div class="mem-head"><div class="mem-av">'+m.av+'</div><div><div class="mem-nm">'+m.nm+'</div><div class="mem-rel">'+m.rel+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
    +'<div class="mem-text">&ldquo;'+m.tx+'&rdquo;</div>'
+   +(m.ph?'<img class="mem-ph" src="'+m.ph+'" alt="A photograph left with this memory" loading="lazy"/>':'')
    +(m.au?'<audio controls preload="none" src="'+m.au+'" aria-label="A voice memory" style="width:100%;display:block;margin:10px 0 2px;height:34px"></audio><div class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--ink-soft);margin-bottom:6px">a voice, kept</div>':'')
    +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"'+(m.id?' data-id="'+m.id+'"':'')+'><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
    +'<div class="cdrawer">'+(cms||'<div class="c1" style="color:var(--ink-soft)">Be the first to leave a word.</div>')
@@ -1458,7 +1469,7 @@ if(pBtn&&pFile){
     var fd=new FormData();fd.append('files',f);
     fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
       pBtn.disabled=false;
-      if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change'}
+      if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change';say('A photograph is attached · it rides with your memory to the family.',false)}
       else{pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
     }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
     pFile.value=''});
@@ -1807,6 +1818,13 @@ document.getElementById('gsGive').addEventListener('click',function(){
     if(giftChoice==='named'){requireId(go)}else{go()}
     return}
   gsheet.classList.remove('open');runUnlock()});
+var invT=document.getElementById('invTrial');
+if(invT){invT.addEventListener('click',function(){
+  if(!T){say('On a live memorial, this begins the three-day open. This is the demo.',false);return}
+  var lbl=invT.textContent;invT.disabled=true;invT.textContent='Opening a safe checkout\u2026';
+  fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({plan:'plus_monthly',slug:SLUG,returnTo:'/sites/'+SLUG})})
+  .then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.url){location.href=j.url}else{invT.disabled=false;invT.textContent=lbl;say('The checkout didn&rsquo;t open. Nothing was charged \u00b7 please try again.',false)}})
+  .catch(function(){invT.disabled=false;invT.textContent=lbl;say('The checkout didn&rsquo;t open. Nothing was charged \u00b7 please try again.',false)})})}
 
 /* living pictures · hover to play (spec of July 5) · a photograph at rest, a film only while someone leans in.
    Desktop: hover or keyboard focus plays; leaving rests it back to the photograph.

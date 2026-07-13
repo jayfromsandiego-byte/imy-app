@@ -1,5 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
 
@@ -419,4 +420,47 @@ export async function removeTributeVoice(formData: FormData) {
   if (!(await ownsTribute(db, tributeId, user))) return;
   await db.from("tribute_audio").delete().eq("tribute_id", tributeId).eq("kind", "voice");
   revalidatePath(`/dashboard/tributes/${tributeId}`);
+}
+
+
+/** Rest a page (July 12): the owner's soft delete. The page leaves the public
+ *  web and the desk's main list, but nothing is ever hard-deleted — it waits,
+ *  whole, and can be returned to the light any time. */
+export async function restTribute(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const id = String(formData.get("id") || "");
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, id, user))) return;
+  await db.from("tributes").update({ deleted_at: new Date().toISOString() }).eq("id", id);
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
+}
+
+/** Return a resting page to the light — everything exactly as it was. */
+export async function wakeTribute(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const id = String(formData.get("id") || "");
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, id, user))) return;
+  await db.from("tributes").update({ deleted_at: null }).eq("id", id);
+  revalidatePath("/dashboard");
+}
+
+/** The Year Letter's chosen day (Plus keepsake · July 12). Empty = their birthday. */
+export async function setYearLetterDate(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const id = String(formData.get("id") || "");
+  const raw = String(formData.get("year_letter_md") || "").trim();
+  // Accepts a date input (YYYY-MM-DD) or a bare MM-DD; empty clears to their birthday.
+  let md: string | null = null;
+  const m = raw.match(/^(?:\d{4}-)?(\d{2}-\d{2})$/);
+  if (m) md = m[1];
+  if (raw && !m) return;
+  const db = supabaseAdmin();
+  if (!(await ownsTribute(db, id, user))) return;
+  await db.from("tributes").update({ year_letter_md: md }).eq("id", id);
+  revalidatePath(`/dashboard/tributes/${id}`);
 }

@@ -107,3 +107,61 @@ export async function sendTrialReminderEmail(to: string, fullName: string, charg
   });
   return send(to, "Your trial converts tomorrow", html);
 }
+
+/** The Year Letter (Plus keepsake · July 12) — once a year, the page's year, kept. */
+export async function sendYearLetterEmail(
+  to: string,
+  fullName: string,
+  slug: string,
+  stats: { memories: number; flowers: number; candles: number }
+): Promise<boolean> {
+  const first = (fullName || "them").split(/\s+/)[0];
+  const line = (n: number, one: string, many: string) => (n === 1 ? `one ${one}` : `${n} ${many}`);
+  const parts: string[] = [];
+  if (stats.memories > 0) parts.push(`${line(stats.memories, "new memory", "new memories")} joined the wall`);
+  if (stats.flowers > 0) parts.push(`${line(stats.flowers, "flower was laid", "flowers were laid")}`);
+  if (stats.candles > 0) parts.push(`${line(stats.candles, "candle was lit", "candles were lit")}`);
+  const held = parts.length
+    ? `This year, ${parts.join(", ")}.`
+    : `The page held steady this year, quiet and kept, exactly where you left it.`;
+  const html = shell({
+    heading: "A year of remembering, kept.",
+    bodyHtml:
+      `<p style="margin:0 0 14px">${held}</p>` +
+      `<p style="margin:0 0 14px">${esc(first)}&rsquo;s page is there whenever you want to sit with it — today, or any day.</p>`,
+    cta: { label: `Visit ${esc(first)}’s page`, url: `${SITE}/sites/${encodeURIComponent(slug)}` },
+    footnote: "The Year Letter arrives once a year, on the day you chose. Every page stays online. We never charge a family to keep a memory alive.",
+  });
+  return send(to, `A year of remembering ${fullName || "them"} · kept`, html);
+}
+
+/** A note from the contact page → the studio inbox, reply-to the writer. */
+export async function sendContactEmail(note: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  ip?: string;
+}): Promise<boolean> {
+  if (!KEY) return false;
+  const TO = process.env.CONTACT_EMAIL || "imissyoumemorial@gmail.com";
+  const html = shell({
+    heading: "A note from the contact page.",
+    bodyHtml:
+      `<p style="margin:0 0 10px"><b>${esc(note.name)}</b> &middot; ${esc(note.email)}</p>` +
+      `<p style="margin:0 0 10px;color:#6b5f52">${esc(note.subject)}</p>` +
+      `<p style="white-space:pre-wrap;margin:0">${esc(note.message)}</p>`,
+    footnote: `Reply goes straight to the writer.${note.ip ? ` · ${esc(note.ip)}` : ""}`,
+  });
+  try {
+    const r = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: FROM, to: [TO], reply_to: [note.email], subject: `Contact · ${note.subject}`.slice(0, 140), html }),
+      cache: "no-store",
+    });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}

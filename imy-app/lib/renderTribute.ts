@@ -147,9 +147,11 @@ export function renderTribute(template: string, t: Tribute): string {
     : "";
 
   // ── boot data for the template's engine ──
-  // Free keeps about thirty photographs (the pricing promise); Plus is unlimited.
+  // Free keeps the first ten photographs (the pricing promise, tightened July 12);
+  // Plus is unlimited. Photo eleven onward is HELD, never refused — the album
+  // names how many wait, exactly like the memory wall.
   const allPhotos = (t.photos || []).filter((p) => p.url);
-  const photos = tier === "free" ? allPhotos.slice(0, 30) : allPhotos;
+  const photos = tier === "free" ? allPhotos.slice(0, 10) : allPhotos;
   const videos = (t.videos || []).filter((v) => v.url);
   const imgs: Record<string, string> = {};
   photos.forEach((p, i) => { imgs[`p${i}`] = p.url as string; });
@@ -258,6 +260,7 @@ export function renderTribute(template: string, t: Tribute): string {
     h: Math.max(0, m.hearts ?? 0),
     // Their voice is a Plus promise: on a resting (free) page recordings sleep — kept, not shown.
     au: tier === "plus" && m.audio && /^https:\/\//.test(m.audio) ? m.audio : "",
+    ph: m.photos && m.photos[0] && /^https:\/\//.test(m.photos[0]) ? m.photos[0] : "",
     cm: (m.comments || []).map((c) => [c.name || "A friend", c.rel || "", c.text || ""]).filter((c) => c[2]),
   })).filter((m) => m.tx);
 
@@ -298,6 +301,7 @@ export function renderTribute(template: string, t: Tribute): string {
   const boot = {
     slug, tier,
     gal, imgs, liv, ch, mems, seedw, words, boards,
+    phw: tier === "free" ? Math.max(0, allPhotos.length - 10) : 0,
     waiting: seedw.length,
     fwt: Math.max(0, t.flowerToday ?? 0),
     // The tape shelf's real tapes (fix 6). Free pages rest their videos — kept,
@@ -873,18 +877,19 @@ try{navigator.clipboard.writeText(D.url).then(function(){b.textContent='Copied �
 (function(){
 var el=document.getElementById('keepnote');if(!el)return;
 var K='imy-note-'+${JSON.stringify(slug)};
-try{if(localStorage.getItem(K))return}catch(e){}
+try{if(localStorage.getItem(K)||sessionStorage.getItem(K))return}catch(e){}
 var t0=Date.now(),shown=false,seen=false;
 function mark(){try{localStorage.setItem(K,'1')}catch(e){}}
+function rest(){try{sessionStorage.setItem(K,'1')}catch(e){}}
 function show(){if(shown)return;shown=true;el.hidden=false}
 function hide(){el.hidden=true}
-function maybe(){if(seen&&Date.now()-t0>=30000)show()}
+function maybe(){if(seen&&Date.now()-t0>=20000)show()}
 try{var mem=document.getElementById('memories');
-if(mem&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){seen=true;maybe()}})},{threshold:0});io.observe(mem);setTimeout(maybe,31000);setInterval(maybe,5000)}
+if(mem&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){seen=true;maybe()}})},{threshold:0});io.observe(mem);setTimeout(maybe,21000);setInterval(maybe,5000)}
 }catch(e){}
-setTimeout(show,75000);
-document.getElementById('knClose').addEventListener('click',function(){mark();hide()});
-document.getElementById('knLater').addEventListener('click',function(){mark();hide()});
+setTimeout(show,45000);
+document.getElementById('knClose').addEventListener('click',function(){rest();hide()});
+document.getElementById('knLater').addEventListener('click',function(){rest();hide()});
 document.getElementById('knGive').addEventListener('click',function(){mark();hide();
 var gs=document.getElementById('giftSheet');
 if(gs){gs.classList.add('open');var g=document.getElementById('gsGive');if(g)g.focus();return}
@@ -894,6 +899,14 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
 </script>`;
       html = html.replace("</body>", keepnote + "\n</body>");
     }
+  }
+
+  // ═══ the full memorial says so, quietly (July 12) ═══════════════════════════
+  // A Plus page differs in what it holds — and in one visible whisper: a gold
+  // ring on the Stone (CSS) and one mono line under the wreath count.
+  if (tier === "plus") {
+    const plusLine = `<div class="plusheld" style="font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#C9A572;margin-top:10px">The full memorial \u00b7 every memory open \u00b7 held in full</div>`;
+    html = html.replace('<div class="presence"', plusLine + '<div class="presence"');
   }
 
   // ═══ the example sells the beginning (July 9) ═══════════════════════════════
