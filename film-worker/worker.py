@@ -1,0 +1,202 @@
+#!/usr/bin/env python3
+"""worker — claims film_jobs, weaves films, stores them, and writes home.
+
+Loop: requeue stale renders → claim the oldest queued job → read the tribute →
+build the film spec (mirroring lib/renderTribute.ts chapter logic) → render →
+upload film + poster → mark ready → supersede older unapproved films → email
+the keeper. One job at a time; the smallest box is enough.
+
+Nothing here approves anything. The film waits for the family.
+
+Env:
+  SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY[_V2]     (required)
+  R2_* (see storage.py)                            (optional — wakes R2)
+  RESEND_API_KEY, EMAIL_FROM                       (optional — wakes the letter)
+  SITE_URL          default https://imissyoumemorial.com
+  POLL_SECONDS      default 20
+  RUN_ONCE=1        process at most one job, then exit (CI / sandbox tests)
+"""
+import os, sys, time, json, tempfile, traceback
+from datetime import datetime, timezone
+
+def now_iso():
+    return datetime.now(timezone.utc).isoformat()
+
+import imy_api as db
+import storage
+import email_notify
+from render_film import render
+
+SITE = (os.environ.get("SITE_URL") or "https://imissyoumemorial.com").rstrip("/")
+POLL = int(os.environ.get("POLL_SECONDS", "20"))
+
+TRIBUTE_SELECT = (
+    "id,slug,loved_one_name,born_on,died_on,place,pronouns,tier,owner_email,placements,"
+    "tribute_photos(id,url,caption,sort,deleted_at),"
+    "tribute_videos(id,url,caption,sort,kind,deleted_at),"
+    "tribute_chapters(id,title,sort,deleted_at),"
+    "tribute_timeline(id,year,title,sort,chapter_id,deleted_at)"
+)
+
+POS = {"he": "his", "she": "her"}
+
+
+def year_of(d):
+    s = str(d or "")
+    return s[:4] if len(s) >= 4 and s[:4].isdigit() else ""
+
+
+def years_line(born, died):
+    a, b = year_of(born), year_of(died)
+    if a and b: return f"{a} to {b}"
+    return a or b or ""
+
+
+def chapter_years(moments):
+    ys = sorted(m["year"] for m in moments if str(m.get("year") or "").strip().isdigit())
+    if not ys: return "in moments"
+    return ys[0] if ys[0] == ys[-1] else f"{ys[0]} to {ys[-1]}"
+
+
+def chrono(moments):
+    def key(im):
+        i, m = im
+        y = str(m.get("year") or "").strip()
+        return (int(y) if y.isdigit() else 10**9, i)
+    return [m for _, m in sorted(enumerate(moments), key=lambda im: key(im))]
+
+
+def direct_file(url):
+    u = (url or "").split("?")[0].lower()
+    return u.endswith((".mp4", ".webm", ".mov", ".m4v"))
+
+
+def build_spec(t, job):
+    photos = sorted([p for p in (t.get("tribute_photos") or []) if not p.get("deleted_at") and p.get("url")],
+                    key=lambda p: p.get("sort") or 0)
+    if not photos:
+        raise ValueError("not-enough-photos")
+
+    by_id = {p["id"]: p for p in photos if p.get("id")}
+    pl = t.get("placements") or {}
+    ch_assign = pl.get("chapters") or {}
+
+    def moment_photo(m):
+        for pid in (ch_assign.get(m.get("id") or "", []) or []):
+            if pid in by_id:
+                return by_id[pid]
+        return None
+
+    timeline = [m for m in (t.get("tribute_timeline") or []) if not m.get("deleted_at")]
+    chapter_rows = sorted([c for c in (t.get("tribute_chapters") or [])
+                           if not c.get("deleted_at") and str(c.get("title") or "").strip()],
+                          key=lambda c: c.get("sort") or 0)
+
+    chapters, placed_photo_ids = [], set()
+    if timeline and chapter_rows:
+        for c in chapter_rows:
+            moments = chrono([m for m in timeline if m.get("chapter_id") == c["id"]])
+            ph = []
+            for m in moments:
+                p = moment_photo(m)
+                if p and p["id"] not in placed_photo_ids:
+                    ph.append({"url": p["url"], "cap": p.get("caption") or ""})
+                    placed_photo_ids.add(p["id"])
+            if ph:
+                chapters.append({"title": str(c["title"]).strip(), "yrs": chapter_years(moments), "photos": ph})
+
+    loose = [{"url": p["url"], "cap": p.get("caption") or ""}
+             for p in photos if p.get("id") not in placed_photo_ids]
+
+    videos = sorted([v for v in (t.get("tribute_videos") or [])
+                     if not v.get("deleted_at") and v.get("url")
+                     and (v.get("kind") or "tape") == "tape" and direct_file(v.get("url"))],
+                    key=lambda v: v.get("sort") or 0)
+
+    tier = (t.get("tier") or "free").lower()
+    variant = job.get("variant") or "auto"
+    if variant == "auto":
+        variant = "full" if tier in ("plus", "heirloom") else "teaser"
+
+    pronouns = t.get("pronouns")
+    return {
+        "name": t.get("loved_one_name") or "",
+        "first": (t.get("loved_one_name") or "").strip().split(" ")[0] or "them",
+        "years": years_line(t.get("born_on"), t.get("died_on")),
+        "place": t.get("place") or "",
+        "slug": t.get("slug") or "",
+        "pos": POS.get(pronouns, "their"),
+        "chapters": chapters,
+        "photos": loose,
+        "clips": [v["url"] for v in videos],
+        "portrait": photos[0]["url"],
+        "variant": variant,
+        "music": job.get("music") or "gymnopedie-1",
+    }
+
+
+def process(job):
+    jid = job["id"]
+    print(f"[job {jid[:8]}] claimed · tribute {job['tribute_id'][:8]} · variant {job.get('variant')}")
+    rows = db.select("tributes", f"id=eq.{job['tribute_id']}&select={TRIBUTE_SELECT}")
+    if not rows:
+        db.patch("film_jobs", f"id=eq.{jid}", {"status": "failed", "error": "tribute-not-found",
+                                               "finished_at": now_iso()})
+        return
+    t = rows[0]
+    try:
+        spec = build_spec(t, job)
+        with tempfile.TemporaryDirectory(prefix="filmout-") as out_dir:
+            film, poster, dur = render(spec, out_dir)
+            base = f"films/{job['tribute_id']}/{jid}"
+            film_url = storage.upload(film, f"{base}.mp4", "video/mp4")
+            poster_url = storage.upload(poster, f"{base}.jpg", "image/jpeg")
+        db.patch("film_jobs", f"id=eq.{jid}", {
+            "status": "ready", "film_url": film_url, "poster_url": poster_url,
+            "duration_seconds": dur, "rendered_variant": spec["variant"],
+            "finished_at": now_iso(), "error": None,
+        })
+        # older films that were never approved step aside for the new weave
+        db.patch("film_jobs",
+                 f"tribute_id=eq.{job['tribute_id']}&status=eq.ready&id=neq.{jid}",
+                 {"status": "superseded"})
+        sent = email_notify.send_film_ready(
+            t.get("owner_email") or "", spec["first"], spec["pos"], spec["slug"], job["approve_token"])
+        print(f"[job {jid[:8]}] ready · {dur}s · {spec['variant']} · email={'sent' if sent else 'quiet'}")
+    except ValueError as ve:
+        if str(ve) == "not-enough-photos":
+            db.patch("film_jobs", f"id=eq.{jid}", {"status": "failed", "error": "not-enough-photos",
+                                                   "finished_at": now_iso()})
+            print(f"[job {jid[:8]}] rested · not enough photographs yet")
+        else:
+            raise
+    except Exception as e:
+        traceback.print_exc()
+        attempts = job.get("attempts") or 1
+        status = "failed" if attempts >= 3 else "queued"
+        db.patch("film_jobs", f"id=eq.{jid}", {"status": status, "error": str(e)[:500]})
+        print(f"[job {jid[:8]}] {status} after error (attempt {attempts})")
+
+
+def main():
+    once = os.environ.get("RUN_ONCE") == "1"
+    print(f"film-worker awake · storage={'r2' if storage.r2_configured else 'supabase'} · site={SITE}")
+    while True:
+        try:
+            db.rpc("requeue_stale_film_jobs")
+            claimed = db.rpc("claim_film_job")
+            if claimed:
+                process(claimed[0])
+                if once:
+                    return
+                continue
+        except Exception:
+            traceback.print_exc()
+        if once:
+            print("queue quiet · nothing to weave")
+            return
+        time.sleep(POLL)
+
+
+if __name__ == "__main__":
+    main()

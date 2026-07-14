@@ -76,7 +76,7 @@ export type Tribute = {
   timeline?: TimelineItem[];
   chapters?: ChapterItem[];
   photos?: PhotoItem[];
-  videos?: { id?: string; url: string; cap?: string }[];
+  videos?: { id?: string; url: string; cap?: string; kind?: string }[]; // kind: "tape" (family upload) · "film" (the woven film, 0021)
   voiceUrl?: string;
   reel?: ReelItem[];
   memories?: MemoryItem[];
@@ -178,7 +178,8 @@ export function renderTribute(template: string, t: Tribute): string {
       if (p && v && !embedSrc(v.url)) liv[p.key] = v.url;
     }
   } else if (!pl?.living) {
-    videos.forEach((v, i) => { if (imgs[`p${i}`] && !embedSrc(v.url)) liv[`p${i}`] = v.url; });
+    // The woven film never becomes a Living picture — it belongs to the tape shelf.
+    videos.forEach((v, i) => { if (v.kind !== "film" && imgs[`p${i}`] && !embedSrc(v.url)) liv[`p${i}`] = v.url; });
   }
 
   const timeline = t.timeline || [];
@@ -341,8 +342,11 @@ export function renderTribute(template: string, t: Tribute): string {
       </div>`
     : "";
 
-  const archVideo = tier === "plus" && videos[0]
-    ? `<video class="living" src="${esc(videos[0].url)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>`
+  // The Stone's living portrait is always a family tape — never the woven film,
+  // whose title card would cover the face.
+  const archTape = videos.find((v) => v.kind !== "film");
+  const archVideo = tier === "plus" && archTape
+    ? `<video class="living" src="${esc(archTape.url)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>`
     : "";
   const archLivetag = archVideo ? `<span class="livetag" id="archLiveTag">Living portrait</span>` : "";
 

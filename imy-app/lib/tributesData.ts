@@ -10,7 +10,7 @@ const SELECT =
   "tribute_chapters(id,title,sort,deleted_at)," +
   "tribute_timeline(id,year,title,body,sort,chapter_id,deleted_at)," +
   "tribute_photos(id,url,caption,sort,deleted_at)," +
-  "tribute_videos(id,url,caption,sort,deleted_at)," +
+  "tribute_videos(id,url,caption,sort,kind,deleted_at)," +
   "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,hearts,created_at,deleted_at," +
   "tribute_memory_comments(author_name,relation,body,status,created_at,deleted_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
@@ -61,7 +61,7 @@ function rowToTribute(r: any): Tribute {
       ? { name: r.sponsor_name || undefined, photoUrl: r.sponsor_photo_url || undefined, message: r.sponsor_message || undefined }
       : undefined,
     voiceUrl: ((r.tribute_audio || []).find((a: any) => a.kind === "voice") || {}).url || undefined,
-    videos: (r.tribute_videos || []).filter((v: any) => !v.deleted_at).slice().sort(bySort).map((v: any) => ({ id: v.id, url: v.url, cap: v.caption || undefined })).filter((v: any) => v.url),
+    videos: (r.tribute_videos || []).filter((v: any) => !v.deleted_at).slice().sort(bySort).map((v: any) => ({ id: v.id, url: v.url, cap: v.caption || undefined, kind: v.kind || "tape" })).filter((v: any) => v.url),
     tier: r.tier || "free",
     theme: r.theme || undefined,
     motif: r.motif || undefined,

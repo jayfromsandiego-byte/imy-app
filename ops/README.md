@@ -75,6 +75,30 @@ Vercel Blob (`BLOB_READ_WRITE_TOKEN`), R2 (`R2_*`, pending as of July 8).
 - Password sign-in: set at `/dashboard/account`, used at `/signin`;
   recovery emails land signed-in on the Account room.
 
+## Their film (the memorial video — July 14, 2026)
+
+- One external worker (`film-worker/`, Docker) weaves memorial films from each
+  tribute's own photos, captions, chapters, and clips. It is NOT deployed by
+  Vercel — run it on any $5 box (Railway/Fly). See `film-worker/README.md`.
+- Queue: `film_jobs` (migration 0021). Claim/requeue are SQL functions with
+  anon/authenticated execute revoked — service role only. Intake enqueues
+  automatically at 3+ photos; the keeper re-weaves from `/film/[slug]?t=…`.
+- Nothing auto-publishes: a film reaches the tape shelf only through the
+  family's approval (`/api/film/approve`), as a `tribute_videos` row with
+  `kind='film'`, `sort=999`. The Stone's living portrait and Living pictures
+  always skip `kind='film'` — the film never covers the face.
+- Storage: R2 when `R2_*` keys exist (same env names as `lib/r2.ts`), the
+  public `tribute-films` Supabase bucket until then. The Supabase FREE plan
+  caps objects at 50 MB (verified July 14 — 402 to raise it), so the worker
+  fits every film under ~48 MB (`MAX_FILM_BYTES`); R2 keys lift the ceiling.
+  Free-tier films rest exactly like other free-page videos.
+- Variants: `auto` resolves at render time (plus/heirloom → full ~1½–2½ min ·
+  free → teaser ~35s). Fewer than 3 photos → the job rests as
+  `not-enough-photos`; the film room says so gently.
+- Music: public-domain or one-time-licensed beds baked into the worker image,
+  provenance ledger in `film-worker/README.md`. Never subscription beds,
+  never user uploads.
+
 ## The rules that never bend
 
 1. Templates in `imy-app/templates/` are locked design finals — copy edits and
