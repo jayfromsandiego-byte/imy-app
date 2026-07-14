@@ -19,8 +19,11 @@ film waits for the family's approval (`/film/[slug]?t=…`).
 6. Uploads `films/{tribute_id}/{job_id}.mp4` + poster (R2 when `R2_*` keys
    exist, Supabase Storage `tribute-films` until then — same env names as
    `lib/r2.ts`).
-7. Marks the job `ready`, supersedes older unapproved films, emails the
-   keeper their private preview link (Resend; silent without a key).
+7. Marks the job `ready`, supersedes older unapproved films — then, on a
+   paid page (plus/heirloom) with a `full` weave, places the film on the
+   tape shelf itself (the $97 promise; the letter says it is on the page,
+   and the film room can re-weave or take it down any time). Free pages
+   get the approval letter instead. Silent without a Resend key.
 
 Variant `auto` resolves at render time: `plus`/`heirloom` → `full`
 (chapters, up to 24 photos, up to 3 clips, ~90–150s); `free` → `teaser`

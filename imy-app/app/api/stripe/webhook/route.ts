@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, stripeConfigured, planToTier } from "@/lib/stripe";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
+import { ensureFullFilmForPaid } from "@/lib/film";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -75,6 +76,15 @@ export async function POST(req: NextRequest) {
               : null;
           }
           await db.from("tributes").update(patch).eq("id", tributeId);
+
+          // Their film (0021): the $97 includes the whole film. The moment the
+          // tier turns, make sure a full weave is on its way — the worker will
+          // place it on the page itself when it finishes. Non-fatal, like the rest.
+          if (tier === "plus" || tier === "heirloom") {
+            try {
+              await ensureFullFilmForPaid(tributeId);
+            } catch { /* the keeper can ask for the weave from the film room */ }
+          }
         }
 
         if (plan === "book") {

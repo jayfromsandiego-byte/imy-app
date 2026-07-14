@@ -90,7 +90,7 @@ export default async function FilmRoom({
   searchParams,
 }: {
   params: { slug: string };
-  searchParams: { t?: string; approved?: string };
+  searchParams: { t?: string; approved?: string; removed?: string };
 }) {
   const token = searchParams.t || "";
   const room = await filmRoom(params.slug, token);
@@ -114,6 +114,7 @@ export default async function FilmRoom({
   const isPlus = tribute.tier === "plus" || tribute.tier === "heirloom";
   const isTeaser = (job.rendered_variant || job.variant) === "teaser";
   const justApproved = searchParams.approved === "1";
+  const justRemoved = searchParams.removed === "1";
 
   return (
     <Shell>
@@ -153,14 +154,18 @@ export default async function FilmRoom({
               ? justApproved
                 ? "It is on the page now."
                 : `The film of ${pn.pos} life.`
-              : `The film of ${pn.pos} life is ready.`}
+              : justRemoved
+                ? "It is off the page, and kept."
+                : `The film of ${pn.pos} life is ready.`}
           </h1>
           <p style={{ fontSize: 17, lineHeight: 1.65, color: S.inkSoft, maxWidth: 620, marginTop: 0 }}>
             {job.status === "approved"
               ? isPlus
-                ? `It lives on ${first}'s page now, on the tape shelf, for everyone who loves ${pn.obj}.`
+                ? `It lives on ${first}'s page now, on the tape shelf, for everyone who loves ${pn.obj}. You can weave it again, or take it off the page, any time.`
                 : `It is kept with ${first}'s page. Films rest on free pages — when the full memorial opens, it will play there for everyone.`
-              : `Woven from ${first}'s photographs, ${pn.pos} chapters, and your own words. Watch it first. It appears on the page only when you say so.`}
+              : justRemoved
+                ? `The film rests here, safe. Nothing is ever deleted — place it back on the page whenever you wish.`
+                : `Woven from ${first}'s photographs, ${pn.pos} chapters, and your own words. Watch it first. It appears on the page only when you say so.`}
           </p>
 
           <video
@@ -189,7 +194,18 @@ export default async function FilmRoom({
                 <input type="hidden" name="job" value={job.id} />
                 <input type="hidden" name="t" value={token} />
                 <input type="hidden" name="slug" value={tribute.slug} />
-                <button type="submit" style={button}>Let it appear on the page</button>
+                <button type="submit" style={button}>
+                  {justRemoved ? "Place it back on the page" : "Let it appear on the page"}
+                </button>
+              </form>
+            )}
+            {job.status === "approved" && (
+              <form method="post" action="/api/film/approve">
+                <input type="hidden" name="job" value={job.id} />
+                <input type="hidden" name="t" value={token} />
+                <input type="hidden" name="slug" value={tribute.slug} />
+                <input type="hidden" name="action" value="remove" />
+                <button type="submit" style={quietButton}>Take it off the page</button>
               </form>
             )}
             <form method="post" action={`/api/tribute/${encodeURIComponent(tribute.slug)}/film`}>

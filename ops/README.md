@@ -83,10 +83,15 @@ Vercel Blob (`BLOB_READ_WRITE_TOKEN`), R2 (`R2_*`, pending as of July 8).
 - Queue: `film_jobs` (migration 0021). Claim/requeue are SQL functions with
   anon/authenticated execute revoked — service role only. Intake enqueues
   automatically at 3+ photos; the keeper re-weaves from `/film/[slug]?t=…`.
-- Nothing auto-publishes: a film reaches the tape shelf only through the
-  family's approval (`/api/film/approve`), as a `tribute_videos` row with
-  `kind='film'`, `sort=999`. The Stone's living portrait and Living pictures
-  always skip `kind='film'` — the film never covers the face.
+- Placement: a PAID page (plus/heirloom) receives its full film automatically
+  the moment the weave finishes — the $97 includes the film, no approval step
+  between a family and what they paid for; the letter says it is on the page.
+  Free-page films wait in the film room for the family's yes. Either way the
+  room can re-weave or take a film down (`/api/film/approve`, action=remove) —
+  removed films rest, never delete. On the shelf a film is a `tribute_videos`
+  row with `kind='film'`, `sort=999`. The Stone's living portrait and Living
+  pictures always skip `kind='film'` — the film never covers the face.
+  The Stripe webhook queues the full weave the second the tier turns.
 - Storage: R2 when `R2_*` keys exist (same env names as `lib/r2.ts`), the
   public `tribute-films` Supabase bucket until then. The Supabase FREE plan
   caps objects at 50 MB (verified July 14 — 402 to raise it), so the worker

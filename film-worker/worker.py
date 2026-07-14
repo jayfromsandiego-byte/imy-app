@@ -135,6 +135,32 @@ def build_spec(t, job):
     }
 
 
+def auto_place(t, jid, spec, film_url):
+    """The $97 promise: a paid page receives the whole film the moment it is
+    woven — no approval step between a family and what they paid for. The
+    letter says it is on the page; the film room can re-weave it or take it
+    down any time. Free pages keep the approval moment (their films are the
+    invitation, and free videos rest anyway). Returns the video row id."""
+    tier = (t.get("tier") or "free").lower()
+    if spec["variant"] != "full" or tier not in ("plus", "heirloom"):
+        return None
+    # the previous film steps aside — rested, never deleted
+    olds = db.select("film_jobs",
+                     f"tribute_id=eq.{t['id']}&status=eq.approved&deleted_at=is.null&select=id,video_id")
+    for o in olds or []:
+        if o.get("video_id"):
+            db.patch("tribute_videos", f"id=eq.{o['video_id']}", {"deleted_at": now_iso()})
+        db.patch("film_jobs", f"id=eq.{o['id']}", {"status": "superseded"})
+    vid = db.insert("tribute_videos", {
+        "tribute_id": t["id"], "url": film_url,
+        "caption": f"The film of {spec['pos']} life", "sort": 999, "kind": "film",
+    })
+    video_id = vid[0]["id"]
+    db.patch("film_jobs", f"id=eq.{jid}",
+             {"status": "approved", "approved_at": now_iso(), "video_id": video_id})
+    return video_id
+
+
 def process(job):
     jid = job["id"]
     print(f"[job {jid[:8]}] claimed · tribute {job['tribute_id'][:8]} · variant {job.get('variant')}")
@@ -160,9 +186,12 @@ def process(job):
         db.patch("film_jobs",
                  f"tribute_id=eq.{job['tribute_id']}&status=eq.ready&id=neq.{jid}",
                  {"status": "superseded"})
+        placed = auto_place(t, jid, spec, film_url)
         sent = email_notify.send_film_ready(
-            t.get("owner_email") or "", spec["first"], spec["pos"], spec["slug"], job["approve_token"])
-        print(f"[job {jid[:8]}] ready · {dur}s · {spec['variant']} · email={'sent' if sent else 'quiet'}")
+            t.get("owner_email") or "", spec["first"], spec["pos"], spec["slug"],
+            job["approve_token"], placed=bool(placed))
+        print(f"[job {jid[:8]}] {'placed on the page' if placed else 'ready'} · {dur}s"
+              f" · {spec['variant']} · email={'sent' if sent else 'quiet'}")
     except ValueError as ve:
         if str(ve) == "not-enough-photos":
             db.patch("film_jobs", f"id=eq.{jid}", {"status": "failed", "error": "not-enough-photos",

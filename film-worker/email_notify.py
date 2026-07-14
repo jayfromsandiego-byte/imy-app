@@ -43,21 +43,31 @@ def _shell(heading, body_html, cta_label, cta_url):
   </table></body></html>"""
 
 
-def send_film_ready(to, first, pos, slug, token):
-    """The film is ready. It appears on the page only when the family says so."""
+def send_film_ready(to, first, pos, slug, token, placed=False):
+    """Two letters, one loom. placed=False: the film waits for the family's yes.
+    placed=True (a paid page): it is already on the page — watch, re-weave,
+    or take it down, any time."""
     if not KEY or not to or "@" not in to:
         return False
     e = html.escape
     url = f"{SITE}/film/{slug}?t={token}"
-    heading = f"The film of {e(pos)} life is ready."
-    body = (f"<p style='margin:0 0 14px'>We wove {e(first)}'s photographs and memories into a short film. "
-            f"The music is gentle, the words are your own.</p>"
-            f"<p style='margin:0'>Watch it first, in private. It appears on the page only when you say so.</p>")
+    if placed:
+        heading = f"The film of {e(pos)} life is on {e(pos)} page."
+        body = (f"<p style='margin:0 0 14px'>We wove {e(first)}'s photographs and memories into a short film. "
+                f"It now plays on the tape shelf of {e(pos)} memorial, for everyone who loves {e(first)}.</p>"
+                f"<p style='margin:0'>Watch it here. You can weave it again, or take it off the page, any time.</p>")
+        subject = f"{first}'s film is on the page"
+    else:
+        heading = f"The film of {e(pos)} life is ready."
+        body = (f"<p style='margin:0 0 14px'>We wove {e(first)}'s photographs and memories into a short film. "
+                f"The music is gentle, the words are your own.</p>"
+                f"<p style='margin:0'>Watch it first, in private. It appears on the page only when you say so.</p>")
+        subject = f"{first}'s film is ready"
     try:
         r = requests.post(
             "https://api.resend.com/emails",
             headers={"Authorization": f"Bearer {KEY}", "Content-Type": "application/json", "User-Agent": UA},
-            json={"from": FROM, "to": [to], "subject": f"{first}'s film is ready",
+            json={"from": FROM, "to": [to], "subject": subject,
                   "html": _shell(heading, body, "Watch the film", url)},
             timeout=30,
         )

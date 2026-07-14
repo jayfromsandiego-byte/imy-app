@@ -144,3 +144,67 @@ export async function approveFilm(
     .eq("id", job.id);
   return { ok: true, slug: t.slug };
 }
+
+/** The family's no, honoured just as fully: the film leaves the page (rests,
+ *  never deleted) and returns to the film room as ready — it can be placed
+ *  again, or re-woven, whenever they wish. */
+export async function removeFilm(
+  jobId: string,
+  token: string
+): Promise<{ ok: boolean; error?: string; slug?: string }> {
+  const db = supabaseAdmin();
+  const { data: job } = await db
+    .from("film_jobs")
+    .select("*")
+    .eq("id", jobId)
+    .eq("approve_token", token)
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (!job) return { ok: false, error: "not_found" };
+  const { data: t } = await db
+    .from("tributes")
+    .select("slug")
+    .eq("id", job.tribute_id)
+    .maybeSingle();
+  if (job.status !== "approved") return { ok: true, slug: t?.slug };
+  if (job.video_id) {
+    await db
+      .from("tribute_videos")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", job.video_id);
+  }
+  await db
+    .from("film_jobs")
+    .update({ status: "ready", video_id: null, approved_at: null })
+    .eq("id", job.id);
+  return { ok: true, slug: t?.slug };
+}
+
+/** The $97 promise, kept at the webhook: a paying family never receives a
+ *  teaser. Queued auto/teaser weaves step aside and a full film is queued,
+ *  unless one is already on its way or on the page. (A job mid-render can
+ *  still finish as a teaser in a tight race — the film room's "Weave the
+ *  whole film" button covers that, and the full film supersedes it.) */
+export async function ensureFullFilmForPaid(tributeId: string): Promise<void> {
+  const db = supabaseAdmin();
+  await db
+    .from("film_jobs")
+    .update({ status: "superseded" })
+    .eq("tribute_id", tributeId)
+    .eq("status", "queued")
+    .in("variant", ["auto", "teaser"]);
+  const { data: active } = await db
+    .from("film_jobs")
+    .select("id,variant,rendered_variant,status")
+    .eq("tribute_id", tributeId)
+    .in("status", ["queued", "rendering", "ready", "approved"])
+    .is("deleted_at", null);
+  const fullOnItsWay = (active || []).some(
+    (j) => j.variant === "full" || j.rendered_variant === "full"
+  );
+  if (!fullOnItsWay) {
+    await db
+      .from("film_jobs")
+      .insert({ tribute_id: tributeId, variant: "full", requested_by: "stripe" });
+  }
+}
