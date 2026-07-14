@@ -14,3 +14,5 @@ sed 's|import { type LovedThing } from "./lovedThings";|type LovedThing = { labe
   "$ROOT/imy-app/lib/renderTribute.ts" > "$WORK/renderTribute.gen.ts"
 cp "$ROOT/ops/qa/harness.ts" "$WORK/harness.ts"
 IMY_REPO_ROOT="$ROOT" node "$WORK/harness.ts"
+# The film room (0021): placement, pronouns, shelf exclusivity, free invite.
+IMY_REPO_ROOT="$ROOT" GEN="$WORK/renderTribute.gen.ts" node "$ROOT/ops/qa/film-section.test.mjs"
