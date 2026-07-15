@@ -442,3 +442,10 @@ html.study-hc .a11y-corner { background: rgba(255,253,248,.97); }
   .study .var-tag { font-size: 10px; padding: 4px 9px; right: 8px; bottom: 8px; }
   .study .a11y-corner { left: 8px; bottom: 8px; }
 }
+
+/* ══════════ REDESIGN LAYER · Batch 3 (global system) · July 14 2026 · preview ══════════ */
+.study{--cream:#FDFBF7;--line:rgba(44,37,32,.14);--hairline:rgba(44,37,32,.14)}
+.study .mono,.study .identity-block .dates,.study .pages-btn,.study .see-page-link,.study .page-option .po-meta,.study .shelf-label,.study .nav-item .count,.study .plan-strip,.study .switch-state-text,.study .panel-kicker,.study .s-card .sentence .mono-inline,.study .inline-decide .id-who,.study .queue-count-sentence .mono-inline,.study .letter-kind,.study .letter-when,.study .polaroid .cover-tag,.study .section-row-meta,/* ---------- form fields (Her story) ---------- */ .study .field-label,.study .plan-whisper,.study .upgrade-card .uc-sub,.study .link-pill,.study .a11y-btn,.study .var-tag,/* ---------- footer ---------- */ .study .foot-permanence{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
+.study .hand,.study .letter-body.quote,.study .polaroid .cap{font-family:'Besley',serif!important;font-style:italic;letter-spacing:0}
+.study a:focus-visible,.study button:focus-visible,.study input:focus-visible,.study select:focus-visible,.study textarea:focus-visible{outline:2px solid var(--terra-btn-hover);outline-offset:2px;border-radius:4px}
+.study button,.study .btn{min-height:44px}

@@ -953,6 +953,25 @@ body.a11y-nomotion .living{opacity:0!important}
 .relchips button{min-height:44px;padding:8px 18px;border-radius:100px;border:1.5px solid var(--line);background:#fffdf6;font-family:'Besley',serif;font-size:15.5px;color:var(--ink);cursor:pointer;transition:.15s}
 .relchips button.on{background:var(--accent);border-color:var(--accent);color:#FBF6ED}
 .frow input,#emIn,#relSel,#relTxt,#idGo{min-height:48px}
+
+/* ══════════ REDESIGN LAYER · Batch 3 (global system) · July 14 2026 · preview ══════════ */
+/* palette air: the canvas lifts toward paper; cream becomes the accent surface it always wanted to be */
+:root{--bg:#FDFBF7;--line:#e7dfd0}
+/* type v2: mono retires from UI into Besley small caps (the tape shelf keeps its diegetic lettering); brand-hand Caveat becomes the family's italic serif */
+.mono,.kick,.plusflag,.preview .pl,.readout,.svcrow .lab,.svcrow .mini,.bbpill,.stone .il,.arr-dt,.rosect,.chalk .l2,.stage-nav .st,.tln .yr,.like,.cmt,.letter .lnote,.truth .tl2,.memtab,.mem-rel,.memkeep,.lockpill .plus,.mode,.cl-name .ct2,.bnote .more,.vidp .vbadge2,.plock,.hint-open,.sheet .pgno,.sheet .stamp,.albnav .pg,.swipehint,.lb .who,.lb .ldate,.lb .cmt2 .r,.lib .sub,.libcard .ln .lk,.lib .note,.gw-inner .ey,.gw-side .per,footer .pledge,footer .p2,footer .gwline,footer .url,.whisper .wp,.period,.mo .yr,/* v5 · memories views */ .memviews,.mview,.human,.btab,.pmeta .m1,.pmeta .m2,/* chapter cards hierarchy */ .hier,.period .py,/* fixed jump buttons */ .bbfab,/* adding-as line */ .addingas,.addingas button,/* ── July 12 release · the first ten ───────────────────────────────────── */ /* the identity sheet must sit above the gift sheet (z 460) · a named giver introduces themselves ON TOP of the gift,never invisibly beneath it */ .inv-trial,.idm .note2,.galnav .gp,/* curated note */ .curated,.cdrawer .c1 .r,.wr-arch .il,.wr-plate .n2,.wr-count,.wr-total,.tick9 .run,.presence,/* ===== v9.3 adjustments ===== */ /* T8 · the BIG living number */ .wr-big,.wr-biglab,/* ===== v9.4 · FAMILY UNLOCK ===== */ .wallct,.wchip .st,.wmore,.inv-kick,.inv-trust,.unlockline .ul-sub,.plaque .pl-date,/* JUST JOINED badge */ .jj,.gs-kick,.gs-price .gper,.gs-opt span,.gs-fine,.livetag{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
+.hand,/* announcement bar (free credit) */ .announce,.arr-ep,.scene .capline,.fig .fname,.chalk .l1,.band .s,.tlpop .cap,.print .cap,.letter .sig,.really .handline,.cl-name,.bnote .bt,.bnote .bx,.bnote .who2,.addpiece,.scrap,.slot .scap,.sp-title,.tapeobj .lbl .t,.lb .bignote,footer .credit,.car .ci .cc,.bookline .bl1,.wr-plate .ep{font-family:'Besley',serif!important;font-style:italic;letter-spacing:0}
+/* one action color: flame retires from interactive states to candle duty */
+.seg button.active,.tchip.active{background:var(--accent);color:#FBF6ED}
+.tchip.active{border-color:var(--accent)}
+.gw-cta{background:var(--accent);color:#FBF6ED}
+.gw-cta:hover{background:var(--accent-deep)}
+.tln:hover .nd,.tln.open .nd{background:var(--accent);box-shadow:0 0 0 5px rgba(176,122,86,.3)}
+.lockpill .plus,.plock{background:var(--gold);color:#241711}
+.mode.active,.totop{color:var(--gold)}
+/* AA sweep: visible focus everywhere, reaction pills reach 44px, reading floors on phones */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #8B5E3C;outline-offset:2px;border-radius:4px}
+.like,.cmt,.memtab{min-height:44px;display:inline-flex;align-items:center}
+@media(max-width:820px){.sub{font-size:16.5px}}
 </style>
 <style>
 /* mobile pass · July 5 · the name plate hangs below the wreath on phones; give it room so
