@@ -886,6 +886,42 @@ body.a11y-contrast .wallbloom{display:none}
 body[data-tier="free"] .wr-arch .living{display:none}
 .wr-arch .livetag{pointer-events:auto;cursor:pointer}
 body.a11y-nomotion .living{opacity:0!important}
+
+/* ══════════ REDESIGN LAYER · Batch 1 (F0/P0) · per Design Audit + Mobile Audit · July 14 2026 · preview branch ══════════ */
+/* M6 · touch targets: pagination dots get 24px+ hit areas (visual dot stays quiet) */
+.cardots button,.stage-dots button{width:12px!important;height:12px!important;padding:14px!important;background-clip:content-box!important;box-sizing:content-box!important}
+/* M5 · type floors for the label layer (informational ≥13–16px, service lines already fluid) */
+.memkeep{font-size:13px!important;letter-spacing:.06em!important}
+.livetag{font-size:11px!important;letter-spacing:.1em!important}
+.bbpill{font-size:12px!important}
+/* audit1 #10 · gold-on-cream fails AA: gold text on light surfaces deepens to AA-passing tone (dark sections keep true gold) */
+.foot-free .p2 b{color:#8A5A3C!important}
+/* M3/F0 · thumb zone: one floating element max on phones; a11y widget respects the gesture bar */
+@media(max-width:820px){
+  .bbpill{display:none!important}
+  .totop{display:none!important}
+  .a11y-fab{left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;width:46px!important;height:46px!important}
+}
+/* M10 + audit1 #6 · de-commerce the guest memorial: purchase UI leaves the shrine (kept for keepers in dashboard) */
+#bookBtn{display:none!important}
+.foot-free .price,.foot-plus .price,#footGive{display:none!important}
+#footGive + .pledge{display:none!important}
+/* M9 · the memorial ends with remembrance: pledge + credit + url remain, pricing stack above is gone */
+/* M7 · the board, rethought for small screens: two-column, untilted, cork as a band not a tube */
+@media(max-width:640px){
+  .boardstage{padding:16px 12px 20px!important;border-width:8px!important}
+  .boardstage .piece{transform:none!important;width:calc(50% - 8px)!important;margin:4px!important}
+  .piece:hover{transform:none!important}
+}
+/* M14 · the identity helper never fractures; form helpers readable */
+.whoami,.wm-help{white-space:nowrap}
+/* M4 · header never clips its own controls on phones */
+@media(max-width:640px){
+  .tornbar .tb-in{flex-wrap:wrap;row-gap:8px}
+  .tornbar .actions .btn{font-size:13px!important;padding:10px 14px!important;min-height:44px}
+}
+/* audit1 #8 · motion budget: decks stop auto-advancing under reduced-motion; nothing moves uninvited on touch */
+@media(hover:none){.tln:hover .tlpop{opacity:0}}
 </style>
 <style>
 /* mobile pass · July 5 · the name plate hangs below the wreath on phones; give it room so
@@ -1040,7 +1076,7 @@ body.a11y-nomotion .living{opacity:0!important}
         <div class="inv-trust">No subscription · Nothing is ever taken down · The first ten stay free, always</div>
         <button class="inv-trial" id="invTrial" type="button">Or see it open free for three days · $12/month after · cancel anytime</button>
       </div>
-      <div class="memkeep">every memory is kept · nothing scrolls away · grouped so no one is lost in the pile</div>
+      <div class="memkeep">every memory is kept · grouped so no one is lost</div>
       <div class="share">
         <h3>Share a memory of Eleanor</h3>
         <div class="addingas" id="addingAs"></div>
@@ -1151,7 +1187,7 @@ body.a11y-nomotion .living{opacity:0!important}
       <option value="">How did you know Eleanor?</option>
       <option value="family">Family</option>
       <option value="friends">Friend</option>
-      <option value="neighbours">Neighbour</option>
+      <option value="neighbours">Neighbor</option>
       <option value="students">Her student</option>
       <option value="friends2">Colleague</option>
       <option value="friends3">Another way</option>
@@ -1312,7 +1348,7 @@ if(T&&T.fwt){wn=Number(T.fwt)||0;if(wreathCt)wreathCt.textContent=wn}
 var GAL=(T&&T.gal)||[['dawn','Summer, 1979'],['coffee','Black coffee, no sugar'],['laugh','That laugh'],['kitchen','Her kitchen'],['garden','Walking the rows'],['letters','Golden hour'],['porch','On the porch, 1998'],['dawn','First light, again'],['garden','Best in show, 2018'],['coffee','The crossword hour'],['letters','A letter a week'],['kitchen','Sunday bread']];
 var galPage=0,galGrid=document.getElementById('galGrid'),galPg=document.getElementById('galPg');
 function renderGal(){var pages=Math.ceil(GAL.length/6);galPage=Math.max(0,Math.min(galPage,pages-1));
-  galGrid.innerHTML=GAL.slice(galPage*6,galPage*6+6).map(function(g,i){return '<figure class="print" style="--r:'+((i%3-1)*1.6+(galPage%2?0.4:-0.4))+'deg"><span class="pin"></span><img src="'+IMGS[g[0]]+'" alt="'+g[1]+'"/>'+(body.dataset.tier==='plus'&&LIV[g[0]]?'<video class="living" src="'+LIV[g[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="livetag">Living · hover</span>':'')+'<div class="cap">'+g[1]+'</div></figure>'}).join('');
+  galGrid.innerHTML=GAL.slice(galPage*6,galPage*6+6).map(function(g,i){return '<figure class="print" style="--r:'+((i%3-1)*1.6+(galPage%2?0.4:-0.4))+'deg"><span class="pin"></span><img src="'+IMGS[g[0]]+'" alt="'+g[1]+'"/>'+(body.dataset.tier==='plus'&&LIV[g[0]]?'<video class="living" src="'+LIV[g[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="livetag">Living · press</span>':'')+'<div class="cap">'+g[1]+'</div></figure>'}).join('');
   galPg.textContent='page '+(galPage+1)+' of '+pages+' · '+GAL.length+' photographs · holds fifty without the scroll';if(body.dataset.tier==='free'&&T&&T.phw>0){galPg.textContent='page '+(galPage+1)+' of '+pages+' · the album holds ten · '+T.phw+' more kept safe, waiting'}if(typeof syncLiving==='function')syncLiving()}
 document.getElementById('galNext').onclick=function(){galPage++;renderGal()};
 document.getElementById('galPrev').onclick=function(){galPage--;renderGal()};
@@ -1406,11 +1442,11 @@ wireLikes();
 var MEMS=(T&&T.mems)||[
  {g:'family',av:'D',nm:'Daniel',rel:'her son',tx:'She taught me that the best part of any morning was the quiet before everyone woke. I still get up early, just to feel close to her.',h:46,cm:[['Sofia','granddaughter','Dad, she knew. She always knew.'],['Grace','friend','She bragged about your sunrises.']]},
  {g:'family',av:'S',nm:'Sofia',rel:'granddaughter',tx:'Taught me to whistle with two fingers. Mom was furious. Worth it.',h:53,cm:[['Daniel','her son','She was so proud of that, it was a problem.']]},
- {g:'family',av:'R',nm:'Robert',rel:'her brother',tx:'No conversation before the first cup of coffee. House rule.',h:41,cm:[['Marie','a neighbour','I learned this the hard way in 1994.'],['Pearl','the tea girls','We all did.']]},
+ {g:'family',av:'R',nm:'Robert',rel:'her brother',tx:'No conversation before the first cup of coffee. House rule.',h:41,cm:[['Marie','a neighbor','I learned this the hard way in 1994.'],['Pearl','the tea girls','We all did.']]},
  {g:'family',av:'M',nm:'Michael',rel:'her son',tx:'Every rose in my yard is because of her.',h:44,cm:[]},
  {g:'friends',av:'G',nm:'Grace',rel:'friend · 52 years',tx:'Tuesday tea, every week since 1974. She never once let me pay.',h:38,cm:[['Pearl','the tea girls','Gossip strictly forbidden. Gossip always happening.']]},
  {g:'friends',av:'P',nm:'Pearl',rel:'the tea girls',tx:'She kept every one of our secrets and none of her cookies.',h:29,cm:[]},
- {g:'neighbours',av:'M',nm:'Marie',rel:'a neighbour',tx:'Every child on the street learned to plant something in her garden. She made the world feel a little gentler.',h:71,cm:[['Tom','next door','Mine still grows by the fence.'],['Anna','her student','She gave me seeds for my classroom too.']]},
+ {g:'neighbours',av:'M',nm:'Marie',rel:'a neighbor',tx:'Every child on the street learned to plant something in her garden. She made the world feel a little gentler.',h:71,cm:[['Tom','next door','Mine still grows by the fence.'],['Anna','her student','She gave me seeds for my classroom too.']]},
  {g:'neighbours',av:'T',nm:'Tom',rel:'next door, 30 years',tx:'Bread on the porch every Sunday. We never once asked. It never once stopped.',h:33,cm:[]},
  {g:'students',av:'A',nm:'Anna',rel:'Room 4, class of 1989',tx:'She told me I was a writer when I was eight. I am a writer. That is the whole story.',h:88,cm:[['James','class of 1991','She did this for all of us.'],['Daniel','her son','She kept your book on her shelf, Anna.']]},
  {g:'students',av:'J',nm:'James',rel:'a former student',tx:'Thirty years later she still remembered where I sat.',h:44,cm:[]}
@@ -1559,7 +1595,7 @@ function setMode(m,force){
 document.querySelectorAll('.mode').forEach(function(b){b.onclick=function(){setMode(b.dataset.mode)}});
 /* ===== identity · asked once, before adding anywhere ===== */
 var idm=document.getElementById('idm'),idCb=null;
-var REL_LABEL={family:'family',friends:'friend',neighbours:'neighbour',students:'her student',friends2:'colleague',friends3:'a friend'};
+var REL_LABEL={family:'family',friends:'friend',neighbours:'neighbor',students:'her student',friends2:'colleague',friends3:'a friend'};
 function requireId(cb){if(ID){cb&&cb();return}idCb=cb||null;idm.classList.add('open');document.getElementById('fnIn').focus()}
 function setAddingAs(){var el=document.getElementById('addingAs');if(!el)return;
   el.innerHTML=ID?'<span>Adding as <b>'+ID.fn+' '+ID.ln[0].toUpperCase()+'. · '+ID.relLabel+'</b></span><button id="idChange">change</button>':'<span>Adding as <b>a visitor</b> · introduce yourself first</span><button id="idChange">who am I?</button>';
@@ -1597,7 +1633,7 @@ var BOARDS=(T&&T.boards)||[
   {t:'add'}
  ]},
  {key:'neighbours',label:'Neighbours',items:[
-  {t:'photo',img:BIMG.garden,ttl:'Street garden day',who:'Marie',rel:'a neighbour',date:'May 30, 2026',h:41,r:3,c:[['Tom','next door','Best day this street ever had.']]},
+  {t:'photo',img:BIMG.garden,ttl:'Street garden day',who:'Marie',rel:'a neighbor',date:'May 30, 2026',h:41,r:3,c:[['Tom','next door','Best day this street ever had.']]},
   {t:'note',ttl:'Bread on Sundays',tx:'Bread on the porch every Sunday. We never once asked. It never once stopped. Twenty-two years of Sundays.',who:'Tom',rel:'next door, 30 years',date:'June 4, 2026',h:33,r:-3,c:[]},
   {t:'photo',img:BIMG.dawn,ttl:'Her gate, always open',who:'the Aldersons',rel:'across the street',date:'June 15, 2026',h:18,r:2,c:[]},
   {t:'add'}
@@ -1848,7 +1884,7 @@ function lpRest(v){
 function lpToggle(v){if(v.paused)lpWake(v);else lpRest(v)}
 function syncLiving(){
   var tag=document.getElementById('archLiveTag');
-  if(tag)tag.textContent=body.dataset.tier==='plus'?'Living portrait · hover to play':'Living portrait · Plus';
+  if(tag)tag.textContent=body.dataset.tier==='plus'?'Living portrait · press to play':'Living portrait · Plus';
   document.querySelectorAll('video.living').forEach(function(v){
     if(!v.dataset.wired){v.dataset.wired='1';v.muted=true;v.removeAttribute('autoplay');
       v.addEventListener('playing',function(){v.classList.add('on')});
@@ -1856,10 +1892,8 @@ function syncLiving(){
       if(host&&!host.dataset.lp){host.dataset.lp='1';
         if(!host.hasAttribute('tabindex'))host.setAttribute('tabindex','0');
         var lastTouch=0;
-        host.addEventListener('mouseenter',function(){if(Date.now()-lastTouch>800)lpWake(v)});
-        host.addEventListener('mouseleave',function(){if(Date.now()-lastTouch>800)lpRest(v)});
+        /* redesign: hover-wake removed — living pictures play only on an explicit press (audit consent requirement) */
         if(window.PointerEvent){host.addEventListener('pointerup',function(e){
-          if(e.pointerType==='mouse')return;
           lastTouch=Date.now();
           if(e.target&&e.target.classList&&e.target.classList.contains('livetag'))return;
           lpToggle(v)})}

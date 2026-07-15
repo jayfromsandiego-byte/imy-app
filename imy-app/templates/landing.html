@@ -263,6 +263,24 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
   .hero h1 .hl::after{clip-path:none}
   html{scroll-behavior:auto}
 }
+
+/* ══════════ REDESIGN LAYER · Batch 1 (F0/P0) · per Design Audit + Mobile Audit · July 14 2026 · preview branch ══════════ */
+/* audit1 #4/#8 · motion budget: the marquee and particles retire on every device */
+.foldticker{display:none!important}
+#lpStars,#lpFlames{display:none!important}
+/* audit1 #6 · calm confidence outsells urgency: the badge theatrics retire */
+.lp-badge{display:none!important}
+/* M1 · mobile navigation exists: the section links return as large wrap targets instead of vanishing */
+@media(max-width:680px){
+  .mwhero .mw-links{display:flex!important;flex-wrap:wrap;gap:6px 14px;margin-left:0;width:100%;order:3;padding-top:8px}
+  .mwhero .mw-links a{font-size:15px;padding:10px 6px;min-height:44px;display:inline-flex;align-items:center}
+  .mwhero .mw-nav{flex-wrap:wrap}
+  .mwhero .mw-login{padding:8px 14px;font-size:13px}
+  .mwhero .mw-navcta{min-height:44px;display:inline-flex;align-items:center}
+}
+/* M5 · type floor for the label layer */
+.mw-eyb{font-size:13px!important}
+.mw-counter{font-size:14px!important}
 </style>
 <style>
 .ha-img-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#f4f4f5;border:1px dashed #d4d4d8;border-radius:8px;color:#71717a;font-size:12px;font-family:system-ui,sans-serif;min-height:80px;padding:16px;box-sizing:border-box;animation:ha-img-pulse 1.5s ease-in-out infinite}
@@ -673,7 +691,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
         <a class="mw-bg2" href="#example">See an example</a>
       </div>
       <span class="mw-sig"> · with all our love</span>
-      <span class="mw-counter"><b data-count="41928">0</b> tributes created</span>
+      <span class="mw-counter">free stays free · forever</span>
     </div>
   </div>
   <a class="scrollcue" href="#memory" aria-label="Scroll to begin"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -710,7 +728,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
         <h2>No one should be<br>remembered <em>alone</em>.</h2>
         <p class="exsub">Invite everyone who loved them. Grief is lighter when it is carried together.</p>
         <button class="exlay" id="exBtn"><img src="/art/lily2-f5e2ef.png" alt="" aria-hidden="true"> Lay a flower</button>
-        <div class="exline"><b id="exCt">1,284</b> flowers since her page began · lilies for peace · roses for love</div>
+        <div class="exline">lilies for peace · roses for love · every flower laid is kept</div>
         <div class="excomposer">
           <div class="lab">Leave a memory</div>
           <input class="field" type="text" aria-label="Leave a memory" placeholder="You taught me to ride a bike on Maple St">
@@ -720,7 +738,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
           <div class="who">Daniel, her grandson</div>
         </div>
         <a class="exvisit" href="/sites/example" target="_blank" rel="noopener noreferrer">Visit Eleanor's tribute</a>
-        <div class="extaste">A real page · yours will be theirs</div>
+        <div class="extaste">A sample page, composed with love · yours will be theirs</div>
       </div>
     </div>
   </section>
@@ -736,7 +754,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
 
   <section class="lp-band lp-creed" id="creed">
     <div class="bgi"><img loading="lazy" src="/art/08c75d93-f2c0-4030-b56e-41202c25ec8b-6c60b5.png" alt=""></div><div class="v"></div><div class="g2"></div>
-    <div class="inb"><div class="q">Grief is love with <em>nowhere to go</em>.</div><div class="sub">Here, it has somewhere to go.</div></div>
+    <div class="inb"><div class="q">Grief is love with <em>nowhere to go</em>.</div><div class="sub">Here, it has somewhere to go. <span style="opacity:.65">— after Jamie Anderson</span></div></div>
   </section>
 
   <section class="lp-stories" id="stories"><div class="in rev">
