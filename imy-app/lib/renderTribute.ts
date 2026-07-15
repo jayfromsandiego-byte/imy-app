@@ -444,10 +444,10 @@ export function renderTribute(template: string, t: Tribute): string {
   {
     const present = new Set([...mems, ...seedw].map((m: any) => m.g));
     const groups: Array<[string, string]> = [["all", "Everyone"], ["family", "Family"], ["friends", "Friends"]];
-    if (present.has("neighbours")) groups.push(["neighbours", "Neighbours"]);
+    if (present.has("neighbours")) groups.push(["neighbours", "Neighbors"]);
     if (present.has("students")) groups.push(["students", `${pn.Pos} students`]);
     html = html.split(
-      "var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbours'],['students','Her students']];"
+      "var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbors'],['students','Her students']];"
     ).join(`var GROUPS=${JSON.stringify(groups)};`);
   }
 
