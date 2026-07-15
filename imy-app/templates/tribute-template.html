@@ -972,6 +972,14 @@ body.a11y-nomotion .living{opacity:0!important}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #8B5E3C;outline-offset:2px;border-radius:4px}
 .like,.cmt,.memtab{min-height:44px;display:inline-flex;align-items:center}
 @media(max-width:820px){.sub{font-size:16.5px}}
+
+/* ══════════ REDESIGN LAYER · Batch 4 residuals · July 14 2026 · preview ══════════ */
+/* audit1 #4/#8 · the second marquee dies (the little-things ticker) */
+.tick9{display:none!important}
+/* audit1 #3 · the living-portrait label leaves the face: low on the frame, never wrapped over their eyes */
+.wr-arch .livetag{top:auto!important;bottom:14px;white-space:nowrap}
+/* M3/M10 · the demo's floating begin-pill stays off phones */
+@media(max-width:820px){#begin-pill{display:none!important}}
 </style>
 <style>
 /* mobile pass · July 5 · the name plate hangs below the wreath on phones; give it room so

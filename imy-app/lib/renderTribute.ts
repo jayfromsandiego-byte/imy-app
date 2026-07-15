@@ -925,10 +925,9 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
       `<h2 style="font-family:'Besley',serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.2;color:#FAF5EC;margin:0 0 14px">Make one for someone <em style="color:#C9A572">you</em> miss.</h2>` +
       `<p style="font-family:'Besley',serif;font-size:16.5px;line-height:1.65;color:rgba(250,245,236,.82);margin:0 0 30px">Begin free · their page is online in ten quiet minutes, and it stays forever. Everything you just saw here, the Living pictures, her voice, every photograph in motion: that is Plus.</p>` +
       `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">` +
-      `<a href="/onboarding?plan=plus" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;background:#C9A572;color:#241711;border-radius:100px;padding:14px 26px;text-decoration:none">Begin with Plus · $97 once</a>` +
+      `<a href="/onboarding?plan=plus" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;background:#A87C5F;color:#FBF6ED;border-radius:100px;padding:14px 26px;text-decoration:none">Begin with Plus · $97 once</a>` +
       `<a href="/onboarding" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;border:1.5px solid rgba(201,165,114,.65);color:#F4E9D4;border-radius:100px;padding:14px 26px;text-decoration:none">Begin free · $0</a>` +
       `</div>` +
-      `<div style="font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(201,165,114,.75);margin-top:26px">$0 · $97 once or $12/month · Concierge from $499 · never deleted, never expired</div>` +
       `</div></section>`;
     const gw = html.indexOf('<div class="gw-band">');
     if (gw > -1) html = html.slice(0, gw) + demoBand + html.slice(gw);
