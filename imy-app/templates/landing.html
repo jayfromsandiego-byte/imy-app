@@ -281,8 +281,8 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 /* M5 · type floor for the label layer */
 .mw-eyb{font-size:13px!important}
 .mw-counter{font-size:14px!important}
-/* M1 compensation: the wrapped nav grew the bar; the hero letter steps down out from under it */
-@media(max-width:680px){.mwhero .mw-inner{margin-top:96px}}
+/* M1 systemic: on phones the tornbar joins the document flow — the hero can never slide under it, at any width */
+@media(max-width:680px){.mwhero .tornbar{position:relative;top:auto}.mwhero .mw-inner{margin-top:14px}}
 
 /* ══════════ REDESIGN LAYER · Batch 3 (global system) · July 14 2026 · preview ══════════ */
 :root{--cream:#FDFBF7}
