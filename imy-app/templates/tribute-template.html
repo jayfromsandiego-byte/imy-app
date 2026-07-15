@@ -886,6 +886,114 @@ body.a11y-contrast .wallbloom{display:none}
 body[data-tier="free"] .wr-arch .living{display:none}
 .wr-arch .livetag{pointer-events:auto;cursor:pointer}
 body.a11y-nomotion .living{opacity:0!important}
+
+/* ══════════ REDESIGN LAYER · Batch 1 (F0/P0) · per Design Audit + Mobile Audit · July 14 2026 · preview branch ══════════ */
+/* M6 · touch targets: pagination dots get 24px+ hit areas (visual dot stays quiet) */
+.cardots button,.stage-dots button{width:12px!important;height:12px!important;padding:14px!important;background-clip:content-box!important;box-sizing:content-box!important}
+/* M5 · type floors for the label layer (informational ≥13–16px, service lines already fluid) */
+.memkeep{font-size:13px!important;letter-spacing:.06em!important}
+.livetag{font-size:11px!important;letter-spacing:.1em!important}
+.bbpill{font-size:12px!important}
+/* audit1 #10 · gold-on-cream fails AA: gold text on light surfaces deepens to AA-passing tone (dark sections keep true gold) */
+.foot-free .p2 b{color:#8A5A3C!important}
+/* M3/F0 · thumb zone: one floating element max on phones; a11y widget respects the gesture bar */
+@media(max-width:820px){
+  .bbpill{display:none!important}
+  .totop{display:none!important}
+  .a11y-fab{left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;width:46px!important;height:46px!important}
+}
+/* M10 + audit1 #6 · de-commerce the guest memorial: purchase UI leaves the shrine (kept for keepers in dashboard) */
+#bookBtn{display:none!important}
+.foot-free .price,.foot-plus .price,#footGive{display:none!important}
+#footGive + .pledge{display:none!important}
+/* M9 · the memorial ends with remembrance: pledge + credit + url remain, pricing stack above is gone */
+/* M7 · the board, rethought for small screens: two-column, untilted, cork as a band not a tube */
+@media(max-width:640px){
+  .boardstage{padding:16px 12px 20px!important;border-width:8px!important}
+  .boardstage .piece{transform:none!important;width:calc(50% - 8px)!important;margin:4px!important}
+  .piece:hover{transform:none!important}
+}
+/* M14 · the identity helper never fractures; form helpers readable */
+.whoami,.wm-help{white-space:nowrap}
+/* M4 · header never clips its own controls on phones */
+@media(max-width:640px){
+  .tornbar .tb-in{flex-wrap:wrap;row-gap:8px}
+  .tornbar .actions .btn{font-size:13px!important;padding:10px 14px!important;min-height:44px}
+}
+/* audit1 #8 · motion budget: decks stop auto-advancing under reduced-motion; nothing moves uninvited on touch */
+@media(hover:none){.tln:hover .tlpop{opacity:0}}
+
+/* ══════════ REDESIGN LAYER · Batch 2 (components) · July 14 2026 · preview branch ══════════ */
+/* M1/M13 · the bottom tab bar: the map every fifteen-screen page needed */
+.tabbar{display:none}
+@media(max-width:820px){
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:360;display:flex;background:rgba(251,247,239,.97);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .tabbar a{flex:1;min-height:54px;display:flex;align-items:center;justify-content:center;font-family:'Besley',serif;font-size:14.5px;color:var(--ink-soft);text-decoration:none;border-top:2px solid transparent}
+  .tabbar a.on{color:var(--accent-deep);border-top-color:var(--accent)}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .a11y-fab{bottom:calc(74px + env(safe-area-inset-bottom,0px))!important}
+  .galgrid{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:14px;padding:6px 2px 16px;grid-template-columns:none!important}
+  .galgrid .print{flex:0 0 74vw;max-width:340px;scroll-snap-align:center;transform:none!important}
+  #galPrev,#galNext{display:none!important}
+}
+/* audit1 #7 / M12 · the cassette card: the voice, kept properly */
+.vk{display:flex;align-items:center;gap:14px;background:linear-gradient(#fffdf6,#f6efdf);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0 8px;box-shadow:inset 0 0 20px rgba(120,90,40,.06)}
+.vk audio{display:none}
+.vk-play{flex:0 0 56px;width:56px;height:56px;border-radius:50%;border:none;background:var(--accent);color:#FBF6ED;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.vk-play:hover{background:var(--accent-deep)}
+.vk.playing .vk-play{background:var(--accent-deep)}
+.vk-body{flex:1;min-width:0}
+.vk-track{height:10px;border-radius:6px;background:rgba(44,37,32,.12);cursor:pointer;position:relative;overflow:hidden}
+.vk-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);border-radius:6px;transition:width .15s linear}
+.vk-meta{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}
+.vk-time{font-family:'Besley',serif;font-size:15px;color:var(--ink)}
+.vk-cap{font-size:12.5px;letter-spacing:.06em;color:var(--ink-soft);font-style:italic}
+/* M14 · the sheet asks with big, warm controls */
+.relchips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 10px}
+.relchips button{min-height:44px;padding:8px 18px;border-radius:100px;border:1.5px solid var(--line);background:#fffdf6;font-family:'Besley',serif;font-size:15.5px;color:var(--ink);cursor:pointer;transition:.15s}
+.relchips button.on{background:var(--accent);border-color:var(--accent);color:#FBF6ED}
+.frow input,#emIn,#relSel,#relTxt,#idGo{min-height:48px}
+
+/* ══════════ REDESIGN LAYER · Batch 3 (global system) · July 14 2026 · preview ══════════ */
+/* palette air: the canvas lifts toward paper; cream becomes the accent surface it always wanted to be */
+:root{--bg:#FDFBF7;--line:#e7dfd0}
+/* type v2: mono retires from UI into Besley small caps (the tape shelf keeps its diegetic lettering); brand-hand Caveat becomes the family's italic serif */
+.mono,.kick,.plusflag,.preview .pl,.readout,.svcrow .lab,.svcrow .mini,.bbpill,.stone .il,.arr-dt,.rosect,.chalk .l2,.stage-nav .st,.tln .yr,.like,.cmt,.letter .lnote,.truth .tl2,.memtab,.mem-rel,.memkeep,.lockpill .plus,.mode,.cl-name .ct2,.bnote .more,.vidp .vbadge2,.plock,.hint-open,.sheet .pgno,.sheet .stamp,.albnav .pg,.swipehint,.lb .who,.lb .ldate,.lb .cmt2 .r,.lib .sub,.libcard .ln .lk,.lib .note,.gw-inner .ey,.gw-side .per,footer .pledge,footer .p2,footer .gwline,footer .url,.whisper .wp,.period,.mo .yr,/* v5 · memories views */ .memviews,.mview,.human,.btab,.pmeta .m1,.pmeta .m2,/* chapter cards hierarchy */ .hier,.period .py,/* fixed jump buttons */ .bbfab,/* adding-as line */ .addingas,.addingas button,/* ── July 12 release · the first ten ───────────────────────────────────── */ /* the identity sheet must sit above the gift sheet (z 460) · a named giver introduces themselves ON TOP of the gift,never invisibly beneath it */ .inv-trial,.idm .note2,.galnav .gp,/* curated note */ .curated,.cdrawer .c1 .r,.wr-arch .il,.wr-plate .n2,.wr-count,.wr-total,.tick9 .run,.presence,/* ===== v9.3 adjustments ===== */ /* T8 · the BIG living number */ .wr-big,.wr-biglab,/* ===== v9.4 · FAMILY UNLOCK ===== */ .wallct,.wchip .st,.wmore,.inv-kick,.inv-trust,.unlockline .ul-sub,.plaque .pl-date,/* JUST JOINED badge */ .jj,.gs-kick,.gs-price .gper,.gs-opt span,.gs-fine,.livetag{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
+.hand,/* announcement bar (free credit) */ .announce,.arr-ep,.scene .capline,.fig .fname,.chalk .l1,.band .s,.tlpop .cap,.print .cap,.letter .sig,.really .handline,.cl-name,.bnote .bt,.bnote .bx,.bnote .who2,.addpiece,.scrap,.slot .scap,.sp-title,.tapeobj .lbl .t,.lb .bignote,footer .credit,.car .ci .cc,.bookline .bl1,.wr-plate .ep{font-family:'Besley',serif!important;font-style:italic;letter-spacing:0}
+/* one action color: flame retires from interactive states to candle duty */
+.seg button.active,.tchip.active{background:var(--accent);color:#FBF6ED}
+.tchip.active{border-color:var(--accent)}
+.gw-cta{background:var(--accent);color:#FBF6ED}
+.gw-cta:hover{background:var(--accent-deep)}
+.tln:hover .nd,.tln.open .nd{background:var(--accent);box-shadow:0 0 0 5px rgba(176,122,86,.3)}
+.lockpill .plus,.plock{background:var(--gold);color:#241711}
+.mode.active,.totop{color:var(--gold)}
+/* AA sweep: visible focus everywhere, reaction pills reach 44px, reading floors on phones */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #8B5E3C;outline-offset:2px;border-radius:4px}
+.like,.cmt,.memtab{min-height:44px;display:inline-flex;align-items:center}
+@media(max-width:820px){.sub{font-size:16.5px}}
+
+/* ══════════ REDESIGN LAYER · Batch 4 residuals · July 14 2026 · preview ══════════ */
+/* audit1 #4/#8 · the second marquee dies (the little-things ticker) */
+.tick9{display:none!important}
+/* audit1 #3 · the living-portrait label leaves the face: low on the frame, never wrapped over their eyes */
+.wr-arch .livetag{top:auto!important;bottom:14px;white-space:nowrap}
+/* M3/M10 · the demo's floating begin-pill stays off phones */
+@media(max-width:820px){#begin-pill{display:none!important}}
+/* M3 final · the board FAB docks above the tab bar on phones (the harness guards its presence for pinned boards — retiring it fully is a flagged decision); its bob retires everywhere (motion budget) */
+@media(max-width:820px){.bbfab{bottom:calc(74px + env(safe-area-inset-bottom,0px));right:12px;font-size:9px;padding:9px 13px}}
+.bbfab .ar{animation:none!important}
+/* audit1 #3 final · at phone widths the consent label sits quiet at the frame's foot: two small lines, never on the face */
+@media(max-width:640px){.wr-arch .livetag{white-space:normal!important;text-align:center;max-width:88%;line-height:1.45;font-size:8px!important;letter-spacing:.07em!important;top:auto!important;bottom:8px}}
+/* 320-class screens: the docked chrome goes compact — visible and tappable (the pill guard holds), tiny footprint */
+@media(max-width:360px){
+  .bbfab{padding:9px;gap:0;font-size:0!important;letter-spacing:0!important}
+  .bbfab .ar{font-size:12px!important}
+  .a11y-fab{width:40px!important;height:40px!important}
+  .a11y-fab svg{width:22px;height:22px}
+}
+/* the filter chips give their counts air */
+.memtab b{margin-left:5px}
 </style>
 <style>
 /* mobile pass · July 5 · the name plate hangs below the wreath on phones; give it room so
@@ -1041,7 +1149,7 @@ body.a11y-nomotion .living{opacity:0!important}
         <div class="inv-trust">No subscription · Nothing is ever taken down · The first ten stay free, always</div>
         <button class="inv-trial" id="invTrial" type="button">Or see it open free for three days · $12/month after · cancel anytime</button>
       </div>
-      <div class="memkeep">every memory is kept · nothing scrolls away · grouped so no one is lost in the pile</div>
+      <div class="memkeep">every memory is kept · grouped so no one is lost</div>
       <div class="share">
         <h3>Share a memory of Eleanor</h3>
         <div class="addingas" id="addingAs"></div>
@@ -1148,11 +1256,14 @@ body.a11y-nomotion .living{opacity:0!important}
     <div class="sub">Asked once. Your name travels with everything you add, so people can find you on her page.</div>
     <div class="frow"><input id="fnIn" placeholder="First name" autocomplete="given-name"/><input id="lnIn" placeholder="Last name" autocomplete="family-name"/></div>
     <input id="emIn" type="email" placeholder="Your email" autocomplete="email" inputmode="email" style="margin-bottom:9px"/>
+    <div class="relchips" role="group" aria-label="How you knew them">
+      <button type="button" data-rel="family">Family</button><button type="button" data-rel="friends">Friend</button><button type="button" data-rel="neighbours">Neighbor</button><button type="button" data-rel="students">Student</button><button type="button" data-rel="friends2">Colleague</button>
+    </div>
     <select id="relSel">
       <option value="">How did you know Eleanor?</option>
       <option value="family">Family</option>
       <option value="friends">Friend</option>
-      <option value="neighbours">Neighbour</option>
+      <option value="neighbours">Neighbor</option>
       <option value="students">Her student</option>
       <option value="friends2">Colleague</option>
       <option value="friends3">Another way</option>
@@ -1160,7 +1271,7 @@ body.a11y-nomotion .living{opacity:0!important}
     <input id="relTxt" placeholder="In your own words · e.g. her student, Room 4, 1989" style="margin-top:9px"/>
     <label class="human"><input type="checkbox" id="humanChk"/> I'm a real person · every memorial is protected from spam</label>
     <button class="btn solid go" id="idGo">Continue</button>
-    <div class="note2">first name shown · last name and email kept private to the family<br>your email is never shown publicly · no account needed · asked once</div>
+    <div class="note2">your memory goes to the family before it appears on the page<br>first name shown · last name and email kept private to the family<br>your email is never shown publicly · no account needed · asked once</div>
   </div>
 </div>
 
@@ -1211,6 +1322,14 @@ body.a11y-nomotion .living{opacity:0!important}
 </div>
 
 <button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+<nav class="tabbar" id="tabbar" aria-label="On this page">
+  <a href="#story">Story</a>
+  <a href="#gallery">Photos</a>
+  <a href="#really">About</a>
+  <a href="#memories">Memories</a>
+  <a href="#keep">Board</a>
+</nav>
 
 <button class="a11y-fab" id="a11yFab" aria-label="Accessibility options" aria-expanded="false" aria-controls="a11yPanel" aria-haspopup="true">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="3.7" r="2.1"/><path d="M20.3 7.6c0 .55-.45 1-1 1l-4.2-.5v3.2l2.2 7.5c.18.66-.2 1.35-.86 1.53-.66.19-1.35-.19-1.53-.85L12.6 15h-1.2l-1.31 4.28c-.18.66-.87 1.04-1.53.85-.66-.18-1.04-.87-.86-1.53l2.2-7.5V8.1l-4.2.5c-.55 0-1-.45-1-1s.45-1 1-1h13.3c.55 0 1 .45 1 1z"/></svg>
@@ -1313,8 +1432,9 @@ if(T&&T.fwt){wn=Number(T.fwt)||0;if(wreathCt)wreathCt.textContent=wn}
 var GAL=(T&&T.gal)||[['dawn','Summer, 1979'],['coffee','Black coffee, no sugar'],['laugh','That laugh'],['kitchen','Her kitchen'],['garden','Walking the rows'],['letters','Golden hour'],['porch','On the porch, 1998'],['dawn','First light, again'],['garden','Best in show, 2018'],['coffee','The crossword hour'],['letters','A letter a week'],['kitchen','Sunday bread']];
 var galPage=0,galGrid=document.getElementById('galGrid'),galPg=document.getElementById('galPg');
 function renderGal(){var pages=Math.ceil(GAL.length/6);galPage=Math.max(0,Math.min(galPage,pages-1));
-  galGrid.innerHTML=GAL.slice(galPage*6,galPage*6+6).map(function(g,i){return '<figure class="print" style="--r:'+((i%3-1)*1.6+(galPage%2?0.4:-0.4))+'deg"><span class="pin"></span><img src="'+IMGS[g[0]]+'" alt="'+g[1]+'"/>'+(body.dataset.tier==='plus'&&LIV[g[0]]?'<video class="living" src="'+LIV[g[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="livetag">Living · hover</span>':'')+'<div class="cap">'+g[1]+'</div></figure>'}).join('');
-  galPg.textContent='page '+(galPage+1)+' of '+pages+' · '+GAL.length+' photographs · holds fifty without the scroll';if(body.dataset.tier==='free'&&T&&T.phw>0){galPg.textContent='page '+(galPage+1)+' of '+pages+' · the album holds ten · '+T.phw+' more kept safe, waiting'}if(typeof syncLiving==='function')syncLiving()}
+  var MOBG=window.matchMedia&&window.matchMedia('(max-width:820px)').matches;
+  galGrid.innerHTML=(MOBG?GAL:GAL.slice(galPage*6,galPage*6+6)).map(function(g,i){return '<figure class="print" style="--r:'+(MOBG?0:((i%3-1)*1.6+(galPage%2?0.4:-0.4)))+'deg"><span class="pin"></span><img loading="lazy" src="'+IMGS[g[0]]+'" alt="'+g[1]+'"/>'+(body.dataset.tier==='plus'&&LIV[g[0]]?'<video class="living" src="'+LIV[g[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="livetag">Living · press</span>':'')+'<div class="cap">'+g[1]+'</div></figure>'}).join('');
+  galPg.textContent=MOBG?GAL.length+' photographs · swipe through them':'page '+(galPage+1)+' of '+pages+' · '+GAL.length+' photographs';if(body.dataset.tier==='free'&&T&&T.phw>0){galPg.textContent='page '+(galPage+1)+' of '+pages+' · the album holds ten · '+T.phw+' more kept safe, waiting'}if(typeof syncLiving==='function')syncLiving()}
 document.getElementById('galNext').onclick=function(){galPage++;renderGal()};
 document.getElementById('galPrev').onclick=function(){galPage--;renderGal()};
 
@@ -1382,6 +1502,7 @@ if(T&&!GAL.length){var _ga=document.getElementById('gallery');if(_ga)_ga.style.d
 if(T&&(!T.boards||!T.boards.length)){var _kp=document.getElementById('keep');if(_kp)_kp.style.display='none'}
 car.addEventListener('mouseenter',function(){clearTimeout(auto)});
 car.addEventListener('mouseleave',function(){restart(4600)});
+car.addEventListener('pointerdown',function(){clearTimeout(auto)},{passive:true});
 /* cycler */
 var words=(T&&T.words&&T.words.length)?T.words:["black coffee, no sugar","her garden rows, just after sunrise","hymns at the piano","the Sunday crossword, radio low","seeds in her coat pocket","letters, written by hand"],wi=0,we=document.getElementById('cycW');
 if(we&&!RM)setInterval(function(){if(noMo())return;wi=(wi+1)%words.length;we.style.opacity=0;setTimeout(function(){we.textContent=words[wi];we.style.opacity=1},320)},2700);
@@ -1407,16 +1528,16 @@ wireLikes();
 var MEMS=(T&&T.mems)||[
  {g:'family',av:'D',nm:'Daniel',rel:'her son',tx:'She taught me that the best part of any morning was the quiet before everyone woke. I still get up early, just to feel close to her.',h:46,cm:[['Sofia','granddaughter','Dad, she knew. She always knew.'],['Grace','friend','She bragged about your sunrises.']]},
  {g:'family',av:'S',nm:'Sofia',rel:'granddaughter',tx:'Taught me to whistle with two fingers. Mom was furious. Worth it.',h:53,cm:[['Daniel','her son','She was so proud of that, it was a problem.']]},
- {g:'family',av:'R',nm:'Robert',rel:'her brother',tx:'No conversation before the first cup of coffee. House rule.',h:41,cm:[['Marie','a neighbour','I learned this the hard way in 1994.'],['Pearl','the tea girls','We all did.']]},
+ {g:'family',av:'R',nm:'Robert',rel:'her brother',tx:'No conversation before the first cup of coffee. House rule.',h:41,cm:[['Marie','a neighbor','I learned this the hard way in 1994.'],['Pearl','the tea girls','We all did.']]},
  {g:'family',av:'M',nm:'Michael',rel:'her son',tx:'Every rose in my yard is because of her.',h:44,cm:[]},
  {g:'friends',av:'G',nm:'Grace',rel:'friend · 52 years',tx:'Tuesday tea, every week since 1974. She never once let me pay.',h:38,cm:[['Pearl','the tea girls','Gossip strictly forbidden. Gossip always happening.']]},
  {g:'friends',av:'P',nm:'Pearl',rel:'the tea girls',tx:'She kept every one of our secrets and none of her cookies.',h:29,cm:[]},
- {g:'neighbours',av:'M',nm:'Marie',rel:'a neighbour',tx:'Every child on the street learned to plant something in her garden. She made the world feel a little gentler.',h:71,cm:[['Tom','next door','Mine still grows by the fence.'],['Anna','her student','She gave me seeds for my classroom too.']]},
+ {g:'neighbours',av:'M',nm:'Marie',rel:'a neighbor',tx:'Every child on the street learned to plant something in her garden. She made the world feel a little gentler.',h:71,cm:[['Tom','next door','Mine still grows by the fence.'],['Anna','her student','She gave me seeds for my classroom too.']]},
  {g:'neighbours',av:'T',nm:'Tom',rel:'next door, 30 years',tx:'Bread on the porch every Sunday. We never once asked. It never once stopped.',h:33,cm:[]},
  {g:'students',av:'A',nm:'Anna',rel:'Room 4, class of 1989',tx:'She told me I was a writer when I was eight. I am a writer. That is the whole story.',h:88,cm:[['James','class of 1991','She did this for all of us.'],['Daniel','her son','She kept your book on her shelf, Anna.']]},
  {g:'students',av:'J',nm:'James',rel:'a former student',tx:'Thirty years later she still remembered where I sat.',h:44,cm:[]}
 ];
-var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbours'],['students','Her students']];
+var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbors'],['students','Her students']];
 var memTabs=document.getElementById('memTabs'),track=document.getElementById('memTrack');
 var curG='all',memPage=0,ID=null;
 /* asked once, truly · the introduction is remembered on this device (July 9) */
@@ -1428,7 +1549,7 @@ function memCard(m){
    +'<div class="mem-head"><div class="mem-av">'+m.av+'</div><div><div class="mem-nm">'+m.nm+'</div><div class="mem-rel">'+m.rel+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
    +'<div class="mem-text">&ldquo;'+m.tx+'&rdquo;</div>'
    +(m.ph?'<img class="mem-ph" src="'+m.ph+'" alt="A photograph left with this memory" loading="lazy"/>':'')
-   +(m.au?'<audio controls preload="none" src="'+m.au+'" aria-label="A voice memory" style="width:100%;display:block;margin:10px 0 2px;height:34px"></audio><div class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--ink-soft);margin-bottom:6px">a voice, kept</div>':'')
+   +(m.au?'<div class="vk" role="group"><audio preload="none" src="'+m.au+'" aria-label="A voice memory"></audio><button type="button" class="vk-play" aria-label="Play the voice memory">▶</button><div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div><div class="vk-meta"><span class="vk-time">0:00</span><span class="vk-cap">a voice, kept</span></div></div></div>':'')
    +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"'+(m.id?' data-id="'+m.id+'"':'')+'><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
    +'<div class="cdrawer">'+(cms||'<div class="c1" style="color:var(--ink-soft)">Be the first to leave a word.</div>')
    +'<div class="addc2"><input placeholder="Leave a word&hellip;"/><button type="button">Post</button></div></div></div>'}
@@ -1560,10 +1681,10 @@ function setMode(m,force){
 document.querySelectorAll('.mode').forEach(function(b){b.onclick=function(){setMode(b.dataset.mode)}});
 /* ===== identity · asked once, before adding anywhere ===== */
 var idm=document.getElementById('idm'),idCb=null;
-var REL_LABEL={family:'family',friends:'friend',neighbours:'neighbour',students:'her student',friends2:'colleague',friends3:'a friend'};
+var REL_LABEL={family:'family',friends:'friend',neighbours:'neighbor',students:'her student',friends2:'colleague',friends3:'a friend'};
 function requireId(cb){if(ID){cb&&cb();return}idCb=cb||null;idm.classList.add('open');document.getElementById('fnIn').focus()}
 function setAddingAs(){var el=document.getElementById('addingAs');if(!el)return;
-  el.innerHTML=ID?'<span>Adding as <b>'+ID.fn+' '+ID.ln[0].toUpperCase()+'. · '+ID.relLabel+'</b></span><button id="idChange">change</button>':'<span>Adding as <b>a visitor</b> · introduce yourself first</span><button id="idChange">who am I?</button>';
+  el.innerHTML=ID?'<span>Adding as <b>'+ID.fn+' '+ID.ln[0].toUpperCase()+'. · '+ID.relLabel+'</b></span><button id="idChange">change</button>':'<span>First, tell the family who this is from</span><button id="idChange">add your name</button>';
   document.getElementById('idChange').onclick=function(){ID=null;idm.classList.add('open')}}
 document.getElementById('idGo').onclick=function(){
   var fn=document.getElementById('fnIn').value.trim(),ln=document.getElementById('lnIn').value.trim(),em=(document.getElementById('emIn')?document.getElementById('emIn').value.trim():''),rv=document.getElementById('relSel').value,rt=document.getElementById('relTxt').value.trim(),hu=document.getElementById('humanChk').checked;
@@ -1598,7 +1719,7 @@ var BOARDS=(T&&T.boards)||[
   {t:'add'}
  ]},
  {key:'neighbours',label:'Neighbours',items:[
-  {t:'photo',img:BIMG.garden,ttl:'Street garden day',who:'Marie',rel:'a neighbour',date:'May 30, 2026',h:41,r:3,c:[['Tom','next door','Best day this street ever had.']]},
+  {t:'photo',img:BIMG.garden,ttl:'Street garden day',who:'Marie',rel:'a neighbor',date:'May 30, 2026',h:41,r:3,c:[['Tom','next door','Best day this street ever had.']]},
   {t:'note',ttl:'Bread on Sundays',tx:'Bread on the porch every Sunday. We never once asked. It never once stopped. Twenty-two years of Sundays.',who:'Tom',rel:'next door, 30 years',date:'June 4, 2026',h:33,r:-3,c:[]},
   {t:'photo',img:BIMG.dawn,ttl:'Her gate, always open',who:'the Aldersons',rel:'across the street',date:'June 15, 2026',h:18,r:2,c:[]},
   {t:'add'}
@@ -1647,7 +1768,54 @@ function openLb(i){var p=FLAT[i];if(!p)return;open=i;
   LK.classList.remove('on');LK.querySelector('.ct').textContent=p.h;
   LK.onclick=function(){var on=LK.classList.toggle('on');LK.querySelector('.ct').textContent=p.h+(on?1:0)};
   lb.classList.add('open')}
-function stepLb(d){var i=open;for(var k=0;k<FLAT.length;k++){i=(i+d+FLAT.length)%FLAT.length;if(openable(i)){openLb(i);return}}}
+function stepLb(d){var i=open;var _z=document.getElementById('lbImg');if(_z)_z.style.transform='';for(var k=0;k<FLAT.length;k++){i=(i+d+FLAT.length)%FLAT.length;if(openable(i)){openLb(i);return}}}
+(function(){var lbEl=document.getElementById('lb');if(!lbEl)return;var media=lbEl.querySelector('.media')||lbEl;var mx=null,my=null,lastTap=0,lz=false;
+media.addEventListener('touchstart',function(e){if(e.touches.length===1){mx=e.touches[0].clientX;my=e.touches[0].clientY}},{passive:true});
+media.addEventListener('touchend',function(e){var now=Date.now();
+  if(now-lastTap<340){var img=document.getElementById('lbImg');if(img){lz=!lz;img.style.transition='transform .25s';img.style.transform=lz?'scale(2)':''}lastTap=0;mx=null;return}
+  lastTap=now;
+  if(mx===null)return;var dx=e.changedTouches[0].clientX-mx,dy=e.changedTouches[0].clientY-my;mx=null;
+  if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.4){lz=false;stepLb(dx<0?1:-1)}},{passive:true});
+})();
+
+/* redesign · the voice, kept properly: cassette-card player (delegated, works for every render) */
+(function(){function fmt(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+('0'+s%60).slice(-2)}
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('.vk-play');
+  if(b){var a=b.closest('.vk').querySelector('audio');
+    document.querySelectorAll('.vk audio').forEach(function(o){if(o!==a)o.pause()});
+    if(a.paused){var p=a.play();if(p&&p.catch)p.catch(function(){})}else a.pause();return}
+  var tr=e.target.closest&&e.target.closest('.vk-track');
+  if(tr){var a2=tr.closest('.vk').querySelector('audio');var r=tr.getBoundingClientRect();
+    var f=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+    if(a2.duration){a2.currentTime=f*a2.duration}}});
+['play','pause','timeupdate','ended'].forEach(function(ev){
+  document.addEventListener(ev,function(e){
+    if(!(e.target&&e.target.matches&&e.target.matches('.vk audio')))return;
+    var vk=e.target.closest('.vk'),a=e.target,btn=vk.querySelector('.vk-play');
+    if(ev==='play'){vk.classList.add('playing');btn.textContent='❚❚';btn.setAttribute('aria-label','Pause')}
+    if(ev==='pause'||ev==='ended'){vk.classList.remove('playing');btn.textContent='▶';btn.setAttribute('aria-label','Play the voice memory')}
+    var f=a.duration?a.currentTime/a.duration:0;
+    vk.querySelector('.vk-fill').style.width=(f*100)+'%';
+    vk.querySelector('.vk-time').textContent=fmt(a.currentTime)+(a.duration&&isFinite(a.duration)?' / '+fmt(a.duration):'')
+  },true)});
+})();
+
+
+/* redesign · the tab bar knows where you are */
+(function(){var bar=document.getElementById('tabbar');if(!bar||!('IntersectionObserver' in window))return;
+var links=bar.querySelectorAll('a');var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){links.forEach(function(a){a.classList.remove('on')});var a=map[en.target.id];if(a)a.classList.add('on')}})},{rootMargin:'-35% 0px -55% 0px'});
+['story','gallery','really','memories','keep'].forEach(function(id){var el=document.getElementById(id);if(el)io.observe(el)});
+})();
+/* redesign · relationship chips drive the select (the select remains the accessible source of truth) */
+(function(){document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.relchips button');if(!c)return;
+  var sel=document.getElementById('relSel');if(sel){sel.value=c.dataset.rel;sel.dispatchEvent(new Event('change',{bubbles:true}))}
+  c.parentElement.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b===c)})});
+  document.addEventListener('change',function(e){if(!(e.target&&e.target.id==='relSel'))return;
+  document.querySelectorAll('.relchips button').forEach(function(b){b.classList.toggle('on',b.dataset.rel===e.target.value)})});
+})();
+
 document.getElementById('lbClose').onclick=function(){lb.classList.remove('open')};
 document.getElementById('lbPrev').onclick=function(){stepLb(-1)};
 document.getElementById('lbNext').onclick=function(){stepLb(1)};
@@ -1849,7 +2017,7 @@ function lpRest(v){
 function lpToggle(v){if(v.paused)lpWake(v);else lpRest(v)}
 function syncLiving(){
   var tag=document.getElementById('archLiveTag');
-  if(tag)tag.textContent=body.dataset.tier==='plus'?'Living portrait · hover to play':'Living portrait · Plus';
+  if(tag)tag.textContent=body.dataset.tier==='plus'?'Living portrait · press to play':'Living portrait · Plus';
   document.querySelectorAll('video.living').forEach(function(v){
     if(!v.dataset.wired){v.dataset.wired='1';v.muted=true;v.removeAttribute('autoplay');
       v.addEventListener('playing',function(){v.classList.add('on')});
@@ -1857,10 +2025,8 @@ function syncLiving(){
       if(host&&!host.dataset.lp){host.dataset.lp='1';
         if(!host.hasAttribute('tabindex'))host.setAttribute('tabindex','0');
         var lastTouch=0;
-        host.addEventListener('mouseenter',function(){if(Date.now()-lastTouch>800)lpWake(v)});
-        host.addEventListener('mouseleave',function(){if(Date.now()-lastTouch>800)lpRest(v)});
+        /* redesign: hover-wake removed — living pictures play only on an explicit press (audit consent requirement) */
         if(window.PointerEvent){host.addEventListener('pointerup',function(e){
-          if(e.pointerType==='mouse')return;
           lastTouch=Date.now();
           if(e.target&&e.target.classList&&e.target.classList.contains('livetag'))return;
           lpToggle(v)})}
