@@ -76,7 +76,8 @@ export type Tribute = {
   timeline?: TimelineItem[];
   chapters?: ChapterItem[];
   photos?: PhotoItem[];
-  videos?: { id?: string; url: string; cap?: string }[];
+  videos?: { id?: string; url: string; cap?: string; kind?: string }[]; // kind: "tape" (family upload) · "film" (the woven film, 0021)
+  film?: { url: string; poster?: string; duration?: number; variant?: string }; // the placed film — its own room under the wreath
   voiceUrl?: string;
   reel?: ReelItem[];
   memories?: MemoryItem[];
@@ -178,7 +179,8 @@ export function renderTribute(template: string, t: Tribute): string {
       if (p && v && !embedSrc(v.url)) liv[p.key] = v.url;
     }
   } else if (!pl?.living) {
-    videos.forEach((v, i) => { if (imgs[`p${i}`] && !embedSrc(v.url)) liv[`p${i}`] = v.url; });
+    // The woven film never becomes a Living picture — it belongs to the tape shelf.
+    videos.forEach((v, i) => { if (v.kind !== "film" && imgs[`p${i}`] && !embedSrc(v.url)) liv[`p${i}`] = v.url; });
   }
 
   const timeline = t.timeline || [];
@@ -312,7 +314,9 @@ export function renderTribute(template: string, t: Tribute): string {
     // not shown. Only clean https urls ever reach the page.
     vids: tier === "plus"
       ? videos
-          .filter((v) => /^https:\/\/[^"'<>\s]+$/.test(v.url))
+          // The woven film has its own room under the wreath — the shelf keeps
+          // only the family's tapes, so the film never lives in two places.
+          .filter((v) => v.kind !== "film" && /^https:\/\/[^"'<>\s]+$/.test(v.url))
           .map((v) => ({ u: v.url, e: embedSrc(v.url), t: v.cap || "" }))
       : [],
   };
@@ -341,8 +345,41 @@ export function renderTribute(template: string, t: Tribute): string {
       </div>`
     : "";
 
-  const archVideo = tier === "plus" && videos[0]
-    ? `<video class="living" src="${esc(videos[0].url)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>`
+  // The Stone's living portrait is always a family tape — never the woven film,
+  // whose title card would cover the face.
+  const archTape = videos.find((v) => v.kind !== "film");
+  const archVideo = tier === "plus" && archTape
+    ? `<video class="living" src="${esc(archTape.url)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>`
+    : "";
+
+  // ── Their film: its own room, first under the wreath (founder decision,
+  // July 14 2026). One token in the locked template; every piece of markup
+  // lives here, in the page's own design language. Nothing renders when a
+  // page has no placed film — no empty rooms. Never autoplays: poster first,
+  // press play when you are ready. ──
+  const filmData = t.film && /^https:\/\/[^"'<>\s]+$/.test(t.film.url) ? t.film : undefined;
+  const fpn = pronounSet(t.pronouns);
+  const filmDur = filmData?.duration
+    ? `${Math.floor(filmData.duration / 60)}:${String(Math.round(filmData.duration % 60)).padStart(2, "0")}`
+    : "";
+  const filmInvite = filmData && tier === "free"
+    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#6E6156">This is a first glimpse. The whole film of ${esc(fpn.pos)} life — every chapter, ${esc(fpn.pos)} living pictures woven in — comes with the full memorial. <a href="/pricing" style="color:#A87C5F">When you are ready.</a></p>`
+    : "";
+  const filmSection = filmData
+    ? `
+    <!-- THE FILM · a life, woven (0021 · the room under the wreath) -->
+    <section class="section rev" id="film" aria-label="The film of ${esc(fpn.pos)} life">
+      <img class="mg" style="right:-124px;top:12%;width:132px;--mr:-10deg;transform:rotate(-10deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
+      <div class="kick">The film</div>
+      <h2>The film of <em>${esc(fpn.pos)} life</em>.</h2>
+      <p class="lede">${esc(first)}&rsquo;s photographs, ${esc(fpn.pos)} chapters, and the words of everyone who loved ${esc(fpn.obj)} &mdash; woven into a few quiet minutes. Press play when you are ready.</p>
+      <div style="position:relative;max-width:900px;margin:26px auto 0;background:linear-gradient(180deg,#241a10,#171009);border-radius:12px;padding:18px 18px 15px;box-shadow:0 46px 100px -34px rgba(20,10,2,.75)">
+        <span class="tape4" style="top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg)"></span>
+        <video controls playsinline preload="metadata"${filmData.poster ? ` poster="${esc(filmData.poster)}"` : ""} src="${esc(filmData.url)}" style="display:block;width:100%;border-radius:8px;background:#0e0905" aria-label="The film of ${esc(first)}&rsquo;s life"></video>
+        <div style="margin-top:11px;text-align:center;font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#c8a97a">${filmDur ? `${filmDur} &middot; ` : ""}woven with love from ${esc(fpn.pos)} photographs</div>
+      </div>
+      ${filmInvite}
+    </section>`
     : "";
   const archLivetag = archVideo ? `<span class="livetag" id="archLiveTag">Living portrait</span>` : "";
 
@@ -377,6 +414,7 @@ export function renderTribute(template: string, t: Tribute): string {
     .split("{{SPONSOR_PLAQUE}}").join(sponsorPlaque)
     .split("{{ARCH_VIDEO}}").join(archVideo)
     .split("{{ARCH_LIVETAG}}").join(archLivetag)
+    .split("{{FILM_SECTION}}").join(filmSection)
     .split("{{PRESENCE_HIDDEN}}").join('hidden style="display:none"')
     .split("{{PRESENCE_LINE}}").join("");
 

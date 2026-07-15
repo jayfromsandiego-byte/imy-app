@@ -10,12 +10,13 @@ const SELECT =
   "tribute_chapters(id,title,sort,deleted_at)," +
   "tribute_timeline(id,year,title,body,sort,chapter_id,deleted_at)," +
   "tribute_photos(id,url,caption,sort,deleted_at)," +
-  "tribute_videos(id,url,caption,sort,deleted_at)," +
+  "tribute_videos(id,url,caption,sort,kind,deleted_at)," +
   "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,hearts,created_at,deleted_at," +
   "tribute_memory_comments(author_name,relation,body,status,created_at,deleted_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_audio(url,kind)," +
-  "tribute_service(starts_at,venue,address,charity_name,charity_url)";
+  "tribute_service(starts_at,venue,address,charity_name,charity_url)," +
+  "film_jobs(video_id,film_url,poster_url,duration_seconds,rendered_variant,status,created_at,deleted_at)";
 
 const firstName = (n: string) => (n || "").trim().split(/\s+/)[0] || n || "Them";
 const dateOnly = (s?: string | null) => (s ? String(s).slice(0, 10) : undefined);
@@ -40,6 +41,17 @@ function rowToTribute(r: any): Tribute {
   // videos missing theirs — a soft-deleted photograph kept rendering).
   const photos = (r.tribute_photos || []).filter((p: any) => !p.deleted_at).slice().sort(bySort);
   const lovedThings = (r.tribute_loved_things || []).slice().sort(bySort);
+  // Their film (0021): placement truth lives on the shelf row (kind "film");
+  // the approved job enriches it with the poster frame and running time.
+  const filmVideo = (r.tribute_videos || [])
+    .filter((v: any) => !v.deleted_at && v.kind === "film" && v.url)
+    .slice().sort(bySort)[0];
+  const filmJob = filmVideo
+    ? (r.film_jobs || [])
+        .filter((j: any) => !j.deleted_at && j.status === "approved" &&
+          (j.video_id === filmVideo.id || j.film_url === filmVideo.url))
+        .sort((a: any, b: any) => String(b.created_at || "").localeCompare(String(a.created_at || "")))[0]
+    : undefined;
   return {
     slug: r.slug || undefined,
     fullName: r.loved_one_name || "",
@@ -61,7 +73,15 @@ function rowToTribute(r: any): Tribute {
       ? { name: r.sponsor_name || undefined, photoUrl: r.sponsor_photo_url || undefined, message: r.sponsor_message || undefined }
       : undefined,
     voiceUrl: ((r.tribute_audio || []).find((a: any) => a.kind === "voice") || {}).url || undefined,
-    videos: (r.tribute_videos || []).filter((v: any) => !v.deleted_at).slice().sort(bySort).map((v: any) => ({ id: v.id, url: v.url, cap: v.caption || undefined })).filter((v: any) => v.url),
+    videos: (r.tribute_videos || []).filter((v: any) => !v.deleted_at).slice().sort(bySort).map((v: any) => ({ id: v.id, url: v.url, cap: v.caption || undefined, kind: v.kind || "tape" })).filter((v: any) => v.url),
+    film: filmVideo
+      ? {
+          url: filmVideo.url,
+          poster: filmJob?.poster_url || undefined,
+          duration: filmJob?.duration_seconds != null ? Number(filmJob.duration_seconds) : undefined,
+          variant: filmJob?.rendered_variant || undefined,
+        }
+      : undefined,
     tier: r.tier || "free",
     theme: r.theme || undefined,
     motif: r.motif || undefined,

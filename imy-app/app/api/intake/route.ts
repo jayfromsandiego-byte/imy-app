@@ -195,6 +195,15 @@ export async function POST(req: NextRequest) {
     await db.from("tribute_videos").insert(videos.map((url, i) => ({ tribute_id: tid, url, sort: i })));
   }
 
+  // Their film (0021): with photographs given, the loom starts. The worker
+  // weaves in the background; the film waits for the family's approval and
+  // never appears on the page by itself. Best-effort, like every child here.
+  if (allPhotos.length + momentPhotoPairs.length >= 3) {
+    try {
+      await db.from("film_jobs").insert({ tribute_id: tid, variant: "auto", requested_by: "intake" });
+    } catch { /* non-fatal — the keeper can ask for the weave later */ }
+  }
+
   const voiceUrl = URLish(body.voiceUrl);
   if (voiceUrl) {
     await db.from("tribute_audio").insert({ tribute_id: tid, url: voiceUrl, kind: "voice", caption: "A voice to keep" });
