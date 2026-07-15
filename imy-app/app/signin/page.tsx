@@ -64,14 +64,18 @@ export default function SignInPage() {
     finally { setLoading(false); }
   }
 
+  // Mobile QA (July 15): boxSizing keeps the fields exactly as wide as the
+  // button — without it, width:100% + padding + border overflowed the card
+  // to the right, the "uneven, off-center" look. One radius family, centered.
   const input = {
-    width: "100%", fontFamily: "inherit", fontSize: 16, padding: "13px 15px",
-    border: `1px solid ${C.line}`, borderRadius: 11, marginBottom: 12,
+    width: "100%", boxSizing: "border-box", fontFamily: "inherit", fontSize: 16, padding: "13px 15px",
+    border: `1px solid ${C.line}`, borderRadius: 14, marginBottom: 12, textAlign: "center",
+    background: "#FFFDF9", color: C.ink, touchAction: "manipulation",
   } as const;
   const button = {
-    width: "100%", background: C.terra, color: "#fff", border: "none", fontFamily: "inherit",
-    fontWeight: 600, fontSize: 16, padding: "14px", borderRadius: 30, cursor: "pointer",
-    opacity: loading ? 0.6 : 1,
+    width: "100%", boxSizing: "border-box", background: C.terra, color: "#fff", border: "none", fontFamily: "inherit",
+    fontWeight: 600, fontSize: 16, padding: "14px", borderRadius: 30, cursor: "pointer", minHeight: 48,
+    opacity: loading ? 0.6 : 1, touchAction: "manipulation",
   } as const;
 
   return (

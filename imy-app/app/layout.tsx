@@ -27,6 +27,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        {/* Mobile QA (July 15): double-tap zoom does nothing on any app page;
+            pinch zoom stays — touch-action:manipulation removes only the
+            double-tap gesture, never the accessibility zoom. */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html:
+              "html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipulation}",
+          }}
+        />
         {children}
         <Analytics />
       </body>

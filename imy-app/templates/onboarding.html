@@ -454,7 +454,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="hand">a letter for the one you miss</div>
       <h1>Let’s write down<br><em>who they were.</em></h1>
       <div class="wrows">
-        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>eighteen small questions · each answer lays a flower on the garland</span></div>
+        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>a handful of small questions · each answer lays a flower on the garland</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9.2" y="9" width="5.6" height="12" rx="1.6"/><path d="M12,9 V7.4"/><path d="M12,6.6 q1.7,-2.1 0,-3.6 q-1.7,1.5 0,3.6"/></svg><span>about ten quiet minutes · it saves as you go, change anything later</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $97 once</b></span></div>
       </div>
@@ -1360,5 +1360,18 @@ var ENGINE=(function(){
   return {start:start};
 })();
 </script>
+
+<style id="mq-layer">
+/* ═══ MOBILE QA LAYER · July 15 2026 · fixes 1,2 ═══ */
+/* fix 2 + first-tap reliability: manipulation removes the double-tap wait */
+html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipulation}
+/* fix 1 · one Back, not two: the legacy control rests; .navback is the letter's back */
+.back{display:none!important}
+@media(max-width:700px){
+  /* the letter breathes on a phone: nothing clipped, everything tappable */
+  .navback,.btn,[data-next],[data-back]{min-height:48px}
+  input,select,textarea{font-size:16px} /* iOS: no focus zoom-jump */
+}
+</style>
 </body>
 </html>

@@ -1116,5 +1116,74 @@ try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){f.setAttri
 t=setTimeout(tick,900);
 })();
 </script>
+
+<style id="mq-layer">
+/* ═══ MOBILE QA LAYER · July 15 2026 · fixes 2,4,5 ═══ */
+html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipulation}
+/* fix 5 · the header, one calm row + a hamburger (the torn edge stays) */
+.mqburger{display:none;width:44px;height:44px;border-radius:12px;border:1.5px solid rgba(90,79,69,.35);background:transparent;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;padding:0}
+.mqburger span{display:block;width:20px;height:2px;background:#2C2520;transition:.2s}
+.mqburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.mqburger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.mqburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:860px){
+  .tornbar{position:relative}
+  .mw-nav{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;overflow:visible}
+  .mw-b{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px}
+  .mw-links{display:none!important}
+  .mw-links.mqopen{display:flex!important;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:#FFFDF6;border-bottom:1px solid rgba(168,124,95,.25);box-shadow:0 30px 60px -30px rgba(44,37,32,.35);padding:8px 6% 14px;gap:0;z-index:80}
+  .mw-links.mqopen a{display:block;padding:13px 6px;min-height:44px;box-sizing:border-box;font-size:17px;border-bottom:1px dashed rgba(168,124,95,.22)}
+  .mw-links.mqopen a:last-child{border-bottom:none}
+  .mw-login,.mw-navcta{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}
+  .mqburger{display:inline-flex;flex:0 0 auto}
+}
+@media(max-width:430px){
+  .mw-login{display:none!important} /* it waits inside the menu */
+  .mw-navcta{font-size:13.5px;padding:10px 14px!important}
+}
+/* fix 4 · the hung frame fits one phone screen */
+@media(max-width:700px){
+  .lp-example{padding:40px 5% 52px}
+  .lp-example .exstrings{height:38px}
+  .lp-example .exswing{transform-origin:50% 3px}
+  .lp-example .expin{top:3px}
+  .lp-example .exframe{padding:10px}
+  .lp-example .exmat{padding:20px 16px 18px}
+  .lp-example .exgrid{gap:14px}
+  .lp-example .exwr{width:auto;aspect-ratio:auto;margin:0}
+  .lp-example .exwr .wreath{display:none}
+  .lp-example .exarch{position:static;transform:none;width:80px;aspect-ratio:3/4;border-width:4px}
+  .lp-example .exil{display:none}
+  .lp-example .exside{display:flex;align-items:center;gap:14px}
+  .lp-example .excap{text-align:left;margin-top:0}
+  .lp-example .excap .nm{font-size:17px}
+  .lp-example .excap .dt{font-size:8.5px;margin-top:3px}
+  .lp-example h2{font-size:22px}
+  .lp-example h2 br{display:none}
+  .lp-example .exsub{font-size:14px;margin-top:8px}
+  .lp-example .exline{margin-top:10px;font-size:10.5px}
+  .lp-example .excomposer,.lp-example .exmem{display:none}
+  .lp-example .exacts{margin-top:14px;flex-direction:column;align-items:stretch}
+  .lp-example .exlay,.lp-example .exvisit{width:100%;justify-content:center;min-height:48px;box-sizing:border-box;text-align:center}
+  .lp-example .extaste{text-align:center;margin-top:10px}
+}
+</style>
+<script>
+/* fix 5 · the hamburger: built from the nav's own links, closes on choice */
+(function(){
+var nav=document.querySelector('.mw-nav'),links=document.querySelector('.mw-links');if(!nav||!links)return;
+var b=document.createElement('button');b.className='mqburger';b.type='button';
+b.setAttribute('aria-label','Menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','mwLinks');
+links.id=links.id||'mwLinks';
+b.innerHTML='<span></span><span></span><span></span>';
+nav.appendChild(b);
+var lg=document.querySelector('.mw-login');
+if(lg&&!links.querySelector('.mqlogin')){var l2=lg.cloneNode(true);l2.classList.add('mqlogin');l2.removeAttribute('style');links.appendChild(l2)}
+function set(open){links.classList.toggle('mqopen',open);b.setAttribute('aria-expanded',open?'true':'false')}
+b.onclick=function(){set(!links.classList.contains('mqopen'))};
+links.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
+})();
+</script>
 </body>
 </html>
