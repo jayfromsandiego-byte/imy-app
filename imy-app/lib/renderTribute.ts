@@ -961,6 +961,202 @@ document.querySelectorAll('.tapeobj[data-v]').forEach(function(tp){tp.onclick=fu
     html = html.replace("</body>", tvRoom + "\n</body>");
   }
 
+  // ── The invitation, framed (July 15) · the example page only ──────────────
+  // The hung Keepsake Frame from the landing (shipped to production July 14)
+  // now also closes the example tribute: the page walks her life, then asks
+  // the visitor to bring the others. Same frame, same strings and pin, same
+  // settle-and-sway physics; the actions are real — the flower lands in her
+  // true count, the address goes with them, the composer opens the wall.
+  if (slug === "eleanor") {
+    const invYears = [yearOf(t.birth), yearOf(t.passing)].filter(Boolean).join(" · ");
+    const invPlace = String(t.place || "").split(",")[0].trim();
+    const invDt = [invYears, invPlace].filter(Boolean).join(" · ");
+    const invCount = Math.max(0, t.flowerCount ?? 0).toLocaleString("en-US");
+    const inviteBand = `<style>
+.lp-example{position:relative;overflow:hidden;background:linear-gradient(180deg,#412f1c 0%,#2a1b0e 55%,#20140a 100%);padding:64px 4% 84px;color:#f3ece0}
+.lp-example::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,rgba(255,244,222,.016) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(255,244,222,.013) 0 1px,transparent 1px 3px)}
+.lp-example::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 82% 70% at 50% 40%,transparent 52%,rgba(8,5,2,.5) 100%)}
+.lp-example .exlight{position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(1500px,140vw);height:100%;background:radial-gradient(ellipse 52% 40% at 50% 0%,rgba(244,206,146,.16),transparent 68%);pointer-events:none;z-index:1}
+.lp-example .in{position:relative;z-index:3;max-width:1460px;margin:0 auto}
+.lp-example .exhang{position:relative}
+.lp-example .exswing{transform-origin:50% 6px;will-change:transform}
+.lp-example .exstrings{display:block;width:100%;height:84px}
+.lp-example .exstrings path{stroke:rgba(206,174,118,.55);stroke-width:1.5;fill:none;vector-effect:non-scaling-stroke}
+.lp-example .expin{position:absolute;top:6px;left:50%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4dfae,#c39a5c 55%,#8f6c3c);box-shadow:0 1px 3px rgba(0,0,0,.65),inset 0 -1px 2px rgba(0,0,0,.3);z-index:6}
+.lp-example .exframe{position:relative;margin:0;padding:18px;border-radius:6px;background:linear-gradient(135deg,#5c412a 0%,#3a2717 38%,#4d3520 62%,#2e1e10 100%);box-shadow:0 70px 130px -40px rgba(0,0,0,.85),0 26px 48px -20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,224,178,.22),inset 0 -2px 0 rgba(0,0,0,.5)}
+.lp-example .exframe::before{content:"";position:absolute;inset:0;border-radius:6px;pointer-events:none;opacity:.35;background:repeating-linear-gradient(96deg,rgba(255,220,170,.05) 0 2px,transparent 2px 7px)}
+.lp-example .exgilt{padding:4px;border-radius:3px;background:linear-gradient(160deg,#e6c68d 0%,#a5804a 45%,#dcbb7e 75%,#8f6c3c 100%);box-shadow:inset 0 1px 2px rgba(255,255,255,.4)}
+.lp-example .exmat{background:#FBF6EA;padding:40px 46px;box-shadow:inset 0 0 0 1px rgba(201,165,114,.55),inset 0 0 46px rgba(44,37,32,.09)}
+.lp-example .exgrid{display:grid;grid-template-areas:"side main info";grid-template-columns:.72fr 1.08fr .94fr;gap:46px;align-items:center}
+.lp-example .exside{grid-area:side}
+.lp-example .exmain{grid-area:main}
+.lp-example .exinfo{grid-area:info;color:#2C2520}
+.lp-example .exwr{position:relative;width:min(300px,100%);margin:0 auto;aspect-ratio:1/1}
+.lp-example .exwr .wreath{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 54px rgba(0,0,0,.45))}
+.lp-example .exarch{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:46%;aspect-ratio:3/4;border-radius:999px 999px 14px 14px;overflow:hidden;border:6px solid #FFFDF6;box-shadow:0 18px 46px -12px rgba(0,0,0,.55)}
+.lp-example .exarch img{width:100%;height:100%;object-fit:cover}
+.lp-example .exil{position:absolute;top:11px;left:50%;transform:translateX(-50%);font-family:'Sometype Mono',monospace;font-size:7px;letter-spacing:.14em;color:#f8e7c8;background:rgba(26,19,13,.72);padding:3px 9px;border-radius:13px;text-transform:uppercase;white-space:nowrap;z-index:4}
+.lp-example .excap{text-align:center;margin-top:18px}
+.lp-example .excap .nm{font-weight:700;font-size:22px;color:#2C2520}
+.lp-example .excap .nm em{font-style:italic;color:#A87C5F}
+.lp-example .excap .dt{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:#8a7c6d;text-transform:uppercase;margin-top:5px}
+.lp-example .exslot{position:absolute;width:56px;height:56px;pointer-events:none;z-index:4}
+.lp-example .exslot img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 9px rgba(0,0,0,.45))}
+.lp-example .exey{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#A87C5F}
+.lp-example h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.12;letter-spacing:-.01em;color:#2C2520;text-align:left;margin:10px 0 0}
+.lp-example h2 em{font-style:italic;color:#A87C5F}
+.lp-example .exsub{font-size:15.5px;line-height:1.6;color:#5b4f43;margin-top:10px;max-width:44ch}
+.lp-example .exline{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#7a6a55;line-height:1.7;margin-top:18px}
+.lp-example .exline b{color:#A87C5F;font-size:13px}
+.lp-example .excomposer{background:#FFFDF6;border:1px solid rgba(168,124,95,.28);border-radius:10px;padding:13px 16px}
+.lp-example .excomposer .lab{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F}
+.lp-example .excomposer .field{font-family:'Caveat',cursive;font-size:21px;margin-top:6px;border:none;background:transparent;width:100%;outline:none;color:#4a3f35}
+.lp-example .excomposer .field::placeholder{color:#9c8a70}
+.lp-example .exmem{margin-top:20px}
+.lp-example .exmem .q{font-family:'Caveat',cursive;font-size:21px;line-height:1.3;color:#4a3b2e}
+.lp-example .exmem .who{font-size:13.5px;color:#A87C5F;margin-top:3px}
+.lp-example .exacts{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.lp-example .exlay{font-family:'Besley',serif;font-weight:700;font-size:14.5px;border:none;border-radius:30px;padding:12px 20px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:10px;background:#F4B860;color:#241711;box-shadow:0 12px 26px -12px rgba(244,184,96,.6)}
+.lp-example .exlay:hover{background:#f7c979;transform:translateY(-1px)}
+.lp-example .exlay img{width:20px;height:20px;object-fit:contain}
+.lp-example .exvisit{font-family:'Besley',serif;font-weight:700;font-size:14.5px;border-radius:30px;padding:11px 20px;text-decoration:none;display:inline-flex;align-items:center;transition:.2s;border:1.5px solid rgba(44,37,32,.35);color:#2C2520;background:transparent}
+.lp-example .exvisit:hover{border-color:#2C2520;transform:translateY(-1px)}
+.lp-example .extaste{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#a08d72;margin-top:14px}
+@keyframes exBloom{0%{transform:scale(.2) rotate(-24deg);opacity:0}70%{transform:scale(1.12) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@media(max-width:1100px){
+  .lp-example .in{max-width:900px}
+  .lp-example .exgrid{grid-template-areas:"side main" "side info";grid-template-columns:.8fr 1.2fr;gap:14px 40px}
+  .lp-example .exinfo{margin-top:14px}
+  .lp-example .exmat{padding:36px 34px}
+}
+@media(max-width:700px){
+  .lp-example{padding:56px 5% 72px}
+  .lp-example .exil{font-size:6.5px;letter-spacing:.12em;padding:3px 7px}
+  .lp-example .exgrid{grid-template-areas:"side" "main" "info";grid-template-columns:1fr;gap:26px}
+  .lp-example .exmat{padding:30px 22px}
+  .lp-example .exstrings{height:56px}
+  .lp-example .exswing{transform-origin:50% 4px}
+  .lp-example .expin{top:4px}
+  .lp-example .exinfo{margin-top:0}
+  .lp-example .exacts{flex-direction:column;align-items:stretch}
+  .lp-example .exlay,.lp-example .exvisit{justify-content:center;white-space:nowrap;padding-left:16px;padding-right:16px}
+}
+</style>
+<section class="lp-example" id="invite" aria-label="Invite everyone who loved ${esc(pn.obj)}">
+  <div class="exlight" aria-hidden="true"></div>
+  <div class="in">
+    <div class="exhang" id="invHang">
+      <div class="exswing" id="invSwing">
+        <svg class="exstrings" viewBox="0 0 100 84" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M50 6 L1.5 84"/><path d="M50 6 L98.5 84"/></svg>
+        <figure class="exframe">
+          <div class="exgilt"><div class="exmat">
+            <div class="exgrid">
+              <div class="exside">
+                <div class="exwr">
+                  <img class="wreath" loading="lazy" src="/art/wreath2-64e82a.png" alt="A green foliage wreath, flowered by the people who loved ${esc(pn.obj)}">
+                  <div class="exarch"><span class="exil">In loving memory</span><img loading="lazy" src="${esc(cover)}" alt="${esc(t.fullName)}"></div>
+                </div>
+                <div class="excap">
+                  <div class="nm">${nameHtml(t.fullName)}</div>
+                  <div class="dt">${esc(invDt)}</div>
+                </div>
+              </div>
+              <div class="exmain">
+                <div class="exey">The invitation</div>
+                <h2>No one should be<br>remembered <em>alone</em>.</h2>
+                <p class="exsub">Invite everyone who loved ${esc(pn.obj)}. Grief is lighter when it is carried together.</p>
+                <p class="exline"><b id="invCt">${invCount}</b> flowers since ${esc(pn.pos)} page began · lilies for peace · roses for love</p>
+              </div>
+              <div class="exinfo">
+                <div class="excomposer">
+                  <div class="lab">Leave a memory</div>
+                  <input class="field" type="text" readonly aria-label="Leave a memory — opens the memory wall" placeholder="">
+                </div>
+                <div class="exmem">
+                  <div class="q">&ldquo;You taught me to drive on the back roads, laughing the whole way.&rdquo;</div>
+                  <div class="who">Daniel, ${esc(pn.pos)} grandson</div>
+                </div>
+                <div class="exacts">
+                  <button class="exlay" id="invBtn" type="button"><img src="/art/lily2-f5e2ef.png" alt="" aria-hidden="true"> Lay a flower</button>
+                  <button class="exvisit" id="invShare" type="button">Share ${esc(pn.pos)} page</button>
+                </div>
+                <div class="extaste" id="invTaste">Every memory waits for the family before it appears</div>
+              </div>
+            </div>
+          </div></div>
+        </figure>
+      </div>
+      <span class="expin" aria-hidden="true"></span>
+    </div>
+  </div>
+</section>
+<script>
+/* the frame hangs from its pin; the world moves it, then it rests (July 14) */
+(function(){
+  var sw=document.getElementById('invSwing');if(!sw)return;
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var root=document.documentElement,CAP=(window.innerWidth<700)?0.8:1.2;
+  var angle=0,vel=0,target=0,lastY=window.pageYOffset,raf=null,inview=false,settled=false;
+  function step(){
+    raf=null;
+    if(root.classList.contains('a11y-pause')){sw.style.transform='';angle=0;vel=0;target=0;return}
+    vel+=(target-angle)*.055;vel*=.86;angle+=vel;target*=.9;
+    if(Math.abs(angle)<.02&&Math.abs(vel)<.02&&Math.abs(target)<.02){sw.style.transform='';angle=0;vel=0;target=0;return}
+    sw.style.transform='rotate('+angle.toFixed(3)+'deg)';
+    raf=requestAnimationFrame(step);
+  }
+  function kick(){if(!raf)raf=requestAnimationFrame(step)}
+  addEventListener('scroll',function(){
+    var y=window.pageYOffset,dy=y-lastY;lastY=y;
+    if(!inview)return;
+    target=Math.max(-CAP,Math.min(CAP,target+dy*.015));
+    kick();
+  },{passive:true});
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){es.forEach(function(e){
+      inview=e.isIntersecting;
+      if(inview&&!settled){settled=true;angle=CAP*1.3;kick()}
+    })},{rootMargin:'80px 0px'}).observe(sw);
+  }
+})();
+/* the memory writes itself until you reach for it (restored July 9) */
+(function(){
+var f=document.querySelector('#invite .excomposer .field');if(!f)return;
+var lines=['You taught me to ride a bike on Maple St','Your kitchen always smelled like cinnamon','You never missed a single Sunday call','I can still hear your laugh in the garden'];
+var li=0,ci=0,dir=1,t=null,stopped=false;
+function tick(){
+  if(stopped)return;
+  var line=lines[li];
+  if(dir>0){ci++;if(ci>=line.length){f.setAttribute('placeholder',line);dir=0;t=setTimeout(function(){dir=-1;tick()},1900);return}}
+  else if(dir<0){ci--;if(ci<=0){dir=1;li=(li+1)%lines.length;ci=0;f.setAttribute('placeholder','');t=setTimeout(tick,420);return}}
+  f.setAttribute('placeholder',line.slice(0,ci));
+  t=setTimeout(tick,dir>0?46+Math.random()*40:22);
+}
+function stop(){if(stopped)return;stopped=true;clearTimeout(t);f.setAttribute('placeholder','What do you remember?')}
+f.addEventListener('focus',stop);f.addEventListener('pointerdown',stop);
+try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){f.setAttribute('placeholder',lines[0]);return}}catch(e){}
+t=setTimeout(tick,900);
+})();
+(function(){
+var b=document.getElementById('invBtn'),c=document.getElementById('invCt');
+function fmt(n){try{return n.toLocaleString('en-US')}catch(e){return String(n)}}
+if(b)b.addEventListener('click',function(){
+  if(c){var n=parseInt(c.textContent.replace(/,/g,''),10)+1;c.textContent=fmt(n)}
+  try{fetch('/api/tribute/${slug}/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count&&c)c.textContent=fmt(Number(j.count))}).catch(function(){})}catch(e){}
+});
+var s=document.getElementById('invShare'),tl=document.getElementById('invTaste');
+if(s)s.addEventListener('click',function(){
+  var u=location.origin+'/sites/${slug}';
+  if(navigator.share){navigator.share({title:document.title,url:u}).catch(function(){})}
+  else if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){if(tl)tl.textContent='copied · send it to the ones who loved ${esc(pn.obj)}'}).catch(function(){})}
+});
+var f=document.querySelector('#invite .excomposer .field'),mem=document.getElementById('memories');
+if(f)f.addEventListener('click',function(){if(mem)mem.scrollIntoView({behavior:'smooth',block:'start'})});
+})();
+</script>`;
+    html = html.replace("<footer", inviteBand + "\n<footer");
+  }
+
   return html;
 }
 
