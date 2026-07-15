@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="I Miss You Memorial — the Night Stone mark">
+  <defs>
+    <mask id="bloom-r">
+      <rect width="512" height="512" fill="#fff"/>
+      <ellipse cx="247.71" cy="184.51" rx="63.0" ry="44.1" transform="rotate(-97 247.71 184.51)" fill="#000"/>
+      <ellipse cx="314.0" cy="224.95" rx="57.6" ry="40.32" transform="rotate(-25 314.0 224.95)" fill="#000"/>
+      <ellipse cx="301.69" cy="301.0" rx="61.2" ry="42.84" transform="rotate(47 301.69 301.0)" fill="#000"/>
+      <ellipse cx="224.49" cy="308.85" rx="56.4" ry="39.48" transform="rotate(119 224.49 308.85)" fill="#000"/>
+      <ellipse cx="191.21" cy="239.41" rx="60.0" ry="42.0" transform="rotate(191 191.21 239.41)" fill="#000"/>
+    </mask>
+  </defs>
+  <path d="M66 476 V266 A190 190 0 0 1 446 266 V476 Z" fill="#FAF5EC" mask="url(#bloom-r)"/>
+  <circle cx="259" cy="255" r="36" fill="#C9A572"/>
+</svg>

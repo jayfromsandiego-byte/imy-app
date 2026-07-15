@@ -7,6 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Sometype+Mono:wght@400;500;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="/brand/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/brand/favicon-16.png">
+<link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
 <style>
 :root{
   --cream:#FAF5EC;--cream-deep:#F3ECDD;--ink:#2C2520;--ink-soft:#5c5249;
@@ -346,9 +350,6 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 .mwhero .tornbar .mw-b{color:var(--ink);text-shadow:none}.mwhero .tornbar .mw-b em{color:var(--terra)}
 .mwhero .tornbar .mw-links a{color:var(--ink-soft);text-shadow:none}.mwhero .tornbar .mw-links a:hover{color:var(--ink)}
 .mwhero .tornbar .mw-navcta{background:var(--terra);color:#fff;border-color:transparent;box-shadow:0 8px 18px -10px rgba(120,80,54,.7)}
-.motes{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden}
-.motes i{position:absolute;bottom:-16px;border-radius:50%;background:radial-gradient(circle,rgba(244,184,96,.9),rgba(244,184,96,0) 70%);opacity:0;animation:rise2 linear infinite}
-@keyframes rise2{0%{transform:translateY(0) translateX(0);opacity:0}12%{opacity:.5}86%{opacity:.32}100%{transform:translateY(-108vh) translateX(var(--dx,12px));opacity:0}}
 .lp{position:relative;z-index:2;font-family:'Besley',Georgia,serif}
 .lp .rev{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
 .lp .rev.seen{opacity:1;transform:none}
@@ -499,7 +500,7 @@ footer .pl{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold
 .lp-foot .pl a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
 .lp-gift{margin-top:12px;font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.05em;line-height:1.75;color:var(--ink-soft)}
 @media(prefers-reduced-motion:reduce){
-  .motes{display:none}.lp .rev{opacity:1!important;transform:none!important}
+  .lp .rev{opacity:1!important;transform:none!important}
   .lp-band .q .wd,.lp-band .sub,.lp-final .small{opacity:1!important;animation:none!important}
   .mwhero .uline::after{transform:scaleX(1)!important;animation:none!important}
   .mwhero .mw-note,.mwhero .mw-pin,.mwhero .mw-counter,.mwhero .scrollcue{animation:none!important;opacity:1!important}
@@ -590,61 +591,82 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
 @media(max-width:480px){
   .mw-b{font-size:16.5px;white-space:nowrap;letter-spacing:0}
 }
-/* ===== See an example · the wreath at night · warm embers (July 5) ===== */
-.lp-example{position:relative;overflow:hidden;background:linear-gradient(158deg,#43301d 0%,#271a0f 62%,#1a1109 100%);padding:80px 6%;color:#f3ece0}
-.lp-example .exfx{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.lp-example .exhalo{position:absolute;left:30%;top:50%;transform:translate(-50%,-50%);width:min(520px,56vw);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(201,165,114,.2),transparent 62%);z-index:0;pointer-events:none;animation:exPulse 6.5s ease-in-out infinite}
-.lp-example .in{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr 1fr;gap:50px;align-items:center;max-width:1060px;margin:0 auto}
-.lp-example .exwr{position:relative;width:min(430px,86vw);margin:0 auto;aspect-ratio:1/1}
-.lp-example .exwr .wreath{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 54px rgba(0,0,0,.6))}
-.lp-example .exarch{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:46%;aspect-ratio:3/4;border-radius:999px 999px 14px 14px;overflow:hidden;border:6px solid #FFFDF6;box-shadow:0 18px 46px -12px rgba(0,0,0,.75)}
+/* ===== See an example · the keepsake frame, hung (July 14) ===== */
+.lp-example{position:relative;overflow:hidden;background:linear-gradient(180deg,#412f1c 0%,#2a1b0e 55%,#20140a 100%);padding:64px 4% 84px;color:#f3ece0}
+.lp-example::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,rgba(255,244,222,.016) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(255,244,222,.013) 0 1px,transparent 1px 3px)}
+.lp-example::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 82% 70% at 50% 40%,transparent 52%,rgba(8,5,2,.5) 100%)}
+.lp-example .exlight{position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(1500px,140vw);height:100%;background:radial-gradient(ellipse 52% 40% at 50% 0%,rgba(244,206,146,.16),transparent 68%);pointer-events:none;z-index:1}
+.lp-example .in{position:relative;z-index:3;max-width:1460px;margin:0 auto}
+.lp-example .exhang{position:relative}
+.lp-example .exswing{transform-origin:50% 6px;will-change:transform}
+.lp-example .exstrings{display:block;width:100%;height:84px}
+.lp-example .exstrings path{stroke:rgba(206,174,118,.55);stroke-width:1.5;fill:none;vector-effect:non-scaling-stroke}
+.lp-example .expin{position:absolute;top:6px;left:50%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4dfae,#c39a5c 55%,#8f6c3c);box-shadow:0 1px 3px rgba(0,0,0,.65),inset 0 -1px 2px rgba(0,0,0,.3);z-index:6}
+.lp-example .exframe{position:relative;margin:0;padding:18px;border-radius:6px;background:linear-gradient(135deg,#5c412a 0%,#3a2717 38%,#4d3520 62%,#2e1e10 100%);box-shadow:0 70px 130px -40px rgba(0,0,0,.85),0 26px 48px -20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,224,178,.22),inset 0 -2px 0 rgba(0,0,0,.5)}
+.lp-example .exframe::before{content:"";position:absolute;inset:0;border-radius:6px;pointer-events:none;opacity:.35;background:repeating-linear-gradient(96deg,rgba(255,220,170,.05) 0 2px,transparent 2px 7px)}
+.lp-example .exgilt{padding:4px;border-radius:3px;background:linear-gradient(160deg,#e6c68d 0%,#a5804a 45%,#dcbb7e 75%,#8f6c3c 100%);box-shadow:inset 0 1px 2px rgba(255,255,255,.4)}
+.lp-example .exmat{background:#FBF6EA;padding:40px 46px;box-shadow:inset 0 0 0 1px rgba(201,165,114,.55),inset 0 0 46px rgba(44,37,32,.09)}
+.lp-example .exgrid{display:grid;grid-template-areas:"side main info";grid-template-columns:.72fr 1.08fr .94fr;gap:46px;align-items:center}
+.lp-example .exside{grid-area:side}
+.lp-example .exmain{grid-area:main}
+.lp-example .exinfo{grid-area:info;color:#2C2520}
+.lp-example .exwr{position:relative;width:min(300px,100%);margin:0 auto;aspect-ratio:1/1}
+.lp-example .exwr .wreath{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 54px rgba(0,0,0,.45))}
+.lp-example .exarch{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:46%;aspect-ratio:3/4;border-radius:999px 999px 14px 14px;overflow:hidden;border:6px solid #FFFDF6;box-shadow:0 18px 46px -12px rgba(0,0,0,.55)}
 .lp-example .exarch img{width:100%;height:100%;object-fit:cover}
-.lp-example .exil{position:absolute;top:11px;left:50%;transform:translateX(-50%);font-family:'Sometype Mono',monospace;font-size:8px;letter-spacing:.22em;color:#f8e7c8;background:rgba(26,19,13,.72);padding:4px 11px;border-radius:13px;text-transform:uppercase;z-index:4}
-.lp-example .explate{position:absolute;left:50%;bottom:-3%;transform:translateX(-50%) rotate(-.5deg);background:linear-gradient(180deg,#FFFDF6,#FBF4E4);border-radius:8px;padding:8px 20px;box-shadow:0 14px 30px -12px rgba(0,0,0,.6);text-align:center;white-space:nowrap;z-index:5}
-.lp-example .explate .nm{font-weight:700;font-size:16px;color:#2C2520}
-.lp-example .explate .nm em{font-style:italic;color:#A87C5F}
-.lp-example .explate .dt{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:#8a7c6d;text-transform:uppercase}
+.lp-example .exil{position:absolute;top:11px;left:50%;transform:translateX(-50%);font-family:'Sometype Mono',monospace;font-size:7px;letter-spacing:.14em;color:#f8e7c8;background:rgba(26,19,13,.72);padding:3px 9px;border-radius:13px;text-transform:uppercase;white-space:nowrap;z-index:4}
+.lp-example .excap{text-align:center;margin-top:18px}
+.lp-example .excap .nm{font-weight:700;font-size:22px;color:#2C2520}
+.lp-example .excap .nm em{font-style:italic;color:#A87C5F}
+.lp-example .excap .dt{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:#8a7c6d;text-transform:uppercase;margin-top:5px}
 .lp-example .exslot{position:absolute;width:56px;height:56px;pointer-events:none;z-index:4}
-.lp-example .exslot img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 9px rgba(0,0,0,.5))}
-.lp-example .exey{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:#C9A572}
-.lp-example h2{font-size:clamp(28px,3.6vw,44px);font-weight:800;line-height:1.1;letter-spacing:-.01em;color:#fff;text-align:left;margin:10px 0 0}
-.lp-example h2 em{font-style:italic;color:#F4B860}
-.lp-example .exsub{font-size:16.5px;color:#d9c9ad;margin-top:12px;max-width:44ch}
-.lp-example .exlay{font-family:'Besley',serif;font-weight:700;font-size:15px;border:none;border-radius:30px;padding:14px 26px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:10px;background:#F4B860;color:#241711;margin-top:22px}
-.lp-example .exlay:hover{background:#f7c979}
-.lp-example .exlay img{width:20px;height:20px;object-fit:contain}
-.lp-example .exline{font-family:'Sometype Mono',monospace;font-size:12px;letter-spacing:.04em;color:#c9b48f;margin-top:12px}
-.lp-example .exline b{color:#F4B860}
-.lp-example .excomposer{background:rgba(250,245,236,.06);border:1px solid rgba(201,165,114,.32);border-radius:12px;padding:16px 18px;margin-top:22px;max-width:460px}
-.lp-example .excomposer .lab{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#C9A572}
-.lp-example .excomposer .field{font-family:'Caveat',cursive;font-size:22px;margin-top:8px;border:none;background:transparent;width:100%;outline:none;color:#f3ece0}
+.lp-example .exslot img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 9px rgba(0,0,0,.45))}
+.lp-example .exey{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#A87C5F}
+.lp-example h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.12;letter-spacing:-.01em;color:#2C2520;text-align:left;margin:10px 0 0}
+.lp-example h2 em{font-style:italic;color:#A87C5F}
+.lp-example .exsub{font-size:15.5px;line-height:1.6;color:#5b4f43;margin-top:10px;max-width:44ch}
+.lp-example .exline{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#7a6a55;line-height:1.7;margin-top:18px}
+.lp-example .exline b{color:#A87C5F;font-size:13px}
+.lp-example .excomposer{background:#FFFDF6;border:1px solid rgba(168,124,95,.28);border-radius:10px;padding:13px 16px}
+.lp-example .excomposer .lab{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F}
+.lp-example .excomposer .field{font-family:'Caveat',cursive;font-size:21px;margin-top:6px;border:none;background:transparent;width:100%;outline:none;color:#4a3f35}
 .lp-example .excomposer .field::placeholder{color:#9c8a70}
-.lp-example .exmem{margin-top:18px}
-.lp-example .exmem .q{font-family:'Caveat',cursive;font-size:21px;line-height:1.3;color:#e9ddc9}
-.lp-example .exmem .who{font-size:13.5px;color:#C9A572;margin-top:2px}
-.lp-example .exvisit{display:inline-block;margin-top:24px;font-family:'Besley',serif;font-weight:700;font-size:15px;text-decoration:none;border-radius:30px;padding:14px 28px;background:#F4B860;color:#241711;transition:.2s}
-.lp-example .exvisit:hover{background:#f7c979}
-.lp-example .extaste{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8a7460;margin-top:14px}
-.lp-example .ember{position:absolute;bottom:-24px;width:6px;height:12px;border-radius:50% 50% 48% 48%/66% 66% 36% 36%;background:radial-gradient(circle at 50% 72%,#fff4d3,#F4B860 56%,rgba(244,184,96,0));box-shadow:0 0 13px 4px rgba(244,184,96,.42);opacity:0;animation:exRise linear infinite}
-@keyframes exRise{0%{transform:translateY(0) translateX(0) scale(.7);opacity:0}12%{opacity:.95}72%{opacity:.8}100%{transform:translateY(-80vh) translateX(var(--rx,14px)) scale(1.05);opacity:0}}
-@keyframes exPulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:.95;transform:translate(-50%,-50%) scale(1.06)}}
+.lp-example .exmem{margin-top:20px}
+.lp-example .exmem .q{font-family:'Caveat',cursive;font-size:21px;line-height:1.3;color:#4a3b2e}
+.lp-example .exmem .who{font-size:13.5px;color:#A87C5F;margin-top:3px}
+.lp-example .exacts{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.lp-example .exlay{font-family:'Besley',serif;font-weight:700;font-size:14.5px;border:none;border-radius:30px;padding:12px 20px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:10px;background:#F4B860;color:#241711;box-shadow:0 12px 26px -12px rgba(244,184,96,.6)}
+.lp-example .exlay:hover{background:#f7c979;transform:translateY(-1px)}
+.lp-example .exlay img{width:20px;height:20px;object-fit:contain}
+.lp-example .exvisit{font-family:'Besley',serif;font-weight:700;font-size:14.5px;border-radius:30px;padding:11px 20px;text-decoration:none;display:inline-flex;align-items:center;transition:.2s;border:1.5px solid rgba(44,37,32,.35);color:#2C2520;background:transparent}
+.lp-example .exvisit:hover{border-color:#2C2520;transform:translateY(-1px)}
+.lp-example .extaste{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#a08d72;margin-top:14px}
 @keyframes exBloom{0%{transform:scale(.2) rotate(-24deg);opacity:0}70%{transform:scale(1.12) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
-@media(max-width:840px){
-  .lp-example .in{grid-template-columns:1fr;gap:34px}
-  .lp-example .exhead{text-align:center}
-  .lp-example h2,.lp-example .exey{text-align:center}
-  .lp-example .exsub{margin-left:auto;margin-right:auto}
-  .lp-example .excomposer{margin-left:auto;margin-right:auto}
-  .lp-example .exhalo{left:50%}
+@media(max-width:1100px){
+  .lp-example .in{max-width:900px}
+  .lp-example .exgrid{grid-template-areas:"side main" "side info";grid-template-columns:.8fr 1.2fr;gap:14px 40px}
+  .lp-example .exinfo{margin-top:14px}
+  .lp-example .exmat{padding:36px 34px}
 }
-@media (prefers-reduced-motion: reduce){.lp-example .exslot img,.lp-example .exhalo{animation:none!important}.lp-example .ember{opacity:0!important;animation:none!important}}
+@media(max-width:700px){
+  .lp-example{padding:56px 5% 72px}
+  .lp-example .exil{font-size:6.5px;letter-spacing:.12em;padding:3px 7px}
+  .lp-example .exgrid{grid-template-areas:"side" "main" "info";grid-template-columns:1fr;gap:26px}
+  .lp-example .exmat{padding:30px 22px}
+  .lp-example .exstrings{height:56px}
+  .lp-example .exswing{transform-origin:50% 4px}
+  .lp-example .expin{top:4px}
+  .lp-example .exinfo{margin-top:0}
+  .lp-example .exacts{flex-direction:column;align-items:stretch}
+  .lp-example .exlay,.lp-example .exvisit{justify-content:center;white-space:nowrap;padding-left:16px;padding-right:16px}
+}
+@media (prefers-reduced-motion: reduce){.lp-example .exslot img{animation:none!important}.lp-example .exlay,.lp-example .exvisit{transition:none}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#maincontent">Skip to main content</a>
 <div class="imy-a11y" data-imy-a11y><button class="imy-a11y-fab" type="button" aria-expanded="false" aria-controls="imy-a11y-panel" aria-label="Accessibility menu"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.3" r="2.15"/><path d="M4 8.7c2.5.9 5.1 1.4 8 1.4s5.5-.5 8-1.4"/><path d="M12 9.8v4.7m0 0-2.8 6.1m2.8-6.1 2.8 6.1"/></svg></button><div class="imy-a11y-panel" id="imy-a11y-panel" role="dialog" aria-modal="false" aria-label="Accessibility options" hidden><div class="imy-a11y-head"><span class="imy-a11y-title">Accessibility</span><button class="imy-a11y-close" type="button" aria-label="Close accessibility menu">×</button></div><div class="imy-a11y-row"><span class="imy-a11y-lab">Text size</span><span class="imy-a11y-step"><button type="button" data-a11y="text-dec" aria-label="Decrease text size">A−</button><span class="imy-a11y-val" data-a11y-textval aria-live="polite">100%</span><button type="button" data-a11y="text-inc" aria-label="Increase text size">A+</button></span></div><button class="imy-a11y-toggle" type="button" data-a11y="contrast" aria-pressed="false">High contrast</button><button class="imy-a11y-toggle" type="button" data-a11y="pause" aria-pressed="false">Pause animations</button><button class="imy-a11y-toggle" type="button" data-a11y="links" aria-pressed="false">Highlight links</button><button class="imy-a11y-toggle" type="button" data-a11y="spacing" aria-pressed="false">More spacing</button><button class="imy-a11y-reset" type="button" data-a11y="reset">Reset all</button><div class="imy-a11y-links"><a href="/privacy" target="_blank" rel="noopener noreferrer">Accessibility statement</a><a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy policy</a></div></div></div>
 <div class="grain" aria-hidden="true"></div>
-<div class="motes" aria-hidden="true"><i style="left:45.0%;width:7px;height:7px;animation-duration:22.4s;animation-delay:-4.8s;--dx:10px"></i><i style="left:50.2%;width:7px;height:7px;animation-duration:15.1s;animation-delay:-4.3s;--dx:10px"></i><i style="left:61.8%;width:5px;height:5px;animation-duration:14.0s;animation-delay:-15.3s;--dx:-18px"></i><i style="left:53.2%;width:4px;height:4px;animation-duration:19.5s;animation-delay:-13.3s;--dx:10px"></i><i style="left:64.1%;width:7px;height:7px;animation-duration:20.2s;animation-delay:-8.3s;--dx:14px"></i><i style="left:8.0%;width:4px;height:4px;animation-duration:15.1s;animation-delay:-16.7s;--dx:-18px"></i><i style="left:75.9%;width:5px;height:5px;animation-duration:17.8s;animation-delay:-3.5s;--dx:14px"></i><i style="left:24.2%;width:5px;height:5px;animation-duration:18.5s;animation-delay:-7.4s;--dx:10px"></i><i style="left:64.2%;width:6px;height:6px;animation-duration:24.0s;animation-delay:-0.1s;--dx:-18px"></i><i style="left:69.2%;width:5px;height:5px;animation-duration:21.3s;animation-delay:-10.7s;--dx:-18px"></i><i style="left:8.7%;width:4px;height:4px;animation-duration:17.4s;animation-delay:-3.4s;--dx:10px"></i><i style="left:8.3%;width:4px;height:4px;animation-duration:22.3s;animation-delay:-22.0s;--dx:-12px"></i><i style="left:90.1%;width:4px;height:4px;animation-duration:18.2s;animation-delay:-0.4s;--dx:10px"></i><i style="left:41.9%;width:7px;height:7px;animation-duration:19.9s;animation-delay:-4.9s;--dx:-8px"></i><i style="left:34.0%;width:5px;height:5px;animation-duration:16.7s;animation-delay:-0.8s;--dx:-18px"></i><i style="left:14.8%;width:4px;height:4px;animation-duration:13.1s;animation-delay:-11.8s;--dx:10px"></i></div>
 
 <!-- HERO (full-screen memory wall) -->
 <header class="mwhero">
@@ -653,7 +675,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
   <div class="mw-grain" aria-hidden="true"></div>
   <div class="mw-spot" aria-hidden="true"></div>
   <div class="tornbar"><nav class="mw-nav" aria-label="Primary">
-    <span class="mw-b">I <em>Miss</em> You Memorial</span>
+    <span class="mw-b"><img src="/brand/imy-mark.svg" alt="" style="height:20px;width:auto;vertical-align:-4px;margin-right:8px">I <em>Miss</em> You Memorial</span>
     <span class="mw-links"><a href="#memory">Remember</a><a href="#example">Example</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></span>
     <a class="mw-login" href="/signin">Log in</a>
     <a class="mw-navcta" href="/onboarding">Start a tribute</a>
@@ -691,32 +713,50 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
   </div></section>
 
   <section class="lp-example" id="example">
-    <div class="exfx" aria-hidden="true"></div>
-    <div class="exhalo" aria-hidden="true"></div>
+    <div class="exlight" aria-hidden="true"></div>
     <div class="in">
-      <div class="rev">
-        <div class="exwr" id="exWr">
-          <img class="wreath" loading="lazy" src="/art/wreath2-64e82a.png" alt="A green foliage wreath, flowered by the people who loved her">
-          <div class="exarch"><span class="exil">In loving memory</span><img loading="lazy" src="/art/6c8f0124-0c96-4644-9aea-16af7edeb8c9-98a86b.png" alt="Eleanor Margaret Hayes"></div>
-          <div class="explate"><div class="nm">Eleanor Margaret <em>Hayes</em></div><div class="dt">1948 · 2024 · Half Moon Bay</div></div>
+      <div class="exhang rev" id="exHang">
+        <div class="exswing" id="exSwing">
+          <svg class="exstrings" viewBox="0 0 100 84" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M50 6 L1.5 84"/><path d="M50 6 L98.5 84"/></svg>
+          <figure class="exframe">
+            <div class="exgilt"><div class="exmat">
+              <div class="exgrid">
+                <div class="exside">
+                  <div class="exwr" id="exWr">
+                    <img class="wreath" loading="lazy" src="/art/wreath2-64e82a.png" alt="A green foliage wreath, flowered by the people who loved her">
+                    <div class="exarch"><span class="exil">In loving memory</span><img loading="lazy" src="/art/6c8f0124-0c96-4644-9aea-16af7edeb8c9-98a86b.png" alt="Eleanor Margaret Hayes"></div>
+                  </div>
+                  <div class="excap">
+                    <div class="nm">Eleanor Margaret <em>Hayes</em></div>
+                    <div class="dt">1948 · 2024 · Half Moon Bay</div>
+                  </div>
+                </div>
+                <div class="exmain">
+                  <div class="exey">See an example</div>
+                  <h2>No one should be<br>remembered <em>alone</em>.</h2>
+                  <p class="exsub">Invite everyone who loved them. Grief is lighter when it is carried together.</p>
+                  <p class="exline"><b id="exCt">1,284</b> flowers since her page began · lilies for peace · roses for love</p>
+                </div>
+                <div class="exinfo">
+                  <div class="excomposer">
+                    <div class="lab">Leave a memory</div>
+                    <input class="field" type="text" aria-label="Leave a memory" placeholder="You taught me to ride a bike on Maple St">
+                  </div>
+                  <div class="exmem">
+                    <div class="q">“You taught me to drive on the back roads, laughing the whole way.”</div>
+                    <div class="who">Daniel, her grandson</div>
+                  </div>
+                  <div class="exacts">
+                    <button class="exlay" id="exBtn"><img src="/art/lily2-f5e2ef.png" alt="" aria-hidden="true"> Lay a flower</button>
+                    <a class="exvisit" href="/sites/example" target="_blank" rel="noopener noreferrer">Visit Eleanor's tribute</a>
+                  </div>
+                  <div class="extaste">A real page · yours will be theirs</div>
+                </div>
+              </div>
+            </div></div>
+          </figure>
         </div>
-      </div>
-      <div class="rev d1 exhead">
-        <div class="exey">See an example</div>
-        <h2>No one should be<br>remembered <em>alone</em>.</h2>
-        <p class="exsub">Invite everyone who loved them. Grief is lighter when it is carried together.</p>
-        <button class="exlay" id="exBtn"><img src="/art/lily2-f5e2ef.png" alt="" aria-hidden="true"> Lay a flower</button>
-        <div class="exline"><b id="exCt">1,284</b> flowers since her page began · lilies for peace · roses for love</div>
-        <div class="excomposer">
-          <div class="lab">Leave a memory</div>
-          <input class="field" type="text" aria-label="Leave a memory" placeholder="You taught me to ride a bike on Maple St">
-        </div>
-        <div class="exmem">
-          <div class="q">“You taught me to drive on the back roads, laughing the whole way.”</div>
-          <div class="who">Daniel, her grandson</div>
-        </div>
-        <a class="exvisit" href="/sites/example" target="_blank" rel="noopener noreferrer">Visit Eleanor's tribute</a>
-        <div class="extaste">A real page · yours will be theirs</div>
+        <span class="expin" aria-hidden="true"></span>
       </div>
     </div>
   </section>
@@ -825,6 +865,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
   </section>
 
   <footer class="lp-foot">
+    <img src="/brand/imy-mark-reversed.svg" alt="" style="height:40px;width:auto;display:block;margin:0 auto 12px">
     <div class="fm">I <em>Miss</em> You Memorial</div>
     <div class="pl">Every tribute carries a quiet “Made with love · I Miss You Memorial,” and Plus removes it. We will never charge a family to keep a memory online.</div>
     <div class="pl" style="margin-top:12px"><a href="/contact">Contact us</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></div>
@@ -971,14 +1012,11 @@ document.addEventListener('keydown', function(e) {
 })();
 </script>
 <script>
-/* See an example · warm-ember night + lay a flower onto the wreath ring (July 5) */
+/* See an example · the keepsake frame + lay a flower onto the wreath ring (July 14) */
 (function(){
   var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var wr=document.getElementById('exWr');
   if(!wr)return;
-  /* rising embers */
-  var fx=document.querySelector('.lp-example .exfx');
-  if(fx&&!RM){for(var q=0;q<12;q++){var e=document.createElement('div');e.className='ember';e.style.left=(5+Math.random()*90)+'%';e.style.setProperty('--rx',(Math.random()*36-18)+'px');e.style.animationDuration=(7+Math.random()*6)+'s';e.style.animationDelay=(Math.random()*8)+'s';fx.appendChild(e);}}
   var FL={
     rose:'/art/rose2-6094a3.png',
     lily:'/art/lily2-f5e2ef.png',
@@ -1005,6 +1043,34 @@ document.addEventListener('keydown', function(e) {
     if(ct){var n=parseInt(ct.textContent.replace(/,/g,''),10)+1;ct.textContent=fmt(n)}
     try{fetch('/api/tribute/example/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count&&ct)ct.textContent=fmt(Number(j.count))}).catch(function(){})}catch(e){}
   });
+})();
+/* the frame hangs from its pin; the world moves it, then it rests (July 14) */
+(function(){
+  var sw=document.getElementById('exSwing');if(!sw)return;
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var root=document.documentElement,CAP=(window.innerWidth<700)?0.8:1.2;
+  var angle=0,vel=0,target=0,lastY=window.pageYOffset,raf=null,inview=false,settled=false;
+  function step(){
+    raf=null;
+    if(root.classList.contains('a11y-pause')){sw.style.transform='';angle=0;vel=0;target=0;return}
+    vel+=(target-angle)*.055;vel*=.86;angle+=vel;target*=.9;
+    if(Math.abs(angle)<.02&&Math.abs(vel)<.02&&Math.abs(target)<.02){sw.style.transform='';angle=0;vel=0;target=0;return}
+    sw.style.transform='rotate('+angle.toFixed(3)+'deg)';
+    raf=requestAnimationFrame(step);
+  }
+  function kick(){if(!raf)raf=requestAnimationFrame(step)}
+  addEventListener('scroll',function(){
+    var y=window.pageYOffset,dy=y-lastY;lastY=y;
+    if(!inview)return;
+    target=Math.max(-CAP,Math.min(CAP,target+dy*.015));
+    kick();
+  },{passive:true});
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){es.forEach(function(e){
+      inview=e.isIntersecting;
+      if(inview&&!settled){settled=true;angle=CAP*1.3;kick()}
+    })},{rootMargin:'80px 0px'}).observe(sw);
+  }
 })();
 </script>
 <script>
