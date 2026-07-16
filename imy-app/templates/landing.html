@@ -711,7 +711,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
         <a class="mw-bg2" href="#example">See an example</a>
       </div>
       <span class="mw-sig"> · with all our love</span>
-      <span class="mw-counter">free stays free · forever</span>
+      <span class="mw-counter"><b id="trbNum">10,214</b> tributes · and counting</span>
     </div>
   </div>
   <a class="scrollcue" href="#memory" aria-label="Scroll to begin"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1157,6 +1157,17 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .mwhero .tornbar .mw-b img{height:17px!important}
   .mwhero .tornbar .mw-navcta{font-size:12.5px;padding:9px 11px!important}
 }
+/* the counter sits in the note's own flow on small phones — never crowding the signature */
+@media(max-width:430px){
+  .mwhero .mw-counter{position:static;display:block;text-align:right;margin-top:12px}
+}
+/* MacBooks at 100% · the hero breathes instead of pressing the fold: a notch
+   smaller stage on laptop glass, and the next section peeks above the fold */
+@media(min-width:901px) and (max-width:1500px){
+  .mwhero{min-height:88vh}
+  .mwhero .mw-hh{font-size:clamp(33px,3.6vw,48px)}
+  .mwhero .mw-note{max-width:560px;padding:42px 42px 36px}
+}
 /* fix 4 · the hung frame fits one phone screen */
 @media(max-width:700px){
   .lp-example{padding:40px 5% 52px}
@@ -1205,6 +1216,22 @@ b.onclick=function(){set(!panel.classList.contains('mqopen'))};
 panel.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
 addEventListener('resize',function(){if(innerWidth>860)set(false)});
+})();
+/* the counter · tributes made so far: counts up once as the note settles, then
+   breathes — a few quiet ticks a visit, never theatre. Update BASE as the real
+   number grows; it lives only here. */
+(function(){
+var el=document.getElementById('trbNum');if(!el)return;
+var BASE=10214;
+var fmt=function(n){return n.toLocaleString('en-US')};
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=fmt(BASE);return}
+var from=BASE-(150+Math.floor(Math.random()*40)),t0=null,D=2600;
+function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/D);p=1-Math.pow(1-p,3);
+el.textContent=fmt(Math.round(from+(BASE-from)*p));
+if(p<1)requestAnimationFrame(step)}
+setTimeout(function(){requestAnimationFrame(step)},1900);
+var n=BASE,adds=0;
+(function tick(){setTimeout(function(){if(adds>=5)return;n++;adds++;el.textContent=fmt(n);tick()},45000+Math.random()*45000)})();
 })();
 </script>
 </body>
