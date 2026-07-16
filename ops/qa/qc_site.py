@@ -151,6 +151,9 @@ def main():
     ok("onboarding: iOS inputs at 16px (no focus zoom-jump)", "font-size:16px" in pages["onboarding"])
     ok("landing: hamburger panel lives on body (fix 5)", "mqpanel" in pages["landing"])
     ok("landing: the hung frame fits one screen (fix 4)", ".lp-example{padding:40px 5% 52px}" in pages["landing"])
+    ok("landing: the tribute counter stands in the hero", 'id="trbNum"' in pages["landing"] and "tributes · and counting" in pages["landing"])
+    ok("landing: the hero speaks the counter, not the old pledge line", "free stays free · forever" not in pages["landing"])
+    ok("landing: the permanence promise still lives below", "never charge a family" in pages["landing"])
     print()
 
     print("— tokens —")
