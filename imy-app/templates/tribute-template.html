@@ -1269,7 +1269,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <option value="friends3">Another way</option>
     </select>
     <input id="relTxt" placeholder="In your own words · e.g. her student, Room 4, 1989" style="margin-top:9px"/>
-    <label class="human"><input type="checkbox" id="humanChk"/> I'm a real person · every memorial is protected from spam</label>
+    <label class="human"><input type="checkbox" id="humanChk"/><span class="humantxt">I'm a real person · every memorial is protected from spam</span></label>
     <button class="btn solid go" id="idGo">Continue</button>
     <div class="note2">your memory goes to the family before it appears on the page<br>first name shown · last name and email kept private to the family<br>your email is never shown publicly · no account needed · asked once</div>
   </div>
@@ -2050,6 +2050,108 @@ setReadout();
 if(T&&location.search.indexOf('upgraded=1')>-1){
   setTimeout(function(){try{say('The wall is open. Every memory now has a home here · thank you.',false)}catch(e){}},900);
 }
+})();
+</script>
+
+<style id="mq-layer">
+/* ═══ MOBILE QA LAYER v2 · July 15 2026 · fixes 2,3,6,7 (+ invite band compaction) ═══ */
+/* fix 2 · double-tap zoom does nothing, pinch stays (accessibility) */
+html,body,a,button,input,select,textarea,label,[role=button],.tapeobj,.piece,.btab{touch-action:manipulation}
+/* fix 3 · modals: layered above all page chrome, viewport-proof, real exits */
+.gsheet{z-index:4000!important}
+.idm{z-index:4100!important}   /* the identity sheet keeps its place above the gift */
+.lb{z-index:4200!important}
+#sharedate,#tvroom{z-index:4300!important}
+.idm .card,.gs-card{max-height:calc(100dvh - 24px);overflow:auto;-webkit-overflow-scrolling:touch}
+#sharedate>div{max-height:calc(100dvh - 16px)!important;overflow:auto!important}
+.idm .close2,.gs-x,.lb .close,#sdClose,#tvx{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;z-index:6}
+.idm .close2{top:6px;right:6px;background:rgba(251,246,234,.92);border:1px solid rgba(168,124,95,.3);border-radius:50%}
+/* fix 3 · on phones the exits never scroll away: sticky X pinned to the top of every scrolling sheet */
+@media(max-width:700px){
+  .idm .close2{position:sticky;top:2px;right:auto;display:flex;margin:0 -4px -40px auto}
+  .gsheet .gs-x{position:sticky;top:2px;right:auto;display:flex;margin:0 -8px -40px auto;background:rgba(26,19,13,.78);border:1px solid rgba(201,165,114,.5);border-radius:50%;color:#EFD49A}
+  #sharedate>div>div:first-child{position:sticky;top:0;z-index:5;background:#FAF5EC;margin:-20px -20px 12px!important;padding:14px 20px 10px}
+}
+@media(max-width:620px){
+  .lb .box{max-height:calc(100dvh - 20px)!important}
+  .lb .close{position:sticky;top:2px;display:flex;justify-self:end;margin:0 0 -46px 0;background:rgba(26,19,13,.72);border-radius:50%}
+  .lb .lnav{min-width:44px;min-height:44px}
+}
+/* fix 6 · the identity sheet: the checkbox row rebuilt, the sheet compact */
+.human{display:grid!important;grid-template-columns:24px 1fr;align-items:start;gap:10px;text-align:left}
+.human input{width:22px;height:22px;margin-top:0}
+.human .humantxt{display:block;white-space:normal;line-height:1.55;font-size:11px;letter-spacing:.04em}
+@media(max-width:700px){
+  .idm{padding:8px}
+  .idm .card{padding:12px 16px 16px}
+  .idm h3{font-size:20px;line-height:1.2}
+  .idm .sub{font-size:13px;line-height:1.5;margin-bottom:12px}
+  .relchips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .relchips button{min-height:44px}
+  .idm input,.idm select{min-height:46px;font-size:16px}
+  .idm .note2{font-size:10px;line-height:1.6}
+  #sharedate{padding:8px!important;align-items:flex-end!important}
+  #sharedate .btn{width:100%;justify-content:center;min-height:48px;box-sizing:border-box;text-align:center}
+}
+/* fix 7 · the board breathes: two true columns (the 18px gap once pushed every 50% piece onto its own row), then a quiet door */
+@media(max-width:640px){
+  .boardstage .cl-row{gap:10px}
+  .boardstage .piece{width:calc(50% - 5px)!important;margin:0!important}
+  .boardstage .piece .print img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover}
+  .boardstage .piece .cassp{width:100%!important}
+  .boardstage .bnote .bx{font-size:12.5px}
+}
+@media(max-width:700px){
+  .hint-open{display:none} /* a hover hint has no work on touch — and it sat on the board's door */
+}
+.mqmore{display:none;margin:20px auto 0;min-height:46px;padding:12px 26px;border-radius:30px;border:1.5px solid rgba(168,124,95,.5);background:#FBF6EA;font-family:'Besley',serif;font-weight:700;font-size:14px;color:#5A4F45;cursor:pointer}
+/* the invitation band fits one phone screen (same recipe as the landing) */
+@media(max-width:700px){
+  .lp-example{padding:40px 5% 52px}
+  .lp-example .exstrings{height:38px}
+  .lp-example .exswing{transform-origin:50% 3px}
+  .lp-example .expin{top:3px}
+  .lp-example .exframe{padding:10px}
+  .lp-example .exmat{padding:20px 16px 18px}
+  .lp-example .exgrid{gap:14px}
+  .lp-example .exwr{width:auto;aspect-ratio:auto;margin:0}
+  .lp-example .exwr .wreath{display:none}
+  .lp-example .exarch{position:static;transform:none;width:80px;aspect-ratio:3/4;border-width:4px}
+  .lp-example .exil{display:none}
+  .lp-example .exside{display:flex;align-items:center;gap:14px}
+  .lp-example .excap{text-align:left;margin-top:0}
+  .lp-example .excap .nm{font-size:17px}
+  .lp-example .excap .dt{font-size:8.5px;margin-top:3px}
+  .lp-example h2{font-size:22px}
+  .lp-example .exsub{font-size:14px;margin-top:8px}
+  .lp-example .exline{margin-top:10px;font-size:10.5px}
+  .lp-example .excomposer,.lp-example .exmem{display:none}
+  .lp-example .exacts{margin-top:14px;flex-direction:column;align-items:stretch}
+  .lp-example .exlay,.lp-example .exvisit{width:100%;justify-content:center;min-height:48px;box-sizing:border-box;text-align:center}
+  .lp-example .extaste{text-align:center;margin-top:10px}
+}
+</style>
+<script>
+/* fix 3 · backdrop taps close the identity sheet (the X already listens) */
+(function(){var m=document.getElementById('idm'),x=document.getElementById('idmClose');
+if(m&&x)m.addEventListener('click',function(e){if(e.target===m)x.click()});})();
+/* fix 7 · board batching on phones: eight pieces, then "Show N more" */
+(function(){
+var stage=document.querySelector('.boardstage');if(!stage)return;
+var btn=document.createElement('button');btn.className='mqmore';btn.type='button';
+stage.parentNode.insertBefore(btn,stage.nextSibling);
+var opened=false;
+function pieces(){return stage.querySelectorAll('.piece')}
+function apply(){
+  var ps=pieces();
+  if(window.innerWidth>700||opened||ps.length<=8){ps.forEach?ps.forEach(function(p){p.style.removeProperty('display')}):0;btn.style.display='none';return}
+  var hid=0;ps.forEach(function(p,i){if(i>=8){p.style.display='none';hid++}else{p.style.removeProperty('display')}});
+  btn.textContent='Show '+hid+' more';btn.style.display=hid?'block':'none';
+}
+btn.onclick=function(){opened=true;apply()};
+document.addEventListener('click',function(e){if(e.target.closest('.btab')){opened=false;setTimeout(apply,50)}});
+addEventListener('resize',apply);
+setTimeout(apply,0);
 })();
 </script>
 </body>

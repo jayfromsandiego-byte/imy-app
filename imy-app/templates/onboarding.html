@@ -454,7 +454,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="hand">a letter for the one you miss</div>
       <h1>Let’s write down<br><em>who they were.</em></h1>
       <div class="wrows">
-        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>eighteen small questions · each answer lays a flower on the garland</span></div>
+        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>a handful of small questions · each answer lays a flower on the garland</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9.2" y="9" width="5.6" height="12" rx="1.6"/><path d="M12,9 V7.4"/><path d="M12,6.6 q1.7,-2.1 0,-3.6 q-1.7,1.5 0,3.6"/></svg><span>about ten quiet minutes · it saves as you go, change anything later</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $97 once</b></span></div>
       </div>
@@ -1358,6 +1358,54 @@ var ENGINE=(function(){
   PROGRESS.set(0);
 
   return {start:start};
+})();
+</script>
+
+<style id="mq-layer">
+/* ═══ MOBILE QA LAYER v2 · July 15 2026 · fixes 1,2,3 ═══ */
+/* fix 2 + first-tap reliability: manipulation removes the double-tap wait */
+html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipulation}
+/* fix 1 · one Back, not two: the legacy control rests; .navback is the letter's back */
+.back{display:none!important}
+@media(max-width:700px){
+  /* the letter breathes on a phone: nothing clipped, everything tappable */
+  .navback,.btn,[data-next],[data-back]{min-height:48px}
+  input,select,textarea{font-size:16px} /* iOS: no focus zoom-jump */
+  /* fix 1 · each page of the letter fits a phone screen: quieter margins, same ritual */
+  .top{padding:6px 12px 4px}
+  .garland svg{height:26px}
+  .stage{padding:84px 12px calc(30px + env(safe-area-inset-bottom,0px))}
+  .paper{padding:30px 18px 36px;min-height:0}
+  .kick{margin-bottom:12px;font-size:.76rem}
+  .q{font-size:clamp(1.45rem,6.2vw,1.8rem);margin-bottom:10px}
+  .sub{font-size:.98rem;margin-bottom:18px}
+  .body{margin-bottom:16px}
+  .fgroup{margin-bottom:16px}
+  .grid2{gap:12px}
+  textarea{min-height:128px}
+  #welcome{padding-top:6px}
+  #welcome .hand{margin-bottom:14px}
+  #welcome h1{margin-bottom:12px}
+  #welcome p{margin:0 auto 20px}
+  .wrows{margin-top:16px;gap:8px}
+  .wrow{padding:10px 12px;font-size:.85rem}
+  #welcome .foot{margin-top:16px}
+  .nav{gap:10px}
+}
+/* fix 3 · the plus sheet gets a real exit (the letter waits underneath, nothing lost) */
+.ckx{position:absolute;top:8px;right:8px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;background:rgba(251,246,234,.92);border:1px solid rgba(168,124,95,.3);border-radius:50%;font-size:22px;color:#5A4F45;cursor:pointer;z-index:6}
+</style>
+<script>
+/* fix 3 · the checkout sheet: an X, a backdrop tap, and Escape all hand the letter back */
+(function(){
+var ck=document.getElementById('checkout');if(!ck)return;
+var card=ck.querySelector('.ck-card');if(!card)return;
+var x=document.createElement('button');x.type='button';x.className='ckx';x.setAttribute('aria-label','Close');x.innerHTML='&times;';
+card.appendChild(x);
+function shut(){ck.classList.remove('open')}
+x.addEventListener('click',shut);
+ck.addEventListener('click',function(e){if(e.target===ck||e.target.classList.contains('ck-wrap'))shut()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ck.classList.contains('open'))shut()});
 })();
 </script>
 </body>
