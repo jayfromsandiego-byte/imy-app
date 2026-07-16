@@ -2107,6 +2107,26 @@ html,body,a,button,input,select,textarea,label,[role=button],.tapeobj,.piece,.bt
 /* the wordmark walks home: the brand in the top bar is a quiet door to imissyoumemorial.com */
 .tb-in a.brand{color:inherit;text-decoration:none}
 .tb-in a.brand:hover em{text-decoration:underline;text-underline-offset:3px}
+/* the ghost variable: --accent was used eleven times and defined never — the voice-memory
+   play button sat invisible (transparent circle, cream glyph on cream). It speaks terracotta now. */
+:root{--accent:var(--terra);--accent-deep:var(--terra-deep)}
+/* ═══ a voice, kept — as a cassette · July 16 2026 ═══
+   The player joins the page's own object language (the tape shelf, the board's
+   cassettes): a walnut tape with a paper label, reels that turn while it plays. */
+.vk{position:relative;background:linear-gradient(180deg,#3f2c1a,#241711 78%);border:1px solid rgba(201,165,114,.45);border-radius:14px;padding:12px 14px 12px 12px;gap:12px;box-shadow:inset 0 1px 0 rgba(255,224,178,.14),inset 0 0 26px rgba(0,0,0,.35),0 10px 24px -14px rgba(26,19,13,.5);overflow:hidden}
+.vk-play{flex:0 0 48px;width:48px;height:48px;box-shadow:0 6px 14px -6px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.25)}
+.vk-body{display:flex;flex-direction:column;gap:8px}
+.vk-meta{order:-1;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,#FBF4E4,#F3ECDD);border-radius:6px;padding:4px 11px;border:1px solid rgba(168,124,95,.35);box-shadow:inset 0 0 8px rgba(120,90,40,.08)}
+.vk-cap{font-family:'Caveat',cursive!important;font-size:19px!important;font-variant-caps:normal!important;letter-spacing:0!important;color:#4a3a28}
+.vk-time{font-family:'Sometype Mono',monospace;font-size:12.5px;font-weight:700;color:#7A6A58}
+.vk-track{height:34px;border-radius:9px;border:1px solid rgba(201,165,114,.28);position:relative;overflow:hidden;background:radial-gradient(circle at 22% 50%,rgba(246,232,207,.16) 0 6px,rgba(246,232,207,.05) 7px 13px,transparent 14px),radial-gradient(circle at 78% 50%,rgba(246,232,207,.16) 0 6px,rgba(246,232,207,.05) 7px 13px,transparent 14px),linear-gradient(180deg,#171009,#241711)}
+.vk-track::before,.vk-track::after{content:"";position:absolute;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;border:2px dashed rgba(246,232,207,.55);background:rgba(23,16,9,.6)}
+.vk-track::before{left:calc(22% - 11px)}
+.vk-track::after{left:calc(78% - 11px)}
+.vk.playing .vk-track::before,.vk.playing .vk-track::after{animation:vkspin 2.6s linear infinite}
+@keyframes vkspin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.vk.playing .vk-track::before,.vk.playing .vk-track::after{animation:none!important}}
+.vk-fill{background:linear-gradient(90deg,rgba(168,124,95,.85),rgba(201,165,114,.8));opacity:.5}
 /* ═══ the small type grows up · July 16 2026 · nothing under ~13px remains on a memorial ═══ */
 /* reading labels & meta — the lines people actually read */
 .kick{font-size:16px!important}
