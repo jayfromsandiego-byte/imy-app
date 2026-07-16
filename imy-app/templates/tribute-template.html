@@ -1014,7 +1014,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <!-- production: the demo preview strip is retired; tier and wall state come from the server -->
 <div class="tornbar"><nav class="tb-in" aria-label="Primary">
-  <span class="brand wm"><img src="/brand/imy-mark.svg" alt="" style="height:19px;width:auto;vertical-align:-4px;margin-right:7px">I <em>Miss</em> You Memorial</span>
+  <a class="brand wm" href="https://imissyoumemorial.com/" aria-label="I Miss You Memorial — home"><img src="/brand/imy-mark.svg" alt="" style="height:19px;width:auto;vertical-align:-4px;margin-right:7px">I <em>Miss</em> You Memorial</a>
   <span class="nav"><a href="#story">Her story</a><a href="#gallery">Pictures</a><a href="#really">Who she was</a><a href="#memories">Memories</a><a href="#keep">The keeping place</a></span>
   <span class="actions"><button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">＋ Add a memory</button><button class="btn solid" id="bookBtn" style="font-size:12.5px;padding:9px 16px">Buy a memorial book</button></span>
 </nav></div>
@@ -2104,6 +2104,30 @@ html,body,a,button,input,select,textarea,label,[role=button],.tapeobj,.piece,.bt
 @media(max-width:700px){
   .hint-open{display:none} /* a hover hint has no work on touch — and it sat on the board's door */
 }
+/* the wordmark walks home: the brand in the top bar is a quiet door to imissyoumemorial.com */
+.tb-in a.brand{color:inherit;text-decoration:none}
+.tb-in a.brand:hover em{text-decoration:underline;text-underline-offset:3px}
+/* ═══ the small type grows up · July 16 2026 · nothing under ~13px remains on a memorial ═══ */
+/* reading labels & meta — the lines people actually read */
+.kick{font-size:16px!important}
+.curated,.svcrow .lab,.svcrow .mini,.svcrow .what .mono,.arr-dt,.rosect,.period .py,.tln .yr,.hier,.truth .tl2,.chalk .l2,.mem-rel,.memkeep,.pmeta .m1,.pmeta .m2,.cl-name .ct2,.announce .mono,.presence,.wr-count,.wr-total,.wr-biglab,.wr-plate .n2,.unlockline .ul-sub,.inv-kick,.inv-trial,.inv-trust,.wallct,.wchip .st,.wmore,.gwline,.gw-side .per,.gw-inner .ey,.url,.idm .note2,.gs-fine,.gs-kick,.gs-price .gper,.gs-opt span,.cdrawer .c1 .r,.galnav .gp,.albnav .pg,.sp-story .txt .mono,.carcap,.shelfcap,.cassette .mt,.whisper .wp,.readout,.tick9 .run,.addingas,.plaque .pl-date,.stage-nav .st,.preview .pl,.mode,.lb .who,.lb .ldate,.lb .cmt2 .r,.lib .sub,.libcard .ln .lk,.lib .note,.memviews{font-size:14px!important}
+.human .humantxt{font-size:14px!important;line-height:1.5}
+.tln p,.tlpop .cap,.bnote .more,.cmt,.pledge,footer .pl,.gs-fine2,.vk-cap,.sp16 .slot .scap,.slot .scap,.tchip,.wr-count,.presence{font-size:15px!important}
+.addingas button{font-size:13.5px!important}
+.tchip .lk{font-size:13px!important}
+/* pills, tabs, chips — bigger, but they must still fit their shells */
+.btab{font-size:13px!important;padding:9px 18px}
+.memtab{font-size:13.5px!important}
+.seg button{font-size:14.5px!important}
+.bbpill{font-size:14px!important}
+.bbfab{font-size:12px!important}
+.plusflag{font-size:11.5px!important}
+.vidp .vbadge2{font-size:11.5px!important}
+.swipehint{font-size:12px!important}
+.jj{font-size:11.5px!important}
+/* the injected sheets: share-the-date + the tape room speak up too */
+#sharedate [style*="font-size:10"],#sharedate [style*="font-size:11"]{font-size:14px!important}
+#tvroom #tvcap{font-size:14px!important}
 .mqmore{display:none;margin:20px auto 0;min-height:46px;padding:12px 26px;border-radius:30px;border:1.5px solid rgba(168,124,95,.5);background:#FBF6EA;font-family:'Besley',serif;font-weight:700;font-size:14px;color:#5A4F45;cursor:pointer}
 /* the invitation band fits one phone screen (same recipe as the landing) */
 @media(max-width:700px){
