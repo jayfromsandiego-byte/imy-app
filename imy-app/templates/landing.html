@@ -1161,6 +1161,14 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
 @media(max-width:430px){
   .mwhero .mw-counter{position:static;display:block;text-align:right;margin-top:12px}
 }
+/* phones · iOS measures vh past the URL bar, so the card once ended flush at the
+   glass with the scroll cue hidden beneath the chrome. The hero now stands at its
+   own content height with a quiet band for the cue — the page always shows
+   there is more below, on any phone, any browser bar. */
+@media(max-width:680px){
+  .mwhero{min-height:0!important;padding-bottom:60px}
+  .mwhero .scrollcue{bottom:16px}
+}
 /* MacBooks at 100% · the hero breathes instead of pressing the fold: a notch
    smaller stage on laptop glass, and the next section peeks above the fold */
 @media(min-width:901px) and (max-width:1500px){
