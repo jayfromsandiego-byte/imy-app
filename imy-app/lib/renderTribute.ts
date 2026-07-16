@@ -611,11 +611,16 @@ export function renderTribute(template: string, t: Tribute): string {
     if (tier === "plus" && t.voiceUrl && /^https:\/\//.test(t.voiceUrl)) {
       const mIdx = html.indexOf('<section class="section rev sheetdeep" id="memories"');
       if (mIdx > -1) {
+        // Their voice wears the same cassette the memory cards keep (the template's
+        // delegated .vk wiring plays any cassette on the page — one object language).
         const voice =
           `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
           `<div style="max-width:560px;margin:0 auto">` +
-          `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">Their voice · kept</div>` +
-          `<audio controls preload="none" src="${esc(t.voiceUrl)}" style="width:100%;display:block"></audio>` +
+          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">Their voice · kept</div>` +
+          `<div class="vk" role="group" style="text-align:left"><audio preload="none" src="${esc(t.voiceUrl)}" aria-label="Their voice, kept"></audio>` +
+          `<button type="button" class="vk-play" aria-label="Play their voice">▶</button>` +
+          `<div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div>` +
+          `<div class="vk-meta"><span class="vk-time">0:00</span><span class="vk-cap">their voice · kept</span></div></div></div>` +
           `</div></section>`;
         html = html.slice(0, mIdx) + voice + html.slice(mIdx);
       }
