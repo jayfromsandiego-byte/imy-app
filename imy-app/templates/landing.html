@@ -1126,20 +1126,26 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
 .mqburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .mqburger[aria-expanded="true"] span:nth-child(2){opacity:0}
 .mqburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* the menu panel lives on body — outside the tornbar's torn-edge mask,
+   which clips every descendant (the reason a dropdown could never work inside it) */
+.mqpanel{display:none;position:fixed;left:0;right:0;z-index:4000;flex-direction:column;background:#FFFDF6;border-bottom:1px solid rgba(168,124,95,.25);box-shadow:0 30px 60px -30px rgba(44,37,32,.35);padding:8px 6% 14px;max-height:80dvh;overflow:auto;-webkit-overflow-scrolling:touch}
+.mqpanel.mqopen{display:flex}
+.mqpanel a{display:block;padding:13px 6px;min-height:44px;box-sizing:border-box;font-size:17px;color:#2C2520;text-decoration:none;text-shadow:none;border-bottom:1px dashed rgba(168,124,95,.22);font-family:'Besley',serif;font-weight:600}
+.mqpanel a:last-child{border-bottom:none}
+@media(min-width:861px){.mqpanel{display:none!important}}
 @media(max-width:860px){
-  .tornbar{position:relative}
-  .mw-nav{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;overflow:visible}
-  .mw-b{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px}
-  .mw-links{display:none!important}
-  .mw-links.mqopen{display:flex!important;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:#FFFDF6;border-bottom:1px solid rgba(168,124,95,.25);box-shadow:0 30px 60px -30px rgba(44,37,32,.35);padding:8px 6% 14px;gap:0;z-index:80}
-  .mw-links.mqopen a{display:block;padding:13px 6px;min-height:44px;box-sizing:border-box;font-size:17px;border-bottom:1px dashed rgba(168,124,95,.22)}
-  .mw-links.mqopen a:last-child{border-bottom:none}
-  .mw-login,.mw-navcta{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}
-  .mqburger{display:inline-flex;flex:0 0 auto}
+  .mwhero .tornbar{position:relative;z-index:400}
+  .mwhero .tornbar .mw-nav{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;overflow:visible}
+  .mwhero .tornbar .mw-b{display:inline-block!important;flex:0 1 auto;min-width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px;color:#2C2520;text-shadow:none}
+  .mwhero .tornbar .mw-b em{color:#A87C5F}
+  .mwhero .tornbar .mw-links{display:none!important;width:auto!important;order:0!important;padding-top:0!important}
+  .mwhero .tornbar .mw-login,.mwhero .tornbar .mw-navcta{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap;margin-left:auto}
+  .mwhero .tornbar .mw-navcta{margin-left:0}
+  .mwhero .tornbar .mqburger{display:inline-flex;flex:0 0 auto}
 }
 @media(max-width:430px){
-  .mw-login{display:none!important} /* it waits inside the menu */
-  .mw-navcta{font-size:13.5px;padding:10px 14px!important}
+  .mwhero .tornbar .mw-login{display:none!important} /* it waits inside the menu */
+  .mwhero .tornbar .mw-navcta{font-size:13.5px;padding:10px 14px!important}
 }
 /* fix 4 · the hung frame fits one phone screen */
 @media(max-width:700px){
@@ -1159,7 +1165,6 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .lp-example .excap .nm{font-size:17px}
   .lp-example .excap .dt{font-size:8.5px;margin-top:3px}
   .lp-example h2{font-size:22px}
-  .lp-example h2 br{display:none}
   .lp-example .exsub{font-size:14px;margin-top:8px}
   .lp-example .exline{margin-top:10px;font-size:10.5px}
   .lp-example .excomposer,.lp-example .exmem{display:none}
@@ -1169,20 +1174,27 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
 }
 </style>
 <script>
-/* fix 5 · the hamburger: built from the nav's own links, closes on choice */
+/* fix 5 · the hamburger: a body-level panel cloned from the nav's own links
+   (the tornbar's torn-edge mask clips anything inside it — so the panel lives outside) */
 (function(){
 var nav=document.querySelector('.mw-nav'),links=document.querySelector('.mw-links');if(!nav||!links)return;
 var b=document.createElement('button');b.className='mqburger';b.type='button';
-b.setAttribute('aria-label','Menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','mwLinks');
-links.id=links.id||'mwLinks';
+b.setAttribute('aria-label','Menu');b.setAttribute('aria-expanded','false');
 b.innerHTML='<span></span><span></span><span></span>';
 nav.appendChild(b);
+var panel=document.createElement('nav');panel.className='mqpanel';panel.setAttribute('aria-label','Menu');
+links.querySelectorAll('a').forEach(function(a){panel.appendChild(a.cloneNode(true))});
 var lg=document.querySelector('.mw-login');
-if(lg&&!links.querySelector('.mqlogin')){var l2=lg.cloneNode(true);l2.classList.add('mqlogin');l2.removeAttribute('style');links.appendChild(l2)}
-function set(open){links.classList.toggle('mqopen',open);b.setAttribute('aria-expanded',open?'true':'false')}
-b.onclick=function(){set(!links.classList.contains('mqopen'))};
-links.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
+if(lg){var l2=lg.cloneNode(true);l2.classList.add('mqlogin');l2.removeAttribute('style');panel.appendChild(l2)}
+document.body.appendChild(panel);
+function set(open){
+  if(open){var r=nav.getBoundingClientRect();panel.style.top=Math.max(r.bottom+2,0)+'px'}
+  panel.classList.toggle('mqopen',open);b.setAttribute('aria-expanded',open?'true':'false');
+}
+b.onclick=function(){set(!panel.classList.contains('mqopen'))};
+panel.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
+addEventListener('resize',function(){if(innerWidth>860)set(false)});
 })();
 </script>
 </body>
