@@ -2054,7 +2054,7 @@ if(T&&location.search.indexOf('upgraded=1')>-1){
 </script>
 
 <style id="mq-layer">
-/* ═══ MOBILE QA LAYER · July 15 2026 · fixes 2,3,6,7 (+ invite band compaction) ═══ */
+/* ═══ MOBILE QA LAYER v2 · July 15 2026 · fixes 2,3,6,7 (+ invite band compaction) ═══ */
 /* fix 2 · double-tap zoom does nothing, pinch stays (accessibility) */
 html,body,a,button,input,select,textarea,label,[role=button],.tapeobj,.piece,.btab{touch-action:manipulation}
 /* fix 3 · modals: layered above all page chrome, viewport-proof, real exits */
@@ -2066,15 +2066,26 @@ html,body,a,button,input,select,textarea,label,[role=button],.tapeobj,.piece,.bt
 #sharedate>div{max-height:calc(100dvh - 16px)!important;overflow:auto!important}
 .idm .close2,.gs-x,.lb .close,#sdClose,#tvx{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;z-index:6}
 .idm .close2{top:6px;right:6px;background:rgba(251,246,234,.92);border:1px solid rgba(168,124,95,.3);border-radius:50%}
+/* fix 3 · on phones the exits never scroll away: sticky X pinned to the top of every scrolling sheet */
+@media(max-width:700px){
+  .idm .close2{position:sticky;top:2px;right:auto;display:flex;margin:0 -4px -40px auto}
+  .gsheet .gs-x{position:sticky;top:2px;right:auto;display:flex;margin:0 -8px -40px auto;background:rgba(26,19,13,.78);border:1px solid rgba(201,165,114,.5);border-radius:50%;color:#EFD49A}
+  #sharedate>div>div:first-child{position:sticky;top:0;z-index:5;background:#FAF5EC;margin:-20px -20px 12px!important;padding:14px 20px 10px}
+}
+@media(max-width:620px){
+  .lb .box{max-height:calc(100dvh - 20px)!important}
+  .lb .close{position:sticky;top:2px;display:flex;justify-self:end;margin:0 0 -46px 0;background:rgba(26,19,13,.72);border-radius:50%}
+  .lb .lnav{min-width:44px;min-height:44px}
+}
 /* fix 6 · the identity sheet: the checkbox row rebuilt, the sheet compact */
 .human{display:grid!important;grid-template-columns:24px 1fr;align-items:start;gap:10px;text-align:left}
 .human input{width:22px;height:22px;margin-top:0}
 .human .humantxt{display:block;white-space:normal;line-height:1.55;font-size:11px;letter-spacing:.04em}
 @media(max-width:700px){
   .idm{padding:8px}
-  .idm .card{padding:44px 16px 16px}
+  .idm .card{padding:12px 16px 16px}
   .idm h3{font-size:20px;line-height:1.2}
-  .idm .sub{font-size:13px;line-height:1.5}
+  .idm .sub{font-size:13px;line-height:1.5;margin-bottom:12px}
   .relchips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .relchips button{min-height:44px}
   .idm input,.idm select{min-height:46px;font-size:16px}
@@ -2082,8 +2093,18 @@ html,body,a,button,input,select,textarea,label,[role=button],.tapeobj,.piece,.bt
   #sharedate{padding:8px!important;align-items:flex-end!important}
   #sharedate .btn{width:100%;justify-content:center;min-height:48px;box-sizing:border-box;text-align:center}
 }
-/* fix 7 · the board breathes: first eight pieces, then a quiet door for the rest */
-.mqmore{display:none;margin:16px auto 0;min-height:46px;padding:12px 26px;border-radius:30px;border:1.5px solid rgba(168,124,95,.5);background:#FBF6EA;font-family:'Besley',serif;font-weight:700;font-size:14px;color:#5A4F45;cursor:pointer}
+/* fix 7 · the board breathes: two true columns (the 18px gap once pushed every 50% piece onto its own row), then a quiet door */
+@media(max-width:640px){
+  .boardstage .cl-row{gap:10px}
+  .boardstage .piece{width:calc(50% - 5px)!important;margin:0!important}
+  .boardstage .piece .print img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover}
+  .boardstage .piece .cassp{width:100%!important}
+  .boardstage .bnote .bx{font-size:12.5px}
+}
+@media(max-width:700px){
+  .hint-open{display:none} /* a hover hint has no work on touch — and it sat on the board's door */
+}
+.mqmore{display:none;margin:20px auto 0;min-height:46px;padding:12px 26px;border-radius:30px;border:1.5px solid rgba(168,124,95,.5);background:#FBF6EA;font-family:'Besley',serif;font-weight:700;font-size:14px;color:#5A4F45;cursor:pointer}
 /* the invitation band fits one phone screen (same recipe as the landing) */
 @media(max-width:700px){
   .lp-example{padding:40px 5% 52px}

@@ -1134,7 +1134,11 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
 .mqpanel a:last-child{border-bottom:none}
 @media(min-width:861px){.mqpanel{display:none!important}}
 @media(max-width:860px){
-  .mwhero .tornbar{position:relative;z-index:400}
+  /* the whole burger range stacks like a phone — between 681 and 860 the bar
+     otherwise becomes a centered flex item and shoves the hero card off-screen */
+  .mwhero{flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important}
+  .mwhero .tornbar{position:relative!important;top:auto!important;order:-1;width:100%;box-sizing:border-box;padding-bottom:70px!important;z-index:400}
+  .mwhero .mw-inner{margin-top:18px!important}
   .mwhero .tornbar .mw-nav{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;overflow:visible}
   .mwhero .tornbar .mw-b{display:inline-block!important;flex:0 1 auto;min-width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px;color:#2C2520;text-shadow:none}
   .mwhero .tornbar .mw-b em{color:#A87C5F}
@@ -1146,6 +1150,12 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
 @media(max-width:430px){
   .mwhero .tornbar .mw-login{display:none!important} /* it waits inside the menu */
   .mwhero .tornbar .mw-navcta{font-size:13.5px;padding:10px 14px!important}
+}
+@media(max-width:360px){
+  /* the wordmark keeps its Miss on the smallest phones */
+  .mwhero .tornbar .mw-b{font-size:15px}
+  .mwhero .tornbar .mw-b img{height:17px!important}
+  .mwhero .tornbar .mw-navcta{font-size:12.5px;padding:9px 11px!important}
 }
 /* fix 4 · the hung frame fits one phone screen */
 @media(max-width:700px){
