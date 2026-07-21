@@ -16,7 +16,7 @@ Env:
   POLL_SECONDS      default 20
   RUN_ONCE=1        process at most one job, then exit (CI / sandbox tests)
 """
-import os, sys, time, json, tempfile, traceback
+import os, socket, sys, time, tempfile, traceback
 from datetime import datetime, timezone
 
 def now_iso():
@@ -25,10 +25,40 @@ def now_iso():
 import imy_api as db
 import storage
 import email_notify
-from render_film import render
+import health
+from render_film import ASSETS, render
 
 SITE = (os.environ.get("SITE_URL") or "https://imissyoumemorial.com").rstrip("/")
 POLL = int(os.environ.get("POLL_SECONDS", "20"))
+WORKER_ID = (os.environ.get("WORKER_ID") or socket.gethostname() or "film-worker")[:120]
+
+
+def validate_configuration():
+    missing = []
+    if not db.URL:
+        missing.append("SUPABASE_URL")
+    if not db.KEY:
+        missing.append("SUPABASE_SERVICE_ROLE_KEY_V2")
+    for name in ("Besley.ttf", "Besley-Italic.ttf", "SometypeMono.ttf", "wreath.png", "gymnopedie-1.flac"):
+        if not os.path.exists(os.path.join(ASSETS, name)):
+            missing.append(f"asset:{name}")
+    if missing:
+        raise RuntimeError("worker configuration missing " + ", ".join(missing))
+
+
+def heartbeat(state, job_id=None, detail=None):
+    """Best-effort liveness in Supabase; never let telemetry cost a film."""
+    try:
+        db.upsert("film_worker_heartbeats", {
+            "worker_id": WORKER_ID,
+            "state": state,
+            "current_job_id": job_id,
+            "detail": (str(detail or "")[:300] or None),
+            "last_seen_at": now_iso(),
+        }, "worker_id")
+    except Exception:
+        pass
+
 
 TRIBUTE_SELECT = (
     "id,slug,loved_one_name,born_on,died_on,place,pronouns,tier,owner_email,placements,"
@@ -163,11 +193,16 @@ def auto_place(t, jid, spec, film_url):
 
 def process(job):
     jid = job["id"]
+    health.mark_job(jid)
+    heartbeat("rendering", jid)
     print(f"[job {jid[:8]}] claimed · tribute {job['tribute_id'][:8]} · variant {job.get('variant')}")
     rows = db.select("tributes", f"id=eq.{job['tribute_id']}&select={TRIBUTE_SELECT}")
     if not rows:
         db.patch("film_jobs", f"id=eq.{jid}", {"status": "failed", "error": "tribute-not-found",
                                                "finished_at": now_iso()})
+        health.mark_error("tribute-not-found")
+        heartbeat("failed", detail="tribute-not-found")
+        email_notify.send_ops_alert(jid, "tribute-not-found")
         return
     t = rows[0]
     try:
@@ -187,40 +222,108 @@ def process(job):
                  f"tribute_id=eq.{job['tribute_id']}&status=eq.ready&id=neq.{jid}",
                  {"status": "superseded"})
         placed = auto_place(t, jid, spec, film_url)
+        if placed:
+            try:
+                db.patch(
+                    "orders",
+                    f"tribute_id=eq.{t['id']}&status=eq.paid&fulfillment_status=in.(processing,waiting_on_family,needs_attention)",
+                    {"fulfillment_status": "ready", "fulfillment_error": None, "fulfilled_at": now_iso()},
+                )
+            except Exception:
+                pass
         sent = email_notify.send_film_ready(
             t.get("owner_email") or "", spec["first"], spec["pos"], spec["slug"],
             job["approve_token"], placed=bool(placed))
+        notification = "sent" if sent else ("failed" if email_notify.configured else "not_configured")
+        try:
+            db.patch("film_jobs", f"id=eq.{jid}", {
+                "notification_status": notification,
+                "notified_at": now_iso() if sent else None,
+            })
+        except Exception:
+            pass
+        if notification == "failed":
+            email_notify.send_ops_alert(jid, "film-ready-email-failed")
+        health.mark_poll()
+        heartbeat("idle")
         print(f"[job {jid[:8]}] {'placed on the page' if placed else 'ready'} · {dur}s"
-              f" · {spec['variant']} · email={'sent' if sent else 'quiet'}")
+              f" · {spec['variant']} · email={notification}")
     except ValueError as ve:
-        if str(ve) == "not-enough-photos":
-            db.patch("film_jobs", f"id=eq.{jid}", {"status": "failed", "error": "not-enough-photos",
-                                                   "finished_at": now_iso()})
-            print(f"[job {jid[:8]}] rested · not enough photographs yet")
+        error = str(ve)
+        if error == "not-enough-photos":
+            db.patch("film_jobs", f"id=eq.{jid}", {
+                "status": "waiting_for_photos", "error": error, "finished_at": now_iso()
+            })
+            try:
+                db.patch(
+                    "orders",
+                    f"tribute_id=eq.{job['tribute_id']}&status=eq.paid&fulfillment_status=eq.processing",
+                    {"fulfillment_status": "waiting_on_family", "fulfillment_error": "more-photos-needed"},
+                )
+            except Exception:
+                pass
+            health.mark_poll()
+            heartbeat("idle", detail="waiting-for-photos")
+            print(f"[job {jid[:8]}] waiting · not enough photographs yet")
         else:
-            raise
+            attempts = job.get("attempts") or 1
+            status = "failed" if attempts >= 3 else "queued"
+            db.patch("film_jobs", f"id=eq.{jid}", {"status": status, "error": error[:500]})
+            if status == "failed":
+                try:
+                    db.patch(
+                        "orders",
+                        f"tribute_id=eq.{job['tribute_id']}&status=eq.paid&fulfillment_status=eq.processing",
+                        {"fulfillment_status": "needs_attention", "fulfillment_error": error[:240]},
+                    )
+                except Exception:
+                    pass
+                email_notify.send_ops_alert(jid, error)
+            health.mark_error(error)
+            heartbeat(status, detail=error)
+            print(f"[job {jid[:8]}] {status} after media error (attempt {attempts})")
     except Exception as e:
         traceback.print_exc()
         attempts = job.get("attempts") or 1
         status = "failed" if attempts >= 3 else "queued"
         db.patch("film_jobs", f"id=eq.{jid}", {"status": status, "error": str(e)[:500]})
+        if status == "failed":
+            try:
+                db.patch(
+                    "orders",
+                    f"tribute_id=eq.{job['tribute_id']}&status=eq.paid&fulfillment_status=eq.processing",
+                    {"fulfillment_status": "needs_attention", "fulfillment_error": str(e)[:240]},
+                )
+            except Exception:
+                pass
+            email_notify.send_ops_alert(jid, str(e))
+        health.mark_error(str(e))
+        heartbeat(status, detail=str(e))
         print(f"[job {jid[:8]}] {status} after error (attempt {attempts})")
 
 
 def main():
     once = os.environ.get("RUN_ONCE") == "1"
+    validate_configuration()
+    health.start()
+    health.mark_poll()
+    heartbeat("starting")
     print(f"film-worker awake · storage={'r2' if storage.r2_configured else 'supabase'} · site={SITE}")
     while True:
         try:
             db.rpc("requeue_stale_film_jobs")
             claimed = db.rpc("claim_film_job")
+            health.mark_poll()
+            heartbeat("idle")
             if claimed:
                 process(claimed[0])
                 if once:
                     return
                 continue
-        except Exception:
+        except Exception as exc:
             traceback.print_exc()
+            health.mark_error(str(exc))
+            heartbeat("error", detail=str(exc))
         if once:
             print("queue quiet · nothing to weave")
             return

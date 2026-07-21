@@ -3,7 +3,7 @@
 # Run:    docker run -e SUPABASE_URL=... -e SUPABASE_SERVICE_ROLE_KEY=... imy-film-worker
 FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg curl \
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg curl ca-certificates tini \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -22,7 +22,18 @@ RUN mkdir -p assets \
  && curl -fsSL -o assets/wreath.png        "https://imissyoumemorial.com/art/wreath2-64e82a.png" \
  && curl -fsSL -o assets/gymnopedie-1.flac "https://upload.wikimedia.org/wikipedia/commons/a/a6/Satie_Gymnopedie_No_1_performed_by_Michael_Laucke.flac"
 
-COPY render_film.py imy_api.py storage.py email_notify.py worker.py ./
+COPY render_film.py imy_api.py storage.py email_notify.py health.py worker.py ./
 
-ENV ASSETS_DIR=/app/assets
+RUN useradd --system --uid 10001 --home-dir /app worker \
+ && chown -R worker:worker /app
+
+ENV ASSETS_DIR=/app/assets \
+    PORT=8080 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+EXPOSE 8080
+USER worker
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD python -c "import os,urllib.request; urllib.request.urlopen('http://127.0.0.1:'+os.environ.get('PORT','8080')+'/healthz',timeout=3)" || exit 1
+ENTRYPOINT ["tini", "--"]
 CMD ["python", "worker.py"]

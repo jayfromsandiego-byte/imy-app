@@ -16,7 +16,7 @@ const SELECT =
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_audio(url,kind)," +
   "tribute_service(starts_at,venue,address,charity_name,charity_url)," +
-  "film_jobs(video_id,film_url,poster_url,duration_seconds,rendered_variant,status,created_at,deleted_at)";
+  "film_jobs(video_id,film_url,poster_url,duration_seconds,variant,rendered_variant,status,error,created_at,finished_at,deleted_at)";
 
 const firstName = (n: string) => (n || "").trim().split(/\s+/)[0] || n || "Them";
 const dateOnly = (s?: string | null) => (s ? String(s).slice(0, 10) : undefined);
@@ -46,12 +46,16 @@ function rowToTribute(r: any): Tribute {
   const filmVideo = (r.tribute_videos || [])
     .filter((v: any) => !v.deleted_at && v.kind === "film" && v.url)
     .slice().sort(bySort)[0];
+  const filmJobs = (r.film_jobs || [])
+    .filter((j: any) => !j.deleted_at)
+    .sort((a: any, b: any) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
   const filmJob = filmVideo
-    ? (r.film_jobs || [])
-        .filter((j: any) => !j.deleted_at && j.status === "approved" &&
-          (j.video_id === filmVideo.id || j.film_url === filmVideo.url))
-        .sort((a: any, b: any) => String(b.created_at || "").localeCompare(String(a.created_at || "")))[0]
+    ? filmJobs.find((j: any) => j.status === "approved" &&
+        (j.video_id === filmVideo.id || j.film_url === filmVideo.url))
     : undefined;
+  const latestFilmJob = filmJobs.find((j: any) =>
+    ["queued", "rendering", "ready", "waiting_for_photos", "failed"].includes(j.status)
+  ) || filmJobs[0];
   return {
     slug: r.slug || undefined,
     fullName: r.loved_one_name || "",
@@ -80,6 +84,14 @@ function rowToTribute(r: any): Tribute {
           poster: filmJob?.poster_url || undefined,
           duration: filmJob?.duration_seconds != null ? Number(filmJob.duration_seconds) : undefined,
           variant: filmJob?.rendered_variant || undefined,
+        }
+      : undefined,
+    filmStatus: latestFilmJob && !filmVideo
+      ? {
+          status: latestFilmJob.status,
+          error: latestFilmJob.error || undefined,
+          variant: latestFilmJob.rendered_variant || latestFilmJob.variant || undefined,
+          createdAt: latestFilmJob.created_at || undefined,
         }
       : undefined,
     tier: r.tier || "free",

@@ -80,9 +80,11 @@ Vercel Blob (`BLOB_READ_WRITE_TOKEN`), R2 (`R2_*`, pending as of July 8).
 - One external worker (`film-worker/`, Docker) weaves memorial films from each
   tribute's own photos, captions, chapters, and clips. It is NOT deployed by
   Vercel — run it on any $5 box (Railway/Fly). See `film-worker/README.md`.
-- Queue: `film_jobs` (migration 0021). Claim/requeue are SQL functions with
-  anon/authenticated execute revoked — service role only. Intake enqueues
-  automatically at 3+ photos; the keeper re-weaves from `/film/[slug]?t=…`.
+- Queue: `film_jobs` (migrations 0021 + reliability layer 0022). Claim/requeue
+  and the paid `ensure_full_film_for_paid` promise are service-role-only SQL.
+  A partial unique index allows one active full weave per tribute, so Stripe
+  retries and concurrent events cannot double-render. Intake enqueues at 3+
+  photos; the keeper re-weaves from `/film/[slug]?t=…`.
 - Placement: a PAID page (plus/heirloom) receives its full film automatically
   the moment the weave finishes — the $97 includes the film, no approval step
   between a family and what they paid for; the letter says it is on the page.
@@ -91,15 +93,24 @@ Vercel Blob (`BLOB_READ_WRITE_TOKEN`), R2 (`R2_*`, pending as of July 8).
   removed films rest, never delete. On the shelf a film is a `tribute_videos`
   row with `kind='film'`, `sort=999`. The Stone's living portrait and Living
   pictures always skip `kind='film'` — the film never covers the face.
-  The Stripe webhook queues the full weave the second the tier turns.
+  The Stripe webhook queues the full weave the second the tier turns. It fails
+  closed without its signing secret or database, and returns 500 on fulfillment
+  failure so Stripe retries instead of accepting a silent loss.
 - Storage: R2 when `R2_*` keys exist (same env names as `lib/r2.ts`), the
   public `tribute-films` Supabase bucket until then. The Supabase FREE plan
   caps objects at 50 MB (verified July 14 — 402 to raise it), so the worker
   fits every film under ~48 MB (`MAX_FILM_BYTES`); R2 keys lift the ceiling.
   Free-tier films rest exactly like other free-page videos.
 - Variants: `auto` resolves at render time (plus/heirloom → full ~1½–2½ min ·
-  free → teaser ~35s). Fewer than 3 photos → the job rests as
-  `not-enough-photos`; the film room says so gently.
+  free → teaser ~35s). Eight or more photographs receive the Eleanor-showcase
+  chapter-over-photo treatment. Fewer than 3 photos rest as
+  `waiting_for_photos`; the page and study say so gently.
+- Operations: the worker exposes `/healthz`, writes `film_worker_heartbeats`,
+  updates `orders.fulfillment_status`, validates every H.264/AAC render before
+  upload, and alerts the operator on a final failure. `/api/cron/film-health`
+  is the outside daily backstop on Vercel Hobby. Run `sh ops/qa/run.sh` and
+  `RUN_RENDER_SMOKE=1 ASSETS_DIR=film-worker/assets sh film-worker/tests/run.sh`
+  before deployment.
 - Music: public-domain or one-time-licensed beds baked into the worker image,
   provenance ledger in `film-worker/README.md`. Never subscription beds,
   never user uploads.

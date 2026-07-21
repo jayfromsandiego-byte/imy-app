@@ -3,8 +3,9 @@
 Weaves the memorial film for a tribute: the family's photographs, captions,
 chapters, and clips become a quiet 1080p film with a wreath title card, a
 warm grade, and a public-domain bed. One small box renders for the whole
-product. Nothing this worker does ever appears on a page by itself — every
-film waits for the family's approval (`/film/[slug]?t=…`).
+product. A paid full film is placed on the tribute automatically when it is
+finished. The private film room remains the family's place to watch, re-weave,
+or take it down. Free teaser films still wait for the family's approval.
 
 ## How it moves
 
@@ -27,39 +28,54 @@ film waits for the family's approval (`/film/[slug]?t=…`).
 
 Variant `auto` resolves at render time: `plus`/`heirloom` → `full`
 (chapters, up to 24 photos, up to 3 clips, ~90–150s); `free` → `teaser`
-(title, five photographs, closing, ~35s). Fewer than 8 photos → the short
-form without chapter cards; fewer than 3 → the job rests as
-`not-enough-photos` and the app says so, gently.
+(title, five photographs, closing, ~35s). With eight or more photographs,
+each chapter opens over its first photograph in the same film grammar as the
+Eleanor showcase. Fewer than eight uses the short form. Fewer than three rests
+as `waiting_for_photos`; the page and family study explain what is needed.
 
-## Deploy (Railway / Fly / any Docker host)
+## Deploy (Railway / any durable Docker host)
+
+Railway is the launch path. Create a service from this repository, set its root
+directory to `film-worker`, and let `railway.json` own the deploy settings. The
+container listens on Railway's `PORT`, exposes `/healthz`, runs as a non-root
+user under `tini`, and restarts always. Keep one replica until the queue proves
+it needs more.
+
+For a plain Docker host:
 
 ```
 docker build -t imy-film-worker .
 docker run -d --restart unless-stopped \
+  -p 8080:8080 \
   -e SUPABASE_URL=https://<ref>.supabase.co \
-  -e SUPABASE_SERVICE_ROLE_KEY=<service role key> \
-  -e RESEND_API_KEY=<optional, wakes the letter> \
+  -e SUPABASE_SERVICE_ROLE_KEY_V2=<legacy service-role JWT> \
+  -e RESEND_API_KEY=<wakes the family and operator letters> \
   -e EMAIL_FROM="I Miss You Memorial <hello@imissyoumemorial.com>" \
+  -e OPS_EMAIL=imissyoumemorial@gmail.com \
   imy-film-worker
 ```
 
-- Railway: new service from this Dockerfile, ~$5/month, done.
-- Fly.io: `fly launch` with `min_machines_running = 0` if you prefer
-  scale-to-zero (a queued job waits for the next wake).
-- Capacity: one 2-vCPU box weaves a film in ~4–10 minutes; ~1,000
-  films/month fits with room to spare. Add boxes only if the queue says so
-  (`claim_film_job` is safe under many workers).
+A 2-vCPU box normally weaves a full film in about 4–10 minutes. The SQL claim
+is safe under multiple workers, but scale only when queue age says to. Never
+scale to zero: a paying family should not wait for a manual wake.
 
 Env (all optional beyond the first two):
 
 | Var | Meaning |
 |---|---|
-| `SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY` | the queue and the tribute data |
+| `SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY_V2` | the queue and tribute data; V2 carries the legacy service-role JWT |
 | `R2_ACCOUNT_ID` `R2_ACCESS_KEY_ID` `R2_SECRET_ACCESS_KEY` `R2_BUCKET` `R2_PUBLIC_BASE_URL` | wakes R2 storage (else Supabase `tribute-films`) |
-| `RESEND_API_KEY` · `EMAIL_FROM` | wakes the film-ready letter |
-| `SITE_URL` | preview links, default imissyoumemorial.com |
+| `RESEND_API_KEY` · `EMAIL_FROM` · `OPS_EMAIL` | wakes the family letter and final-failure operator note |
+| `SITE_URL` | film-room links, default imissyoumemorial.com |
+| `WORKER_ID` | stable name stored in `film_worker_heartbeats`; host name by default |
 | `POLL_SECONDS` | queue poll, default 20 |
+| `MAX_PHOTO_BYTES` · `MAX_CLIP_BYTES` | bounded remote media downloads; defaults 30 MB and 40 MB |
+| `MAX_FILM_BYTES` | final object ceiling; defaults just below Supabase's 50 MB limit |
+| `ALLOWED_MEDIA_HOSTS` | explicit comma-separated host exceptions; keep empty in production unless reviewed |
 | `RUN_ONCE=1` | weave at most one job, then exit (tests) |
+
+Do not set `ALLOW_PRIVATE_MEDIA_URLS` in production. It exists only so the
+credential-free smoke test can read its own local fixtures.
 
 ## Asset provenance (the ledger)
 
@@ -74,13 +90,34 @@ New music beds: add `assets/<name>.flac`, set `film_jobs.music = '<name>'`,
 and record the row here. One-time licenses only; never subscription beds;
 never user uploads (that is where licensing risk lives).
 
-## Local test (no Docker)
+## QA and operating checks
+
+```
+# deterministic units: plan shape, pronouns, variants, download safety
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+
+# the real ffmpeg/Pillow pipeline, shortened but still 1080p H.264 + AAC
+RUN_RENDER_SMOKE=1 ASSETS_DIR=./assets sh tests/run.sh
+
+# container readiness
+curl -fsS http://127.0.0.1:8080/healthz
+```
+
+The renderer validates every output before upload: H.264, AAC, `yuv420p`,
+1920×1080, expected duration, non-empty poster, and the configured size ceiling.
+It rejects HTTP, credential-bearing, loopback, private, link-local, and oversized
+media URLs. The worker records its state in `film_worker_heartbeats`; the app's
+daily external check catches a dead heartbeat, an old queue, a stuck render,
+failed jobs, unmatched paid orders, and failed family letters. Final worker
+failures also send an immediate operator note when Resend is available.
+
+## Local queue test (no Docker)
 
 ```
 ASSETS_DIR=./assets RUN_ONCE=1 \
-SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… \
+SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY_V2=… \
 python3 worker.py
 ```
 
-Insert a job first:
-`insert into film_jobs (tribute_id, requested_by) select id, 'ops' from tributes where slug='eleanor';`
+Use a soft-deletable QA tribute, never a real family page. Insert one job:
+`insert into film_jobs (tribute_id, requested_by) select id, 'ops' from tributes where slug='qa-film';`

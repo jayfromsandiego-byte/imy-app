@@ -135,6 +135,20 @@ export async function sendYearLetterEmail(
   return send(to, `A year of remembering ${fullName || "them"} · kept`, html);
 }
 
+/** An operator-only note when the paid film promise needs attention. */
+export async function sendOpsAlertEmail(subject: string, lines: string[]): Promise<boolean> {
+  const to = process.env.OPS_EMAIL || process.env.CONTACT_EMAIL || "imissyoumemorial@gmail.com";
+  const body = lines.length
+    ? `<ul style="margin:0;padding-left:20px">${lines.map((line) => `<li style="margin:0 0 8px">${esc(line)}</li>`).join("")}</ul>`
+    : `<p style="margin:0">The film worker needs attention.</p>`;
+  return send(to, subject.slice(0, 140), shell({
+    heading: "The film worker needs attention.",
+    bodyHtml: body,
+    cta: { label: "Open the operations guide", url: `${SITE}/dashboard` },
+    footnote: "Operator alert for I Miss You Memorial. No family content is included in this email.",
+  }));
+}
+
 /** A note from the contact page → the studio inbox, reply-to the writer. */
 export async function sendContactEmail(note: {
   name: string;

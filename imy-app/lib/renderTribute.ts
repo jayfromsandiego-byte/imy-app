@@ -78,6 +78,7 @@ export type Tribute = {
   photos?: PhotoItem[];
   videos?: { id?: string; url: string; cap?: string; kind?: string }[]; // kind: "tape" (family upload) · "film" (the woven film, 0021)
   film?: { url: string; poster?: string; duration?: number; variant?: string }; // the placed film — its own room under the wreath
+  filmStatus?: { status: string; error?: string; variant?: string; createdAt?: string }; // the paid film while it is being woven
   voiceUrl?: string;
   reel?: ReelItem[];
   memories?: MemoryItem[];
@@ -381,6 +382,43 @@ export function renderTribute(template: string, t: Tribute): string {
       ${filmInvite}
     </section>`
     : "";
+  const filmState = t.filmStatus?.status || "";
+  const filmStatusSection = !filmData && tier === "plus" && filmState
+    ? (() => {
+        const waiting = filmState === "waiting_for_photos" || t.filmStatus?.error === "not-enough-photos";
+        const failed = filmState === "failed";
+        const ready = filmState === "ready";
+        const heading = waiting
+          ? "A few more photographs will help."
+          : failed
+            ? "The film needs our care."
+            : ready
+              ? "The film is nearly home."
+              : "The film is being woven.";
+        const copy = waiting
+          ? `A film needs at least three photographs. Add them in the family study and the weave will begin again.`
+          : failed
+            ? `The weave did not finish this time. We have been told. Nothing has been lost, and we will tend to it.`
+            : ready
+              ? `The weave is finished. We are placing it here now.`
+              : `${esc(first)}&rsquo;s photographs and your words are becoming a short film. It usually takes less than an hour. We will write when it is here.`;
+        const action = waiting
+          ? `<a href="/dashboard" class="btn solid" style="display:inline-block;margin-top:18px;text-decoration:none">Add photographs in the family study</a>`
+          : failed
+            ? `<a href="mailto:hello@imissyoumemorial.com?subject=${encodeURIComponent(`Film for ${first}`)}" class="btn" style="display:inline-block;margin-top:18px;text-decoration:none">Write to the studio</a>`
+            : "";
+        return `
+    <!-- THEIR FILM · honest progress while the loom works -->
+    <section class="section rev" id="film-progress" aria-label="The film is being woven">
+      <div style="max-width:720px;margin:0 auto;text-align:center;background:#F3ECDD;border:1px solid #E4D9C4;border-radius:14px;padding:clamp(30px,5vw,54px)">
+        <div class="kick">The film</div>
+        <h2 style="margin-bottom:12px">${heading}</h2>
+        <p class="lede" style="margin-bottom:0">${copy}</p>
+        ${action}
+      </div>
+    </section>`;
+      })()
+    : "";
   const archLivetag = archVideo ? `<span class="livetag" id="archLiveTag">Living portrait</span>` : "";
 
   const metaDescription = (t.story || "").replace(/\s+/g, " ").trim().slice(0, 155) ||
@@ -414,7 +452,7 @@ export function renderTribute(template: string, t: Tribute): string {
     .split("{{SPONSOR_PLAQUE}}").join(sponsorPlaque)
     .split("{{ARCH_VIDEO}}").join(archVideo)
     .split("{{ARCH_LIVETAG}}").join(archLivetag)
-    .split("{{FILM_SECTION}}").join(filmSection)
+    .split("{{FILM_SECTION}}").join(filmSection || filmStatusSection)
     .split("{{PRESENCE_HIDDEN}}").join('hidden style="display:none"')
     .split("{{PRESENCE_LINE}}").join("");
 
