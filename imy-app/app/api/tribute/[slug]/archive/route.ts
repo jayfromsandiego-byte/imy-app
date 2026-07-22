@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
   }
 
   const db = supabaseAdmin();
-  const { data: t } = await db
+  const { data: rawTribute } = await db
     .from("tributes")
     .select(
       "id,slug,loved_one_name,born_on,died_on,place,tier,owner_id,owner_email,candle_count,flower_count," +
@@ -45,6 +45,9 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     .is("deleted_at", null)
     .maybeSingle();
 
+  // Supabase cannot infer the nested relationship shape from a computed select
+  // string. Keep the runtime query unchanged and narrow once at this boundary.
+  const t = rawTribute as any;
   if (!t) return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
   const owns = t.owner_id === user.id || (t.owner_email && t.owner_email === user.email);
   if (!owns) return NextResponse.json({ ok: false, error: "not_yours" }, { status: 403 });

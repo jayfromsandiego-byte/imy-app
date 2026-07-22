@@ -8,6 +8,8 @@ const webhook = read("imy-app/app/api/stripe/webhook/route.ts");
 const film = read("imy-app/lib/film.ts");
 const migration = read("imy-app/supabase/migrations/0022_film_reliability.sql");
 const worker = read("film-worker/worker.py");
+const renderFilm = read("film-worker/render_film.py");
+const renderer = read("imy-app/lib/tributesData.ts");
 const docker = read("film-worker/Dockerfile");
 const railway = JSON.parse(read("film-worker/railway.json"));
 
@@ -22,7 +24,12 @@ ok("paid film queueing is not swallowed", webhook.includes("await ensureFullFilm
 ok("app uses the atomic database promise", film.includes('db.rpc("ensure_full_film_for_paid"'));
 ok("migration guards one active full weave", migration.includes("film_jobs_one_active_full_idx") && migration.includes("ensure_full_film_for_paid"));
 ok("not-enough-photos has a truthful state", migration.includes("waiting_for_photos") && worker.includes('"status": "waiting_for_photos"'));
-ok("worker records paid fulfillment ready", worker.includes('"fulfillment_status": "ready"'));
+ok("adding the third photograph wakes a waiting paid film", migration.includes("wake_paid_film_after_photo") && migration.includes("tribute_photos_wake_paid_film"));
+ok("database transaction records paid fulfillment ready", migration.includes("place_paid_film") && migration.includes("fulfillment_status = 'ready'"));
+ok("paid full film auto-places without approval", worker.includes("def auto_place") && worker.includes('db.rpc("place_paid_film"'));
+ok("one live public film is transactionally guarded", migration.includes("tribute_videos_one_live_film_idx") && migration.includes("set status = 'approved'"));
+ok("public renderer reads the placed film from the shelf", renderer.includes('v.kind === "film"') && renderer.includes("filmVideo.url"));
+ok("worker media fetches use a trusted-host allowlist and revalidate redirects", renderFilm.includes("TRUSTED_MEDIA_HOSTS") && renderFilm.includes("_NoRedirect") && renderFilm.includes("validate_media_url(final_url)"));
 ok("worker publishes a heartbeat", worker.includes('db.upsert("film_worker_heartbeats"'));
 ok("container has a real health check", docker.includes("HEALTHCHECK") && docker.includes("/healthz"));
 ok("Railway waits for health before activation", railway.deploy?.healthcheckPath === "/healthz" && railway.deploy?.restartPolicyType === "ALWAYS");
