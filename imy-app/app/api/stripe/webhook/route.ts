@@ -161,12 +161,14 @@ export async function POST(req: NextRequest) {
           .eq("stripe_subscription_id", String(inv.subscription)));
       }
     } else if (event.type === "customer.subscription.deleted") {
-      // Record the cancellation. Do not guess whether monthly is a plain
-      // subscription or a payment plan completing into ownership; that product
-      // decision remains open, and the tribute itself always stays online.
+      // 0024: a canceled monthly trial rests Plus only when no lifetime order
+      // or other active subscription still opens the memorial. The page and
+      // the woven film remain kept; premium public surfaces simply rest.
       const sub = event.data.object;
       if (sub.id) {
-        dataOrThrow(await db.from("subscriptions").update({ status: "canceled" }).eq("stripe_subscription_id", sub.id));
+        dataOrThrow(await db.rpc("rest_plus_after_subscription_end", {
+          p_subscription_id: String(sub.id),
+        }));
       }
     } else if (event.type === "charge.refunded") {
       const ch = event.data.object;
