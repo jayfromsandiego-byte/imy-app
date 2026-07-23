@@ -18,7 +18,7 @@ Spec dict (built by worker.py from Supabase rows):
   portrait: url | None,                              # the Stone photo
   variant:  "full" | "teaser"
 """
-import os, subprocess, sys, math, shutil, tempfile, urllib.request
+import ipaddress, json, os, socket, subprocess, sys, math, shutil, tempfile, urllib.parse, urllib.request
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 
 FPS = 25
@@ -41,6 +41,14 @@ TITLE_SEC = 6.0
 CLOSE_SEC = 7.5
 CLIP_SEC = 6.5
 MAX_CLIPS = 3
+MAX_PHOTO_BYTES = int(os.environ.get("MAX_PHOTO_BYTES", str(30 * 1024 * 1024)))
+MAX_CLIP_BYTES = int(os.environ.get("MAX_CLIP_BYTES", str(40 * 1024 * 1024)))
+ALLOW_PRIVATE_MEDIA = os.environ.get("ALLOW_PRIVATE_MEDIA_URLS") == "1"
+ALLOWED_MEDIA_HOSTS = {
+    h.strip().lower()
+    for h in os.environ.get("ALLOWED_MEDIA_HOSTS", "").split(",")
+    if h.strip()
+}
 
 
 # ---------------- helpers ----------------
@@ -50,10 +58,50 @@ def run(cmd, timeout=1800):
     if r.returncode != 0:
         raise RuntimeError(f"ffmpeg failed ({' '.join(cmd)[:180]}): {r.stderr[-800:]}")
 
-def fetch(url, dest):
+def _public_host(hostname):
+    """Reject loopback/private/link-local media hosts before the worker fetches them."""
+    if not hostname:
+        return False
+    host = hostname.rstrip(".").lower()
+    if host in ALLOWED_MEDIA_HOSTS:
+        return True
+    try:
+        addrs = {item[4][0] for item in socket.getaddrinfo(host, None)}
+    except socket.gaierror as exc:
+        raise ValueError("media-host-unreachable") from exc
+    for raw in addrs:
+        ip = ipaddress.ip_address(raw)
+        if not ip.is_global:
+            return False
+    return True
+
+
+def validate_media_url(url):
+    parsed = urllib.parse.urlparse(str(url or ""))
+    if parsed.scheme == "file" and ALLOW_PRIVATE_MEDIA:
+        return
+    if parsed.scheme != "https" or parsed.username or parsed.password:
+        raise ValueError("unsafe-media-url")
+    if not _public_host(parsed.hostname or ""):
+        raise ValueError("unsafe-media-host")
+
+
+def fetch(url, dest, max_bytes):
+    validate_media_url(url)
     req = urllib.request.Request(url, headers={"User-Agent": "imy-film-worker/1.0"})
     with urllib.request.urlopen(req, timeout=90) as r, open(dest, "wb") as f:
-        shutil.copyfileobj(r, f)
+        declared = int(r.headers.get("Content-Length") or 0)
+        if declared and declared > max_bytes:
+            raise ValueError("media-too-large")
+        total = 0
+        while True:
+            chunk = r.read(1024 * 1024)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > max_bytes:
+                raise ValueError("media-too-large")
+            f.write(chunk)
     return dest
 
 def besley(size, weight=400, italic=False):
@@ -90,6 +138,34 @@ def center_text(draw, y, s, font, fill):
     draw.text(((W - (b[2] - b[0])) / 2 - b[0], y), s, font=font, fill=fill)
 
 
+def wrap_lines(draw, text, font, max_width, max_lines=2):
+    """Fit family-authored captions without letting a long line leave the frame."""
+    words = str(text or "").replace("\n", " ").split()
+    if not words:
+        return []
+    lines = []
+    current = ""
+    for word in words:
+        candidate = f"{current} {word}".strip()
+        if not current or draw.textlength(candidate, font=font) <= max_width:
+            current = candidate
+            continue
+        lines.append(current)
+        current = word
+        if len(lines) == max_lines:
+            break
+    if len(lines) < max_lines and current:
+        lines.append(current)
+    consumed = " ".join(lines)
+    original = " ".join(words)
+    if consumed != original and lines:
+        last = lines[-1]
+        while last and draw.textlength(last + "…", font=font) > max_width:
+            last = last[:-1].rstrip()
+        lines[-1] = (last + "…") if last else "…"
+    return lines[:max_lines]
+
+
 # ---------------- cards ----------------
 
 def card_title(spec, path):
@@ -113,6 +189,31 @@ def card_chapter(title, yrs, path):
     center_text(d, 486, title, f, INK)
     d.line([(W / 2 - 30, 656), (W / 2 + 30, 656)], fill=GOLD, width=2)
     img.save(path)
+
+
+def chapter_overlay_png(title, yrs, path):
+    """The showcase treatment: a chapter title laid gently over its first photo."""
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(img)
+    veil = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    vd = ImageDraw.Draw(veil)
+    for y in range(H):
+        distance = abs(y - int(H * 0.55)) / max(H * 0.38, 1)
+        alpha = int(max(0, 74 * (1 - distance)))
+        vd.line([(0, y), (W, y)], fill=(250, 245, 236, alpha))
+    img.alpha_composite(veil.filter(ImageFilter.GaussianBlur(12)))
+    d = ImageDraw.Draw(img)
+    if yrs:
+        draw_tracked(d, int(H * 0.44), str(yrs).upper(), mono(24), (88, 68, 55, 230), 8, W / 2)
+    title = str(title or "")
+    f = fit_font(d, title, besley, 78, W - 340, weight=450, italic=True)
+    b = d.textbbox((0, 0), title, font=f)
+    x = (W - (b[2] - b[0])) / 2 - b[0]
+    y = int(H * 0.50)
+    d.text((x + 2, y + 3), title, font=f, fill=(250, 245, 236, 190))
+    d.text((x, y), title, font=f, fill=(49, 39, 31, 245))
+    d.line([(W / 2 - 30, int(H * 0.66)), (W / 2 + 30, int(H * 0.66))], fill=GOLD + (225,), width=2)
+    img.save(path)
+
 
 def card_closing(spec, path):
     img = Image.new("RGB", (W, H), DARK_BOT); d = ImageDraw.Draw(img)
@@ -139,12 +240,21 @@ def card_closing(spec, path):
 
 def caption_png(text, path):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(img)
-    font = mono(38)
-    x, y = 110, H - 140
-    sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(sh).text((x + 2, y + 2), text, font=font, fill=(15, 10, 6, 170))
-    img.alpha_composite(sh.filter(ImageFilter.GaussianBlur(3)))
-    d.text((x, y), text, font=font, fill=(250, 245, 236, 242))
+    font = mono(36)
+    lines = wrap_lines(d, text, font, W - 300, max_lines=2)
+    if not lines:
+        img.save(path)
+        return
+    line_h = 52
+    x = 110
+    y = H - 112 - line_h * len(lines)
+    widths = [d.textlength(line, font=font) for line in lines]
+    plate = [x - 24, y - 18, min(W - 70, x + max(widths) + 26), y + line_h * len(lines) + 18]
+    d.rounded_rectangle(plate, radius=14, fill=(25, 17, 12, 132))
+    for i, line in enumerate(lines):
+        ty = y + i * line_h
+        d.text((x + 2, ty + 2), line, font=font, fill=(10, 7, 5, 210))
+        d.text((x, ty), line, font=font, fill=(250, 245, 236, 246))
     img.save(path)
 
 
@@ -208,6 +318,22 @@ def seg_photo(jpg, dur, style, cap, workdir, idx, out):
     else:
         run(["ffmpeg", "-y", "-i", jpg, "-filter_complex", base + ",format=yuv420p[v]",
              "-map", "[v]", "-r", str(FPS), "-c:v", "libx264", "-crf", "17", "-preset", "fast", "-an", out])
+
+
+def seg_chapter_photo(jpg, dur, style, title, yrs, workdir, idx, out):
+    frames = round(dur * FPS)
+    z, x, y = kb_expr(style, frames)
+    overlay = os.path.join(workdir, f"chapter{idx:02d}.png")
+    chapter_overlay_png(title, yrs, overlay)
+    base = (f"[0:v]scale=3840:2160:force_original_aspect_ratio=increase,crop=3840:2160,"
+            f"zoompan=z='{z}':x='{x}':y='{y}':d={frames}:s={W}x{H}:fps={FPS},{GRADE}[base];"
+            f"[1:v]format=rgba,fade=t=in:st=0.35:d=0.8:alpha=1,"
+            f"fade=t=out:st={max(dur-1.25,0):.2f}:d=0.9:alpha=1[chapter];"
+            f"[base][chapter]overlay=0:0,format=yuv420p[v]")
+    run(["ffmpeg", "-y", "-i", jpg, "-loop", "1", "-t", str(dur), "-i", overlay,
+         "-filter_complex", base, "-map", "[v]", "-r", str(FPS),
+         "-c:v", "libx264", "-crf", "17", "-preset", "fast", "-an", out])
+
 
 def seg_clip(src, dur, out):
     run(["ffmpeg", "-y", "-t", str(dur), "-i", src,
@@ -294,13 +420,24 @@ def build_plan(spec, workdir):
     photo_segments = []
     if use_chapters:
         for c in chapters:
-            if not c["photos"]: continue
-            photo_segments.append(("chapter", c["title"], CARD_SEC, c.get("yrs") or "", None))
-            for p in c["photos"]:
+            if not c["photos"]:
+                continue
+            first_photo, *rest = c["photos"]
+            photo_segments.append((
+                "chapter_photo", first_photo, PHOTO_SEC + 1.0,
+                {"title": c["title"], "yrs": c.get("yrs") or ""}, styles[si % 4]
+            ))
+            si += 1
+            for p in rest:
                 photo_segments.append(photo_item(p))
         if loose:
-            photo_segments.append(("chapter", f"More of {spec['pos']} days", CARD_SEC, "", None))
-            for p in loose:
+            first_loose, *rest_loose = loose
+            photo_segments.append((
+                "chapter_photo", first_loose, PHOTO_SEC + 1.0,
+                {"title": f"More of {spec['pos']} days", "yrs": ""}, styles[si % 4]
+            ))
+            si += 1
+            for p in rest_loose:
                 photo_segments.append(photo_item(p))
     else:
         pool = []
@@ -323,13 +460,42 @@ def build_plan(spec, workdir):
     return plan
 
 
+def validate_output(film, poster, expected_duration):
+    """Refuse to publish a truncated or browser-incompatible render."""
+    if not os.path.exists(film) or os.path.getsize(film) < 100_000:
+        raise RuntimeError("render-output-too-small")
+    if not os.path.exists(poster) or os.path.getsize(poster) < 2_000:
+        raise RuntimeError("poster-output-too-small")
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries",
+         "format=duration:stream=codec_name,codec_type,width,height,pix_fmt", "-of", "json", film],
+        capture_output=True, text=True, timeout=60,
+    )
+    if probe.returncode != 0:
+        raise RuntimeError(f"ffprobe-failed: {probe.stderr[-300:]}")
+    info = json.loads(probe.stdout or "{}")
+    streams = info.get("streams") or []
+    video = next((s for s in streams if s.get("codec_type") == "video"), None)
+    audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
+    actual = float((info.get("format") or {}).get("duration") or 0)
+    if not video or video.get("codec_name") != "h264" or video.get("pix_fmt") != "yuv420p":
+        raise RuntimeError("render-video-not-browser-safe")
+    if int(video.get("width") or 0) != W or int(video.get("height") or 0) != H:
+        raise RuntimeError("render-wrong-dimensions")
+    if not audio or audio.get("codec_name") != "aac":
+        raise RuntimeError("render-audio-missing")
+    if actual <= 0 or abs(actual - expected_duration) > 3.0:
+        raise RuntimeError("render-duration-mismatch")
+    return round(actual, 2)
+
+
 def render(spec, out_dir):
     """Weave the film. Returns (film_path, poster_path, duration_seconds)."""
     workdir = tempfile.mkdtemp(prefix="film-", dir=out_dir)
     segs_dir = os.path.join(workdir, "segs"); os.makedirs(segs_dir)
     plan = build_plan(spec, workdir)
 
-    n_photos = sum(1 for k, *_ in plan if k in ("photo", "hero"))
+    n_photos = sum(1 for k, *_ in plan if k in ("photo", "chapter_photo", "hero"))
     if n_photos < FULL_MIN_PHOTOS:
         raise ValueError("not-enough-photos")
 
@@ -339,7 +505,7 @@ def render(spec, out_dir):
         if url in cache: return cache[url]
         ext = ".mp4" if kind == "clip" else ".img"
         raw = os.path.join(workdir, f"dl{i:02d}{ext}")
-        fetch(url, raw)
+        fetch(url, raw, MAX_CLIP_BYTES if kind == "clip" else MAX_PHOTO_BYTES)
         if kind != "clip":
             prepped = os.path.join(workdir, f"ph{i:02d}.jpg")
             prep_photo(raw, prepped)
@@ -362,7 +528,13 @@ def render(spec, out_dir):
         elif kind == "photo":
             local = local_for(src["url"], "photo", i)
             seg_photo(local, dur, style, cap, workdir, i, out)
-            if poster_at is None: poster_at = t_cursor + dur / 2
+            if poster_at is None:
+                poster_at = t_cursor + dur / 2
+        elif kind == "chapter_photo":
+            local = local_for(src["url"], "photo", i)
+            seg_chapter_photo(local, dur, style, cap["title"], cap.get("yrs") or "", workdir, i, out)
+            if poster_at is None:
+                poster_at = t_cursor + dur / 2
         elif kind == "hero":
             local = local_for(src, "photo", i)
             seg_photo(local, dur, 4, None, workdir, i, out)
@@ -404,10 +576,14 @@ def render(spec, out_dir):
              "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart", fitted])
         os.replace(fitted, film)
 
+    if os.path.getsize(film) > max_bytes:
+        raise RuntimeError("render-output-over-storage-limit")
+
     poster = os.path.join(out_dir, "poster.jpg")
     run(["ffmpeg", "-y", "-ss", f"{(poster_at or 3.0):.2f}", "-i", film, "-frames:v", "1", "-q:v", "3", poster])
+    actual_duration = validate_output(film, poster, total)
     shutil.rmtree(workdir, ignore_errors=True)
-    return film, poster, round(total, 2)
+    return film, poster, actual_duration
 
 
 if __name__ == "__main__":

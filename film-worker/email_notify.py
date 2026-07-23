@@ -11,7 +11,9 @@ import html
 import requests
 
 KEY = os.environ.get("RESEND_API_KEY", "")
+configured = bool(KEY)
 FROM = os.environ.get("EMAIL_FROM", "I Miss You Memorial <hello@imissyoumemorial.com>")
+OPS_EMAIL = os.environ.get("OPS_EMAIL", "imissyoumemorial@gmail.com")
 SITE = (os.environ.get("SITE_URL") or "https://imissyoumemorial.com").rstrip("/")
 
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -69,6 +71,34 @@ def send_film_ready(to, first, pos, slug, token, placed=False):
             headers={"Authorization": f"Bearer {KEY}", "Content-Type": "application/json", "User-Agent": UA},
             json={"from": FROM, "to": [to], "subject": subject,
                   "html": _shell(heading, body, "Watch the film", url)},
+            timeout=30,
+        )
+        return r.ok
+    except Exception:
+        return False
+
+
+def send_ops_alert(job_id, message):
+    """A last-resort operator note. It carries no family words, media, or email."""
+    if not configured or not OPS_EMAIL or "@" not in OPS_EMAIL:
+        return False
+    ref = html.escape(str(job_id or "")[:8])
+    detail = html.escape(str(message or "film-worker-failure")[:240])
+    try:
+        r = requests.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {KEY}", "Content-Type": "application/json", "User-Agent": UA},
+            json={
+                "from": FROM,
+                "to": [OPS_EMAIL],
+                "subject": "Film fulfillment needs attention",
+                "html": _shell(
+                    "The film worker needs attention.",
+                    f"<p style='margin:0 0 12px'>Reference: {ref}</p><p style='margin:0'>{detail}</p>",
+                    "Open the family study",
+                    f"{SITE}/dashboard",
+                ),
+            },
             timeout=30,
         )
         return r.ok

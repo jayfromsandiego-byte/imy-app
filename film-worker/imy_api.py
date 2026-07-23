@@ -68,3 +68,15 @@ def insert(table, body):
         r.raise_for_status()
         return r.json()
     return _retry(go)
+
+
+def upsert(table, body, on_conflict):
+    def go():
+        r = requests.post(
+            f"{URL}/rest/v1/{table}?on_conflict={on_conflict}",
+            headers={**H, "Prefer": "resolution=merge-duplicates,return=representation"},
+            json=body, timeout=45,
+        )
+        r.raise_for_status()
+        return r.json() if r.text else None
+    return _retry(go)

@@ -55,6 +55,9 @@ export async function POST(req: NextRequest) {
   const priceKey = plan === "family_unlock" ? "plus_once" : plan;
   const price = PRICES[priceKey];
   if (!price) return fail("plan");
+  if (["plus_once", "plus_monthly", "family_unlock"].includes(plan) && !tributeId && !slug) {
+    return fail("tribute");
+  }
 
   const user = await getUser();
   const mode: "payment" | "subscription" = plan === "plus_monthly" ? "subscription" : "payment";

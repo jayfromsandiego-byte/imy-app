@@ -29,6 +29,30 @@ function Concierge() {
   );
 }
 
+function FilmStatus({ tribute }: { tribute: any }) {
+  const jobs = (tribute.film_jobs || [])
+    .filter((j: any) => !j.deleted_at)
+    .sort((a: any, b: any) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
+  const job = jobs.find((j: any) => ["queued", "rendering", "ready", "approved", "waiting_for_photos", "failed"].includes(j.status));
+  if (!job) return null;
+  const waiting = job.status === "waiting_for_photos" || job.error === "not-enough-photos";
+  const copy = job.status === "approved"
+    ? "Their film is on the page."
+    : waiting
+      ? "Their film is waiting for at least three photographs. Nothing has been lost."
+      : job.status === "failed"
+        ? "The film needs our care. We have been told."
+        : job.status === "ready"
+          ? "The film is woven and being placed on the page."
+          : "Their film is being woven. It usually takes less than an hour.";
+  return (
+    <p className="panel-sub" style={{ marginTop: 10, padding: "12px 14px", background: "var(--cream-deep)", borderRadius: 10 }}>
+      <b>Their film</b> · {copy}{" "}
+      <Link href={`/sites/${tribute.slug}`}>Visit the page</Link>
+    </p>
+  );
+}
+
 export default async function BillingPage({ searchParams }: { searchParams: { upgraded?: string; canceled?: string; error?: string } }) {
   const user = await getUser();
   if (!user || !supabaseConfigured) {
@@ -43,7 +67,7 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
   const orFilter = email ? `owner_id.eq.${user.id},owner_email.eq.${email}` : `owner_id.eq.${user.id}`;
   const { data: tributes } = await db
     .from("tributes")
-    .select("id,slug,loved_one_name,tier")
+    .select("id,slug,loved_one_name,tier,film_jobs(status,error,rendered_variant,created_at,deleted_at,notification_status)")
     .or(orFilter)
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
@@ -82,7 +106,7 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
 
       {searchParams.upgraded ? (
         <p className="plan-card" style={{ marginTop: 4, marginBottom: 20 }}>
-          Thank you. Your upgrade is being applied · it can take a moment to appear.
+          Thank you. Plus is being opened now. Their film will be woven in the background and placed on the page when it is ready.
         </p>
       ) : null}
       {searchParams.error ? (
@@ -116,6 +140,7 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
                   <p className="panel-sub" style={{ marginTop: 14 }}>
                     They&rsquo;re on Plus · everything is unlocked. Thank you.
                   </p>
+                  <FilmStatus tribute={t} />
                   <Concierge />
                 </>
               ) : (

@@ -130,15 +130,15 @@ export default async function FilmRoom({
         </>
       )}
 
-      {job.status === "failed" && (
+      {(job.status === "failed" || job.status === "waiting_for_photos") && (
         <>
           <h1 style={{ fontSize: 34, margin: "0 0 14px" }}>Not yet, gently.</h1>
           <p style={{ fontSize: 17, lineHeight: 1.65, color: S.inkSoft, maxWidth: 560 }}>
-            {job.error === "not-enough-photos"
+            {job.status === "waiting_for_photos" || job.error === "not-enough-photos"
               ? `When a few more photographs have been added to ${first}'s page, the film will be ready to weave.`
               : "The weave did not finish this time. We have been told, and we will tend to it."}
           </p>
-          {job.error === "not-enough-photos" && (
+          {(job.status === "waiting_for_photos" || job.error === "not-enough-photos") && (
             <form method="post" action={`/api/tribute/${encodeURIComponent(tribute.slug)}/film`} style={{ marginTop: 22 }}>
               <input type="hidden" name="t" value={token} />
               <button type="submit" style={quietButton}>Try the weave again</button>

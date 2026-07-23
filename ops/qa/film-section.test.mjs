@@ -52,6 +52,26 @@ const ok = (name, cond) => { cond ? pass++ : (fail++, console.log("  FAIL", name
   const html = renderTribute(template, { ...noFilm, tier: "plus" });
   ok("no film, no room — token gone", !html.includes("{{FILM_SECTION}}") && !html.includes('id="film"'));
 }
+// paid film in progress, before the first render lands
+{
+  const { film, ...noFilm } = base;
+  const html = renderTribute(template, { ...noFilm, tier: "plus", filmStatus: { status: "rendering", variant: "full" } });
+  ok("paid page shows honest film progress", html.includes('id="film-progress"') && html.includes("The film is being woven"));
+  ok("film progress speaks the person's name", html.includes("Rose&rsquo;s photographs"));
+  ok("progress never invents a video player", !html.includes('id="film"'));
+}
+// a paid film waiting for photographs
+{
+  const { film, ...noFilm } = base;
+  const html = renderTribute(template, { ...noFilm, tier: "plus", filmStatus: { status: "waiting_for_photos", error: "not-enough-photos" } });
+  ok("waiting film asks gently for photographs", html.includes("at least three photographs") && html.includes("/dashboard"));
+}
+// free pages never expose an internal queue state
+{
+  const { film, ...noFilm } = base;
+  const html = renderTribute(template, { ...noFilm, tier: "free", filmStatus: { status: "rendering", variant: "teaser" } });
+  ok("free queue state stays private", !html.includes('id="film-progress"'));
+}
 // they/them page
 {
   const html = renderTribute(template, { ...base, tier: "plus", pronouns: undefined });

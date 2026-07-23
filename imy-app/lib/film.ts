@@ -13,7 +13,7 @@ export type FilmJob = {
   id: string;
   tribute_id: string;
   variant: "auto" | "full" | "teaser";
-  status: "queued" | "rendering" | "ready" | "approved" | "failed" | "superseded";
+  status: "queued" | "rendering" | "ready" | "approved" | "failed" | "superseded" | "waiting_for_photos";
   error: string | null;
   film_url: string | null;
   poster_url: string | null;
@@ -24,6 +24,8 @@ export type FilmJob = {
   created_at: string;
   finished_at: string | null;
   approved_at: string | null;
+  notification_status?: "sent" | "failed" | "not_configured" | null;
+  notified_at?: string | null;
 };
 
 /** Queue a weave. One loom per tribute: an active job means we simply wait. */
@@ -41,9 +43,17 @@ export async function enqueueFilm(
     .is("deleted_at", null)
     .limit(1);
   if (active && active.length) return { ok: true, already: true };
+  // A page that was waiting for more photographs gets a clean second chance.
+  await db
+    .from("film_jobs")
+    .update({ status: "superseded" })
+    .eq("tribute_id", tributeId)
+    .eq("status", "waiting_for_photos")
+    .is("deleted_at", null);
   const { error } = await db
     .from("film_jobs")
     .insert({ tribute_id: tributeId, variant, requested_by: requestedBy });
+  if ((error as any)?.code === "23505") return { ok: true, already: true };
   return { ok: !error };
 }
 
@@ -76,7 +86,7 @@ export async function filmRoom(slug: string, token: string) {
     .order("created_at", { ascending: false })
     .limit(8);
   const latest =
-    (jobs || []).find((j) => ["queued", "rendering", "ready"].includes(j.status)) ||
+    (jobs || []).find((j) => ["queued", "rendering", "ready", "waiting_for_photos"].includes(j.status)) ||
     (jobs || []).find((j) => j.status === "approved") ||
     (jobs || [])[0] ||
     null;
@@ -180,31 +190,10 @@ export async function removeFilm(
   return { ok: true, slug: t?.slug };
 }
 
-/** The $97 promise, kept at the webhook: a paying family never receives a
- *  teaser. Queued auto/teaser weaves step aside and a full film is queued,
- *  unless one is already on its way or on the page. (A job mid-render can
- *  still finish as a teaser in a tight race — the film room's "Weave the
- *  whole film" button covers that, and the full film supersedes it.) */
+/** The $97 promise, kept atomically at the webhook. Migration 0022 owns the
+ *  idempotency rule: replays and concurrent events resolve to one full weave. */
 export async function ensureFullFilmForPaid(tributeId: string): Promise<void> {
   const db = supabaseAdmin();
-  await db
-    .from("film_jobs")
-    .update({ status: "superseded" })
-    .eq("tribute_id", tributeId)
-    .eq("status", "queued")
-    .in("variant", ["auto", "teaser"]);
-  const { data: active } = await db
-    .from("film_jobs")
-    .select("id,variant,rendered_variant,status")
-    .eq("tribute_id", tributeId)
-    .in("status", ["queued", "rendering", "ready", "approved"])
-    .is("deleted_at", null);
-  const fullOnItsWay = (active || []).some(
-    (j) => j.variant === "full" || j.rendered_variant === "full"
-  );
-  if (!fullOnItsWay) {
-    await db
-      .from("film_jobs")
-      .insert({ tribute_id: tributeId, variant: "full", requested_by: "stripe" });
-  }
+  const { error } = await db.rpc("ensure_full_film_for_paid", { p_tribute_id: tributeId });
+  if (error) throw error;
 }
