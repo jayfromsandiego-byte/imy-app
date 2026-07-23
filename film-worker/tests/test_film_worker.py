@@ -8,6 +8,7 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, ROOT)
 
 import render_film
+import storage
 import worker
 
 
@@ -88,6 +89,24 @@ class MediaSafetyTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as td:
                 with self.assertRaisesRegex(ValueError, "media-too-large"):
                     render_film.fetch("https://media.example/big.jpg", os.path.join(td, "x"), 100)
+
+    def test_supabase_upload_sends_apikey_and_bearer(self):
+        class Response:
+            ok = True
+            status_code = 200
+            text = "{}"
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, "film.mp4")
+            with open(path, "wb") as f:
+                f.write(b"film")
+            with patch.object(storage, "SB_URL", "https://project.supabase.co"), \
+                 patch.object(storage, "SB_KEY", "service-role-jwt"), \
+                 patch("storage.requests.post", return_value=Response()) as post:
+                url = storage._upload_supabase(path, "films/job.mp4", "video/mp4")
+        headers = post.call_args.kwargs["headers"]
+        self.assertEqual("service-role-jwt", headers["apikey"])
+        self.assertEqual("Bearer service-role-jwt", headers["Authorization"])
+        self.assertEqual("https://project.supabase.co/storage/v1/object/public/tribute-films/films/job.mp4", url)
 
 
 class WorkerSpecTests(unittest.TestCase):

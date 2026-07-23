@@ -42,6 +42,7 @@ def _upload_supabase(local_path, key, content_type):
     r = requests.post(
         f"{SB_URL}/storage/v1/object/{SB_BUCKET}/{key}",
         headers={
+            "apikey": SB_KEY,
             "Authorization": f"Bearer {SB_KEY}",
             "User-Agent": "imy-film-worker/1.0",
             "Content-Type": content_type,

@@ -6,7 +6,7 @@ build the film spec (mirroring lib/renderTribute.ts chapter logic) → render �
 upload film + poster → mark ready → supersede older unapproved films → email
 the keeper. One job at a time; the smallest box is enough.
 
-Nothing here approves anything. The film waits for the family.
+Paid full films are placed atomically when they finish. Free teasers wait for the family.
 
 Env:
   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY[_V2]     (required)
