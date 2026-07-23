@@ -525,6 +525,26 @@ def validate_output(film, poster, expected_duration):
     return round(actual, 2)
 
 
+def normalize_browser_media(film):
+    """One deterministic compatibility pass for host-specific ffmpeg output.
+
+    Railway's ffmpeg build can preserve a non-yuv420p pixel format through the
+    filter graph even when libx264 was requested. Re-encoding the finished file
+    pins the public contract explicitly: H.264/avc1, yuv420p, AAC stereo, and a
+    fast-start index. The original is replaced only after ffmpeg succeeds.
+    """
+    fixed = film + ".browser.mp4"
+    run([
+        "ffmpeg", "-y", "-i", film,
+        "-map", "0:v:0", "-map", "0:a:0",
+        "-c:v", "libx264", "-profile:v", "high", "-level:v", "4.1",
+        "-pix_fmt", "yuv420p", "-tag:v", "avc1", "-crf", "22", "-preset", "medium",
+        "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
+        "-movflags", "+faststart", fixed,
+    ])
+    os.replace(fixed, film)
+
+
 def render(spec, out_dir):
     """Weave the film. Returns (film_path, poster_path, duration_seconds)."""
     workdir = tempfile.mkdtemp(prefix="film-", dir=out_dir)
@@ -617,7 +637,15 @@ def render(spec, out_dir):
 
     poster = os.path.join(out_dir, "poster.jpg")
     run(["ffmpeg", "-y", "-ss", f"{(poster_at or 3.0):.2f}", "-i", film, "-frames:v", "1", "-q:v", "3", poster])
-    actual_duration = validate_output(film, poster, total)
+    try:
+        actual_duration = validate_output(film, poster, total)
+    except RuntimeError as exc:
+        if str(exc) != "render-video-not-browser-safe":
+            raise
+        normalize_browser_media(film)
+        actual_duration = validate_output(film, poster, total)
+    if os.path.getsize(film) > max_bytes:
+        raise RuntimeError("render-output-over-storage-limit")
     shutil.rmtree(workdir, ignore_errors=True)
     return film, poster, actual_duration
 

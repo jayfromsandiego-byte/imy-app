@@ -108,6 +108,26 @@ class MediaSafetyTests(unittest.TestCase):
         self.assertEqual("Bearer service-role-jwt", headers["Authorization"])
         self.assertEqual("https://project.supabase.co/storage/v1/object/public/tribute-films/films/job.mp4", url)
 
+    def test_browser_normalization_pins_public_codecs(self):
+        with tempfile.TemporaryDirectory() as td:
+            film = os.path.join(td, "film.mp4")
+            with open(film, "wb") as f:
+                f.write(b"old")
+            seen = {}
+            def fake_run(cmd, timeout=1800):
+                seen["cmd"] = cmd
+                with open(cmd[-1], "wb") as f:
+                    f.write(b"browser-safe")
+            with patch.object(render_film, "run", side_effect=fake_run):
+                render_film.normalize_browser_media(film)
+            with open(film, "rb") as f:
+                self.assertEqual(b"browser-safe", f.read())
+        cmd = seen["cmd"]
+        self.assertIn("libx264", cmd)
+        self.assertIn("yuv420p", cmd)
+        self.assertIn("avc1", cmd)
+        self.assertIn("aac", cmd)
+
 
 class WorkerSpecTests(unittest.TestCase):
     def tribute(self, count=3, tier="plus", pronouns="she"):

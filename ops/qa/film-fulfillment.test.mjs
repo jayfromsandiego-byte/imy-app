@@ -38,6 +38,7 @@ ok("full refund rests Plus only when no paid entitlement remains", webhook.inclu
 ok("canceled monthly trial rests Plus without deleting the memorial", webhook.includes('db.rpc("rest_plus_after_subscription_end"') && subscriptionMigration.includes("set status = 'canceled'") && subscriptionMigration.includes("set tier = 'free'") && subscriptionMigration.includes("stripe_subscription_id <> p_subscription_id"));
 ok("refunded full film and sponsor plaque rest from the free public page", pageRenderer.includes('keptFilm.variant === "teaser"') && pageRenderer.includes('tier === "plus" && t.sponsor'));
 ok("worker media fetches use a trusted-host allowlist and revalidate redirects", renderFilm.includes("TRUSTED_MEDIA_HOSTS") && renderFilm.includes("_NoRedirect") && renderFilm.includes("validate_media_url(final_url)"));
+ok("worker repairs host-specific browser codec drift before publishing", renderFilm.includes("normalize_browser_media") && renderFilm.includes('"-tag:v", "avc1"') && renderFilm.includes('str(exc) != "render-video-not-browser-safe"'));
 ok("Supabase film uploads carry both service-role headers", storage.includes('"apikey": SB_KEY') && storage.includes('"Authorization": f"Bearer {SB_KEY}"'));
 ok("worker publishes a heartbeat", worker.includes('db.upsert("film_worker_heartbeats"'));
 ok("container verifies every downloaded brand asset", docker.includes("fetch_assets.sh") && assetFetcher.includes("sha256sum -c -") && assetFetcher.includes("gymnopedie-1.flac"));

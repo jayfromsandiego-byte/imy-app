@@ -110,7 +110,8 @@ Vercel Blob (`BLOB_READ_WRITE_TOKEN`), R2 (`R2_*`, pending as of July 8).
   `waiting_for_photos`; the page and study say so gently.
 - Operations: the worker exposes `/healthz`, writes `film_worker_heartbeats`,
   updates `orders.fulfillment_status`, validates every H.264/AAC render before
-  upload, and alerts the operator on a final failure. `/api/cron/film-health`
+  upload, normalizes host-specific codec drift to H.264/avc1 + yuv420p when
+  needed, and alerts the operator on a final failure. `/api/cron/film-health`
   is the outside daily backstop on Vercel Hobby. Run `sh ops/qa/run.sh` and
   `RUN_RENDER_SMOKE=1 ASSETS_DIR=film-worker/assets sh film-worker/tests/run.sh`
   before deployment.
