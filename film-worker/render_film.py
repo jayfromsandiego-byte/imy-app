@@ -496,6 +496,25 @@ def build_plan(spec, workdir):
     return plan
 
 
+def classify_probe_streams(streams):
+    """Find video/audio across ffprobe builds with uneven field reporting."""
+    video = next((s for s in streams if s.get("codec_type") == "video"), None)
+    audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
+    if not video:
+        video = next((s for s in streams if s.get("width") and s.get("height")), None)
+    if not audio:
+        audio = next((s for s in streams if s is not video and s.get("codec_name") == "aac"), None)
+    return video, audio
+
+
+def browser_safe_video(video):
+    return bool(
+        video
+        and str(video.get("codec_name") or "").lower() in ("h264", "avc1")
+        and str(video.get("pix_fmt") or "").lower() in ("yuv420p", "yuvj420p")
+    )
+
+
 def validate_output(film, poster, expected_duration):
     """Refuse to publish a truncated or browser-incompatible render."""
     if not os.path.exists(film) or os.path.getsize(film) < 100_000:
@@ -511,11 +530,12 @@ def validate_output(film, poster, expected_duration):
         raise RuntimeError(f"ffprobe-failed: {probe.stderr[-300:]}")
     info = json.loads(probe.stdout or "{}")
     streams = info.get("streams") or []
-    video = next((s for s in streams if s.get("codec_type") == "video"), None)
-    audio = next((s for s in streams if s.get("codec_type") == "audio"), None)
+    video, audio = classify_probe_streams(streams)
     actual = float((info.get("format") or {}).get("duration") or 0)
-    if not video or video.get("codec_name") != "h264" or video.get("pix_fmt") != "yuv420p":
-        raise RuntimeError("render-video-not-browser-safe")
+    if not browser_safe_video(video):
+        codec = str((video or {}).get("codec_name") or "missing").lower()
+        pix = str((video or {}).get("pix_fmt") or "missing").lower()
+        raise RuntimeError(f"render-video-not-browser-safe:{codec}:{pix}")
     if int(video.get("width") or 0) != W or int(video.get("height") or 0) != H:
         raise RuntimeError("render-wrong-dimensions")
     if not audio or audio.get("codec_name") != "aac":
@@ -640,7 +660,7 @@ def render(spec, out_dir):
     try:
         actual_duration = validate_output(film, poster, total)
     except RuntimeError as exc:
-        if str(exc) != "render-video-not-browser-safe":
+        if not str(exc).startswith("render-video-not-browser-safe"):
             raise
         normalize_browser_media(film)
         actual_duration = validate_output(film, poster, total)

@@ -76,6 +76,18 @@ class MediaSafetyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "untrusted-media-host"):
             render_film.validate_media_url("https://attacker.example/photo.jpg")
 
+    def test_probe_streams_survive_missing_codec_type(self):
+        streams = [
+            {"codec_name": "h264", "width": 1920, "height": 1080, "pix_fmt": "yuv420p"},
+            {"codec_name": "aac"},
+        ]
+        video, audio = render_film.classify_probe_streams(streams)
+        self.assertEqual("h264", video["codec_name"])
+        self.assertEqual("aac", audio["codec_name"])
+
+    def test_full_range_yuv420_is_browser_safe(self):
+        self.assertTrue(render_film.browser_safe_video({"codec_name": "h264", "pix_fmt": "yuvj420p"}))
+
     def test_download_limit_stops_large_media(self):
         class Response:
             headers = {"Content-Length": "1000"}
