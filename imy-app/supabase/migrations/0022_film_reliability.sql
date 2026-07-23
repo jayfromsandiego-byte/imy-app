@@ -96,6 +96,9 @@ begin
    limit 1;
 
   if existing_id is not null then
+    update public.film_jobs
+       set status = 'queued', error = null, started_at = null, finished_at = null
+     where id = existing_id and status = 'waiting_for_photos';
     return existing_id;
   end if;
 
@@ -119,5 +122,113 @@ end;
 $$;
 
 revoke execute on function public.ensure_full_film_for_paid(uuid) from public, anon, authenticated;
+grant execute on function public.ensure_full_film_for_paid(uuid) to service_role;
+
+-- One public film row per tribute. If older work left duplicates, preserve the
+-- newest and let the rest rest before installing the guard.
+with ranked as (
+  select id,
+         row_number() over (partition by tribute_id order by created_at desc, id desc) as rn
+    from public.tribute_videos
+   where deleted_at is null and kind = 'film'
+)
+update public.tribute_videos v
+   set deleted_at = now()
+  from ranked r
+ where v.id = r.id and r.rn > 1;
+
+create unique index if not exists tribute_videos_one_live_film_idx
+  on public.tribute_videos(tribute_id)
+  where deleted_at is null and kind = 'film';
+
+-- Paid films land on the page in one transaction. If the new shelf row cannot
+-- be created, the previous film remains untouched. Retries return the same row.
+create or replace function public.place_paid_film(p_job_id uuid)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  j public.film_jobs%rowtype;
+  t public.tributes%rowtype;
+  existing_video uuid;
+  placed_video uuid;
+  pos text;
+begin
+  select * into j from public.film_jobs where id = p_job_id and deleted_at is null for update;
+  if j.id is null then raise exception 'film-job-not-found'; end if;
+
+  perform pg_advisory_xact_lock(hashtextextended(j.tribute_id::text, 0));
+  select * into t from public.tributes where id = j.tribute_id and deleted_at is null;
+  if t.id is null then raise exception 'tribute-not-found'; end if;
+  if t.tier not in ('plus','heirloom') then raise exception 'paid-tier-required'; end if;
+  if coalesce(j.rendered_variant, j.variant) <> 'full' then raise exception 'full-film-required'; end if;
+  if j.status = 'approved' and j.video_id is not null then return j.video_id; end if;
+  if j.status <> 'ready' or j.film_url is null then raise exception 'film-not-ready'; end if;
+
+  select id into existing_video
+    from public.tribute_videos
+   where tribute_id = j.tribute_id and kind = 'film' and deleted_at is null and url = j.film_url
+   limit 1;
+
+  if existing_video is null then
+    update public.tribute_videos
+       set deleted_at = now()
+     where tribute_id = j.tribute_id and kind = 'film' and deleted_at is null;
+    pos := case t.pronouns when 'he' then 'his' when 'she' then 'her' else 'their' end;
+    insert into public.tribute_videos (tribute_id, url, caption, sort, kind)
+    values (j.tribute_id, j.film_url, 'The film of ' || pos || ' life', 999, 'film')
+    returning id into placed_video;
+  else
+    placed_video := existing_video;
+  end if;
+
+  update public.film_jobs
+     set status = 'superseded'
+   where tribute_id = j.tribute_id and id <> j.id and status = 'approved' and deleted_at is null;
+  update public.film_jobs
+     set status = 'approved', approved_at = coalesce(approved_at, now()), video_id = placed_video
+   where id = j.id;
+  update public.orders
+     set fulfillment_status = 'ready', fulfillment_error = null, fulfilled_at = now()
+   where tribute_id = j.tribute_id and status = 'paid'
+     and fulfillment_status in ('processing','waiting_on_family','needs_attention');
+  return placed_video;
+end;
+$$;
+
+revoke execute on function public.place_paid_film(uuid) from public, anon, authenticated;
+grant execute on function public.place_paid_film(uuid) to service_role;
+
+-- Any path that adds the third photograph wakes a paid film that was waiting.
+-- This belongs in the database so dashboard, intake, and future upload routes
+-- cannot drift apart.
+create or replace function public.wake_paid_film_after_photo()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if (
+    select count(*) >= 3
+      from public.tribute_photos
+     where tribute_id = new.tribute_id and deleted_at is null
+  ) and exists (
+    select 1 from public.tributes
+     where id = new.tribute_id and deleted_at is null and tier in ('plus','heirloom')
+  ) then
+    perform public.ensure_full_film_for_paid(new.tribute_id);
+  end if;
+  return new;
+end;
+$$;
+revoke execute on function public.wake_paid_film_after_photo() from public, anon, authenticated;
+
+drop trigger if exists tribute_photos_wake_paid_film on public.tribute_photos;
+create trigger tribute_photos_wake_paid_film
+  after insert on public.tribute_photos
+  for each row execute function public.wake_paid_film_after_photo();
 
 notify pgrst, 'reload schema';

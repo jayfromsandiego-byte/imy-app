@@ -8,6 +8,7 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, ROOT)
 
 import render_film
+import storage
 import worker
 
 
@@ -63,24 +64,49 @@ class MediaSafetyTests(unittest.TestCase):
             render_film.validate_media_url("http://example.com/photo.jpg")
 
     def test_loopback_is_rejected(self):
-        with patch("render_film.socket.getaddrinfo", return_value=[(None, None, None, None, ("127.0.0.1", 0))]):
+        with patch.object(render_film, "TRUSTED_MEDIA_HOSTS", {"local.example"}), patch("render_film.socket.getaddrinfo", return_value=[(None, None, None, None, ("127.0.0.1", 0))]):
             with self.assertRaisesRegex(ValueError, "unsafe-media-host"):
                 render_film.validate_media_url("https://local.example/photo.jpg")
 
     def test_public_host_is_allowed(self):
-        with patch("render_film.socket.getaddrinfo", return_value=[(None, None, None, None, ("93.184.216.34", 0))]):
+        with patch.object(render_film, "TRUSTED_MEDIA_HOSTS", {"media.example"}), patch("render_film.socket.getaddrinfo", return_value=[(None, None, None, None, ("93.184.216.34", 0))]):
             render_film.validate_media_url("https://media.example/photo.jpg")
+
+    def test_untrusted_public_host_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "untrusted-media-host"):
+            render_film.validate_media_url("https://attacker.example/photo.jpg")
 
     def test_download_limit_stops_large_media(self):
         class Response:
             headers = {"Content-Length": "1000"}
             def __enter__(self): return self
             def __exit__(self, *_args): return False
+            def geturl(self): return "https://media.example/big.jpg"
             def read(self, _n): return b""
-        with patch.object(render_film, "validate_media_url"), patch("render_film.urllib.request.urlopen", return_value=Response()):
+        class Opener:
+            def open(self, *_args, **_kwargs): return Response()
+        with patch.object(render_film, "validate_media_url"), patch("render_film.urllib.request.build_opener", return_value=Opener()):
             with tempfile.TemporaryDirectory() as td:
                 with self.assertRaisesRegex(ValueError, "media-too-large"):
                     render_film.fetch("https://media.example/big.jpg", os.path.join(td, "x"), 100)
+
+    def test_supabase_upload_sends_apikey_and_bearer(self):
+        class Response:
+            ok = True
+            status_code = 200
+            text = "{}"
+        with tempfile.TemporaryDirectory() as td:
+            path = os.path.join(td, "film.mp4")
+            with open(path, "wb") as f:
+                f.write(b"film")
+            with patch.object(storage, "SB_URL", "https://project.supabase.co"), \
+                 patch.object(storage, "SB_KEY", "service-role-jwt"), \
+                 patch("storage.requests.post", return_value=Response()) as post:
+                url = storage._upload_supabase(path, "films/job.mp4", "video/mp4")
+        headers = post.call_args.kwargs["headers"]
+        self.assertEqual("service-role-jwt", headers["apikey"])
+        self.assertEqual("Bearer service-role-jwt", headers["Authorization"])
+        self.assertEqual("https://project.supabase.co/storage/v1/object/public/tribute-films/films/job.mp4", url)
 
 
 class WorkerSpecTests(unittest.TestCase):
@@ -117,6 +143,18 @@ class WorkerSpecTests(unittest.TestCase):
     def test_unknown_pronouns_never_guess(self):
         spec = worker.build_spec(self.tribute(pronouns=""), {"variant": "full"})
         self.assertEqual("their", spec["pos"])
+
+    def test_paid_full_film_uses_atomic_placement_rpc(self):
+        with patch.object(worker.db, "rpc", return_value="video-1") as rpc:
+            placed = worker.auto_place(self.tribute(), "job-1", {"variant": "full"}, "https://media.example/film.mp4")
+        self.assertEqual("video-1", placed)
+        rpc.assert_called_once_with("place_paid_film", {"p_job_id": "job-1"})
+
+    def test_free_film_never_auto_places(self):
+        with patch.object(worker.db, "rpc") as rpc:
+            placed = worker.auto_place(self.tribute(tier="free"), "job-1", {"variant": "teaser"}, "https://media.example/film.mp4")
+        self.assertIsNone(placed)
+        rpc.assert_not_called()
 
     def test_direct_file_rejects_embeds(self):
         self.assertTrue(worker.direct_file("https://media.example/clip.mp4?token=x"))

@@ -151,8 +151,9 @@ export async function POST(req: NextRequest) {
           .eq("stripe_subscription_id", sub.id));
       }
     } else if (event.type === "invoice.payment_failed") {
-      // A missed renewal begins the grace period: the row turns past_due,
-      // premium features rest later, the tribute itself never comes down.
+      // A missed renewal begins the grace period: the row turns past_due.
+      // The monthly ownership model is still an open product decision, so this
+      // event records truth without silently changing the memorial's tier.
       const inv = event.data.object;
       if (inv.subscription) {
         dataOrThrow(await db.from("subscriptions")
@@ -160,7 +161,9 @@ export async function POST(req: NextRequest) {
           .eq("stripe_subscription_id", String(inv.subscription)));
       }
     } else if (event.type === "customer.subscription.deleted") {
-      // Subscription ended: rest premium features, keep the tribute online (Permanence Pledge).
+      // Record the cancellation. Do not guess whether monthly is a plain
+      // subscription or a payment plan completing into ownership; that product
+      // decision remains open, and the tribute itself always stays online.
       const sub = event.data.object;
       if (sub.id) {
         dataOrThrow(await db.from("subscriptions").update({ status: "canceled" }).eq("stripe_subscription_id", sub.id));
@@ -168,7 +171,20 @@ export async function POST(req: NextRequest) {
     } else if (event.type === "charge.refunded") {
       const ch = event.data.object;
       if (ch.payment_intent) {
-        dataOrThrow(await db.from("orders").update({ status: "refunded" }).eq("stripe_payment_intent", ch.payment_intent));
+        const fullyRefunded = ch.refunded === true ||
+          (Number(ch.amount || 0) > 0 && Number(ch.amount_refunded || 0) >= Number(ch.amount || 0));
+        if (fullyRefunded) {
+          // 0023: the ledger keeps the refund, and the memorial returns to Free
+          // only when no other paid order or living subscription still opens it.
+          // The tribute and its woven film remain kept; paid surfaces simply rest.
+          dataOrThrow(await db.rpc("rest_plus_after_full_refund", {
+            p_payment_intent: String(ch.payment_intent),
+          }));
+        } else {
+          dataOrThrow(await db.from("orders")
+            .update({ status: "partially_refunded" })
+            .eq("stripe_payment_intent", ch.payment_intent));
+        }
       }
     } else if (event.type === "charge.dispute.created") {
       // A dispute never touches the page (the pledge holds) — but the books

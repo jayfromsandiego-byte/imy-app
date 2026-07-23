@@ -95,7 +95,9 @@ Vercel Blob (`BLOB_READ_WRITE_TOKEN`), R2 (`R2_*`, pending as of July 8).
   pictures always skip `kind='film'` — the film never covers the face.
   The Stripe webhook queues the full weave the second the tier turns. It fails
   closed without its signing secret or database, and returns 500 on fulfillment
-  failure so Stripe retries instead of accepting a silent loss.
+  failure so Stripe retries instead of accepting a silent loss. A full refund
+  returns the page to Free only when no other paid order or active subscription
+  remains; the tribute, sponsor words, and woven film stay kept, at rest.
 - Storage: R2 when `R2_*` keys exist (same env names as `lib/r2.ts`), the
   public `tribute-films` Supabase bucket until then. The Supabase FREE plan
   caps objects at 50 MB (verified July 14 — 402 to raise it), so the worker

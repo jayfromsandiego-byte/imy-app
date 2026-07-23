@@ -18,7 +18,7 @@ Spec dict (built by worker.py from Supabase rows):
   portrait: url | None,                              # the Stone photo
   variant:  "full" | "teaser"
 """
-import ipaddress, json, os, socket, subprocess, sys, math, shutil, tempfile, urllib.parse, urllib.request
+import ipaddress, json, os, socket, subprocess, sys, math, shutil, tempfile, urllib.error, urllib.parse, urllib.request
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance, ImageOps
 
 FPS = 25
@@ -49,6 +49,15 @@ ALLOWED_MEDIA_HOSTS = {
     for h in os.environ.get("ALLOWED_MEDIA_HOSTS", "").split(",")
     if h.strip()
 }
+TRUSTED_MEDIA_HOSTS = set(ALLOWED_MEDIA_HOSTS)
+for _source in (
+    os.environ.get("SUPABASE_URL", ""),
+    os.environ.get("R2_PUBLIC_BASE_URL", ""),
+    os.environ.get("SITE_URL", "https://imissyoumemorial.com"),
+):
+    _host = urllib.parse.urlparse(_source).hostname
+    if _host:
+        TRUSTED_MEDIA_HOSTS.add(_host.rstrip(".").lower())
 
 
 # ---------------- helpers ----------------
@@ -82,14 +91,41 @@ def validate_media_url(url):
         return
     if parsed.scheme != "https" or parsed.username or parsed.password:
         raise ValueError("unsafe-media-url")
-    if not _public_host(parsed.hostname or ""):
+    host = (parsed.hostname or "").rstrip(".").lower()
+    if host not in TRUSTED_MEDIA_HOSTS:
+        raise ValueError("untrusted-media-host")
+    if not _public_host(host):
         raise ValueError("unsafe-media-host")
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def fetch(url, dest, max_bytes):
-    validate_media_url(url)
-    req = urllib.request.Request(url, headers={"User-Agent": "imy-film-worker/1.0"})
-    with urllib.request.urlopen(req, timeout=90) as r, open(dest, "wb") as f:
+    current = str(url or "")
+    opener = urllib.request.build_opener(_NoRedirect)
+    response = None
+    for _ in range(5):
+        validate_media_url(current)
+        req = urllib.request.Request(current, headers={"User-Agent": "imy-film-worker/1.0"})
+        try:
+            response = opener.open(req, timeout=90)
+            final_url = response.geturl()
+            validate_media_url(final_url)
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (301, 302, 303, 307, 308):
+                raise
+            location = exc.headers.get("Location")
+            exc.close()
+            if not location:
+                raise ValueError("unsafe-media-redirect")
+            current = urllib.parse.urljoin(current, location)
+    if response is None:
+        raise ValueError("too-many-media-redirects")
+    with response as r, open(dest, "wb") as f:
         declared = int(r.headers.get("Content-Length") or 0)
         if declared and declared > max_bytes:
             raise ValueError("media-too-large")

@@ -46,6 +46,16 @@ const ok = (name, cond) => { cond ? pass++ : (fail++, console.log("  FAIL", name
   ok("free page carries the quiet invitation", html.includes("first glimpse") && html.includes("/pricing"));
   ok("teaser duration reads 0:33", html.includes("0:33 &middot;"));
 }
+// a refunded full film stays kept but rests from the free public page
+{
+  const html = renderTribute(template, {
+    ...base,
+    tier: "free",
+    sponsor: { name: "A Friend", message: "Always remembered." },
+  });
+  ok("refunded full film rests from the public page", !html.includes('id="film"') && !html.includes("https://x.example/film.mp4"));
+  ok("refunded sponsor plaque rests without losing its kept data", !html.includes('id="plaque"') && !html.includes("A Friend"));
+}
 // page with no film
 {
   const { film, ...noFilm } = base;

@@ -335,7 +335,7 @@ export function renderTribute(template: string, t: Tribute): string {
     ? `<div class="announce">Built with love, by I <em style="color:var(--flame)">Miss</em> You Memorial<span class="mono">free · forever</span></div>`
     : "";
 
-  const sponsorPlaque = t.sponsor && (t.sponsor.name || t.sponsor.message)
+  const sponsorPlaque = tier === "plus" && t.sponsor && (t.sponsor.name || t.sponsor.message)
     ? `<div class="plaque rev" id="plaque">
         ${t.sponsor.photoUrl ? `<img class="pl-photo" id="plPhoto" src="${esc(t.sponsor.photoUrl)}" alt="${esc(t.sponsor.name || "The giver")}"/>` : ""}
         <div><div class="pl-line" id="plLine">${t.sponsor.name
@@ -358,7 +358,10 @@ export function renderTribute(template: string, t: Tribute): string {
   // lives here, in the page's own design language. Nothing renders when a
   // page has no placed film — no empty rooms. Never autoplays: poster first,
   // press play when you are ready. ──
-  const filmData = t.film && /^https:\/\/[^"'<>\s]+$/.test(t.film.url) ? t.film : undefined;
+  const keptFilm = t.film && /^https:\/\/[^"'<>\s]+$/.test(t.film.url) ? t.film : undefined;
+  // A refund never deletes the weave. A full paid film rests in the private
+  // film room when the page returns to Free; only a true teaser stays public.
+  const filmData = keptFilm && (tier === "plus" || keptFilm.variant === "teaser") ? keptFilm : undefined;
   const fpn = pronounSet(t.pronouns);
   const filmDur = filmData?.duration
     ? `${Math.floor(filmData.duration / 60)}:${String(Math.round(filmData.duration % 60)).padStart(2, "0")}`
