@@ -62,6 +62,11 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("demo fallback MEMS intact for template", html.includes("var MEMS=(T&&T.mems)||["));
   t("pop animation preserved", html.includes("@keyframes pop"));
   t(".like styles preserved", html.includes(".like.on{background:#fbeee8"));
+  const videoMemory: any = { ...mem("video-memory-1", "Jade", "friend", "Her laugh in the garden.", 0), video: "https://media.example/memory.mp4" };
+  const plusVideo = boot(renderTribute(template, { ...jonny, memories: [videoMemory] }));
+  const freeVideo = boot(renderTribute(template, { ...jonny, tier: "free", memories: [videoMemory] }));
+  t("approved visitor video plays on Plus", plusVideo.mems[0].vi === "https://media.example/memory.mp4" && plusVideo.boards[0].items.some((x: any) => x.t === "video"));
+  t("approved visitor video rests on Free", freeVideo.mems[0].vi === "" && !freeVideo.boards[0].items.some((x: any) => x.t === "video"));
 }
 
 // ── 2 · free she page · wall cap ──────────────────────────────────────────────
@@ -73,6 +78,9 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("hearts survive the cap mapping", b.mems.some((m: any) => m.h > 0));
   t("she page has no he leak", !html.includes(">His story</a>"));
   t("no Eleanor leak (she page)", !html.includes("Eleanor"));
+  const photoPage = boot(renderTribute(template, { ...freeShe, photos: Array.from({ length: 14 }, (_, i) => ({ id: `free-photo-${i}`, url: `https://x/free-${i}.jpg` })) }));
+  t("free pages show twelve photographs", photoPage.gal.length === 12 && photoPage.phw === 2);
+  t("onboarding photographs reach the board by default", photoPage.boards[0].items.length === 12 && photoPage.boards[0].items[0].ttl === "Photograph 1");
 }
 
 // ── 3 · id-less memories (airtable fallback) degrade gracefully ───────────────
@@ -173,8 +181,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("legacy group keeps the pre-placements look", !legacy.ch[0].al && legacy.ch[0].ph.length === 2 && legacy.ch[0].ph[0][0] === "p0");
   const bareB = boot(renderTribute(template, base));
   t("no placements → chapters carry no photos", Array.isArray(bareB.ch[0].ph) && bareB.ch[0].ph.length === 0);
-  t("no placements → no board built from the gallery, but the shape stays safe",
-    bareB.boards.length === 1 && bareB.boards[0].items.length === 0);
+  t("no placements → the gallery graces the board, captions first",
+    bareB.boards.length === 1 && bareB.boards[0].items.length === 2 && bareB.boards[0].items[0].img === "https://x/p0.jpg" && bareB.boards[0].items[0].ttl === "Photograph 1" && bareB.boards[0].items[0].who === "Family" && bareB.boards[0].items[1].img === "https://x/p1.jpg" && bareB.boards[0].items[1].ttl === "the bench");
   const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
   t("quote band without a placement rests among flowers on cream", bareHtml.includes('id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)"') && bareHtml.includes("/art/mum2-34d609.png") && !bareHtml.includes('id="quoteband"><div class="bgi">'));
   const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
@@ -182,7 +190,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const pinned = boot(renderTribute(template, { ...base, placements: { board: ["ph-b", "ph-a"] } }));
   t("board follows the family's order", pinned.boards[0].items[0].img === "https://x/p1.jpg" && pinned.boards[0].items[1].img === "https://x/p0.jpg");
   const keeps = boot(renderTribute(template, { ...base, memories: [{ ...mem("99999999-9999-4999-8999-999999999999", "Ana", "a neighbour", "The bench he built.", 2), photos: ["https://x/keep.jpg"] }] }));
-  t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
+  t("visitor keepsakes pin with their names, after the family's photographs", keeps.boards[0].items.length === 3 && keeps.boards[0].items[2].who === "Ana" && keeps.boards[0].items[2].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
   t("one flower number is enough", renderTribute(template, jonny).includes(".wr-count{display:none!important}"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
@@ -198,6 +206,11 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("their kept voice plays on plus", withOb.includes('id="theirvoice"') && withOb.includes('src="https://x/voice.mp3"'));
   const freeV = renderTribute(template, { ...jonny, tier: "free", obituary: "In loving memory.", voiceUrl: "https://x/voice.mp3" });
   t("a free page keeps the voice resting", !freeV.includes('id="theirvoice"') && freeV.includes('id="obituary"'));
+  const longOb = renderTribute(template, { ...jonny, obituary: "First sentence. Second sentence. Third sentence. Fourth sentence carries the rest of the formal notice. Fifth sentence closes it." });
+  t("long obituaries show three sentences before disclosure", longOb.includes("First sentence. Second sentence. Third sentence.") && longOb.includes("Read the full obituary"));
+  const longObBreaks = renderTribute(template, { ...jonny, obituary: "First sentence. Second sentence. Third sentence. Fourth sentence carries the notice.\nA new paragraph closes it." });
+  t("a long obituary keeps paragraph breaks in the disclosure", longObBreaks.includes("Fourth sentence carries the notice.\n") && longObBreaks.includes("Read the full obituary"));
+  t("short obituaries remain open", !withOb.includes("Read the full obituary"));
   t("no obituary → no empty sheet", !renderTribute(template, jonny).includes('id="obituary"'));
 }
 
@@ -217,6 +230,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const page = renderTribute(template, jonny);
   t("photo attach is wired, honestly labelled", template.includes('id="photoAdd"') && template.includes("＋ Add a photograph"));
   t("a memory can carry its photograph", template.includes("photoUrl:PHOTO.url||''"));
+  t("visitors can attach a moderated video", template.includes('id="videoAdd"') && template.includes("videoUrl:VIDEO.url||''") && template.includes("uploadVisitorVideo"));
   t("the helper calls the real api on live pages", template.includes("fetch('/api/assist'"));
   t("a quiet way home on every page (July 10: a real door)", page.includes('id="loginTop" href="/signin"') && !page.includes(">tend this page</a>"));
   t("the log-in door sits beside the memorial book", page.includes('Buy a memorial book</button><a id="loginTop"'));
@@ -325,14 +339,14 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const bare = renderTribute(template, { slug: "new-4444", fullName: "Ana Reyes", tier: "free", status: "published",
     photos: [{ id: "ph-n", url: "https://x/only.jpg" }] });
   const bb = boot(bare);
-  t("boards never ship empty-but-truthy", Array.isArray(bb.boards) && bb.boards.length === 1 && bb.boards[0].items.length === 0);
-  t("the board pill rests when nothing is pinned", bare.includes(".bbfab{display:none!important}"));
+  t("boards never ship empty-but-truthy", Array.isArray(bb.boards) && bb.boards.length === 1 && bb.boards[0].items.length === 1);
+  t("an onboarding photograph reaches the board", bb.boards[0].items[0].img === "https://x/only.jpg" && bb.boards[0].items[0].ttl === "Photograph 1");
   t("the word ticker rests when there are no words", bare.includes(".tick9{display:none!important}"));
   t("the top fold art is asked for first", bare.includes('rel="preload" as="image" href="/art/wreath2-64e82a.png"') && bare.includes('rel="preload" as="image" href="https://x/only.jpg"'));
   t("a missing wall element never takes the wiring down", bare.includes("if(!wallCt||!wchips||!inviteCard)return;"));
   t("the plaque and the waiting line mind their absence", bare.includes("if(plaqueEl)plaqueEl.hidden=!unlocked;") && bare.includes("if(gsWaitLine)gsWaitLine.textContent=") && bare.includes("if(gsWaitLine)gsWaitLine.style.display="));
-  const pinned = renderTribute(template, { ...jonny, photos: [{ id: "ph-a", url: "https://x/p0.jpg" }], placements: { board: ["ph-a"] } });
-  t("a pinned board keeps its pill", !pinned.includes(".bbfab{display:none!important}"));
+  const deliberatelyEmpty = renderTribute(template, { ...jonny, photos: [{ id: "ph-a", url: "https://x/p0.jpg" }], placements: { board: [] } });
+  t("a family-cleared board stays empty", deliberatelyEmpty.includes(".bbfab{display:none!important}"));
 }
 
 // ── 19 · the gift sheet speaks of them (July 10) ──────────────────────────────
@@ -363,6 +377,10 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("the gift checkout returns the button on a hung request", template.includes("if(ac)setTimeout(function(){try{ac.abort()}catch(e){}},15000);"));
   t("the letter's checkout and uploads carry their own deadlines",
     letter.includes("},15000);") && letter.includes("},45000):null;"));
+  t("the letter resumes visibly without losing uploaded references", letter.includes('id="draftReturn"') && letter.includes("Continue the letter") && letter.includes("galleryUploads"));
+  t("step fourteen speaks photos, videos, and twelve free photographs", letter.includes("Photos and videos, so the page feels like them.") && letter.includes("12 photos are free"));
+  t("mobile ruled writing follows the text line", letter.includes("textarea{min-height:150px;line-height:28px") && letter.includes("transparent 27px"));
+  t("the free completion page opens the tribute or family study", letter.includes('id="finStudy"') && letter.includes("Open the family study"));
 }
 
 // ── 16 · the landing carries the log-in door too (July 10) ────────────────────
@@ -372,6 +390,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     landing.includes('<a class="mw-login" href="/signin">Log in</a>\n    <a class="mw-navcta" href="/onboarding">Start a tribute</a>'));
   t("the landing door matches the tribute button's size",
     landing.includes(".mwhero .mw-login{margin-left:auto;font-weight:600;font-size:14px;") && landing.includes("padding:10px 20px") && landing.includes(".mwhero .mw-login+.mw-navcta{margin-left:0}"));
+  t("the full mobile wordmark is no longer ellipsized", landing.includes("overflow:visible;text-overflow:clip;font-size:18px") && landing.includes("height:23px!important"));
+  t("the mobile CTA waits inside the menu", landing.includes(".mw-login,.mwhero .tornbar .mw-navcta{display:none!important}") && landing.includes("cta.cloneNode(true)"));
 }
 
 // ── 12 · a life in chapters — every chapter the family writes renders (0017) ─

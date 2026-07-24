@@ -32,7 +32,7 @@ export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
   photos: {
     eyebrow: "Your gallery is full — for now",
     title: "Room for every photograph",
-    body: "You've gathered thirty. Already a beautiful gallery. If there are more moments you'd like to keep, Plus opens the gallery without limit — so none of them has to be left out.",
+    body: "You've kept twelve on the page. Already a beautiful gallery. If there are more moments you'd like to keep, Plus opens the gallery without limit — so none of them has to be left out.",
     primaryLabel: "Add unlimited photos · Plus, $97 once",
     primaryHref: PLUS,
     secondaryLabel: "Not now",

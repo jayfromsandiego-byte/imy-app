@@ -29,7 +29,10 @@ export async function POST(req: NextRequest) {
   }
   const filename = String(body.filename || "upload").slice(0, 120);
   const contentType = String(body.contentType || "application/octet-stream").slice(0, 100);
-  if (!/^(image|video|audio)\//.test(contentType)) {
+  // Same allow-list the proxied /api/upload door keeps — the presigned path is not
+  // a wider gate for arbitrary media subtypes.
+  const SAFE_MEDIA = /^(image\/(jpeg|png|webp|gif|heic|heif)|audio\/(mpeg|mp4|wav|x-m4a|aac|ogg|webm)|video\/(mp4|webm|quicktime))$/i;
+  if (!SAFE_MEDIA.test(contentType)) {
     return NextResponse.json({ ok: false, error: "unsupported_type" }, { status: 400 });
   }
   try {

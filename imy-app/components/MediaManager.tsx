@@ -10,7 +10,7 @@ type Photo = { id: string; url: string; sort: number };
 
 const C = { ink: "#2C2520", inkSoft: "#5A4F45", terra: "#A87C5F", line: "#E4D9C4", deep: "#F3ECDD", bad: "#8C2F2A" };
 
-export default function MediaManager({ tributeId, photos }: { tributeId: string; photos: Photo[] }) {
+export default function MediaManager({ tributeId, photos, tier }: { tributeId: string; photos: Photo[]; tier: string }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const urlsRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -61,6 +61,11 @@ export default function MediaManager({ tributeId, photos }: { tributeId: string;
       <h2 style={{ fontWeight: 600, fontSize: "1.2rem" }}>Photos{photos.length ? ` · ${photos.length}` : ""}</h2>
       <p style={{ color: C.inkSoft, marginTop: 6, fontSize: 14 }}>
         The first photo becomes their Memorial Stone and portrait. Drag isn’t needed — use the arrows to reorder.
+        {tier === "plus" || tier === "heirloom"
+          ? " Plus shows every photograph."
+          : photos.length > 12
+            ? ` Free shows the first 12. ${photos.length - 12} ${photos.length - 12 === 1 ? "photograph waits" : "photographs wait"} safely for Plus.`
+            : ` Free includes ${photos.length} of 12 photographs.`}
       </p>
 
       {photos.length > 0 && (

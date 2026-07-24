@@ -29,6 +29,7 @@ export default function VideosManager({
   const [msg, setMsg] = useState("");
   const [pairs, setPairs] = useState<Record<string, string>>(living || {});
   const [pairsDirty, setPairsDirty] = useState(false);
+  const isPlus = tier === "plus" || tier === "heirloom";
 
   async function onPick() {
     const f = fileRef.current?.files?.[0];
@@ -69,7 +70,7 @@ export default function VideosManager({
       <p style={sub}>
         Home videos, old films, a phone clip — kept forever. MP4 plays everywhere; keep a
         tape under 50MB (a couple of minutes at phone quality), or bring a YouTube or Vimeo link.
-        {tier !== "plus" ? " Videos live on Plus pages — everything you add here is kept, resting, until then." : ""}
+        {!isPlus ? " Videos live on Plus pages. Any video already kept here rests safely until Plus opens." : ""}
       </p>
 
       {videos.length > 0 && (
@@ -120,20 +121,27 @@ export default function VideosManager({
         </form>
       )}
 
-      <div style={{ marginTop: 18, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <input ref={fileRef} type="file" accept="video/mp4,video/webm,video/quicktime" hidden onChange={onPick} />
-        <button type="button" disabled={busy} onClick={() => fileRef.current?.click()}
-          style={{ background: C.terra, color: "#fff", border: "none", fontFamily: "inherit", fontWeight: 600, fontSize: 14, padding: "10px 20px", borderRadius: 30, cursor: "pointer", opacity: busy ? 0.6 : 1 }}>
-          {busy ? "Uploading…" : "＋ Add a tape"}
-        </button>
-        <form action={addVideoEmbed} style={{ display: "flex", gap: 8, flex: "1 1 300px" }}>
-          <input type="hidden" name="tributeId" value={tributeId} />
-          <input name="url" placeholder="or paste a YouTube / Vimeo link" inputMode="url"
-            style={{ flex: 1, padding: "9px 12px", border: `1.5px solid ${C.line}`, borderRadius: 9, fontSize: 14, background: "#fff" }} />
-          <button type="submit" style={mini}>Keep it</button>
-        </form>
-        {msg && <span style={{ fontFamily: "'Sometype Mono',monospace", fontSize: 12, color: C.inkSoft, flexBasis: "100%" }}>{msg}</span>}
-      </div>
+      {isPlus ? (
+        <div style={{ marginTop: 18, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <input ref={fileRef} type="file" accept="video/mp4,video/webm,video/quicktime" hidden onChange={onPick} />
+          <button type="button" disabled={busy} onClick={() => fileRef.current?.click()}
+            style={{ background: C.terra, color: "#fff", border: "none", fontFamily: "inherit", fontWeight: 600, fontSize: 14, padding: "10px 20px", borderRadius: 30, cursor: "pointer", opacity: busy ? 0.6 : 1 }}>
+            {busy ? "Uploading…" : "＋ Add a video file"}
+          </button>
+          <form action={addVideoEmbed} style={{ display: "flex", gap: 8, flex: "1 1 300px" }}>
+            <input type="hidden" name="tributeId" value={tributeId} />
+            <input name="url" placeholder="or paste a YouTube / Vimeo link" inputMode="url"
+              style={{ flex: 1, padding: "9px 12px", border: `1.5px solid ${C.line}`, borderRadius: 9, fontSize: 14, background: "#fff" }} />
+            <button type="submit" style={mini}>Keep it</button>
+          </form>
+          {msg && <span style={{ fontFamily: "'Sometype Mono',monospace", fontSize: 12, color: C.inkSoft, flexBasis: "100%" }}>{msg}</span>}
+        </div>
+      ) : (
+        <div style={{ marginTop: 18, padding: 14, borderRadius: 10, background: C.deep, color: C.inkSoft, fontSize: 14 }}>
+          Video upload is part of Plus. Anything already added in the letter is kept safely.{" "}
+          <a href="/dashboard/billing" style={{ color: C.terra, fontWeight: 600 }}>See Plus</a>
+        </div>
+      )}
     </div>
   );
 }

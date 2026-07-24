@@ -134,6 +134,18 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
         A quiet place to see what's waiting, what's been shared, and what still needs a decision. Nothing here is urgent tonight.
       </p>
 
+      {list.length > 1 ? (
+        <div style={{ marginTop: 20, display: "grid", gap: 9 }} aria-label="Your tribute pages">
+          {list.map((page: any) => (
+            <div key={page.id} style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", padding: "10px 12px", border: "1px solid var(--line)", borderRadius: 10, background: page.id === t.id ? "var(--cream-deep)" : "#fff" }}>
+              <Link href={`/dashboard?t=${page.id}`} style={{ fontWeight: 700, color: "var(--ink)", textDecoration: "none", marginRight: "auto" }}>{page.loved_one_name}</Link>
+              <Link href={`/dashboard/tributes/${page.id}`} className="btn quiet small">Edit</Link>
+              <Link href={`/sites/${page.slug}`} target="_blank" rel="noopener noreferrer" className="btn quiet small">Visit page</Link>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
       <div className="card-grid" style={{ marginTop: 24 }}>
         {/* Waiting count card, with the first pending memory decidable inline */}
         <div className="s-card liftable full stagger" style={{ animationDelay: ".02s" }}>

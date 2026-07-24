@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
-import { saveTribute, restTribute, setYearLetterDate } from "@/app/dashboard/actions";
+import { saveTribute, restTribute, retryPaidFilm, setYearLetterDate } from "@/app/dashboard/actions";
 import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
 import PlacementsManager from "@/components/PlacementsManager";
@@ -14,7 +14,9 @@ export const dynamic = "force-dynamic";
 
 export default async function EditTribute({ params }: { params: { id: string } }) {
   const user = await getUser();
-  if (!user) redirect("/signin");
+  // Carry the destination through sign-in so a freshly-sealed free family who taps
+  // "Open the family study" lands on their tribute, not a bare sign-in page.
+  if (!user) redirect(`/signin?next=${encodeURIComponent(`/dashboard/tributes/${params.id}`)}`);
   const db = supabaseAdmin();
   const { data: t } = await db.from("tributes").select("*,year_letter_md").eq("id", params.id).maybeSingle();
   if (!t || (t.owner_id !== user.id && t.owner_email !== user.email)) {
@@ -50,6 +52,14 @@ export default async function EditTribute({ params }: { params: { id: string } }
     .select("id,url,caption,sort")
     .eq("tribute_id", t.id)
     .order("sort", { ascending: true });
+  const { data: filmJobs } = await db
+    .from("film_jobs")
+    .select("id,status,error,rendered_variant,created_at")
+    .eq("tribute_id", t.id)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false })
+    .limit(1);
+  const filmJob = filmJobs?.[0] as any;
   const { data: timeline } = await db
     .from("tribute_timeline")
     .select("id,year,title,sort,chapter_id")
@@ -109,7 +119,31 @@ export default async function EditTribute({ params }: { params: { id: string } }
         <p className="panel-sub mono" style={{ fontSize: 12 }}>
           {t.slug}.imissyoumemorial.com {"·"} {t.tier} {"·"} {t.status} {"·"} {photoCount || 0} photos
         </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
+          <Link href={`/sites/${t.slug}`} target="_blank" rel="noopener noreferrer" className="btn primary" style={{ textDecoration: "none" }}>Visit the live page</Link>
+          <a href="#pictures" className="btn quiet" style={{ textDecoration: "none" }}>Add photographs</a>
+          <a href="#tape-shelf" className="btn quiet" style={{ textDecoration: "none" }}>Add video · Plus</a>
+        </div>
       </div>
+
+      {(t.tier === "plus" || t.tier === "heirloom") && filmJob ? (
+        <section style={{ marginTop: 20, padding: 16, border: "1px solid var(--line)", borderRadius: 12, background: "var(--cream-deep)" }}>
+          <div className="panel-kicker mono">Their film</div>
+          <p className="panel-sub" style={{ marginTop: 6 }}>
+            {filmJob.status === "approved" ? "The film is on the page."
+              : filmJob.status === "failed" ? "The weave did not finish. Nothing was lost."
+              : filmJob.status === "waiting_for_photos" ? "The film is waiting for at least three photographs."
+              : filmJob.status === "ready" ? "The film is woven and being placed."
+              : "The film is being woven."}
+          </p>
+          {filmJob.status === "failed" ? (
+            <form action={retryPaidFilm}>
+              <input type="hidden" name="tributeId" value={t.id} />
+              <button type="submit" className="btn primary">Try the weave again</button>
+            </form>
+          ) : null}
+        </section>
+      ) : null}
 
       {/* ---------- Waiting for you · one desk for every page, at /dashboard/waiting ---------- */}
       <section style={{ marginTop: 32 }}>
@@ -119,7 +153,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
           </h2>
         </div>
         <p className="panel-sub" style={{ marginBottom: 14 }}>
-          Every memory, word, photograph, and voice now waits on a single desk, for all
+          Every memory, word, photograph, video, and voice now waits on a single desk, for all
           your pages together. Nothing appears on the live page until you welcome it in.
         </p>
         <Link href="/dashboard/waiting" className="btn primary" style={{ display: "inline-block", textDecoration: "none" }}>
@@ -140,14 +174,14 @@ export default async function EditTribute({ params }: { params: { id: string } }
       </div>
 
       {/* ---------- The pictures ---------- */}
-      <section style={{ marginTop: 8 }}>
+      <section id="pictures" style={{ marginTop: 8, scrollMarginTop: 24 }}>
         <h2 className="panel-title" style={{ fontSize: 20, marginBottom: 6 }}>
           The pictures
         </h2>
         <p className="panel-sub" style={{ marginBottom: 20 }}>
           The first photo becomes {pn.pos} Memorial Stone and portrait.
         </p>
-        <MediaManager tributeId={t.id} photos={(photos as any) || []} />
+        <MediaManager tributeId={t.id} photos={(photos as any) || []} tier={t.tier || "free"} />
       </section>
 
       <div className="leaf-divider" aria-hidden="true">
@@ -173,7 +207,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
       </section>
 
       {/* ---------- The tape shelf ---------- */}
-      <section style={{ marginTop: 20 }}>
+      <section id="tape-shelf" style={{ marginTop: 20, scrollMarginTop: 24 }}>
         <VideosManager
           tributeId={t.id}
           videos={((videos as any) || []).map((v: any) => ({ id: String(v.id), url: v.url, caption: v.caption }))}

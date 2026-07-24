@@ -817,7 +817,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
         <div class="nm">Free</div><div class="pr">$0</div><div class="alt">No card needed</div>
         <ul>
           <li><span class="ck">✓</span> A beautiful tribute page to honor them</li>
-          <li><span class="ck">✓</span> The first ten photographs and the first ten memories · always free</li>
+          <li><span class="ck">✓</span> The first 12 photographs and the first ten memories · always free</li>
           <li><span class="ck">✓</span> Candles, flowers, and messages from everyone who visits</li>
           <li><span class="ck">✓</span> Their own shareable link to send anywhere</li>
         </ul>
@@ -857,7 +857,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
       <div class="lp-crow"><span>Candles, flowers, and shared memories</span><span class="v">✓</span><span class="v">✓</span><span class="v">✓</span></div>
       <div class="lp-crow"><span>You choose what appears on the page</span><span class="v">✓</span><span class="v">✓</span><span class="v">✓</span></div>
       <div class="lp-crow"><span>Privacy · public, unlisted, or password</span><span class="v">✓</span><span class="v">✓</span><span class="v">✓</span></div>
-      <div class="lp-crow"><span>Photos</span><span class="x">first ten</span><span class="v">unlimited</span><span class="v">unlimited</span></div>
+      <div class="lp-crow"><span>Photos</span><span class="x">first 12</span><span class="v">unlimited</span><span class="v">unlimited</span></div>
       <div class="lp-crow"><span>Video, audio, and living pictures</span><span class="x"> · </span><span class="v">✓</span><span class="v">✓</span></div>
       <div class="lp-crow"><span>The memory wall, open for everyone</span><span class="x">first ten</span><span class="v">✓</span><span class="v">✓</span></div>
       <div class="lp-crow"><span>Their exact name as the address</span><span class="x"> · </span><span class="v">✓</span><span class="v">✓</span></div>
@@ -1139,22 +1139,24 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .mwhero .tornbar{position:relative!important;top:auto!important;order:-1;width:100%;box-sizing:border-box;padding-bottom:70px!important;z-index:400}
   .mwhero .mw-inner{margin-top:18px!important}
   .mwhero .tornbar .mw-nav{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;overflow:visible}
-  .mwhero .tornbar .mw-b{display:inline-block!important;flex:0 1 auto;min-width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px;color:#2C2520;text-shadow:none}
+  .mwhero .tornbar .mw-b{display:inline-block!important;flex:1 1 auto;min-width:0;white-space:nowrap;overflow:visible;text-overflow:clip;font-size:18px;color:#2C2520;text-shadow:none}
+  .mwhero .tornbar .mw-b img{height:23px!important;margin-right:7px!important}
   .mwhero .tornbar .mw-b em{color:#A87C5F}
   .mwhero .tornbar .mw-links{display:none!important;width:auto!important;order:0!important;padding-top:0!important}
   .mwhero .tornbar .mw-login,.mwhero .tornbar .mw-navcta{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap;margin-left:auto}
   .mwhero .tornbar .mw-navcta{margin-left:0}
   .mwhero .tornbar .mqburger{display:inline-flex;flex:0 0 auto}
 }
-@media(max-width:430px){
-  .mwhero .tornbar .mw-login{display:none!important} /* it waits inside the menu */
-  .mwhero .tornbar .mw-navcta{font-size:13.5px;padding:10px 14px!important}
+@media(max-width:860px){
+  /* both doors wait inside the hamburger across the whole burger range — no inline
+     pill duplicates the panel, and the wordmark never has to overlap them (the old
+     431–580px band shrank .mw-b under its own text and painted it over Log in) */
+  .mwhero .tornbar .mw-login,.mwhero .tornbar .mw-navcta{display:none!important} /* both wait inside the menu */
 }
 @media(max-width:360px){
-  /* the wordmark keeps its Miss on the smallest phones */
-  .mwhero .tornbar .mw-b{font-size:15px}
-  .mwhero .tornbar .mw-b img{height:17px!important}
-  .mwhero .tornbar .mw-navcta{font-size:12.5px;padding:9px 11px!important}
+  /* the full wordmark keeps its name on the smallest phones */
+  .mwhero .tornbar .mw-b{font-size:16px}
+  .mwhero .tornbar .mw-b img{height:20px!important}
 }
 /* the counter sits in the note's own flow on small phones — never crowding the signature */
 @media(max-width:430px){
@@ -1214,6 +1216,8 @@ var panel=document.createElement('nav');panel.className='mqpanel';panel.setAttri
 links.querySelectorAll('a').forEach(function(a){panel.appendChild(a.cloneNode(true))});
 var lg=document.querySelector('.mw-login');
 if(lg){var l2=lg.cloneNode(true);l2.classList.add('mqlogin');l2.removeAttribute('style');panel.appendChild(l2)}
+var cta=document.querySelector('.mw-navcta');
+if(cta){var c2=cta.cloneNode(true);c2.classList.add('mqcta');c2.removeAttribute('style');panel.appendChild(c2)}
 document.body.appendChild(panel);
 function set(open){
   if(open){var r=nav.getBoundingClientRect();panel.style.top=Math.max(r.bottom+2,0)+'px'}

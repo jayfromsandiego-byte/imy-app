@@ -83,6 +83,12 @@ export default async function WaitingPage() {
             <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 4 }}>a voice came with this memory</p>
           </div>
         ) : null}
+        {item.video_url ? (
+          <div style={{ margin: "8px 0 4px" }}>
+            <video controls playsInline preload="metadata" src={item.video_url} style={{ width: "100%", maxWidth: 420, maxHeight: 260, borderRadius: 9, border: "1px solid var(--line)", background: "#241711", display: "block" }} />
+            <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 4 }}>a video came with this memory · it waits for your approval</p>
+          </div>
+        ) : null}
         <div className="letter-actions">
           <form action={kind === "Memory" ? moderateMemory : moderateComment}>
             <input type="hidden" name="id" value={item.id} />
@@ -110,7 +116,7 @@ export default async function WaitingPage() {
           </h1>
         </div>
         <p className="panel-sub">
-          Every memory, word, photograph, and voice lands here first. Nothing appears
+          Every memory, word, photograph, video, and voice lands here first. Nothing appears
           on a page until you welcome it in. Declined words are kept, never lost.
         </p>
       </div>
