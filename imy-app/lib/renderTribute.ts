@@ -286,7 +286,10 @@ export function renderTribute(template: string, t: Tribute): string {
   // from approved memories. It never mirrors the gallery on its own.
   const ownerBoardIds = pl && Object.prototype.hasOwnProperty.call(pl, "board")
     ? (pl.board || [])
-    : photos.map((p) => p.id || "").filter(Boolean);
+    // No explicit board yet: the gallery graces it by default, but capped the same
+    // as a curated board (savePlacements slices at 24) so a large Plus gallery never
+    // auto-pins a hundred keepsakes. Free is already ≤12, so this only bounds Plus.
+    : photos.map((p) => p.id || "").filter(Boolean).slice(0, 24);
   const ownerPins = ownerBoardIds
     .map((id) => byId[id])
     .filter(Boolean)
@@ -657,8 +660,11 @@ export function renderTribute(template: string, t: Tribute): string {
       let obituaryLead = rawObituary;
       let obituaryRest = "";
       if (sentences.length > 3) {
-        obituaryLead = sentences.slice(0, 3).join(" ").replace(/\s+/g, " ").trim();
-        obituaryRest = sentences.slice(3).join(" ").replace(/\s+/g, " ").trim();
+        // Collapse only runs of spaces/tabs, never newlines — a long obituary's
+        // paragraph breaks are kept (white-space:pre-line renders them), the same
+        // pledge a short obituary already gets.
+        obituaryLead = sentences.slice(0, 3).join(" ").replace(/[^\S\n]+/g, " ").trim();
+        obituaryRest = sentences.slice(3).join(" ").replace(/[^\S\n]+/g, " ").trim();
       } else if (rawObituary.length > 620) {
         const cut = rawObituary.lastIndexOf(" ", 620);
         obituaryLead = rawObituary.slice(0, cut > 380 ? cut : 620).trim();

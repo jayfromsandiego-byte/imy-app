@@ -379,6 +379,7 @@
   #finale.open .fin-hand{opacity:1}
   .fin-msg{opacity:0;transform:translateY(12px);transition:opacity 1s ease 3.1s,transform 1s ease 3.1s;max-width:480px}
   #finale.open .fin-msg{opacity:1;transform:none}
+  .fin-actions{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
   .fin-msg .cap{font-family:'Sometype Mono',monospace;font-weight:700;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
   .fin-msg h2{font-weight:520;font-size:clamp(1.75rem,4.6vw,2.35rem);margin:0 0 12px}
   .fin-msg .url{display:inline-block;font-family:'Sometype Mono',monospace;font-weight:600;font-size:.85rem;color:var(--terra);background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:10px 20px;margin-bottom:16px;word-break:break-all}
@@ -554,7 +555,7 @@ var ENGINE=(function(){
     {id:'voice',ch:'their story',q:'A voice you want <em>to keep.</em>',sub:'A voicemail, a recording, a laugh. Recordings are part of the Plus plan · kept safe either way.',type:'voice',plus:true,skip:'not right now · skip'},
     {id:'moments',ch:'their story',q:'A few moments from <em>their life.</em>',sub:'A year, and what happened. Add as many as you like.',type:'moments',skip:'skip for now'},
     {id:'loved',ch:'what they loved',q:'What did they <em>love?</em>',sub:'Choose up to six. Each becomes its own space on their page, and their whole page takes its design from what you choose.',type:'tiles',skip:'skip for now'},
-    {id:'gallery',ch:'their page',q:'Photos and videos, so the page feels like them.',sub:'Free holds 12 photographs. Videos and every photograph beyond twelve stay safe and wake with Plus.',type:'gallery',skip:'I’ll add them later'},
+    {id:'gallery',ch:'their page',q:'Photos and videos, so the page feels like them.',sub:'Add what you have close — there is room for more later. Free holds 12 photographs; videos and every photograph beyond twelve stay safe and wake with Plus.',type:'gallery',skip:'I’ll add them later'},
     {id:'slug',ch:'their page',q:'Where their page will <em>live.</em>',sub:'The link you will share. It becomes their permanent home. Choose how it reads.',type:'slug'},
     {id:'service',ch:'their page',q:'Is there a service planned?',sub:'If plans are still forming, skip this. It can be added anytime.',type:'service',skip:'not yet · skip'},
     {id:'contact',ch:'their page',q:'Where should we send <em>their page?</em>',sub:'We email you the link the moment it is ready.',type:'contact',req:true},
@@ -823,6 +824,70 @@ var ENGINE=(function(){
     if(inp&&window.matchMedia('(pointer:fine)').matches)setTimeout(function(){inp.focus()},450);
   }
   function onShow(st,s){
+    /* Resume without loss (July 24) · after a reload restoreDraft() refills A, but
+       the sections were built empty. Fill every kept answer back into its field
+       (blanks only — never over an answer in progress), and rebuild the richer
+       widgets once. Without this, revisiting a resumed step reharvested the empty
+       inputs and quietly wiped the letter, and a required step forced a grieving
+       family to retype what the banner promised was saved. */
+    s.querySelectorAll('[data-key]').forEach(function(el){
+      var k=el.getAttribute('data-key');
+      if(typeof A[k]!=='string'||A[k]==='')return;
+      // A <select> (e.g. who-can-visit) always carries its first option, never '',
+      // so fill it whenever a choice was kept — otherwise a restored "Unlisted" or
+      // "Password" page would silently revert to Public. Text inputs fill blanks
+      // only, so an answer in progress is never overwritten.
+      if(el.tagName==='SELECT')el.value=A[k];
+      else if(el.value==='')el.value=A[k];
+    });
+    if(!s.__rehydrated){
+      s.__rehydrated=true;
+      if(st.type==='pronouns'&&A.pronouns){var pc=s.querySelector('.chip[data-pn="'+A.pronouns+'"]');if(pc)pc.classList.add('on');}
+      if(st.type==='voice'&&A.voiceUpURL){
+        var vd=s.querySelector('#vDrop');if(vd)vd.style.display='none';
+        var vc=s.querySelector('#vCass');if(vc){vc.style.display='block';vc.classList.add('playing');}
+        var vl=s.querySelector('#vLbl');if(vl)vl.textContent=(A.voiceName||'a voice, kept').replace(/\.[^.]+$/,'');
+      }
+      if(st.type==='tiles'){
+        var grid=s.querySelector('#tileGrid'),other=s.querySelector('#tileOther');
+        (A.lovedThings||[]).forEach(function(lbl){
+          var known=false;s.querySelectorAll('.tile[data-tile]').forEach(function(t){if(t.getAttribute('data-label')===lbl)known=true});
+          if(!known&&grid&&other){
+            var b=document.createElement('button');b.type='button';b.className='tile on';b.setAttribute('data-tile','custom');b.setAttribute('data-label',lbl);
+            b.innerHTML='<svg viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M24,16 V34 M24,26 Q17,24 15,17 Q22,19 24,26 M24,28 Q31,26 33,19 Q26,21 24,28"/><circle cx="24" cy="11" r="4"/></svg><span class="nm">'+esc(lbl)+'</span>';
+            grid.insertBefore(b,other);
+          }
+        });
+        if(typeof refreshTiles==='function')refreshTiles();
+      }
+      if(st.type==='moments'&&((A.moments&&A.moments.length)||(A.chapters&&A.chapters.length))){
+        var w=s.querySelector('#mRows'),hasContent=false;
+        if(w)w.querySelectorAll('.m-row').forEach(function(r){var y=(r.querySelector('.m-year')||{}).value,tx=(r.querySelector('.m-text')||{}).value;if((y&&y.trim())||(tx&&tx.trim()))hasContent=true;});
+        if(w&&!hasContent){
+          w.innerHTML='';
+          (A.chapters||[]).forEach(function(ct){addChapter();var crs=document.querySelectorAll('#chRows .ch-title');var last=crs[crs.length-1];if(last)last.value=ct;});
+          (A.moments||[]).forEach(function(m){
+            addMoment();
+            var r=w.lastElementChild;if(!r)return;
+            r.querySelector('.m-year').value=m.year||'';
+            r.querySelector('.m-text').value=m.text||'';
+            if(m.photoUrl){
+              r.__mp={url:m.photoUrl};
+              var box=r.querySelector('.m-photo'),pin=r.querySelector('.m-pin'),padd=r.querySelector('.m-padd');
+              if(box){box.innerHTML='';if(pin)box.appendChild(pin);
+                var img=document.createElement('img');img.className='m-pthumb';img.alt='';img.src=m.photoUrl;
+                var rm=document.createElement('button');rm.type='button';rm.className='m-prm';rm.setAttribute('aria-label','remove the photograph');rm.textContent='×';
+                rm.addEventListener('click',function(){r.__mp=null;box.innerHTML='';if(pin){pin.value='';box.appendChild(pin);}if(padd)box.appendChild(padd);});
+                box.appendChild(img);box.appendChild(rm);
+              }
+            }
+          });
+          syncChapterSelects();
+          var rows=w.querySelectorAll('.m-row');
+          A.moments.forEach(function(m,i){var sel=rows[i]&&rows[i].querySelector('.m-ch');if(sel&&m.chapter)sel.value=m.chapter;});
+        }
+      }
+    }
     if(st.type==='slug'){
       genRand(false);
       var el=s.querySelector('#slugInput');

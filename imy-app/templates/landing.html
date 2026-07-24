@@ -1147,7 +1147,10 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .mwhero .tornbar .mw-navcta{margin-left:0}
   .mwhero .tornbar .mqburger{display:inline-flex;flex:0 0 auto}
 }
-@media(max-width:430px){
+@media(max-width:860px){
+  /* both doors wait inside the hamburger across the whole burger range — no inline
+     pill duplicates the panel, and the wordmark never has to overlap them (the old
+     431–580px band shrank .mw-b under its own text and painted it over Log in) */
   .mwhero .tornbar .mw-login,.mwhero .tornbar .mw-navcta{display:none!important} /* both wait inside the menu */
 }
 @media(max-width:360px){

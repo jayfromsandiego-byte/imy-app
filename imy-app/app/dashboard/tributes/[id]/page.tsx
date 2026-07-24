@@ -14,7 +14,9 @@ export const dynamic = "force-dynamic";
 
 export default async function EditTribute({ params }: { params: { id: string } }) {
   const user = await getUser();
-  if (!user) redirect("/signin");
+  // Carry the destination through sign-in so a freshly-sealed free family who taps
+  // "Open the family study" lands on their tribute, not a bare sign-in page.
+  if (!user) redirect(`/signin?next=${encodeURIComponent(`/dashboard/tributes/${params.id}`)}`);
   const db = supabaseAdmin();
   const { data: t } = await db.from("tributes").select("*,year_letter_md").eq("id", params.id).maybeSingle();
   if (!t || (t.owner_id !== user.id && t.owner_email !== user.email)) {

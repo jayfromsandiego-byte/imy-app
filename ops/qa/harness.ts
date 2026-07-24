@@ -181,8 +181,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("legacy group keeps the pre-placements look", !legacy.ch[0].al && legacy.ch[0].ph.length === 2 && legacy.ch[0].ph[0][0] === "p0");
   const bareB = boot(renderTribute(template, base));
   t("no placements → chapters carry no photos", Array.isArray(bareB.ch[0].ph) && bareB.ch[0].ph.length === 0);
-  t("no placements → no board built from the gallery, but the shape stays safe",
-    bareB.boards.length === 1 && bareB.boards[0].items.length === 0);
+  t("no placements → the gallery graces the board, captions first",
+    bareB.boards.length === 1 && bareB.boards[0].items.length === 2 && bareB.boards[0].items[0].img === "https://x/p0.jpg" && bareB.boards[0].items[0].ttl === "Photograph 1" && bareB.boards[0].items[0].who === "Family" && bareB.boards[0].items[1].img === "https://x/p1.jpg" && bareB.boards[0].items[1].ttl === "the bench");
   const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
   t("quote band without a placement rests among flowers on cream", bareHtml.includes('id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)"') && bareHtml.includes("/art/mum2-34d609.png") && !bareHtml.includes('id="quoteband"><div class="bgi">'));
   const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
@@ -190,7 +190,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const pinned = boot(renderTribute(template, { ...base, placements: { board: ["ph-b", "ph-a"] } }));
   t("board follows the family's order", pinned.boards[0].items[0].img === "https://x/p1.jpg" && pinned.boards[0].items[1].img === "https://x/p0.jpg");
   const keeps = boot(renderTribute(template, { ...base, memories: [{ ...mem("99999999-9999-4999-8999-999999999999", "Ana", "a neighbour", "The bench he built.", 2), photos: ["https://x/keep.jpg"] }] }));
-  t("visitor keepsakes pin with their names", keeps.boards[0].items.length === 1 && keeps.boards[0].items[0].who === "Ana" && keeps.boards[0].items[0].img === "https://x/keep.jpg");
+  t("visitor keepsakes pin with their names, after the family's photographs", keeps.boards[0].items.length === 3 && keeps.boards[0].items[2].who === "Ana" && keeps.boards[0].items[2].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
   t("one flower number is enough", renderTribute(template, jonny).includes(".wr-count{display:none!important}"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
@@ -208,6 +208,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("a free page keeps the voice resting", !freeV.includes('id="theirvoice"') && freeV.includes('id="obituary"'));
   const longOb = renderTribute(template, { ...jonny, obituary: "First sentence. Second sentence. Third sentence. Fourth sentence carries the rest of the formal notice. Fifth sentence closes it." });
   t("long obituaries show three sentences before disclosure", longOb.includes("First sentence. Second sentence. Third sentence.") && longOb.includes("Read the full obituary"));
+  const longObBreaks = renderTribute(template, { ...jonny, obituary: "First sentence. Second sentence. Third sentence. Fourth sentence carries the notice.\nA new paragraph closes it." });
+  t("a long obituary keeps paragraph breaks in the disclosure", longObBreaks.includes("Fourth sentence carries the notice.\n") && longObBreaks.includes("Read the full obituary"));
   t("short obituaries remain open", !withOb.includes("Read the full obituary"));
   t("no obituary → no empty sheet", !renderTribute(template, jonny).includes('id="obituary"'));
 }
