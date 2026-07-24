@@ -9,6 +9,7 @@ import { rateLimit, clientIp } from "@/lib/rateLimit";
 export const runtime = "nodejs";
 
 const MAX_BYTES = 25 * 1024 * 1024; // 25MB per file through this proxied route
+const SAFE_MEDIA = /^(image\/(jpeg|png|webp|gif|heic|heif)|audio\/(mpeg|mp4|wav|x-m4a|aac|ogg|webm)|video\/(mp4|webm|quicktime))$/i;
 
 export async function POST(req: NextRequest) {
   // Visitors attach photographs to memories, so this stays public — but gently
@@ -38,11 +39,14 @@ export async function POST(req: NextRequest) {
 
   try {
     const form = await req.formData();
-    const files = form.getAll("files").filter((f) => f instanceof File) as File[];
+    const files = (form.getAll("files").filter((f) => f instanceof File) as File[]).slice(0, 20);
     if (!files.length) return NextResponse.json({ ok: false, error: "no_files" }, { status: 400 });
 
     const urls: string[] = [];
     for (const f of files) {
+      if (!SAFE_MEDIA.test(f.type || "")) {
+        return NextResponse.json({ ok: false, error: "unsupported_type" }, { status: 415 });
+      }
       if (f.size > MAX_BYTES) {
         return NextResponse.json(
           { ok: false, error: "too_large", message: "Files over 25MB should use the presigned upload (/api/upload/presign)." },

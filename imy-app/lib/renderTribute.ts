@@ -40,7 +40,7 @@ export function embedSrc(url: string): string | null {
   return null;
 }
 export type MemoryComment = { name: string; rel: string; text: string };
-export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; comments?: MemoryComment[]; photos?: string[] };
+export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; video?: string; comments?: MemoryComment[]; photos?: string[] };
 export type ReelItem = { poster?: string; label?: string; url?: string };
 
 export type Tribute = {
@@ -153,11 +153,12 @@ export function renderTribute(template: string, t: Tribute): string {
     : "";
 
   // ── boot data for the template's engine ──
-  // Free keeps the first ten photographs (the pricing promise, tightened July 12);
-  // Plus is unlimited. Photo eleven onward is HELD, never refused — the album
-  // names how many wait, exactly like the memory wall.
+  // Free keeps twelve photographs (locked July 23); Plus is unlimited. Every
+  // later photograph is HELD, never refused — the album names how many wait,
+  // exactly like the memory wall.
+  const FREE_PHOTO_CAP = 12;
   const allPhotos = (t.photos || []).filter((p) => p.url);
-  const photos = tier === "free" ? allPhotos.slice(0, 10) : allPhotos;
+  const photos = tier === "free" ? allPhotos.slice(0, FREE_PHOTO_CAP) : allPhotos;
   const videos = (t.videos || []).filter((v) => v.url);
   const imgs: Record<string, string> = {};
   photos.forEach((p, i) => { imgs[`p${i}`] = p.url as string; });
@@ -267,6 +268,7 @@ export function renderTribute(template: string, t: Tribute): string {
     h: Math.max(0, m.hearts ?? 0),
     // Their voice is a Plus promise: on a resting (free) page recordings sleep — kept, not shown.
     au: tier === "plus" && m.audio && /^https:\/\//.test(m.audio) ? m.audio : "",
+    vi: tier === "plus" && m.video && /^https:\/\//.test(m.video) ? m.video : "",
     ph: m.photos && m.photos[0] && /^https:\/\//.test(m.photos[0]) ? m.photos[0] : "",
     cm: (m.comments || []).map((c) => [c.name || "A friend", c.rel || "", c.text || ""]).filter((c) => c[2]),
   })).filter((m) => m.tx);
@@ -282,11 +284,14 @@ export function renderTribute(template: string, t: Tribute): string {
   // The bulletin board (fix 5) is its own place: owner-placed keepsakes first
   // (placements.board, in the family's order), then visitor-left photographs
   // from approved memories. It never mirrors the gallery on its own.
-  const ownerPins = (pl?.board || [])
+  const ownerBoardIds = pl && Object.prototype.hasOwnProperty.call(pl, "board")
+    ? (pl.board || [])
+    : photos.map((p) => p.id || "").filter(Boolean);
+  const ownerPins = ownerBoardIds
     .map((id) => byId[id])
     .filter(Boolean)
     .map((p, i) => ({
-      t: "photo", img: p.url, ttl: p.cap, who: "", rel: "",
+      t: "photo", img: p.url, ttl: p.cap || `Photograph ${i + 1}`, who: "Family", rel: "kept in the letter",
       date: "", h: 0, r: (i % 2 ? 3 : -3) + (i % 3), c: [] as unknown[],
     }));
   const visitorPins = (t.memories || [])
@@ -296,7 +301,16 @@ export function renderTribute(template: string, t: Tribute): string {
       t: "photo", img: m.photos![0], ttl: (m.text || "").slice(0, 80), who: m.name || "", rel: m.rel || "",
       date: "", h: Math.max(0, m.hearts ?? 0), r: (i % 2 ? -3 : 3) + (i % 3), c: [] as unknown[],
     }));
-  const boardItems = [...ownerPins, ...visitorPins];
+  const visitorVideos = tier === "plus"
+    ? (t.memories || [])
+        .filter((m) => m.video && /^https:\/\//.test(m.video))
+        .slice(0, 8)
+        .map((m, i) => ({
+          t: "video", src: m.video, img: (m.photos && m.photos[0]) || cover, dur: "video", ttl: (m.text || "A video memory").slice(0, 80),
+          who: m.name || "", rel: m.rel || "", date: "", h: Math.max(0, m.hearts ?? 0), r: (i % 2 ? 2 : -2), plus: true, c: [] as unknown[],
+        }))
+    : [];
+  const boardItems = [...ownerPins, ...visitorPins, ...visitorVideos];
   // The board always keeps a safe shape (July 10): the template's engine calls
   // setB(0) unconditionally and an empty array is truthy, so a bare [] skips
   // the demo fallback and indexes into nothing — one exception there took the
@@ -308,7 +322,7 @@ export function renderTribute(template: string, t: Tribute): string {
   const boot = {
     slug, tier,
     gal, imgs, liv, ch, mems, seedw, words, boards,
-    phw: tier === "free" ? Math.max(0, allPhotos.length - 10) : 0,
+    phw: tier === "free" ? Math.max(0, allPhotos.length - FREE_PHOTO_CAP) : 0,
     waiting: seedw.length,
     fwt: Math.max(0, t.flowerToday ?? 0),
     // The tape shelf's real tapes (fix 6). Free pages rest their videos — kept,
@@ -408,7 +422,7 @@ export function renderTribute(template: string, t: Tribute): string {
         const action = waiting
           ? `<a href="/dashboard" class="btn solid" style="display:inline-block;margin-top:18px;text-decoration:none">Add photographs in the family study</a>`
           : failed
-            ? `<a href="mailto:hello@imissyoumemorial.com?subject=${encodeURIComponent(`Film for ${first}`)}" class="btn" style="display:inline-block;margin-top:18px;text-decoration:none">Write to the studio</a>`
+            ? `<a href="/dashboard" class="btn" style="display:inline-block;margin-top:18px;text-decoration:none">Open the family study</a>`
             : "";
         return `
     <!-- THEIR FILM · honest progress while the loom works -->
@@ -638,11 +652,26 @@ export function renderTribute(template: string, t: Tribute): string {
   // before the memories wall.
   {
     if (t.obituary && t.obituary.trim()) {
+      const rawObituary = t.obituary.trim();
+      const sentences = rawObituary.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g) || [rawObituary];
+      let obituaryLead = rawObituary;
+      let obituaryRest = "";
+      if (sentences.length > 3) {
+        obituaryLead = sentences.slice(0, 3).join(" ").replace(/\s+/g, " ").trim();
+        obituaryRest = sentences.slice(3).join(" ").replace(/\s+/g, " ").trim();
+      } else if (rawObituary.length > 620) {
+        const cut = rawObituary.lastIndexOf(" ", 620);
+        obituaryLead = rawObituary.slice(0, cut > 380 ? cut : 620).trim();
+        obituaryRest = rawObituary.slice(obituaryLead.length).trim();
+      }
+      const obituaryMore = obituaryRest
+        ? `<details style="margin-top:16px"><summary style="cursor:pointer;color:#A87C5F;font-weight:700;list-style-position:inside">Read the full obituary</summary><div style="margin-top:14px;white-space:pre-line">${esc(obituaryRest)}</div></details>`
+        : "";
       const ob =
         `<section class="section rev" id="obituary" style="padding:56px 5% 26px">` +
         `<div style="max-width:720px;margin:0 auto;background:#FDFAF3;border:1px solid #E9DFC9;border-radius:14px;box-shadow:0 30px 70px -44px rgba(60,40,15,.3);padding:clamp(28px,5vw,54px)">` +
         `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:16px">The obituary</div>` +
-        `<div style="font-family:'Besley',serif;font-size:16.5px;line-height:1.85;color:#2C2520;white-space:pre-line;overflow-wrap:anywhere;word-break:break-word">${esc(t.obituary.trim())}</div>` +
+        `<div style="font-family:'Besley',serif;font-size:16.5px;line-height:1.85;color:#2C2520;white-space:pre-line;overflow-wrap:anywhere;word-break:break-word">${esc(obituaryLead)}${obituaryMore}</div>` +
         `</div></section>`;
       const storyIdx = html.indexOf('<section class="section rev" id="story"');
       const fallbackIdx = html.indexOf('<section class="section rev sheetdeep" id="memories"');

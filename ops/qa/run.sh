@@ -18,3 +18,5 @@ IMY_REPO_ROOT="$ROOT" node "$WORK/harness.ts"
 IMY_REPO_ROOT="$ROOT" GEN="$WORK/renderTribute.gen.ts" node "$ROOT/ops/qa/film-section.test.mjs"
 # The paid contract: checkout identity, fail-closed webhook, atomic queue, worker health.
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/film-fulfillment.test.mjs"
+# Mobile review contracts: twelve-photo cap, media moderation, navigation, and recovery.
+IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/agnesy-review.test.mjs"

@@ -305,6 +305,11 @@
   .wrow{display:flex;align-items:center;gap:13px;background:var(--cream);border:1px dashed var(--line);border-radius:11px;padding:11px 15px;font-size:.9rem;color:var(--ink-mid);line-height:1.5}
   .wrow svg{width:25px;height:25px;color:var(--terra);flex:none}
   .wrow b{color:var(--terra-deep);font-weight:700}
+  .draft-return{max-width:440px;margin:16px auto 0;padding:12px 14px;border:1px solid var(--line);border-radius:11px;background:#FFFDF8;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;color:var(--ink-mid);font-size:.85rem}
+  .draft-return[hidden]{display:none}
+  .draft-return b{display:block;color:var(--terra-deep)}
+  .draft-return span{display:block;margin-top:2px}
+  .draft-return button{flex:none;border:0;background:none;color:var(--terra);font:700 .72rem 'Sometype Mono',monospace;text-decoration:underline;cursor:pointer}
   .kick .ptag{font-size:.7rem;padding:3px 12px 2px;vertical-align:1px}
   .lockb{position:absolute;top:10px;right:10px;width:27px;height:27px;border-radius:50%;background:#FBF4E4;border:1px solid rgba(201,165,114,.7);color:var(--gold);display:grid;place-items:center;cursor:pointer;z-index:3;transition:.2s;padding:0}
   .lockb:hover{border-color:var(--terra);color:var(--terra);transform:rotate(-8deg)}
@@ -458,8 +463,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9.2" y="9" width="5.6" height="12" rx="1.6"/><path d="M12,9 V7.4"/><path d="M12,6.6 q1.7,-2.1 0,-3.6 q-1.7,1.5 0,3.6"/></svg><span>about ten quiet minutes · it saves as you go, change anything later</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $97 once</b></span></div>
       </div>
+      <div class="draft-return" id="draftReturn" hidden role="status"><div><b>Welcome back.</b><span id="draftReturnLine">Your letter is saved on this device.</span></div><button type="button" id="draftRestart">Start over</button></div>
       <div class="nav" style="justify-content:center;margin-top:26px">
-        <button class="btn" type="button" onclick="ENGINE.start()">Begin the letter</button>
+        <button class="btn" id="beginLetter" type="button" onclick="ENGINE.start()">Begin the letter</button>
       </div>
       <div class="foot">nothing you give is ever lost</div>
     </section>
@@ -478,8 +484,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="cap" id="finCap">eighteen flowers laid · the garland is full</div>
       <h2>Their memorial is ready.</h2>
       <span class="url" id="finUrl"></span>
-      <p>We saved every word as you wrote it. Open the page when you are ready, and shape it together with family. It stays online forever. That is a promise.</p>
-      <a class="btn" id="finOpen" href="#" style="text-decoration:none;display:inline-block">Open their page</a>
+      <p>We saved every word as you wrote it. Open the page when you are ready, or enter the family study to add and arrange more. It stays online forever. That is a promise.</p>
+      <div class="fin-actions"><a class="btn" id="finOpen" href="#" style="text-decoration:none;display:inline-block">Open their page</a><a class="btn" id="finStudy" href="/dashboard" style="text-decoration:none;display:inline-block;background:transparent;color:var(--terra);border:1.5px solid var(--terra)">Open the family study</a></div>
     </div>
   </div>
 </div>
@@ -548,7 +554,7 @@ var ENGINE=(function(){
     {id:'voice',ch:'their story',q:'A voice you want <em>to keep.</em>',sub:'A voicemail, a recording, a laugh. Recordings are part of the Plus plan · kept safe either way.',type:'voice',plus:true,skip:'not right now · skip'},
     {id:'moments',ch:'their story',q:'A few moments from <em>their life.</em>',sub:'A year, and what happened. Add as many as you like.',type:'moments',skip:'skip for now'},
     {id:'loved',ch:'what they loved',q:'What did they <em>love?</em>',sub:'Choose up to six. Each becomes its own space on their page, and their whole page takes its design from what you choose.',type:'tiles',skip:'skip for now'},
-    {id:'gallery',ch:'their page',q:'Photos, so the page feels like them.',sub:'Add what you have close. There is room for more later.',type:'gallery',skip:'I’ll add them later'},
+    {id:'gallery',ch:'their page',q:'Photos and videos, so the page feels like them.',sub:'Free holds 12 photographs. Videos and every photograph beyond twelve stay safe and wake with Plus.',type:'gallery',skip:'I’ll add them later'},
     {id:'slug',ch:'their page',q:'Where their page will <em>live.</em>',sub:'The link you will share. It becomes their permanent home. Choose how it reads.',type:'slug'},
     {id:'service',ch:'their page',q:'Is there a service planned?',sub:'If plans are still forming, skip this. It can be added anytime.',type:'service',skip:'not yet · skip'},
     {id:'contact',ch:'their page',q:'Where should we send <em>their page?</em>',sub:'We email you the link the moment it is ready.',type:'contact',req:true},
@@ -556,7 +562,7 @@ var ENGINE=(function(){
   ];
 
   var planIntent=(function(){try{return new URLSearchParams(location.search).get('plan')==='plus'?'plus':''}catch(err){return ''}})();
-  var A={lovedThings:[],moments:[],chapters:[],galleryCount:0,galleryImgs:0,galleryVids:0,photo:false,voiceName:'',plan:planIntent||'free',addressChoice:planIntent==='plus'?'plus':'free',slugRandom:'',slugCustom:'',plusItems:[],plusAck:{}};
+  var A={lovedThings:[],moments:[],chapters:[],galleryUploads:[],galleryCount:0,galleryImgs:0,galleryVids:0,photo:false,voiceName:'',plan:planIntent||'free',addressChoice:planIntent==='plus'?'plus':'free',slugRandom:'',slugCustom:'',plusItems:[],plusAck:{}};
   var cur=-1,maxDone=0,slugEdited=false,finished=false,navLock=false,checkoutOpen=false;
 
   /* ---------- production wiring · July 5 (uploads, autosave, real seal, real checkout) ---------- */
@@ -641,6 +647,8 @@ var ENGINE=(function(){
       var raw=localStorage.getItem('imy-letter');if(!raw)return false;
       var d=JSON.parse(raw);if(!d||!d.A||typeof d.cur!=='number'||d.cur<0)return false;
       for(var k in d.A)A[k]=d.A[k];
+      if(A.photoUpURL){A.photo=true;A.photoURL=A.photoUpURL}
+      gFiles=(Array.isArray(A.galleryUploads)?A.galleryUploads:[]).map(function(m){return {__url:m.url||'',type:m.type||'image/jpeg',name:m.name||'kept media'}}).filter(function(m){return !!m.__url});
       maxDone=d.maxDone||0;slugEdited=!!d.slugEdited;
       return Math.min(d.cur,STEPS.length-1);
     }catch(e){return false}
@@ -712,8 +720,8 @@ var ENGINE=(function(){
                '<div class="plusnote" style="text-align:center">with <span class="ptag">plus</span> their page is designed around these · free uses a universal design</div>';
       case 'gallery':
         return '<div class="drop" id="gDrop"><div class="plus">＋</div><div class="t">Add photos or videos</div><div class="s">tap to choose · or drag them here</div></div>'+
-               '<input type="file" id="gInput" accept="image/*,video/*" multiple hidden><div class="thumbs" id="gThumbs"></div>'+
-               '<div class="plusnote" id="gNote">thirty photos are free · more photos, and any video, are part of <span class="ptag">plus</span></div>';
+               '<input type="file" id="gInput" accept="image/*,video/mp4,video/webm,video/quicktime" multiple hidden><div class="thumbs" id="gThumbs"></div>'+
+               '<div class="plusnote" id="gNote">12 photos are free · every photo beyond twelve, and any video, are part of <span class="ptag">plus</span></div>';
       case 'slug':
         return '<div class="addr-cards">'+
                '<div class="acard on" id="acardFree" role="button" tabindex="0"><span class="ah"><span class="dot"></span>included free</span>'+
@@ -822,6 +830,8 @@ var ENGINE=(function(){
       if(planIntent==='plus'){var h=s.querySelector('#slugHold');if(h)h.textContent='included with your plus plan · yours the moment we seal'}
       pickAddr(A.addressChoice);
     }
+    if(st.type==='photo'&&A.photoURL){var stone=s.querySelector('#stone');if(stone){stone.style.backgroundImage='url('+A.photoURL+')';stone.classList.add('has')}}
+    if(st.type==='gallery')renderG();
     if(st.type==='final'){buildFinal()}
   }
   function genRand(force){
@@ -856,7 +866,7 @@ var ENGINE=(function(){
   var LOCKCOPY={
     voice:{b:'Voice recordings live on Plus pages. Add it now · it is kept safe either way, and you decide at the end.',ok:'Add the recording',no:'maybe later'},
     addr:{b:'Their exact name is part of Plus. Reserve it now, free of charge. Your page begins on the free address until you choose.',ok:'Reserve their name',no:'keep the free address'},
-    photos:{b:'Your first thirty photos are free. The ones beyond thirty are part of Plus. All of them are kept safe either way.',ok:'Keep them all · decide at the end',no:''},
+    photos:{b:'Your first 12 photos are free. Every photograph beyond twelve is part of Plus. All of them are kept safe either way.',ok:'Keep them all · decide at the end',no:''},
     video:{b:'Video lives on Plus pages. It is kept safe either way, and you decide at the end.',ok:'Keep it · decide at the end',no:''}
   };
   var plockOpen=false,plockOk=null,plockNo=null;
@@ -1022,7 +1032,7 @@ var ENGINE=(function(){
       }else{kl.style.display='none'}
     }
     var custom=esc(A.slugCustom||slugify(A.fullName||'')||'their-name');
-    var freePhotos=photos>30?('the first thirty of your '+photos+' photos'):(photos>0?('all '+photos+' of your photos · room for thirty'):'up to thirty photos');
+    var freePhotos=photos>12?('the first 12 of your '+photos+' photos'):(photos>0?('all '+photos+' of your photos · room for 12'):'up to 12 photos');
     var plusPhotos=photos>0?('every one of your '+photos+' photos, and video'):'unlimited photos and video';
     var plusVoice=A.voiceName?'the voice you kept, playing':'audio memories and voicemails';
     var plusDesign=A.lovedThings.length?('a design grown from '+esc(A.lovedThings.slice(0,2).join(' & ').toLowerCase())):'a design grown from what they loved';
@@ -1060,6 +1070,8 @@ var ENGINE=(function(){
     document.getElementById('finUrl').textContent=realSlug+'.imissyoumemorial.com';
     var fo=document.getElementById('finOpen');
     if(fo)fo.href=(SEAL&&SEAL.path)||('/sites/'+realSlug);
+    var fst=document.getElementById('finStudy');
+    if(fst)fst.href=(SEAL&&SEAL.tributeId)?('/dashboard/tributes/'+SEAL.tributeId):'/dashboard';
     var fn=(A.fullName||'').trim();
     document.getElementById('finCap').textContent='eighteen flowers laid'+(fn?' for '+fn:' · the garland is full');
     var st=document.getElementById('finStone'),init=document.getElementById('fsInit');
@@ -1176,7 +1188,7 @@ var ENGINE=(function(){
     var st=document.getElementById('stone');
     A.photoURL=URL.createObjectURL(f);
     st.style.backgroundImage='url('+A.photoURL+')';
-    st.classList.add('has');A.photo=true;
+    st.classList.add('has');A.photo=true;if(document.getElementById('gThumbs'))renderG();persist();
     upload(f).then(function(u){if(u){A.photoUpURL=u;persist()}});
     var years=(yr(A.birth)&&yr(A.passing))?yr(A.birth)+' – '+yr(A.passing):'';
     document.getElementById('stoneName').innerHTML='<b>'+esc(A.fullName||'Their name')+'</b><span>'+years+'</span>';
@@ -1306,37 +1318,40 @@ var ENGINE=(function(){
     grid.insertBefore(b,other);refreshTiles();
   }
   var gFiles=[];
+  function syncGalleryUploads(){
+    A.galleryUploads=gFiles.filter(function(f){return !!f.__url}).map(function(f){return {url:f.__url,type:f.type||'image/jpeg',name:f.name||'kept media'}})
+  }
   function galleryPicked(input){
     var fs=Array.prototype.slice.call(input.files);
-    fs.forEach(function(f){upload(f).then(function(u){if(u){f.__url=u;persist()}})});
+    fs.forEach(function(f){upload(f).then(function(u){if(u){f.__url=u;syncGalleryUploads();renderG();persist()}})});
     gFiles=gFiles.concat(fs);renderG();input.value='';
   }
   function renderG(){
-    var c=document.getElementById('gThumbs');c.innerHTML='';
+    var c=document.getElementById('gThumbs');if(!c)return;c.innerHTML='';
     gFiles.forEach(function(f,i){
       var d=document.createElement('div');d.className='thumb';
-      if(f.type.indexOf('video')===0){d.innerHTML='<div class="vid">▶</div>'}
-      else{var im=document.createElement('img');im.src=URL.createObjectURL(f);d.appendChild(im)}
+      if((f.type||'').indexOf('video')===0){d.innerHTML='<div class="vid">▶</div>'}
+      else{var im=document.createElement('img');im.src=f.__url||URL.createObjectURL(f);d.appendChild(im)}
       var x=document.createElement('button');x.type='button';x.className='x';x.textContent='×';
-      x.addEventListener('click',function(){gFiles.splice(i,1);renderG()});
+      x.addEventListener('click',function(){gFiles.splice(i,1);syncGalleryUploads();renderG();persist()});
       d.appendChild(x);c.appendChild(d);
     });
     A.galleryCount=gFiles.length;
     var imgs=0,vids=0;
-    gFiles.forEach(function(f){if(f.type.indexOf('video')===0)vids++;else imgs++});
-    A.galleryImgs=imgs;A.galleryVids=vids;
+    gFiles.forEach(function(f){if((f.type||'').indexOf('video')===0)vids++;else imgs++});
+    A.galleryImgs=imgs;A.galleryVids=vids;syncGalleryUploads();
     var note=document.getElementById('gNote');
     if(note){
-      var over=imgs>30?imgs-30:0;
-      var pct=Math.min(imgs,30)/30*100;
-      var txt;
-      if(imgs===0&&vids===0)txt='thirty photos are free · more photos, and any video, are part of <span class="ptag">plus</span>';
-      else if(over===0&&imgs>24)txt=imgs+' of 30 free photos · '+(30-imgs)+' free slot'+((30-imgs)===1?'':'s')+' left';
-      else if(over===0)txt=imgs+' of 30 free photos';
-      else txt='30 show on free · '+over+' beyond are part of <span class="ptag">plus</span>';
-      if(vids>0)txt+=' · '+vids+' video'+(vids===1?'':'s')+' · <span class="ptag">plus</span>';
+      var freeCap=A.photo?11:12;
+      var over=imgs>freeCap?imgs-freeCap:0;
+      var pct=Math.min(imgs,freeCap)/freeCap*100;
+      var totalPhotos=imgs+(A.photo?1:0),txt;
+      if(imgs===0&&vids===0)txt='12 photos are free · every photo beyond twelve, and any video, are part of <span class="ptag">plus</span>';
+      else if(over===0)txt=totalPhotos+' of 12 free photos · '+(freeCap-imgs)+' free slot'+((freeCap-imgs)===1?'':'s')+' left';
+      else txt='12 show on free · '+over+' beyond are part of <span class="ptag">plus</span>';
+      if(vids>0)txt+=' · '+vids+' video'+(vids===1?'':'s')+' · kept for <span class="ptag">plus</span>';
       note.innerHTML=(imgs>0?'<div class="pmeter'+(over?' full':'')+'"><i style="width:'+pct+'%"></i></div>':'')+txt;
-      if(over>0){plusAdd('photos',over+' photo'+(over===1?'':'s')+' beyond thirty');showPlusLock('photos')}
+      if(over>0){plusAdd('photos',over+' photo'+(over===1?'':'s')+' beyond twelve');showPlusLock('photos')}
       else plusRemove('photos');
       if(vids>0){plusAdd('video',vids+' video'+(vids===1?'':'s'));showPlusLock('video')}
       else plusRemove('video');
@@ -1357,7 +1372,19 @@ var ENGINE=(function(){
   }
   PROGRESS.set(0);
 
-  return {start:start};
+  function draftInfo(){
+    try{var d=JSON.parse(localStorage.getItem('imy-letter')||'null');if(!d||!d.A||typeof d.cur!=='number')return null;return {cur:d.cur,name:d.A.fullName||'',ts:d.ts||0}}catch(e){return null}
+  }
+  function startFresh(){try{localStorage.removeItem('imy-letter')}catch(e){}location.reload()}
+  return {start:start,draftInfo:draftInfo,startFresh:startFresh};
+})();
+(function(){
+  var d=ENGINE.draftInfo&&ENGINE.draftInfo();if(!d||d.cur<1)return;
+  var box=document.getElementById('draftReturn'),line=document.getElementById('draftReturnLine'),begin=document.getElementById('beginLetter'),restart=document.getElementById('draftRestart');
+  if(line)line.textContent=(d.name?d.name+' · ':'')+'question '+Math.min(d.cur+1,18)+' of 18 waits where you left it.';
+  if(box)box.hidden=false;
+  if(begin)begin.textContent='Continue the letter';
+  if(restart)restart.onclick=function(){if(confirm('Start this letter again? The saved draft on this device will rest.'))ENGINE.startFresh()};
 })();
 </script>
 
@@ -1382,7 +1409,7 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .body{margin-bottom:16px}
   .fgroup{margin-bottom:16px}
   .grid2{gap:12px}
-  textarea{min-height:128px}
+  textarea{min-height:150px;line-height:28px;padding-top:7px;background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(168,124,95,.16) 27px,rgba(168,124,95,.16) 28px)}
   #welcome{padding-top:6px}
   #welcome .hand{margin-bottom:14px}
   #welcome h1{margin-bottom:12px}
@@ -1391,6 +1418,13 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .wrow{padding:10px 12px;font-size:.85rem}
   #welcome .foot{margin-top:16px}
   .nav{gap:10px}
+  .fin-inner{justify-content:flex-start;padding:30px 18px calc(40px + env(safe-area-inset-bottom,0px))}
+  .finwreath{width:min(230px,66vw)}
+  .fin-hand{margin-top:12px}
+  .fin-msg .cap{margin-top:10px}
+  .fin-msg .url{max-width:100%;box-sizing:border-box}
+  .fin-actions{display:grid;width:min(100%,330px);gap:10px;margin:0 auto}
+  .fin-actions .btn{width:100%;box-sizing:border-box}
 }
 /* fix 3 · the plus sheet gets a real exit (the letter waits underneath, nothing lost) */
 .ckx{position:absolute;top:8px;right:8px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;background:rgba(251,246,234,.92);border:1px solid rgba(168,124,95,.3);border-radius:50%;font-size:22px;color:#5A4F45;cursor:pointer;z-index:6}

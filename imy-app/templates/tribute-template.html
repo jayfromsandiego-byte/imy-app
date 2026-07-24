@@ -619,7 +619,7 @@ body.a11y-contrast .motifbg{display:none}
    introduces themselves ON TOP of the gift, never invisibly beneath it */
 .inv-trial{display:inline-block;margin-top:12px;background:none;border:none;cursor:pointer;font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--terra);text-decoration:underline;text-underline-offset:3px}
 .inv-trial:disabled{opacity:.6;cursor:default}
-.mem-ph{display:block;width:100%;max-height:190px;object-fit:cover;border-radius:8px;margin:10px 0 4px;border:1px solid rgba(201,165,114,.45)}
+.mem-ph,.mem-vid{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:8px;margin:10px 0 4px;border:1px solid rgba(201,165,114,.45);background:#241711}
 body[data-tier="plus"] .stone{box-shadow:0 50px 120px -36px rgba(60,38,10,.6),0 0 0 9px rgba(201,165,114,.30),0 0 46px rgba(201,165,114,.26),0 10px 26px rgba(60,38,10,.16)}
 
 .idm .human{margin:12px 0 16px}
@@ -1155,7 +1155,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="addingas" id="addingAs"></div>
           <p class="safekeep" id="safekeepLine" hidden>Write it now · your words are kept safe. They will join the wall the moment someone opens it for everyone.</p>
         <textarea id="memInput" placeholder="What do you remember?"></textarea>
-        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
+        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a short video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
         <div class="chatbox" id="chatbox" style="display:none">
           <div class="ch-h">Tell me one true thing about Eleanor, and we will shape it together.<span class="mono">Closer to a friend than a form · it never writes for you</span></div>
           <div class="ch-b" id="chatBody"><div class="cmsg bot">What is one small thing you don&#39;t want to forget about her?</div></div>
@@ -1181,8 +1181,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     <div class="view on" id="view-board">
       <div class="boardtabs" id="boardTabs"></div>
+      <div class="hint-open">Choose a board, then open a photograph, note, or video.</div>
       <div class="boardstage" id="boardStage"></div>
-      <div class="hint-open">Open any piece · titles unfold ↗</div>
     </div>
 
     <div class="view" id="view-shelf">
@@ -1550,6 +1550,7 @@ function memCard(m){
    +'<div class="mem-text">&ldquo;'+m.tx+'&rdquo;</div>'
    +(m.ph?'<img class="mem-ph" src="'+m.ph+'" alt="A photograph left with this memory" loading="lazy"/>':'')
    +(m.au?'<div class="vk" role="group"><audio preload="none" src="'+m.au+'" aria-label="A voice memory"></audio><button type="button" class="vk-play" aria-label="Play the voice memory">▶</button><div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div><div class="vk-meta"><span class="vk-time">0:00</span><span class="vk-cap">a voice, kept</span></div></div></div>':'')
+   +(m.vi?'<video class="mem-vid" controls playsinline preload="metadata" src="'+m.vi+'" aria-label="A video memory"></video>':'')
    +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"'+(m.id?' data-id="'+m.id+'"':'')+'><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
    +'<div class="cdrawer">'+(cms||'<div class="c1" style="color:var(--ink-soft)">Be the first to leave a word.</div>')
    +'<div class="addc2"><input placeholder="Leave a word&hellip;"/><button type="button">Post</button></div></div></div>'}
@@ -1604,6 +1605,29 @@ if(pBtn&&pFile){
     }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
     pFile.value=''});
 }
+/* one short visitor video · always moderated; Free keeps it resting, Plus may publish it */
+var VIDEO={url:''};
+var vidBtn=document.getElementById('videoAdd'),vidFile=document.getElementById('videoFile');
+function uploadVisitorVideo(f){
+  return fetch('/api/upload/presign',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({filename:f.name||'memory-video.mp4',contentType:f.type||'video/mp4'})})
+    .then(function(r){return r.json()}).then(function(j){
+      if(j&&j.ok&&j.uploadUrl&&j.publicUrl){return fetch(j.uploadUrl,{method:'PUT',headers:{'Content-Type':f.type||'video/mp4'},body:f}).then(function(r){if(!r.ok)throw 0;return j.publicUrl})}
+      if(f.size>25*1024*1024)throw new Error('too_large');
+      var fd=new FormData();fd.append('files',f);return fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(x){if(x&&x.ok&&x.urls&&x.urls[0])return x.urls[0];throw 0})
+    })
+}
+if(vidBtn&&vidFile){
+  vidBtn.onclick=function(){
+    if(!T){say('On a live memorial, this attaches a real video and sends it to the family first. This is the demo.',false);return}
+    requireId(function(){vidFile.click()})};
+  vidFile.addEventListener('change',function(){
+    var f=vidFile.files&&vidFile.files[0];if(!f)return;
+    if(f.size>40*1024*1024){say('Keep a visitor video under 40MB. A shorter clip will arrive more gently.',false);vidFile.value='';return}
+    vidBtn.disabled=true;vidBtn.textContent='Keeping the video safe…';
+    uploadVisitorVideo(f).then(function(u){VIDEO.url=u;vidBtn.disabled=false;vidBtn.textContent='✓ A video is attached · change';say('The video is attached. It will wait for the family before it appears.',false)})
+      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn&rsquo;t upload. MP4 under 25MB works on every storage path.',false)});
+    vidFile.value=''});
+}
 var VOICE={url:''};
 var vBtn=document.getElementById('voiceAdd'),vFile=document.getElementById('voiceFile');
 if(vBtn&&vFile){
@@ -1631,12 +1655,13 @@ document.getElementById('shareBtn').onclick=function(){
       /* production: memories go to the family first · every word waits for their yes */
       var btn=document.getElementById('shareBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Keeping it safe…';
       fetch('/api/tribute/'+SLUG+'/memory',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',email:ID.em||'',audioUrl:VOICE.url||'',photoUrl:PHOTO.url||''})})
+        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',email:ID.em||'',audioUrl:VOICE.url||'',photoUrl:PHOTO.url||'',videoUrl:VIDEO.url||''})})
       .then(function(r){return r.json()}).then(function(j){
         btn.disabled=false;btn.textContent=old;
         if(j&&j.ok){document.getElementById('memInput').value='';
           VOICE.url='';if(vBtn)vBtn.textContent='＋ Add a voice memory';
           PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photograph';
+          VIDEO.url='';if(vidBtn)vidBtn.textContent='＋ Add a short video';
           say('Kept, '+ID.fn+'. Your memory goes to the family first · it joins the wall the moment they welcome it in.',false)}
         else say('That didn&rsquo;t save. Give it a moment and try again · nothing you wrote is lost.',false)})
       .catch(function(){btn.disabled=false;btn.textContent=old;
@@ -1759,6 +1784,7 @@ var open=-1;
 function openable(i){var p=FLAT[i];return p&&!(p.plus&&body.dataset.tier==='free')}
 function openLb(i){var p=FLAT[i];if(!p)return;open=i;
   if(p.t==='photo')M.innerHTML='<img src="'+p.img+'" alt=""/>';
+  else if(p.t==='video'&&p.src)M.innerHTML='<video controls playsinline preload="metadata" src="'+p.src+'" poster="'+(p.img||'')+'" style="width:100%;height:100%;object-fit:contain;background:#171009"></video>';
   else if(p.t==='video')M.innerHTML='<img src="'+p.img+'" alt="" style="opacity:.7"/><div class="bigplay"></div>';
   else if(p.t==='voice')M.innerHTML='<div class="bigplay"></div><div class="mono" style="position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:.14em;color:#d8bd93">'+p.meta+'</div>';
   else M.innerHTML='<div class="bignote">“'+p.tx+'”</div>';

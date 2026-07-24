@@ -11,7 +11,7 @@ const SELECT =
   "tribute_timeline(id,year,title,body,sort,chapter_id,deleted_at)," +
   "tribute_photos(id,url,caption,sort,deleted_at)," +
   "tribute_videos(id,url,caption,sort,kind,deleted_at)," +
-  "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,hearts,created_at,deleted_at," +
+  "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,video_url,hearts,created_at,deleted_at," +
   "tribute_memory_comments(author_name,relation,body,status,created_at,deleted_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_audio(url,kind)," +
@@ -125,6 +125,7 @@ function rowToTribute(r: any): Tribute {
         rel: m.relation || "",
         hearts: m.hearts ?? 0,
         audio: m.audio_url || undefined,
+        video: m.video_url || undefined,
         photos: m.photo_url ? [m.photo_url] : undefined,
         comments: (m.tribute_memory_comments || [])
           .filter((c: any) => c.status === "approved" && !c.deleted_at)

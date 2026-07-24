@@ -10,6 +10,12 @@ async function ownsTribute(db: any, tributeId: string, user: any) {
   return data.owner_id === user.id || data.owner_email === user.email;
 }
 
+async function ownsPlusTribute(db: any, tributeId: string, user: any) {
+  const { data } = await db.from("tributes").select("owner_id,owner_email,tier").eq("id", tributeId).is("deleted_at", null).maybeSingle();
+  if (!data || (data.owner_id !== user.id && data.owner_email !== user.email)) return false;
+  return data.tier === "plus" || data.tier === "heirloom";
+}
+
 export async function saveTribute(formData: FormData) {
   const user = await getUser();
   if (!user) return;
@@ -43,6 +49,24 @@ export async function saveTribute(formData: FormData) {
   await db.from("tributes").update(upd).eq("id", id);
   revalidatePath(`/dashboard/tributes/${id}`);
   revalidatePath("/dashboard");
+}
+
+export async function retryPaidFilm(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const db = supabaseAdmin();
+  if (!(await ownsPlusTribute(db, tributeId, user))) return;
+  const { error } = await db.rpc("ensure_full_film_for_paid", { p_tribute_id: tributeId });
+  if (!error) {
+    await db.from("orders")
+      .update({ fulfillment_status: "processing", fulfillment_error: null })
+      .eq("tribute_id", tributeId)
+      .eq("status", "paid")
+      .in("fulfillment_status", ["needs_attention", "waiting_on_family"]);
+  }
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+  revalidatePath("/dashboard/billing");
 }
 
 export async function moderateMemory(formData: FormData) {
@@ -281,7 +305,7 @@ export async function signVideoUpload(tributeId: string, filename: string, type:
   const user = await getUser();
   if (!user) return { ok: false as const, message: "Please sign in again." };
   const db = supabaseAdmin();
-  if (!(await ownsTribute(db, tributeId, user))) return { ok: false as const, message: "Not yours to change." };
+  if (!(await ownsPlusTribute(db, tributeId, user))) return { ok: false as const, message: "Video upload is part of Plus." };
   if (!VIDEO_TYPES.includes(type)) return { ok: false as const, message: "MP4, WebM, or MOV, please." };
   if (size > VIDEO_MAX) return { ok: false as const, message: "Keep a tape under 50MB — MP4 at phone quality holds a couple of minutes." };
   const safe = (filename || "video").replace(/[^\w.\-]+/g, "_").slice(-60);
@@ -295,7 +319,7 @@ export async function addUploadedVideo(tributeId: string, path: string, caption:
   const user = await getUser();
   if (!user) return { ok: false as const };
   const db = supabaseAdmin();
-  if (!(await ownsTribute(db, tributeId, user))) return { ok: false as const };
+  if (!(await ownsPlusTribute(db, tributeId, user))) return { ok: false as const };
   if (!path.startsWith(`videos/${tributeId}/`)) return { ok: false as const };
   const { data: pub } = db.storage.from("tribute-media").getPublicUrl(path);
   if (!pub?.publicUrl) return { ok: false as const };
@@ -311,7 +335,7 @@ export async function addVideoEmbed(formData: FormData) {
   if (!user) return;
   const tributeId = String(formData.get("tributeId") || "");
   const db = supabaseAdmin();
-  if (!(await ownsTribute(db, tributeId, user))) return;
+  if (!(await ownsPlusTribute(db, tributeId, user))) return;
   const raw = String(formData.get("url") || "").trim().slice(0, 300);
   // Strictly parsed: only a recognized YouTube/Vimeo id is kept, rebuilt clean.
   const yt = raw.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,20})/);

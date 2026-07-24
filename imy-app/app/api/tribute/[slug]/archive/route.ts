@@ -38,7 +38,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     .select(
       "id,slug,loved_one_name,born_on,died_on,place,tier,owner_id,owner_email,candle_count,flower_count," +
         "tribute_photos(id,url,caption,sort,deleted_at)," +
-        "tribute_memories(author_name,relation,body,status,photo_url,audio_url,created_at,deleted_at)," +
+        "tribute_memories(author_name,relation,body,status,photo_url,audio_url,video_url,created_at,deleted_at)," +
         "tribute_audio(url,kind)"
     )
     .eq("slug", params.slug)
@@ -94,24 +94,26 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
   // Voices: theirs, and every voice memory.
   let voiceRef: string | null = null;
   if (voice?.url) voiceRef = await pull(voice.url, `voices/their-voice.${extOf(voice.url, "mp3")}`);
-  const memRefs: { photo: string | null; audio: string | null }[] = [];
+  const memRefs: { photo: string | null; audio: string | null; video: string | null }[] = [];
   for (let i = 0; i < memories.length; i++) {
     const m = memories[i];
     const photo = m.photo_url ? await pull(m.photo_url, `memories/photographs/memory-${String(i + 1).padStart(3, "0")}.${extOf(m.photo_url, "jpg")}`) : null;
     const audio = m.audio_url ? await pull(m.audio_url, `voices/memory-${String(i + 1).padStart(3, "0")}.${extOf(m.audio_url, "mp3")}`) : null;
-    memRefs.push({ photo, audio });
+    const video = m.video_url ? await pull(m.video_url, `memories/videos/memory-${String(i + 1).padStart(3, "0")}.${extOf(m.video_url, "mp4")}`) : null;
+    memRefs.push({ photo, audio, video });
   }
 
   // The cover — cream paper, their name, everything indexed.
   const dates = [t.born_on, t.died_on].filter(Boolean).map((d: any) => String(d).slice(0, 4)).join(" · ");
   const memHtml = memories
     .map((m: any, i: number) => {
-      const r = memRefs[i] || { photo: null, audio: null };
+      const r = memRefs[i] || { photo: null, audio: null, video: null };
       return `<div class="mem">
         <div class="who">${esc(m.author_name || "A friend")}${m.relation ? ` · ${esc(m.relation)}` : ""}</div>
         <div class="words">“${esc(m.body || "")}”</div>
         ${r.photo ? `<div class="ref">photograph · <a href="../${r.photo}">${r.photo.split("/").pop()}</a></div>` : ""}
         ${r.audio ? `<div class="ref">their voice · <a href="../${r.audio}">${r.audio.split("/").pop()}</a></div>` : ""}
+        ${r.video ? `<div class="ref">video memory · <a href="../${r.video}">${r.video.split("/").pop()}</a></div>` : ""}
       </div>`;
     })
     .join("\n");
