@@ -59,6 +59,27 @@ for _source in (
     if _host:
         TRUSTED_MEDIA_HOSTS.add(_host.rstrip(".").lower())
 
+# The web app stores uploaded photographs/videos on Vercel Blob
+# (*.public.blob.vercel-storage.com) whenever R2 is not configured — its /api/upload
+# prefers R2 and falls back to Blob — so a family's real photos legitimately live on
+# a per-store Blob subdomain we can't enumerate ahead of time. Trust those by suffix,
+# mirroring the web app's own upload allow-list (lib memory route), so a paid film
+# never fails as "untrusted-media-host" for a photograph the app itself accepted.
+# The https / no-credentials / public-IP guards below still run on every fetch.
+TRUSTED_MEDIA_SUFFIXES = {
+    s.strip().lower()
+    for s in os.environ.get(
+        "ALLOWED_MEDIA_HOST_SUFFIXES", ".public.blob.vercel-storage.com"
+    ).split(",")
+    if s.strip()
+}
+
+
+def _host_trusted(host):
+    if host in TRUSTED_MEDIA_HOSTS:
+        return True
+    return any(host == sfx.lstrip(".") or host.endswith(sfx) for sfx in TRUSTED_MEDIA_SUFFIXES)
+
 
 # ---------------- helpers ----------------
 
@@ -92,7 +113,7 @@ def validate_media_url(url):
     if parsed.scheme != "https" or parsed.username or parsed.password:
         raise ValueError("unsafe-media-url")
     host = (parsed.hostname or "").rstrip(".").lower()
-    if host not in TRUSTED_MEDIA_HOSTS:
+    if not _host_trusted(host):
         raise ValueError("untrusted-media-host")
     if not _public_host(host):
         raise ValueError("unsafe-media-host")

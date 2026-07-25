@@ -76,6 +76,20 @@ class MediaSafetyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "untrusted-media-host"):
             render_film.validate_media_url("https://attacker.example/photo.jpg")
 
+    def test_vercel_blob_host_is_trusted_by_suffix(self):
+        # The app uploads real family photos to a per-store Vercel Blob subdomain;
+        # the worker must trust it (with the public-IP guard still applied) so a paid
+        # film does not fail as "untrusted-media-host" for a legitimately kept photo.
+        with patch.object(render_film, "TRUSTED_MEDIA_SUFFIXES", {".public.blob.vercel-storage.com"}), \
+             patch("render_film.socket.getaddrinfo", return_value=[(None, None, None, None, ("76.76.21.21", 0))]):
+            render_film.validate_media_url("https://avj04lmqxwpxhc5i.public.blob.vercel-storage.com/tributes/x.jpg")
+
+    def test_lookalike_blob_host_is_still_rejected(self):
+        # A host that only embeds the trusted domain as a prefix must not slip through.
+        with patch.object(render_film, "TRUSTED_MEDIA_SUFFIXES", {".public.blob.vercel-storage.com"}):
+            with self.assertRaisesRegex(ValueError, "untrusted-media-host"):
+                render_film.validate_media_url("https://public.blob.vercel-storage.com.attacker.example/x.jpg")
+
     def test_probe_streams_survive_missing_codec_type(self):
         streams = [
             {"codec_name": "h264", "width": 1920, "height": 1080, "pix_fmt": "yuv420p"},
