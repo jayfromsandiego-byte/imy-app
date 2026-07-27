@@ -6,11 +6,11 @@
 # away, renders the real locked template through it, and asserts the render
 # contract: identity safety (no Eleanor leaks, pronouns), tier behavior (free
 # wall cap, resting voices), the bulletin board, hearts, comments, and voice
-# wiring. It then chains the film room, the paid contract, and the mobile-review
-# contracts. Run it before every merge that touches renderTribute, tributesData,
-# or the tribute template.
+# wiring. It then chains the film room, the paid contract, the mobile-review
+# contracts, and the LB-1 stored-XSS regression. Run it before every merge that
+# touches renderTribute, tributesData, or the tribute template.
 #
-# All four suites always run — a failure in one no longer masks the rest (the
+# All five suites always run — a failure in one no longer masks the rest (the
 # old `set -e` aborted the chain after the first failing suite and hid later
 # failures). The setup is still fail-fast; the suites aggregate into one exit.
 set -e
@@ -28,4 +28,6 @@ IMY_REPO_ROOT="$ROOT" GEN="$WORK/renderTribute.gen.ts" node "$ROOT/ops/qa/film-s
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/film-fulfillment.test.mjs" || rc=1
 # Mobile review contracts: twelve-photo cap, media moderation, navigation, and recovery.
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/agnesy-review.test.mjs" || rc=1
+# LB-1: a stranger's words stay words — every visitor field is escaped at its innerHTML seam.
+IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/lb1-xss.test.mjs" || rc=1
 exit $rc

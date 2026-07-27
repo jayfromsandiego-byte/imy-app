@@ -1426,6 +1426,8 @@ function cu(el){var t=+el.getAttribute('data-count'),s=null;function st(ts){if(!
 document.querySelectorAll('[data-count]').forEach(cu);
 /* ===== production data · injected by the server as window.__TRIBUTE__ ; the inline demo keeps the standalone preview alive ===== */
 var T=window.__TRIBUTE__||null;
+/* a stranger's words are kept in their own words, not their own tags — every visitor field is entity-escaped right at the innerHTML seam */
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var SLUG=(T&&T.slug)||'example';
 if(T&&T.fwt){wn=Number(T.fwt)||0;if(wreathCt)wreathCt.textContent=wn}
 /* gallery · family-curated, paged (scales to 50 without the scroll) */
@@ -1544,10 +1546,10 @@ var curG='all',memPage=0,ID=null;
 try{var _idKeep=JSON.parse(localStorage.getItem('imy-id')||'null');if(_idKeep&&_idKeep.fn&&_idKeep.ln&&_idKeep.em)ID=_idKeep}catch(e){}
 GROUPS.forEach(function(g,i){var b=document.createElement('button');b.className='memtab'+(i===0?' on':'');var n=g[0]==='all'?MEMS.length:MEMS.filter(function(m){return m.g===g[0]}).length;b.innerHTML=g[1]+' <b>'+n+'</b>';b.onclick=function(){document.querySelectorAll('.memtab').forEach(function(x){x.classList.remove('on')});b.classList.add('on');curG=g[0];memPage=0;renderMems()};memTabs.appendChild(b)});
 function memCard(m){
-  var cms=(m.cm||[]).map(function(x){return '<div class="c1"><b>'+x[0]+'</b><span class="r">'+x[1]+'</span><br>'+x[2]+'</div>'}).join('');
+  var cms=(m.cm||[]).map(function(x){return '<div class="c1"><b>'+esc(x[0])+'</b><span class="r">'+esc(x[1])+'</span><br>'+esc(x[2])+'</div>'}).join('');
   return '<div class="mem-card'+(m.jj?' enter':'')+'"'+(m.id?' data-mid="'+m.id+'"':'')+'><span class="pin2"></span>'
-   +'<div class="mem-head"><div class="mem-av">'+m.av+'</div><div><div class="mem-nm">'+m.nm+'</div><div class="mem-rel">'+m.rel+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
-   +'<div class="mem-text">&ldquo;'+m.tx+'&rdquo;</div>'
+   +'<div class="mem-head"><div class="mem-av">'+esc(m.av)+'</div><div><div class="mem-nm">'+esc(m.nm)+'</div><div class="mem-rel">'+esc(m.rel)+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
+   +'<div class="mem-text">&ldquo;'+esc(m.tx)+'&rdquo;</div>'
    +(m.ph?'<img class="mem-ph" src="'+m.ph+'" alt="A photograph left with this memory" loading="lazy"/>':'')
    +(m.au?'<div class="vk" role="group"><audio preload="none" src="'+m.au+'" aria-label="A voice memory"></audio><button type="button" class="vk-play" aria-label="Play the voice memory">▶</button><div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div><div class="vk-meta"><span class="vk-time">0:00</span><span class="vk-cap">a voice, kept</span></div></div></div>':'')
    +(m.vi?'<video class="mem-vid" controls playsinline preload="metadata" src="'+m.vi+'" aria-label="A video memory"></video>':'')
@@ -1574,13 +1576,13 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
           body:JSON.stringify({memoryId:mid,name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:t,company:'',email:ID.em||''})})
         .then(function(r){return r.json()}).then(function(j){bp.disabled=false;
           if(j&&j.ok){var d=document.createElement('div');d.className='c1';d.style.opacity='.62';
-            d.innerHTML='<b>'+ID.fn+'</b><span class="r">waiting for the family</span><br>'+t.replace(/</g,'&lt;');
+            d.innerHTML='<b>'+esc(ID.fn)+'</b><span class="r">waiting for the family</span><br>'+t.replace(/</g,'&lt;');
             bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value='';
             say('Kept, '+ID.fn+'. Your words go to the family first &mdash; they join the page the moment they welcome them in.',false)}
           else say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)})
         .catch(function(){bp.disabled=false;say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)});
         return}
-      var d=document.createElement('div');d.className='c1';d.innerHTML='<b>'+ID.fn+'</b><span class="r">'+ID.relLabel+'</span><br>'+t.replace(/</g,'&lt;');bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value=''})})});
+      var d=document.createElement('div');d.className='c1';d.innerHTML='<b>'+esc(ID.fn)+'</b><span class="r">'+esc(ID.relLabel)+'</span><br>'+t.replace(/</g,'&lt;');bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value=''})})});
 }
 renderMems();
 document.getElementById('memNext').onclick=function(){memPage++;renderMems()};
@@ -1709,7 +1711,7 @@ var idm=document.getElementById('idm'),idCb=null;
 var REL_LABEL={family:'family',friends:'friend',neighbours:'neighbor',students:'her student',friends2:'colleague',friends3:'a friend'};
 function requireId(cb){if(ID){cb&&cb();return}idCb=cb||null;idm.classList.add('open');document.getElementById('fnIn').focus()}
 function setAddingAs(){var el=document.getElementById('addingAs');if(!el)return;
-  el.innerHTML=ID?'<span>Adding as <b>'+ID.fn+' '+ID.ln[0].toUpperCase()+'. · '+ID.relLabel+'</b></span><button id="idChange">change</button>':'<span>First, tell the family who this is from</span><button id="idChange">add your name</button>';
+  el.innerHTML=ID?'<span>Adding as <b>'+esc(ID.fn)+' '+esc(ID.ln[0].toUpperCase())+'. · '+esc(ID.relLabel)+'</b></span><button id="idChange">change</button>':'<span>First, tell the family who this is from</span><button id="idChange">add your name</button>';
   document.getElementById('idChange').onclick=function(){ID=null;idm.classList.add('open')}}
 document.getElementById('idGo').onclick=function(){
   var fn=document.getElementById('fnIn').value.trim(),ln=document.getElementById('lnIn').value.trim(),em=(document.getElementById('emIn')?document.getElementById('emIn').value.trim():''),rv=document.getElementById('relSel').value,rt=document.getElementById('relTxt').value.trim(),hu=document.getElementById('humanChk').checked;
@@ -1769,10 +1771,10 @@ function setB(i){curB=(i+BOARDS.length)%BOARDS.length;renderBTabs();stageB.inner
     var el=document.createElement('div');
     if(p.t==='add'){el.className='piece';el.style.setProperty('--r','1deg');el.innerHTML='<div class="addpiece">＋ pin to this board<br><span style="font-size:13px;opacity:.75">your name travels with it</span></div>';el.tabIndex=0;el.onclick=function(){requireId(function(){say('Signed in as '+ID.fn+' · pin a photo, a note, or a tape to this board and it carries your name.',false)})};row.appendChild(el);return}
     el.className='piece'+(p.plus?' isplus':'');el.tabIndex=0;el.style.setProperty('--r',p.r+'deg');
-    if(p.t==='photo')el.innerHTML='<span class="plock">Plus</span><figure class="print" style="margin:0"><span class="pin"></span><img src="'+p.img+'" alt=""/><div class="cap">'+p.ttl+'</div></figure>';
-    else if(p.t==='note')el.innerHTML='<span class="plock">Plus</span><div class="bnote"><span class="pin3"></span><div class="bt">'+p.ttl+'</div><div class="bx">'+p.tx+'</div><span class="more">read the whole passage →</span></div>';
-    else if(p.t==='video')el.innerHTML='<span class="plock">Plus</span><div class="vidp"><span class="pin3"></span><img src="'+p.img+'" alt=""/><div class="playtri2"></div><span class="vbadge2">'+p.dur+'</span></div>';
-    else el.innerHTML='<span class="plock">Plus</span><div class="cassp" style="position:relative;width:190px"><span class="pin3"></span><div class="cassette" style="padding:11px 13px"><div class="pl"></div><div><div class="nm" style="font-size:12px">'+p.ttl+'</div><div class="mt">'+p.meta+'</div></div></div>'+'</div>';
+    if(p.t==='photo')el.innerHTML='<span class="plock">Plus</span><figure class="print" style="margin:0"><span class="pin"></span><img src="'+p.img+'" alt=""/><div class="cap">'+esc(p.ttl)+'</div></figure>';
+    else if(p.t==='note')el.innerHTML='<span class="plock">Plus</span><div class="bnote"><span class="pin3"></span><div class="bt">'+esc(p.ttl)+'</div><div class="bx">'+esc(p.tx)+'</div><span class="more">read the whole passage →</span></div>';
+    else if(p.t==='video')el.innerHTML='<span class="plock">Plus</span><div class="vidp"><span class="pin3"></span><img src="'+p.img+'" alt=""/><div class="playtri2"></div><span class="vbadge2">'+esc(p.dur)+'</span></div>';
+    else el.innerHTML='<span class="plock">Plus</span><div class="cassp" style="position:relative;width:190px"><span class="pin3"></span><div class="cassette" style="padding:11px 13px"><div class="pl"></div><div><div class="nm" style="font-size:12px">'+esc(p.ttl)+'</div><div class="mt">'+esc(p.meta)+'</div></div></div>'+'</div>';
     var idx=FLAT.indexOf(p);
     el.onclick=function(){if(p.plus&&body.dataset.tier==='free'){say((p.t==='voice'?'Her voice lives on Plus pages.':'Video lives on Plus pages.')+' Every photo and note stays free, forever.');return}openLb(idx)};
     el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}});
@@ -1786,10 +1788,10 @@ function openLb(i){var p=FLAT[i];if(!p)return;open=i;
   if(p.t==='photo')M.innerHTML='<img src="'+p.img+'" alt=""/>';
   else if(p.t==='video'&&p.src)M.innerHTML='<video controls playsinline preload="metadata" src="'+p.src+'" poster="'+(p.img||'')+'" style="width:100%;height:100%;object-fit:contain;background:#171009"></video>';
   else if(p.t==='video')M.innerHTML='<img src="'+p.img+'" alt="" style="opacity:.7"/><div class="bigplay"></div>';
-  else if(p.t==='voice')M.innerHTML='<div class="bigplay"></div><div class="mono" style="position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:.14em;color:#d8bd93">'+p.meta+'</div>';
-  else M.innerHTML='<div class="bignote">“'+p.tx+'”</div>';
+  else if(p.t==='voice')M.innerHTML='<div class="bigplay"></div><div class="mono" style="position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:.14em;color:#d8bd93">'+esc(p.meta)+'</div>';
+  else M.innerHTML='<div class="bignote">“'+esc(p.tx)+'”</div>';
   W.textContent='Contributed by '+p.who+(p.rel?' · '+p.rel:'');C.textContent=p.ttl||'';D.textContent=p.date||'';
-  CM.innerHTML=(p.c||[]).map(function(x){return '<div class="cmt2"><b>'+x[0]+'</b><span class="r">'+(x[1]||'')+'</span><br>'+x[2]+'</div>'}).join('')||'<div class="cmt2" style="color:var(--ink-soft)">Be the first to leave a word.</div>';
+  CM.innerHTML=(p.c||[]).map(function(x){return '<div class="cmt2"><b>'+esc(x[0])+'</b><span class="r">'+esc(x[1]||'')+'</span><br>'+esc(x[2])+'</div>'}).join('')||'<div class="cmt2" style="color:var(--ink-soft)">Be the first to leave a word.</div>';
   RP.textContent=p.c&&p.c.length?p.c.length+' words left':'';
   LK.classList.remove('on');LK.querySelector('.ct').textContent=p.h;
   LK.onclick=function(){var on=LK.classList.toggle('on');LK.querySelector('.ct').textContent=p.h+(on?1:0)};
@@ -1931,7 +1933,7 @@ function renderWall(){
   wchips.hidden=!gate||WAITING.length===0;
   if(gate&&WAITING.length){
     var shown=WAITING.slice(0,3);
-    var htmlc=shown.map(function(w){return '<span class="wchip"><i class="dot"></i><b>'+w.nm+'&rsquo;s memory</b><span class="st">Written · waiting for room</span></span>'}).join('');
+    var htmlc=shown.map(function(w){return '<span class="wchip"><i class="dot"></i><b>'+esc(w.nm)+'&rsquo;s memory</b><span class="st">Written · waiting for room</span></span>'}).join('');
     var extra=WAITING.length-3;
     if(extra>0)htmlc+='<span class="wmore">and '+wnum(extra)+' other'+(extra===1?' is':'s are')+' waiting</span>';
     wchips.innerHTML=htmlc}
@@ -1940,7 +1942,7 @@ function renderWall(){
     var n=WAITING.length;
     if(n>0){
       invHead.textContent='Ten memories of Eleanor live here. '+wcap(wnum(n))+' more '+(n===1?'is':'are')+' waiting.';
-      var first=WAITING[0].nm,rest=n-1;
+      var first=esc(WAITING[0].nm),rest=n-1;
       invBody.innerHTML=(rest>0?first+' and '+wnum(rest)+' other'+(rest===1?'':'s')+' have':first+' has')+' written '+(n===1?'a memory that doesn&#39;t':'memories that don&#39;t')+' yet have room. One gift opens the wall for the whole family · every memory, every photo, every video, for as long as this page stands.'
     }else{
       invHead.textContent='Ten memories of Eleanor live here. There is room for every one that follows.';
