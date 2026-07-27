@@ -611,8 +611,8 @@ export function renderTribute(template: string, t: Tribute): string {
         `<h3 style="font-family:'Besley',serif;font-weight:500;font-size:clamp(22px,3.4vw,30px);line-height:1.25;margin:0 0 10px;color:#2C2520">Everything here is free, forever. <em style="color:#A87C5F">Plus</em> keeps more.</h3>` +
         `<p style="color:#5A4F45;font-size:15.5px;line-height:1.65;margin:0 0 24px">${pn.Pos} voice. Living pictures. Every photograph, the whole wall, an exact-name address. One choice, made once.</p>` +
         `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">` +
-        checkoutForm("plus_once", "btn solid", "Keep everything · $97 once") +
-        checkoutForm("plus_monthly", "btn", "$12 a month · 3 days free") +
+        checkoutForm("plus_once", "btn solid", "Keep everything · $197 once") +
+        checkoutForm("plus_monthly", "btn", "$29 a month · 3 days free") +
         `</div>` +
         `<div class="mono" style="font-size:11px;letter-spacing:.14em;color:#8A7C6D;margin-top:18px">the pledge holds · if plus ever rests, the page stays · nothing is ever taken down</div>` +
         `</div></section>`;
@@ -979,7 +979,7 @@ try{navigator.clipboard.writeText(D.url).then(function(){b.textContent='Copied �
     // On a free page, a visitor who has read the wall may want to help. One
     // quiet note, once per browser, after they have actually spent time with
     // the memories — never on arrival. Its door opens the existing gift sheet:
-    // the same $97 family unlock, guest checkout, the same sponsor badge.
+    // the same $197 family unlock, guest checkout, the same sponsor badge.
     if (tier === "free" && slug !== "eleanor") {
       const nWord = (n: number) => ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"][n] || String(n);
       const waiting = seedw.length;
@@ -992,7 +992,7 @@ try{navigator.clipboard.writeText(D.url).then(function(){b.textContent='Copied �
 <div style="font-family:'Besley',serif;font-weight:600;font-size:16.5px;color:#2C2520;line-height:1.35;margin-bottom:6px">You can help keep every memory.</div>
 <div style="font-family:'Besley',serif;font-size:13.5px;color:#5A4F45;line-height:1.55;margin-bottom:12px">${noteBody}</div>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-<button id="knGive" class="btn solid" style="font-size:12.5px;padding:8px 14px">Give the full memorial · $97, once</button>
+<button id="knGive" class="btn solid" style="font-size:12.5px;padding:8px 14px">Give the full memorial · $197, once</button>
 <button id="knLater" class="mini" style="text-decoration:underline">Not now</button></div>
 <div style="font-family:'Sometype Mono',monospace;font-size:9.5px;color:#7A6A58;margin-top:10px">No subscription · nothing is ever taken down</div>
 </div>
@@ -1044,7 +1044,7 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
       `<h2 style="font-family:'Besley',serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.2;color:#FAF5EC;margin:0 0 14px">Make one for someone <em style="color:#C9A572">you</em> miss.</h2>` +
       `<p style="font-family:'Besley',serif;font-size:16.5px;line-height:1.65;color:rgba(250,245,236,.82);margin:0 0 30px">Begin free · their page is online in ten quiet minutes, and it stays forever. Everything you just saw here, the Living pictures, her voice, every photograph in motion: that is Plus.</p>` +
       `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">` +
-      `<a href="/onboarding?plan=plus" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;background:#A87C5F;color:#FBF6ED;border-radius:100px;padding:14px 26px;text-decoration:none">Begin with Plus · $97 once</a>` +
+      `<a href="/onboarding?plan=plus" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;background:#A87C5F;color:#FBF6ED;border-radius:100px;padding:14px 26px;text-decoration:none">Begin with Plus · $197 once</a>` +
       `<a href="/onboarding" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;border:1.5px solid rgba(201,165,114,.65);color:#F4E9D4;border-radius:100px;padding:14px 26px;text-decoration:none">Begin free · $0</a>` +
       `</div>` +
       `</div></section>`;

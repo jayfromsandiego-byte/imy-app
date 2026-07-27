@@ -22,7 +22,7 @@ or take it down. Free teaser films still wait for the family's approval.
    `lib/r2.ts`).
 7. Marks the job `ready`, supersedes older unapproved films — then, on a
    paid page (plus/heirloom) with a `full` weave, places the film on the
-   tape shelf itself (the $97 promise; the letter says it is on the page,
+   tape shelf itself (the $197 promise; the letter says it is on the page,
    and the film room can re-weave or take it down any time). Free pages
    get the approval letter instead. Silent without a Resend key.
 

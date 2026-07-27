@@ -1,11 +1,11 @@
 // POST /api/stripe/checkout — every paid path in one place.
 //
 // Plans:
-//   plus_once      · $97 one-time, charges today, yours forever
-//   plus_monthly   · $12/month with a 3-DAY FREE TRIAL — card collected up front,
+//   plus_once      · $197 one-time, charges today, yours forever
+//   plus_monthly   · $29/month with a 3-DAY FREE TRIAL — card collected up front,
 //                    auto-converts on day 3 unless cancelled (founder decision July 5:
 //                    the trial applies to the monthly path only)
-//   family_unlock  · $97 one-time, GUEST checkout from the memory wall — no account;
+//   family_unlock  · $197 one-time, GUEST checkout from the memory wall — no account;
 //                    carries the sponsor's name/message so the webhook can write the badge
 //   heirloom/book  · legacy plans kept for compatibility
 //

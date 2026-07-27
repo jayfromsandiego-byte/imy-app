@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
           }
           dataOrThrow(await db.from("tributes").update(patch).eq("id", tributeId));
 
-          // Their film (0022): the $97 includes the whole film. Queueing is
+          // Their film (0022): the $197 includes the whole film. Queueing is
           // atomic and any failure returns 500 so Stripe retries the promise.
           if (tier === "plus" || tier === "heirloom") {
             await ensureFullFilmForPaid(tributeId);

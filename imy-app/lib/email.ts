@@ -99,7 +99,7 @@ export async function sendTrialReminderEmail(to: string, fullName: string, charg
   const html = shell({
     heading: "A quiet note about your trial.",
     bodyHtml:
-      `<p style="margin:0 0 12px">Your three days with everything unlocked on ${esc(first)}'s page are almost done. On ${esc(chargeDate)}, your card will be charged $12 for the month.</p>` +
+      `<p style="margin:0 0 12px">Your three days with everything unlocked on ${esc(first)}'s page are almost done. On ${esc(chargeDate)}, your card will be charged $29 for the month.</p>` +
       `<p style="margin:0 0 12px">If Plus is helping, there is nothing to do.</p>` +
       `<p style="margin:0">If not, cancel from Billing before then and nothing is charged. ${esc(first)}'s page stays online either way — that is the promise.</p>`,
     cta: { label: "Manage billing", url: `${SITE}/dashboard/billing` },
