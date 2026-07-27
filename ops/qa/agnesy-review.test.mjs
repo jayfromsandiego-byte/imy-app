@@ -27,7 +27,7 @@ ok("story writing aligns with mobile rules", onboarding.includes("textarea{min-h
 ok("draft recovery is visible and restartable", onboarding.includes('id="draftReturn"') && onboarding.includes("draftInfo") && onboarding.includes("startFresh"));
 ok("onboarding speaks the twelve-photo rule", onboarding.includes("Photos and videos, so the page feels like them.") && onboarding.includes("12 photos are free") && !onboarding.includes("thirty photos are free"));
 ok("renderer enforces twelve visible free photos", renderer.includes("const FREE_PHOTO_CAP = 12") && renderer.includes("allPhotos.slice(0, FREE_PHOTO_CAP)"));
-ok("landing pricing promises twelve photos", landing.includes("first 12 photographs") && landing.includes("<span class=\"x\">first 12</span>"));
+ok("landing pricing promises twelve photos", landing.includes("Up to 12 photographs") && landing.includes("<span class=\"x\">up to 12</span>"));
 ok("dashboard explains stored photos beyond twelve", media.includes("Free shows the first 12") && media.includes("safely for Plus"));
 ok("family video upload is plus-gated in UI and server actions", videos.includes("Video upload is part of Plus") && actions.includes("ownsPlusTribute") && actions.includes('message: "Video upload is part of Plus."'));
 ok("visitor video has additive storage", migration.includes("add column if not exists video_url") && migration.includes("'^https://'"));
