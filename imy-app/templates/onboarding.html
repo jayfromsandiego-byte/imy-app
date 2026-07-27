@@ -441,7 +441,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <div class="kpanel" id="kpanel">
   <div class="kp-head">part of the plus plan · decided at the end</div>
   <ul id="kpList"></ul>
-  <div class="kp-foot">$97 once, or $12 a month · kept safe either way · choosing free never deletes them</div>
+  <div class="kp-foot">$197 once, or $29 a month · kept safe either way · choosing free never deletes them</div>
 </div>
 
 <button class="back" id="backBtn" type="button">← back</button>
@@ -462,7 +462,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="wrows">
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>a handful of small questions · each answer lays a flower on the garland</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9.2" y="9" width="5.6" height="12" rx="1.6"/><path d="M12,9 V7.4"/><path d="M12,6.6 q1.7,-2.1 0,-3.6 q-1.7,1.5 0,3.6"/></svg><span>about ten quiet minutes · it saves as you go, change anything later</span></div>
-        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $97 once</b></span></div>
+        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $197 once</b></span></div>
       </div>
       <div class="draft-return" id="draftReturn" hidden role="status"><div><b>Welcome back.</b><span id="draftReturnLine">Your letter is saved on this device.</span></div><button type="button" id="draftRestart">Start over</button></div>
       <div class="nav" style="justify-content:center;margin-top:26px">
@@ -496,7 +496,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="pl-card">
       <div class="pl-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg></div>
       <div class="pl-title" id="plTitle">Part of the Plus plan</div>
-      <div class="pl-price">plus · $97 once · or $12 a month</div>
+      <div class="pl-price">plus · $197 once · or $29 a month</div>
       <div class="pl-body" id="plBody"></div>
       <button class="btn" id="plOk" type="button">Continue</button>
       <button class="skip" id="plNo" type="button">maybe later</button>
@@ -509,10 +509,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="ck-card">
       <span class="tapec" style="top:-11px;left:34px;transform:rotate(-5deg)"></span>
       <div class="kick" style="margin-bottom:10px">plus · keep everything <span class="ptag">plus</span></div>
-      <div class="ck-price">$97 <span>once · for their forever</span></div>
-      <div class="ck-alt">or $12 a month · 3 days free, card up front · cancel anytime, the page stays</div>
-      <button class="btn" id="ckOnce" type="button" style="width:100%;margin-top:18px">$97 once · yours forever</button>
-      <button class="btn" id="ckMonthly" type="button" style="width:100%;margin-top:10px;background:transparent;color:var(--terra);border:1.5px solid var(--terra)">3 days free · then $12 a month</button>
+      <div class="ck-price">$197 <span>once · for their forever</span></div>
+      <div class="ck-alt">or $29 a month · 3 days free, card up front · cancel anytime, the page stays</div>
+      <button class="btn" id="ckOnce" type="button" style="width:100%;margin-top:18px">$197 once · yours forever</button>
+      <button class="btn" id="ckMonthly" type="button" style="width:100%;margin-top:10px;background:transparent;color:var(--terra);border:1.5px solid var(--terra)">3 days free · then $29 a month</button>
       <button class="skip" id="ckFree" type="button" style="margin:16px auto 0;display:block">keep it free instead · nothing is lost</button>
       <div class="ck-note">secure stripe checkout · nothing is charged on this screen</div>
     </div>
@@ -634,7 +634,7 @@ var ENGINE=(function(){
       body:JSON.stringify({plan:plan,tributeId:(SEAL&&SEAL.tributeId)||'',slug:slg,email:A.email||'',ref:getRef(),returnTo:'/sites/'+slg})})
     .then(function(r){return r.json()}).then(function(j){
       if(j&&j.ok&&j.url){location.href=j.url}else{throw 0}})
-    .catch(function(){if(b){b.disabled=false;b.textContent=plan==='plus_once'?'$97 once · yours forever':'3 days free · then $12 a month'}});
+    .catch(function(){if(b){b.disabled=false;b.textContent=plan==='plus_once'?'$197 once · yours forever':'3 days free · then $29 a month'}});
   }
   function persist(){
     try{
@@ -926,7 +926,7 @@ var ENGINE=(function(){
   /* ---------- plus awareness ---------- */
   (function(){
     var el=document.getElementById('wrowPlan');
-    if(el&&planIntent==='plus'){el.innerHTML='you chose <b>plus · $97 once</b> · checkout comes at the end'}
+    if(el&&planIntent==='plus'){el.innerHTML='you chose <b>plus · $197 once</b> · checkout comes at the end'}
   })();
   var LOCKCOPY={
     voice:{b:'Voice recordings live on Plus pages. Add it now · it is kept safe either way, and you decide at the end.',ok:'Add the recording',no:'maybe later'},
@@ -1109,7 +1109,7 @@ var ENGINE=(function(){
         ['a universal design','✓'],
         ['online forever · never charged to keep it','✓']
       ].concat(A.plusItems.length?[['everything plus rests safely, ready if you return','·']]:[]))+
-      planCard('plus','Plus','$97 once<br>or $12 a month',[
+      planCard('plus','Plus','$197 once<br>or $29 a month',[
         [custom+'<span style="color:var(--ink-soft)">.imissyoumemorial.com</span> · their name','✦'],
         [plusPhotos,'✦'],
         [plusVoice,'✦'],

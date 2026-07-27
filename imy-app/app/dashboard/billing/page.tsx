@@ -99,7 +99,7 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
           </h1>
         </div>
         <p className="panel-sub">
-          Plus is a one-time $97 (or $12/month, with a 3-day free trial). Every page stays online no matter what · we never charge
+          Plus is a one-time $197 (or $29/month, with a 3-day free trial). Every page stays online no matter what · we never charge
           a family to keep a memory.
         </p>
       </div>
@@ -131,7 +131,7 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
 
               {trialing ? (
                 <div className="trial-banner" style={{ marginTop: 14 }}>
-                  <b>This trial ends soon</b> · it becomes $12/month unless you cancel before it ends.
+                  <b>This trial ends soon</b> · it becomes $29/month unless you cancel before it ends.
                 </div>
               ) : null}
 
@@ -146,8 +146,8 @@ export default async function BillingPage({ searchParams }: { searchParams: { up
               ) : (
                 <>
                   <div style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
-                    <Upgrade tributeId={t.id} plan="plus_once" label="Everything · Plus" sub="$97 once" />
-                    <Upgrade tributeId={t.id} plan="plus_monthly" label="Everything · monthly" sub="3 days free, then $12/month" />
+                    <Upgrade tributeId={t.id} plan="plus_once" label="Everything · Plus" sub="$197 once" />
+                    <Upgrade tributeId={t.id} plan="plus_monthly" label="Everything · monthly" sub="3 days free, then $29/month" />
                   </div>
                   <Concierge />
                 </>

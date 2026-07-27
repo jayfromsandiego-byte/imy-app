@@ -1,6 +1,6 @@
 // GET /api/cron/trial-reminders — runs daily via Vercel Cron (see vercel.json).
 // Finds live trials converting in the next 12–36 hours and sends each family
-// one honest reminder before the $12 charge lands. Exactly one reminder per
+// one honest reminder before the $29 charge lands. Exactly one reminder per
 // trial: the window is a day wide and the job runs once a day.
 //
 // Guarded by CRON_SECRET (Vercel sends it as a Bearer token automatically).

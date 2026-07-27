@@ -52,9 +52,9 @@ export async function GET() {
         {
           "@type": "Offer",
           name: "Plus",
-          price: "97",
+          price: "197",
           priceCurrency: "USD",
-          description: "$97 once or $12/month — video and voice memories, every photo, an exact-name address.",
+          description: "$197 once or $29/month — video and voice memories, every photo, an exact-name address.",
         },
         {
           "@type": "Offer",

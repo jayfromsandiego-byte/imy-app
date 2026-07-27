@@ -28,7 +28,7 @@ the designs are locked, and every page stays online. Work inside those three tru
    pull request, and look at the Vercel preview link it produces. If the preview
    reads right, merge. Production updates itself.
 4. House style: no exclamation points, em dashes sparingly, prices only as
-   $0 · $97 once or $12/month · Concierge from $499.
+   $0 · $197 once or $29/month · Concierge from $499.
 
 ## Where things live (fast index)
 

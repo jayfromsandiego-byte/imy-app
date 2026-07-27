@@ -3,7 +3,7 @@
 // Each is one soft offer, always dismissible, and always reassures that what they've
 // already made stays free, forever.
 //
-// Pricing (locked June 2026): Plus $97 once or $12/month. Concierge from $499 (done for you).
+// Pricing (locked July 2026): Plus $197 once or $29/month. Concierge from $499 (done for you).
 // Links route through in-app checkout (/dashboard/billing) — no hardcoded external pay links.
 
 export type MomentId =
@@ -33,7 +33,7 @@ export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
     eyebrow: "Your gallery is full — for now",
     title: "Room for every photograph",
     body: "You've kept twelve on the page. Already a beautiful gallery. If there are more moments you'd like to keep, Plus opens the gallery without limit — so none of them has to be left out.",
-    primaryLabel: "Add unlimited photos · Plus, $97 once",
+    primaryLabel: "Add unlimited photos · Plus, $197 once",
     primaryHref: PLUS,
     secondaryLabel: "Not now",
     reassure: "The photos you've added stay, always.",
@@ -42,7 +42,7 @@ export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
     eyebrow: "A moment in motion",
     title: "More of their voice, their motion",
     body: "With Plus you can add video and audio — their laugh, their stories, the way they moved through a room.",
-    primaryLabel: "Add video & audio · Plus, $97 once",
+    primaryLabel: "Add video & audio · Plus, $197 once",
     primaryHref: PLUS,
     secondaryLabel: "Not now",
     reassure: "What you've added stays, always.",
@@ -51,7 +51,7 @@ export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
     eyebrow: "A design from Plus",
     title: "Built around what they loved",
     body: "Your page is lovely as it is. Plus shapes the page around what they loved — a custom design drawn from their own interests.",
-    primaryLabel: "Unlock the design · Plus, $97 once",
+    primaryLabel: "Unlock the design · Plus, $197 once",
     primaryHref: PLUS,
     secondaryLabel: "Keep it as it is",
     reassure: "Your current page is free, forever.",
@@ -60,7 +60,7 @@ export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
     eyebrow: "So everyone can speak",
     title: "Welcome every memory",
     body: "What a gathering already. Plus keeps the door open, so no one who loved them is ever turned away from leaving a memory.",
-    primaryLabel: "Welcome everyone · Plus, $97 once",
+    primaryLabel: "Welcome everyone · Plus, $197 once",
     primaryHref: PLUS,
     secondaryLabel: "Not now",
     reassure: "Every memory already shared stays.",
@@ -69,7 +69,7 @@ export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
     eyebrow: "This photograph has seen some years",
     title: "Gently bring it back",
     body: "Plus can quietly restore faded, creased, or damaged photographs — softly, never changing who they were. You approve every one before it appears.",
-    primaryLabel: "Restore this photo · Plus, $97 once",
+    primaryLabel: "Restore this photo · Plus, $197 once",
     primaryHref: PLUS,
     secondaryLabel: "Leave it as it is",
     reassure: "The original is always kept, untouched.",
@@ -78,7 +78,7 @@ export const UPGRADE_MOMENTS: Record<MomentId, Moment> = {
     eyebrow: "When the words are hard",
     title: "We can help you begin",
     body: "Grief makes sentences difficult. Plus can offer a gentle first draft from a few details — yours to keep, change, or set aside entirely.",
-    primaryLabel: "Help me write · Plus, $97 once",
+    primaryLabel: "Help me write · Plus, $197 once",
     primaryHref: PLUS,
     secondaryLabel: "I'll write it myself",
     reassure: "Nothing is ever published without you.",

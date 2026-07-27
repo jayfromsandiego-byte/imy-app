@@ -44,14 +44,14 @@ export default function RefundsPage() {
           the page stays online. We never take a tribute down over a bill.
         </div>
 
-        <h2>Plus, paid once ($97)</h2>
+        <h2>Plus, paid once ($197)</h2>
         <p>
           If Plus is not what you hoped, write to us within 30 days and we will refund it in full · 
           no forms, no questions that make you justify your grief. The page returns to the free plan:
           premium features rest, everything you added is kept, and nothing is deleted.
         </p>
 
-        <h2>Plus, monthly ($12 a month)</h2>
+        <h2>Plus, monthly ($29 a month)</h2>
         <p>
           The first three days are free, and we send a note before the first charge. Cancel any time
           from Billing · the month you paid for stays yours to the end, and we do not charge again.

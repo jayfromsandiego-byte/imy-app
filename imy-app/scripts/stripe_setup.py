@@ -4,7 +4,7 @@ Run with the Stripe key in env (STRIPE_SECRET_KEY or STRIPE_API_KEY).
 Prints the price IDs to paste into Vercel env. Idempotent-ish: creates new
 products each run, so run once per environment (test, then live).
 
-Pricing (locked June 2026): Free $0 · Plus $97 once or $12/month · Concierge $499+.
+Pricing (locked July 2026): Free $0 · Plus $197 once or $29/month · Concierge $499+.
 Concierge is a "contact us" offer (not self-serve Stripe), so it is not minted here.
 """
 import os, json, urllib.request, urllib.parse
@@ -32,6 +32,6 @@ def price_month(pid, cents):
 
 out = {"MODE": MODE}
 plus = product("I Miss You Memorial — Plus", "Everything, made full and entirely theirs.")
-out["STRIPE_PRICE_PLUS_ONCE"] = price_once(plus, 9700)
-out["STRIPE_PRICE_PLUS_MONTHLY"] = price_month(plus, 1200)
+out["STRIPE_PRICE_PLUS_ONCE"] = price_once(plus, 19700)
+out["STRIPE_PRICE_PLUS_MONTHLY"] = price_month(plus, 2900)
 print(json.dumps(out, indent=2))

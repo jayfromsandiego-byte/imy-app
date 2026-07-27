@@ -1145,9 +1145,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="inv-kick">The wall is full</div>
         <div class="inv-head" id="invHead">Ten memories of Eleanor live here. Three more are waiting.</div>
         <p class="inv-body" id="invBody">Sarah and two others have written memories that don&#39;t yet have room. One gift opens the wall for the whole family · every memory, every photo, every video, for as long as this page stands.</p>
-        <button class="btn solid inv-cta" id="invCta">Open the wall for everyone · $97, once</button>
+        <button class="btn solid inv-cta" id="invCta">Open the wall for everyone · $197, once</button>
         <div class="inv-trust">No subscription · Nothing is ever taken down · The first ten stay free, always</div>
-        <button class="inv-trial" id="invTrial" type="button">Or see it open free for three days · $12/month after · cancel anytime</button>
+        <button class="inv-trial" id="invTrial" type="button">Or see it open free for three days · $29/month after · cancel anytime</button>
       </div>
       <div class="memkeep">every memory is kept · grouped so no one is lost</div>
       <div class="share">
@@ -1227,8 +1227,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img src="/brand/imy-mark.svg" alt="" style="height:36px;width:auto;display:block;margin:0 auto 12px">
       <div class="fm wm">I <em>Miss</em> You Memorial</div>
       <div class="pledge">Eleanor's tribute stays online for as long as we exist. We will never charge a family to keep a memory alive.</div>
-      <div class="price"><span class="p2">Plus <b>$97 once · $12/mo</b></span><span class="p2">Concierge <b>from $499</b></span><span class="p2">Memorial book <b>every plan</b></span></div>
-      <button class="btn solid" id="footGive" type="button" style="margin-top:18px">Give this page for the whole family · $97, once</button>
+      <div class="price"><span class="p2">Plus <b>$197 once · $29/mo</b></span><span class="p2">Concierge <b>from $499</b></span><span class="p2">Memorial book <b>every plan</b></span></div>
+      <button class="btn solid" id="footGive" type="button" style="margin-top:18px">Give this page for the whole family · $197, once</button>
       <div class="pledge" style="margin-top:10px;margin-bottom:0">A gift anyone can give · no account needed · it only ever needs to be given once</div>
       <div class="credit">Made with love</div>
       <div class="url">eleanor.imissyoumemorial.com</div>
@@ -1280,7 +1280,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <button class="gs-x" id="gsClose" aria-label="Close">×</button>
     <div class="gs-kick">A gift to the whole family</div>
     <h3 class="gs-head">Open Eleanor&#39;s wall for everyone</h3>
-    <div class="gs-price"><span class="gp">$97</span><span class="gper">Once · never again</span></div>
+    <div class="gs-price"><span class="gp">$197</span><span class="gper">Once · never again</span></div>
     <ul class="gs-opens">
       <li>Every memory, from everyone, forever</li>
       <li>Unlimited photos and video</li>
@@ -1318,7 +1318,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <div class="whisper" id="whisper" role="status">
   <button class="wx" id="whisperX" aria-label="Dismiss">✕</button>
   <div class="wt" id="whisperT"></div>
-  <div class="wp" id="whisperP">Part of Plus · $97 once, or $12 a month · the page itself is free forever</div>
+  <div class="wp" id="whisperP">Part of Plus · $197 once, or $29 a month · the page itself is free forever</div>
 </div>
 
 <button class="totop" id="totop" aria-label="Back to top">↑</button>
@@ -2005,7 +2005,7 @@ document.querySelectorAll('.gs-opt').forEach(function(o){o.addEventListener('cli
   giftChoice=o.dataset.choice})});
 document.getElementById('gsGive').addEventListener('click',function(){
   if(T){
-    /* production: the gift is a real $97 checkout · the webhook opens the wall and writes the badge */
+    /* production: the gift is a real $197 checkout · the webhook opens the wall and writes the badge */
     var go=function(){
       var sponsorName=(giftChoice==='named'&&ID)?(ID.fn+' '+ID.ln):'';
       var b=document.getElementById('gsGive');b.disabled=true;b.textContent='Opening a safe checkout…';

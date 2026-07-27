@@ -190,7 +190,7 @@ export async function removeFilm(
   return { ok: true, slug: t?.slug };
 }
 
-/** The $97 promise, kept atomically at the webhook. Migration 0022 owns the
+/** The $197 promise, kept atomically at the webhook. Migration 0022 owns the
  *  idempotency rule: replays and concurrent events resolve to one full weave. */
 export async function ensureFullFilmForPaid(tributeId: string): Promise<void> {
   const db = supabaseAdmin();

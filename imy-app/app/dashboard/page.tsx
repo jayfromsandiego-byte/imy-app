@@ -312,7 +312,7 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
           <div className="s-card full stagger" style={{ animationDelay: ".3s" }}>
             <p className="sentence">
               This page is free, forever — that promise holds. <b>Plus keeps more</b>: {pn.pos} voice, living
-              pictures, every photograph, the whole wall, an exact-name address. $97 once, or $12 a month.
+              pictures, every photograph, the whole wall, an exact-name address. $197 once, or $29 a month.
             </p>
             <div className="card-foot">
               <Link href="/dashboard/billing" className="btn quiet">

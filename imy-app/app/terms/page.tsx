@@ -69,7 +69,7 @@ export default function TermsPage() {
         <h2>Plans, payments, and refunds</h2>
         <ul>
           <li><b>Free</b> · a complete tribute page, online for as long as we exist.</li>
-          <li><b>Plus</b> · $97 once, or $12 a month: unlimited photos and video, audio memories, a custom design built around what they loved, a custom web address, and no footer credit.</li>
+          <li><b>Plus</b> · $197 once, or $29 a month: unlimited photos and video, audio memories, a custom design built around what they loved, a custom web address, and no footer credit.</li>
           <li><b>Concierge</b> · from $499: done for you. We meet with you, build a fully custom site, produce a memorial film, and mail a printed keepsake book and a framed portrait.</li>
         </ul>
         <p>
