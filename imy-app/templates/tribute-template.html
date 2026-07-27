@@ -1588,6 +1588,20 @@ renderMems();
 document.getElementById('memNext').onclick=function(){memPage++;renderMems()};
 document.getElementById('memPrev').onclick=function(){memPage--;renderMems()};
 /* a voice memory · Plus · a voicemail kept, a story told aloud; it waits for the family like any other memory */
+/* LB-2: a file over the threshold goes browser→Blob directly (no tributeId
+   yet from the visitor's side either — the token is scoped to a dedicated
+   visitor/ prefix, see /api/upload/client), bypassing the platform's own
+   function body limit rather than our own 25/40MB checks. */
+var DIRECT_UPLOAD_THRESHOLD=4*1024*1024;
+function directUploadVisitor(f,prefix){
+  return import('https://esm.sh/@vercel/blob@2.6.1/client').then(function(mod){
+    return mod.upload(prefix+'/'+(f.name||'upload'),f,{
+      access:'public',
+      handleUploadUrl:'/api/upload/client',
+      clientPayload:JSON.stringify({kind:'visitor'})
+    }).then(function(blob){return blob.url});
+  });
+}
 /* a photograph rides with a memory · pinned to the board when the family says yes */
 var PHOTO={url:''};
 var pBtn=document.getElementById('photoAdd'),pFile=document.getElementById('photoFile');
@@ -1597,12 +1611,14 @@ if(pBtn&&pFile){
     requireId(function(){pFile.click()})};
   pFile.addEventListener('change',function(){
     var f=pFile.files&&pFile.files[0];if(!f)return;
-    if(f.size>25*1024*1024){say('That photograph is over 25MB. A smaller one will land just fine.',false);pFile.value='';return}
     pBtn.disabled=true;pBtn.textContent='Keeping it safe…';
-    var fd=new FormData();fd.append('files',f);
-    fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
+    var up=f.size>DIRECT_UPLOAD_THRESHOLD?directUploadVisitor(f,'visitor'):(function(){
+      var fd=new FormData();fd.append('files',f);
+      return fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){return (j&&j.ok&&j.urls&&j.urls[0])||''})
+    })();
+    up.then(function(u){
       pBtn.disabled=false;
-      if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change';say('A photograph is attached · it rides with your memory to the family.',false)}
+      if(u){PHOTO.url=u;pBtn.textContent='✓ A photograph is attached · change';say('A photograph is attached · it rides with your memory to the family.',false)}
       else{pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
     }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
     pFile.value=''});
@@ -1611,10 +1627,10 @@ if(pBtn&&pFile){
 var VIDEO={url:''};
 var vidBtn=document.getElementById('videoAdd'),vidFile=document.getElementById('videoFile');
 function uploadVisitorVideo(f){
+  if(f.size>DIRECT_UPLOAD_THRESHOLD)return directUploadVisitor(f,'visitor').then(function(u){if(!u)throw 0;return u});
   return fetch('/api/upload/presign',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({filename:f.name||'memory-video.mp4',contentType:f.type||'video/mp4'})})
     .then(function(r){return r.json()}).then(function(j){
       if(j&&j.ok&&j.uploadUrl&&j.publicUrl){return fetch(j.uploadUrl,{method:'PUT',headers:{'Content-Type':f.type||'video/mp4'},body:f}).then(function(r){if(!r.ok)throw 0;return j.publicUrl})}
-      if(f.size>25*1024*1024)throw new Error('too_large');
       var fd=new FormData();fd.append('files',f);return fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(x){if(x&&x.ok&&x.urls&&x.urls[0])return x.urls[0];throw 0})
     })
 }
@@ -1624,10 +1640,10 @@ if(vidBtn&&vidFile){
     requireId(function(){vidFile.click()})};
   vidFile.addEventListener('change',function(){
     var f=vidFile.files&&vidFile.files[0];if(!f)return;
-    if(f.size>40*1024*1024){say('Keep a visitor video under 40MB. A shorter clip will arrive more gently.',false);vidFile.value='';return}
+    if(f.size>400*1024*1024){say('Keep a visitor video under 400MB. A shorter clip will arrive more gently.',false);vidFile.value='';return}
     vidBtn.disabled=true;vidBtn.textContent='Keeping the video safe…';
     uploadVisitorVideo(f).then(function(u){VIDEO.url=u;vidBtn.disabled=false;vidBtn.textContent='✓ A video is attached · change';say('The video is attached. It will wait for the family before it appears.',false)})
-      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn&rsquo;t upload. MP4 under 25MB works on every storage path.',false)});
+      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn&rsquo;t upload. Give it a moment and try again.',false)});
     vidFile.value=''});
 }
 var VOICE={url:''};
@@ -1639,12 +1655,15 @@ if(vBtn&&vFile){
     requireId(function(){vFile.click()})};
   vFile.addEventListener('change',function(){
     var f=vFile.files&&vFile.files[0];if(!f)return;
-    if(f.size>25*1024*1024){say('That recording is over 25MB. A shorter clip will land just fine.',false);vFile.value='';return}
+    if(f.size>60*1024*1024){say('Keep a voice memory under 60MB — a shorter clip will land just fine.',false);vFile.value='';return}
     vBtn.disabled=true;vBtn.textContent='Keeping the voice safe…';
-    var fd=new FormData();fd.append('files',f);
-    fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
+    var up=f.size>DIRECT_UPLOAD_THRESHOLD?directUploadVisitor(f,'visitor'):(function(){
+      var fd=new FormData();fd.append('files',f);
+      return fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){return (j&&j.ok&&j.urls&&j.urls[0])||''})
+    })();
+    up.then(function(u){
       vBtn.disabled=false;
-      if(j&&j.ok&&j.urls&&j.urls[0]){VOICE.url=j.urls[0];vBtn.textContent='♪ A voice is attached · change'}
+      if(u){VOICE.url=u;vBtn.textContent='♪ A voice is attached · change'}
       else{vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
     }).catch(function(){vBtn.disabled=false;vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
     vFile.value=''});

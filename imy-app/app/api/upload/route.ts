@@ -5,11 +5,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { r2Configured, uploadToR2 } from "@/lib/r2";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
+import { SAFE_MEDIA } from "@/lib/uploadMedia";
 
 export const runtime = "nodejs";
 
-const MAX_BYTES = 25 * 1024 * 1024; // 25MB per file through this proxied route
-const SAFE_MEDIA = /^(image\/(jpeg|png|webp|gif|heic|heif)|audio\/(mpeg|mp4|wav|x-m4a|aac|ogg|webm)|video\/(mp4|webm|quicktime))$/i;
+const MAX_BYTES = 25 * 1024 * 1024; // 25MB per file through this proxied route — the platform's
+// own function body limit sits below this anyway; anything bigger should already be routed to
+// POST /api/upload/client (Blob client upload, browser→Blob direct) by the caller.
 
 export async function POST(req: NextRequest) {
   // Visitors attach photographs to memories, so this stays public — but gently

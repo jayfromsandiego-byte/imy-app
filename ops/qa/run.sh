@@ -7,10 +7,11 @@
 # contract: identity safety (no Eleanor leaks, pronouns), tier behavior (free
 # wall cap, resting voices), the bulletin board, hearts, comments, and voice
 # wiring. It then chains the film room, the paid contract, the mobile-review
-# contracts, and the LB-1 stored-XSS regression. Run it before every merge that
-# touches renderTribute, tributesData, or the tribute template.
+# contracts, the LB-1 stored-XSS regression, and the LB-2 Blob-upload contract.
+# Run it before every merge that touches renderTribute, tributesData, or the
+# tribute template.
 #
-# All five suites always run — a failure in one no longer masks the rest (the
+# All six suites always run — a failure in one no longer masks the rest (the
 # old `set -e` aborted the chain after the first failing suite and hid later
 # failures). The setup is still fail-fast; the suites aggregate into one exit.
 set -e
@@ -30,4 +31,6 @@ IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/film-fulfillment.test.mjs" || rc=1
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/agnesy-review.test.mjs" || rc=1
 # LB-1: a stranger's words stay words — every visitor field is escaped at its innerHTML seam.
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/lb1-xss.test.mjs" || rc=1
+# LB-2: a real phone video finally lands — Blob client uploads, MIME allow-list, pathname pinning.
+IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/lb2-blob-uploads.test.mjs" || rc=1
 exit $rc

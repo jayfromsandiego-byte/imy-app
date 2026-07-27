@@ -1,10 +1,17 @@
 "use client";
 // MediaManager — the owner's photo manager on the tribute edit page.
-// Uploads go to /api/upload (R2 with WebP optimization, or Blob fallback); the
-// returned URLs are saved via the addTributePhotos server action. Reorder/delete
-// are plain server-action forms, so they work even without client JS.
+// Small photos still go to /api/upload (R2 with WebP optimization, or Blob
+// fallback) — that proxy works fine and keeps small uploads simple. A photo
+// over ~4MB (a 48MP HEIC easily clears that) goes browser→Blob directly via
+// /api/upload/client, so the platform's own function body limit never enters
+// the picture. Either way the returned URL is saved via the addTributePhotos
+// server action. Reorder/delete are plain server-action forms, so they work
+// even without client JS.
 import { useRef, useState } from "react";
+import { upload } from "@vercel/blob/client";
 import { addTributePhotos, deleteTributePhoto, moveTributePhoto } from "@/app/dashboard/actions";
+
+const DIRECT_UPLOAD_THRESHOLD = 4 * 1024 * 1024;
 
 type Photo = { id: string; url: string; sort: number };
 
@@ -17,6 +24,28 @@ export default function MediaManager({ tributeId, photos, tier }: { tributeId: s
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
 
+  async function uploadOne(f: File): Promise<string | null> {
+    if (f.size > DIRECT_UPLOAD_THRESHOLD) {
+      try {
+        const blob = await upload(`tributes/${tributeId}/${f.name || "photograph"}`, f, {
+          access: "public",
+          handleUploadUrl: "/api/upload/client",
+          clientPayload: JSON.stringify({ kind: "owner-photo", tributeId }),
+        });
+        return blob.url;
+      } catch {
+        return null;
+      }
+    }
+    const fd = new FormData();
+    fd.append("files", f);
+    const r = await fetch("/api/upload", { method: "POST", body: fd });
+    const d = await r.json().catch(() => null);
+    if (r.ok && d?.ok && Array.isArray(d.urls) && d.urls[0]) return d.urls[0];
+    if (r.status === 501) throw new Error("not_configured");
+    return null;
+  }
+
   async function onPick() {
     const files = fileRef.current?.files;
     if (!files || !files.length) return;
@@ -25,20 +54,17 @@ export default function MediaManager({ tributeId, photos, tier }: { tributeId: s
     const urls: string[] = [];
     try {
       for (const f of Array.from(files)) {
-        const fd = new FormData();
-        fd.append("files", f);
-        const r = await fetch("/api/upload", { method: "POST", body: fd });
-        const d = await r.json().catch(() => null);
-        if (r.ok && d?.ok && Array.isArray(d.urls)) {
-          urls.push(...d.urls);
-        } else if (r.status === 501) {
-          setMsg("Storage isn't connected yet — add Cloudflare R2 to enable photo uploads.");
-          setBusy(false);
-          return;
-        } else if (r.status === 413) {
-          setMsg("One of those files is over 25MB. Large videos need the direct upload (coming with R2).");
-        } else {
-          setMsg("That upload didn't go through. Please try again.");
+        try {
+          const url = await uploadOne(f);
+          if (url) urls.push(url);
+          else setMsg("That photograph didn't upload. Please try again.");
+        } catch (e: any) {
+          if (String(e?.message) === "not_configured") {
+            setMsg("Storage isn't connected yet — add Cloudflare R2 to enable photo uploads.");
+            setBusy(false);
+            return;
+          }
+          setMsg("That photograph didn't upload. Please try again.");
         }
       }
       if (urls.length && urlsRef.current && formRef.current) {

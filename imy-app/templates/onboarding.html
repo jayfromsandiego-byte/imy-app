@@ -568,9 +568,27 @@ var ENGINE=(function(){
 
   /* ---------- production wiring · July 5 (uploads, autosave, real seal, real checkout) ---------- */
   var SEAL=null,UPQ=[],MP=[]; /* MP · a moment's own photograph, kept for retry */
+  var DIRECT_UPLOAD_THRESHOLD=4*1024*1024; /* over this, go browser→Blob directly (LB-2) */
+  function directUpload(f){
+    /* a real phone video or a 48MP photo clears the platform's own function
+       body limit before our 25MB check ever runs — this bypasses that limit
+       entirely by uploading straight to Vercel Blob. There is no tributeId
+       yet at this point in the letter, so the token is scoped to a dedicated
+       onboarding/ prefix instead (see /api/upload/client). */
+    return import('https://esm.sh/@vercel/blob@2.6.1/client').then(function(mod){
+      return mod.upload('onboarding/'+(f.name||'upload'),f,{
+        access:'public',
+        handleUploadUrl:'/api/upload/client',
+        clientPayload:JSON.stringify({kind:'onboarding'})
+      }).then(function(blob){return blob.url});
+    }).catch(function(){return ''});
+  }
   function upload(f){
     /* every network wait has an end (July 12) · a hung request must never
        hold the seal hostage — 45s per photograph, then the retry gets it */
+    if(f&&f.size>DIRECT_UPLOAD_THRESHOLD){
+      var pd=directUpload(f);UPQ.push(pd);return pd;
+    }
     var fd=new FormData();fd.append('files',f);
     var ac=('AbortController' in window)?new AbortController():null;
     var tm=ac?setTimeout(function(){try{ac.abort()}catch(e){}},45000):null;
