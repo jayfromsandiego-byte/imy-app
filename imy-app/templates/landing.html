@@ -369,6 +369,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .mwhero .tornbar .mw-nav{position:static;padding:0;position:relative}
 .mwhero .tornbar .mw-b{color:var(--ink);text-shadow:none}.mwhero .tornbar .mw-b em{color:var(--terra)}
 .mwhero .tornbar .mw-links a{color:var(--ink-soft);text-shadow:none}.mwhero .tornbar .mw-links a:hover{color:var(--ink)}
+/* item 1 · on hover, brown paint sweeps in behind the label, left to right, and the label turns white on brown */
+.mwhero .mw-links a{position:relative;z-index:1}
+.mwhero .mw-links a::before{content:"";position:absolute;inset:2px -5px;z-index:-1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 34' preserveAspectRatio='none'%3E%3Cpath d='M4 7 C28 2 92 2 116 6 C119 13 119 21 116 28 C88 32 30 32 5 28 C2 21 2 13 4 7 Z' fill='%233f2c1a'/%3E%3C/svg%3E") no-repeat center/100% 100%;transform:scaleX(0);transform-origin:left center;transition:transform .26s cubic-bezier(.2,.7,.2,1);opacity:.97}
+.mwhero .mw-links a:hover::before,.mwhero .mw-links a:focus-visible::before{transform:scaleX(1)}
+.mwhero .mw-links a:hover,.mwhero .mw-links a:focus-visible,.mwhero .tornbar .mw-links a:hover,.mwhero .tornbar .mw-links a:focus-visible{color:#fff}
+@media(prefers-reduced-motion:reduce){.mwhero .mw-links a::before{transition:none}}
 .mwhero .tornbar .mw-navcta{background:var(--terra);color:#fff;border-color:transparent;box-shadow:0 8px 18px -10px rgba(120,80,54,.7)}
 .lp{position:relative;z-index:2;font-family:'Besley',Georgia,serif}
 .lp .rev{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
@@ -708,7 +714,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
       <p class="mw-ld">A beautiful place to hold their photos, their stories, and the voice of everyone who loved them.</p>
       <div class="mw-cta">
         <a class="mw-bs" href="/onboarding">Start a tribute</a>
-        <a class="mw-bg2" href="#example">See an example</a>
+        <a class="mw-bg2" href="/sites/eleanor" target="_blank" rel="noopener">See an example</a>
       </div>
       <span class="mw-sig"> · with all our love</span>
       <span class="mw-counter"><b id="trbNum">10,214</b> tributes · and counting</span>
@@ -1134,6 +1140,11 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
 .mqpanel a{display:block;padding:13px 6px;min-height:44px;box-sizing:border-box;font-size:17px;color:#2C2520;text-decoration:none;text-shadow:none;border-bottom:1px dashed rgba(168,124,95,.22);font-family:'Besley',serif;font-weight:600}
 .mqpanel a:last-child{border-bottom:none}
 @media(min-width:861px){.mqpanel{display:none!important}}
+/* item 50 · the mobile header steps away as you read down and slides back the moment you scroll up */
+@media(max-width:860px){
+  .mwhero .tornbar.tb-float{position:fixed!important;top:0!important;left:0;right:0;z-index:400;transition:transform .32s ease;will-change:transform}
+  .mwhero .tornbar.tb-hide{transform:translateY(-108%)}
+}
 @media(max-width:860px){
   /* the whole burger range stacks like a phone — between 681 and 860 the bar
      otherwise becomes a centered flex item and shoves the hero card off-screen */
@@ -1229,6 +1240,26 @@ b.onclick=function(){set(!panel.classList.contains('mqopen'))};
 panel.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
 addEventListener('resize',function(){if(innerWidth>860)set(false)});
+})();
+/* item 50 · on phones the header hides as you scroll down and returns from anywhere
+   on the way up; the open menu closes the moment the page moves, so it never
+   hovers over nothing */
+(function(){
+var bar=document.querySelector('.mwhero .tornbar'),hero=document.querySelector('.mwhero');if(!bar||!hero)return;
+var mq=window.matchMedia('(max-width:860px)');
+var lastY=window.pageYOffset;
+function closeMenu(){var p=document.querySelector('.mqpanel.mqopen');if(p){p.classList.remove('mqopen');var b=document.querySelector('.mqburger');if(b)b.setAttribute('aria-expanded','false')}}
+function ground(){bar.classList.remove('tb-float','tb-hide');hero.style.paddingTop=''}
+addEventListener('scroll',function(){
+  var y=window.pageYOffset,dy=y-lastY;lastY=y;
+  if(Math.abs(dy)>1)closeMenu();
+  if(!mq.matches){ground();return}
+  var bh=bar.offsetHeight||120;
+  if(y<=bh){ground();return}
+  if(!bar.classList.contains('tb-float')){hero.style.paddingTop=bh+'px';bar.classList.add('tb-float','tb-hide')}
+  if(dy>2)bar.classList.add('tb-hide');else if(dy<-2)bar.classList.remove('tb-hide');
+},{passive:true});
+addEventListener('resize',function(){if(!mq.matches)ground()});
 })();
 /* the counter · tributes made so far: counts up once as the note settles, then
    breathes — a few quiet ticks a visit, never theatre. Update BASE as the real

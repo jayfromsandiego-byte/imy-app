@@ -37,6 +37,7 @@
   .top{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--paper);border-bottom:1px solid var(--line);box-shadow:0 10px 26px -18px rgba(44,37,32,.35);padding:8px 22px 6px;display:flex;align-items:center;gap:18px}
   .top::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background-image:var(--grain);mix-blend-mode:soft-light}
   .wm{font-family:'Besley',serif;font-size:1rem;white-space:nowrap;position:relative;z-index:2}
+  a.wm{color:inherit;text-decoration:none}
   .wm em{font-style:italic;color:var(--terra)}
   .garland{flex:1;display:flex;justify-content:center;min-width:0;position:relative;z-index:2}
   .garland svg{width:100%;max-width:520px;height:52px;overflow:visible}
@@ -417,7 +418,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <div class="motes" id="motes"></div>
 
 <div class="top">
-  <div class="wm">I <em>Miss</em> You<span class="hidewm"> Memorial</span></div>
+  <a class="wm" href="/" aria-label="I Miss You Memorial — home"><img src="/brand/imy-mark.svg" alt="" style="height:20px;width:auto;vertical-align:-4px;margin-right:8px">I <em>Miss</em> You<span class="hidewm"> Memorial</span></a>
   <div class="garland"><svg viewBox="0 0 640 52" preserveAspectRatio="xMidYMid meet" aria-hidden="true" id="gsvg">
     <defs>
       <linearGradient id="thr" x1="0" y1="0" x2="1" y2="0">
