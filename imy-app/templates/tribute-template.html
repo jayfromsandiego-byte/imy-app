@@ -585,8 +585,8 @@ body.a11y-contrast .motifbg{display:none}
 .hier{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
 .periods{gap:10px;margin-bottom:28px}
 .period{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border-radius:14px;padding:12px 18px;text-transform:none;letter-spacing:0;border:1px solid var(--line);background:#fff;box-shadow:0 12px 30px -22px rgba(20,14,8,.4)}
-.period .pn{font-family:'Besley',serif;font-size:15.5px;font-weight:700;color:var(--ink)}
-.period .py{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--terra)}
+.period .pn{font-family:'Besley',serif;font-size:17.5px;font-weight:700;color:var(--ink)}
+.period .py{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--terra)}
 .period.on{background:var(--night);border-color:var(--night)}
 .period.on .pn{color:#fdf6e9}.period.on .py{color:var(--flame)}
 /* fixed jump buttons */
@@ -1068,7 +1068,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="right:-128px;bottom:10%;width:140px;;--mr:-12deg;transform:rotate(-12deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
       <div class="kick">Her story &amp; her legacy</div>
       <h2>A life, in <em>chapters</em>.</h2>
-      <p class="lede">The chapters sit on top. Open one, and the years inside unfold, with the pictures of them alongside.</p>
       <div class="hier">Chapters · the top of her story</div>
       <div class="periods" id="periods" role="tablist" aria-label="Chapters of her life"></div>
       <div class="storygrid2">
@@ -1490,10 +1489,12 @@ var CH=(T&&T.ch)||[
    ['2012','Grandchildren in the rows, learning to be gentle.'],
    ['2022','Danced at Sofia&#39;s wedding. Outdanced everyone.']],
   ph:[['laugh','the last dance'],['kitchen','the full table'],['porch','story hour on the porch']]},
- {name:'Held by all of us',yrs:'and after',mo:[
+ {name:'The Last Chapter',yrs:'her final days',mo:[
+   ['2024','Her last spring · slower walks, the same garden, every rose greeted by name.'],
+   ['2024','The family gathered close. Tea on the porch, stories until dark.'],
    ['2024','Held by all of us, with the smell of roses.'],
    ['2026','The street still leaves its porch lights on.']],
-  ph:[['garden','so long, for now'],['dawn','her garden, still blooming']]}
+  ph:[['garden','so long, for now'],['porch','the porch, those last evenings'],['dawn','her garden, still blooming']]}
 ];
 var periodsBox=document.getElementById('periods'),moBox=document.getElementById('momentsList'),car=document.getElementById('car'),carDots=document.getElementById('carDots'),carCap=document.getElementById('carCap');
 var chI=0,phI=0,auto=null;
@@ -1502,7 +1503,9 @@ function setCh(i,manual){chI=(i+CH.length)%CH.length;phI=0;
   document.querySelectorAll('.period').forEach(function(x,k){x.classList.toggle('on',k===chI)});
   var c=CH[chI];
   moBox.innerHTML=c.mo.map(function(m,k){return '<div class="mo'+(k===0?' on':'')+'" data-k="'+k+'"><span class="yr">'+m[0]+'</span><div class="tx">'+m[1]+'</div></div>'}).join('');
-  moBox.querySelectorAll('.mo').forEach(function(m){m.onclick=function(){moBox.querySelectorAll('.mo').forEach(function(x){x.classList.remove('on')});m.classList.add('on');if(!c.ph.length)return;var k=Math.min(+m.dataset.k,c.ph.length-1);setPh(k,true)}});
+  moBox.querySelectorAll('.mo').forEach(function(m){m.onclick=function(){moBox.querySelectorAll('.mo').forEach(function(x){x.classList.remove('on')});m.classList.add('on');if(!c.ph.length)return;var k=Math.min(+m.dataset.k,c.ph.length-1);setPh(k,true);
+    /* item 24 · tapping a timeline date carries you to that chapter's pictures below */
+    if(window.matchMedia&&window.matchMedia('(max-width:900px)').matches){var cb=document.querySelector('.carbox');if(cb)cb.scrollIntoView({behavior:'smooth',block:'center'})}}});
   car.innerHTML=(c.ph.length?c.ph:[null]).map(function(pp,k){if(!pp)return '<div class="ci'+(k===0?' on':'')+'" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 30%,#F7F0E1,#EFE6D2)"><div class="cc" style="position:static;text-align:center;opacity:.75">no photograph for this moment · yet</div></div>';return '<div class="ci'+(k===0?' on':'')+'"><img src="'+IMGS[pp[0]]+'" alt=""/>'+(body.dataset.tier==='plus'&&LIV[pp[0]]?'<video class="living" src="'+LIV[pp[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video>':'')+'<div class="cv"></div><div class="cc">'+pp[1]+'</div></div>'}).join('');
   carDots.innerHTML=c.ph.map(function(_,k){return '<button'+(k===0?' class="on"':'')+' aria-label="Photo '+(k+1)+'"></button>'}).join('');
   [].forEach.call(carDots.children,function(d,k){d.onclick=function(){setPh(k,true)}});
