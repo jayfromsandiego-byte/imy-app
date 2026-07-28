@@ -1394,17 +1394,27 @@ function wfind(want){
   }
   return null;
 }
+var roseN=0;
 function layFlower(want){
   var spot=wfind(want);
-  if(!spot){document.querySelector('.wr-count').innerHTML='the wreath is full tonight · <b>'+wn+'</b> hold the ring';return}
+  /* no limit (item 4): when the ring is crowded, flowers layer in — the count never stops */
+  if(!spot){
+    var la=wnorm(want);
+    if(winForbid(la))la=(Math.abs(la-WFORBID[0])<Math.abs(la-WFORBID[1]))?WFORBID[0]-2:WFORBID[1]+2;
+    spot={lane:wn%LANES.length,a:la};
+  }
   var f=WFL[wfi%WFL.length];wfi++;
   var side=wbox.clientWidth;
   var R=side*(LANES[spot.lane]+(Math.random()*0.024-0.012));
+  var scale=spot.lane===2?0.86:(spot.lane===1?0.95:1);
+  /* fit the full frame (items 5, 10): flowers stay inside the wreath box, smaller on phones */
+  var mob=side<560?0.66:1;
+  var wpx=side*f.w*scale*(0.92+Math.random()*0.16)*mob;
+  R=Math.min(R,side/2-wpx/2-2);
   var rad=spot.a*Math.PI/180;
   var x=50+Math.cos(rad)*R/side*100;
   var y=50+Math.sin(rad)*R/side*100;
-  var scale=spot.lane===2?0.86:(spot.lane===1?0.95:1);
-  var wpx=side*f.w*scale*(0.92+Math.random()*0.16);
+  x=Math.max(3,Math.min(97,x));y=Math.max(3,Math.min(97,y));
   var rot=spot.a+90+(Math.random()*26-13);
   var d=document.createElement('div');d.className='fl';
   d.style.cssText='left:'+x+'%;top:'+y+'%;width:'+wpx+'px;--r:'+rot+'deg;z-index:'+(spot.lane===1?4:3);
@@ -1413,7 +1423,10 @@ function layFlower(want){
   if(noMo()){d.style.opacity='1';d.style.transform='translate(-50%,-50%) scale(1) rotate('+rot+'deg)'}
   else requestAnimationFrame(function(){d.classList.add('in')});
   wplaced[spot.lane].push(spot.a);wn++;wreathCt.textContent=wn;
-  if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){var big=document.querySelector('.wr-big b');if(big)big.textContent=Number(j.count).toLocaleString()}if(j&&j.ok&&j.today){wn=Number(j.today);wreathCt.textContent=wn}}).catch(function(){})}catch(e){}}
+  /* the number moves the moment the flower lands (item 4); the server's truth follows */
+  var big=document.querySelector('.wr-big b');
+  if(big){roseN=(roseN||parseInt(String(big.textContent).replace(/,/g,''),10)||0)+1;big.textContent=roseN.toLocaleString()}
+  if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){roseN=Number(j.count);if(big)big.textContent=roseN.toLocaleString()}if(j&&j.ok&&j.today){wn=Number(j.today);wreathCt.textContent=wn}}).catch(function(){})}catch(e){}}
 }
 wrHero.addEventListener('click',function(e){
   if(e.target.closest('button,a,.wr-plate'))return;
