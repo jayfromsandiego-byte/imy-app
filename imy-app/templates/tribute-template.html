@@ -453,11 +453,11 @@ footer .credit{font-family:'Caveat',cursive;font-size:20px;color:var(--terra);ma
 footer .url{font-family:'Sometype Mono',monospace;font-size:11px;color:rgba(90,75,60,.75);margin-top:9px}
 .foot-plus .url{color:rgba(201,165,114,.55)}
 .frose{width:44px;margin:0 auto 8px;display:block;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
-.whisper{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:380;background:var(--night);color:#f3ece0;border:1px solid rgba(201,165,114,.45);border-radius:14px;padding:15px 20px;max-width:400px;width:92vw;box-shadow:0 24px 60px -18px rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:.3s;text-align:center}
+.whisper{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:380;background:#FAF5EC;color:var(--ink);border:1px solid #C9A572;border-radius:14px;padding:15px 30px 15px 20px;max-width:400px;width:92vw;box-shadow:0 24px 60px -18px rgba(26,19,13,.45);opacity:0;pointer-events:none;transition:.3s;text-align:center}
 .whisper.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .whisper .wt{font-size:15px;font-style:italic;line-height:1.5}
-.whisper .wp{font-family:'Sometype Mono',monospace;font-size:10.5px;color:var(--flame);margin-top:8px;letter-spacing:.06em}
-.whisper .wx{position:absolute;top:6px;right:11px;background:none;border:none;color:#9c8e76;font-size:15px;cursor:pointer}
+.whisper .wp{font-family:'Sometype Mono',monospace;font-size:10.5px;color:#A87C5F;margin-top:8px;letter-spacing:.06em}
+.whisper .wx{position:absolute;top:6px;right:11px;background:none;border:none;color:#7A6A58;font-size:15px;cursor:pointer}
 .totop{position:fixed;right:20px;bottom:20px;z-index:340;width:46px;height:46px;border-radius:50%;background:var(--night);color:var(--flame);border:1px solid rgba(244,184,96,.4);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 30px -12px rgba(0,0,0,.6)}
 .totop.show{opacity:1;pointer-events:auto}
 #pageScale{zoom:var(--ui-zoom,1)}
@@ -1138,7 +1138,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="memtabs" id="memTabs"></div>
       <div class="wallct" id="wallCt" hidden></div>
       <div class="mem-track" id="memTrack"></div>
-      <div class="mem-nav"><button id="memPrev" aria-label="Previous memory">‹</button><button id="memNext" aria-label="Next memory">›</button></div>
       <div class="wchips" id="wchips" hidden></div>
       <div class="invite rev" id="inviteCard" hidden>
         <div class="inv-flame"><svg viewBox="0 0 22 30" aria-hidden="true"><path d="M11 1 C12.4 6.5 17 8.6 17 15.6 C17 22.3 13.8 28 11 28 C8.2 28 5 22.3 5 15.6 C5 11.2 8.4 10.3 8.6 5.9 C10.1 7.7 10.3 9.9 11 9.9 C11.7 7.2 11.2 3.9 11 1Z" fill="#C9A572"/></svg></div>
@@ -1155,7 +1154,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="addingas" id="addingAs"></div>
           <p class="safekeep" id="safekeepLine" hidden>Write it now · your words are kept safe. They will join the wall the moment someone opens it for everyone.</p>
         <textarea id="memInput" placeholder="What do you remember?"></textarea>
-        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a short video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
+        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a short video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.webm,.amr,.flac" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
         <div class="chatbox" id="chatbox" style="display:none">
           <div class="ch-h">Tell me one true thing about Eleanor, and we will shape it together.<span class="mono">Closer to a friend than a form · it never writes for you</span></div>
           <div class="ch-b" id="chatBody"><div class="cmsg bot">What is one small thing you don&#39;t want to forget about her?</div></div>
@@ -1350,7 +1349,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 var body=document.body,RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function noMo(){return RM||body.classList.contains('a11y-nomotion')}
 var whisper=document.getElementById('whisper'),whisperT=document.getElementById('whisperT'),whisperP=document.getElementById('whisperP'),wT=null;
-function say(t,p){whisperT.textContent=t;whisperP.style.display=p===false?'none':'block';whisper.classList.add('show');clearTimeout(wT);wT=setTimeout(function(){whisper.classList.remove('show')},5400)}
+function say(t,p,hold){whisperT.textContent=t;whisperP.style.display=p===false?'none':'block';whisper.classList.add('show');clearTimeout(wT);if(!hold)wT=setTimeout(function(){whisper.classList.remove('show')},5400)}
 document.getElementById('whisperX').onclick=function(){whisper.classList.remove('show')};
 /* memorial book button · every plan */
 document.getElementById('bookBtn').onclick=function(){
@@ -1570,10 +1569,10 @@ function memCard(m){
    +'<div class="cdrawer">'+(cms||'<div class="c1" style="color:var(--ink-soft)">Be the first to leave a word.</div>')
    +'<div class="addc2"><input placeholder="Leave a word&hellip;"/><button type="button">Post</button></div></div></div>'}
 function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g===curG});
-  track.className='memgrid';
-  var pages=Math.max(1,Math.ceil(list.length/4));memPage=Math.max(0,Math.min(memPage,pages-1));
-  track.innerHTML=list.slice(memPage*4,memPage*4+4).map(memCard).join('');
-  document.querySelector('.memkeep').textContent='page '+(memPage+1)+' of '+pages+' · every memory is kept · nothing scrolls away';
+  track.className='mem-track';
+  track.innerHTML=list.map(memCard).join('');
+  track.scrollLeft=0;
+  document.querySelector('.memkeep').textContent=list.length+' '+(list.length===1?'memory':'memories')+' · swipe to see more · every memory is kept';
   document.querySelectorAll('.memtab').forEach(function(tb,ti){var g=GROUPS[ti][0];var n2=g==='all'?MEMS.length:MEMS.filter(function(m){return m.g===g}).length;var bb=tb.querySelector('b');if(bb)bb.textContent=n2});
   wireLikes(track);
   track.querySelectorAll('[data-cmt]').forEach(function(btn){btn.addEventListener('click',function(){
@@ -1598,8 +1597,6 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
       var d=document.createElement('div');d.className='c1';d.innerHTML='<b>'+esc(ID.fn)+'</b><span class="r">'+esc(ID.relLabel)+'</span><br>'+t.replace(/</g,'&lt;');bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value=''})})});
 }
 renderMems();
-document.getElementById('memNext').onclick=function(){memPage++;renderMems()};
-document.getElementById('memPrev').onclick=function(){memPage--;renderMems()};
 /* a voice memory · Plus · a voicemail kept, a story told aloud; it waits for the family like any other memory */
 /* a photograph rides with a memory · pinned to the board when the family says yes */
 var PHOTO={url:''};
@@ -1677,7 +1674,7 @@ document.getElementById('shareBtn').onclick=function(){
           VOICE.url='';if(vBtn)vBtn.textContent='＋ Add a voice memory';
           PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photograph';
           VIDEO.url='';if(vidBtn)vidBtn.textContent='＋ Add a short video';
-          say('Kept, '+ID.fn+'. Your memory goes to the family first · it joins the wall the moment they welcome it in.',false)}
+          say('Your memory has been sent for approval by the page’s admin. Once approved, it will join the memory board.',false,true)}
         else say('That didn&rsquo;t save. Give it a moment and try again · nothing you wrote is lost.',false)})
       .catch(function(){btn.disabled=false;btn.textContent=old;
         say('That didn&rsquo;t save. Give it a moment and try again · nothing you wrote is lost.',false)});

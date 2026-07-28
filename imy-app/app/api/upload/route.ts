@@ -9,7 +9,10 @@ import { rateLimit, clientIp } from "@/lib/rateLimit";
 export const runtime = "nodejs";
 
 const MAX_BYTES = 25 * 1024 * 1024; // 25MB per file through this proxied route
-const SAFE_MEDIA = /^(image\/(jpeg|png|webp|gif|heic|heif)|audio\/(mpeg|mp4|wav|x-m4a|aac|ogg|webm)|video\/(mp4|webm|quicktime))$/i;
+// Audio welcomes every common recording a family might hold (mp3, m4a, wav,
+// ogg/opus, flac, amr, aiff) — a voicemail should never be refused for its
+// container. Formats a browser cannot play are normalized by the media worker.
+const SAFE_MEDIA = /^(image\/(jpeg|png|webp|gif|heic|heif)|audio\/(mpeg|mp3|mp4|x-m4a|m4a|aac|x-aac|wav|x-wav|wave|vnd\.wave|ogg|opus|webm|flac|x-flac|3gpp|amr|aiff|x-aiff)|video\/(mp4|webm|quicktime))$/i;
 
 export async function POST(req: NextRequest) {
   // Visitors attach photographs to memories, so this stays public — but gently
