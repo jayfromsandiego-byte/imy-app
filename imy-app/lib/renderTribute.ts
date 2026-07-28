@@ -343,7 +343,7 @@ export function renderTribute(template: string, t: Tribute): string {
   const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
     ? `<div class="svcrow"><div class="svcrow-in">
   <span class="lab">Service</span>
-  <span class="what">${esc([fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "))}${t.service.place ? ` <span class="mono">· ${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
+  <span class="what"><span class="svc-when" style="display:block">${esc([fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "))}</span>${t.service.place ? `<span class="mono" style="display:block;margin-top:2px">${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
   ${t.service.date ? `<button class="mini" id="shareDateBtn" type="button" style="text-decoration:underline">Share the date</button>` : ""}
   </div></div>`
     : "";
@@ -384,7 +384,7 @@ export function renderTribute(template: string, t: Tribute): string {
     ? `${Math.floor(filmData.duration / 60)}:${String(Math.round(filmData.duration % 60)).padStart(2, "0")}`
     : "";
   const filmInvite = filmData && tier === "free"
-    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#6E6156">This is a first glimpse. The whole film of ${esc(fpn.pos)} life — every chapter, ${esc(fpn.pos)} living pictures woven in — comes with the full memorial. <a href="/pricing" style="color:#A87C5F">When you are ready.</a></p>`
+    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#6E6156">This is a first glimpse. The whole film of ${esc(fpn.pos)} life comes with the full memorial. <a href="/pricing" style="color:#A87C5F">When you are ready.</a></p>`
     : "";
   const filmSection = filmData
     ? `
@@ -393,11 +393,12 @@ export function renderTribute(template: string, t: Tribute): string {
       <img class="mg" style="right:-124px;top:12%;width:132px;--mr:-10deg;transform:rotate(-10deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
       <div class="kick">The film</div>
       <h2>The film of <em>${esc(fpn.pos)} life</em>.</h2>
-      <p class="lede">${esc(first)}&rsquo;s photographs, ${esc(fpn.pos)} chapters, and the words of everyone who loved ${esc(fpn.obj)} &mdash; woven into a few quiet minutes. Press play when you are ready.</p>
-      <div style="position:relative;max-width:900px;margin:26px auto 0;background:linear-gradient(180deg,#241a10,#171009);border-radius:12px;padding:18px 18px 15px;box-shadow:0 46px 100px -34px rgba(20,10,2,.75)">
+      <p class="lede">A short film made from ${esc(fpn.pos)} photographs and memories.</p>
+      <img class="mg" style="left:-118px;top:18%;width:126px;--mr:-11deg;transform:rotate(-11deg)" src="/art/rose2-6094a3.png" alt=""/>
+      <img class="mg" style="right:-112px;bottom:6%;width:112px;--mr:8deg;transform:rotate(8deg) scaleX(-1)" src="/art/mum2-34d609.png" alt=""/>
+      <div style="position:relative;max-width:900px;margin:26px auto 0;border:1.5px solid #A87C5F;border-radius:12px;padding:8px;background:#FFFDF6;box-shadow:0 26px 60px -30px rgba(60,38,10,.35)">
         <span class="tape4" style="top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg)"></span>
         <video controls playsinline preload="metadata"${filmData.poster ? ` poster="${esc(filmData.poster)}"` : ""} src="${esc(filmData.url)}" style="display:block;width:100%;border-radius:8px;background:#0e0905" aria-label="The film of ${esc(first)}&rsquo;s life"></video>
-        <div style="margin-top:11px;text-align:center;font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#c8a97a">${filmDur ? `${filmDur} &middot; ` : ""}woven with love from ${esc(fpn.pos)} photographs</div>
       </div>
       ${filmInvite}
     </section>`
