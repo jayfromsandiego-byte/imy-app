@@ -31,9 +31,9 @@ const ok = (name, cond) => { cond ? pass++ : (fail++, console.log("  FAIL", name
   ok("film sits before the story section", html.indexOf('id="film"') < html.indexOf('id="story"'));
   ok("film sits inside main, under the wreath header", html.indexOf("</header>") < html.indexOf('id="film"'));
   ok("heading speaks her pronouns", html.includes("The film of <em>her life</em>"));
-  ok("lede speaks her name", html.includes("Rose&rsquo;s photographs"));
+  ok("lede is one plain sentence in her pronouns (item 19)", html.includes("A short film made from her photographs and memories."));
   ok("poster carried", html.includes('poster="https://x.example/poster.jpg"'));
-  ok("duration line reads 1:40", html.includes("1:40 &middot;"));
+  ok("the under-video duration/woven line is retired (item 20)", !html.includes("woven with love from") && !html.includes("1:40 &middot;"));
   ok("no autoplay anywhere in the film room", !/autoplay/.test(html.slice(html.indexOf('id="film"'), html.indexOf('id="story"'))));
   ok("shelf keeps only the tape", html.includes("tape1.mp4") && !JSON.stringify(html.match(/"vids":\[[^\]]*\]/)?.[0] || "").includes("film.mp4"));
   ok("arch never takes the film", !html.includes('class="living" src="https://x.example/film.mp4"'));
@@ -44,7 +44,7 @@ const ok = (name, cond) => { cond ? pass++ : (fail++, console.log("  FAIL", name
   const html = renderTribute(template, { ...base, tier: "free", film: { ...base.film, variant: "teaser", duration: 33 } });
   ok("free page renders the film room too", html.includes('id="film"'));
   ok("free page carries the quiet invitation", html.includes("first glimpse") && html.includes("/pricing"));
-  ok("teaser duration reads 0:33", html.includes("0:33 &middot;"));
+  ok("the teaser under-video line is retired too (item 20)", !html.includes("0:33 &middot;"));
 }
 // a refunded full film stays kept but rests from the free public page
 {

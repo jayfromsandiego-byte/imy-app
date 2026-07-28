@@ -41,13 +41,13 @@ export default function ContactPage({ searchParams }: { searchParams?: { subject
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
       <div className="wrap">
         <a className="home" href="/">← I Miss You Memorial</a>
-        <div className="wm">I <em>Miss</em> You Memorial</div>
+        <div className="wm"><img src="/brand/imy-mark.svg" alt="" style={{height:26,width:"auto",verticalAlign:-5,marginRight:9}} />I <em>Miss</em> You Memorial</div>
         <h1>Write to us.</h1>
         <div className="sub">a person reads every note · usually within a day</div>
 
         {sent ? (
           <div className="sent">
-            Your note is with us. We will write back soon — usually within a day, often sooner.
+            Your note is with us. We will write back soon, usually within a day, often sooner.
             Thank you for trusting us with it.
           </div>
         ) : null}

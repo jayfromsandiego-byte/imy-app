@@ -103,7 +103,7 @@ for (const [name, needle] of sinkChecks) ok(`${name} calls esc() at the seam`, t
 
 // ── nothing that was already safe got a second escape pass ──────────────────
 ok("lightbox contributor line still uses textContent, untouched", template.includes("W.textContent='Contributed by '+p.who+(p.rel?' · '+p.rel:'')"));
-ok("the say() toast still uses textContent, untouched", template.includes("function say(t,p){whisperT.textContent=t"));
+ok("the say() toast still uses textContent, untouched", template.includes("function say(t,p,hold){whisperT.textContent=t"));
 
 console.log(`\n${pass} passed · ${fail} failed`);
 process.exit(fail ? 1 : 0);

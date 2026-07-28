@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   // writer, closed to a script (July 12 audit).
   {
     const { allowed } = rateLimit(`assist:${clientIp(req)}`, 30, 600_000);
-    if (!allowed) return NextResponse.json({ ok: false, error: "A quiet moment, please — try again shortly." }, { status: 429 });
+    if (!allowed) return NextResponse.json({ ok: false, error: "Please try again in a moment." }, { status: 429 });
   }
   let body: any = {};
   try { body = await req.json(); } catch {}

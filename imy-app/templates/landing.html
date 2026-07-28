@@ -369,6 +369,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .mwhero .tornbar .mw-nav{position:static;padding:0;position:relative}
 .mwhero .tornbar .mw-b{color:var(--ink);text-shadow:none}.mwhero .tornbar .mw-b em{color:var(--terra)}
 .mwhero .tornbar .mw-links a{color:var(--ink-soft);text-shadow:none}.mwhero .tornbar .mw-links a:hover{color:var(--ink)}
+/* item 1 · on hover, brown paint sweeps in behind the label, left to right, and the label turns white on brown */
+.mwhero .mw-links a{position:relative;z-index:1}
+.mwhero .mw-links a::before{content:"";position:absolute;inset:2px -5px;z-index:-1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 34' preserveAspectRatio='none'%3E%3Cpath d='M4 7 C28 2 92 2 116 6 C119 13 119 21 116 28 C88 32 30 32 5 28 C2 21 2 13 4 7 Z' fill='%233f2c1a'/%3E%3C/svg%3E") no-repeat center/100% 100%;transform:scaleX(0);transform-origin:left center;transition:transform .26s cubic-bezier(.2,.7,.2,1);opacity:.97}
+.mwhero .mw-links a:hover::before,.mwhero .mw-links a:focus-visible::before{transform:scaleX(1)}
+.mwhero .mw-links a:hover,.mwhero .mw-links a:focus-visible,.mwhero .tornbar .mw-links a:hover,.mwhero .tornbar .mw-links a:focus-visible{color:#fff}
+@media(prefers-reduced-motion:reduce){.mwhero .mw-links a::before{transition:none}}
 .mwhero .tornbar .mw-navcta{background:var(--terra);color:#fff;border-color:transparent;box-shadow:0 8px 18px -10px rgba(120,80,54,.7)}
 .lp{position:relative;z-index:2;font-family:'Besley',Georgia,serif}
 .lp .rev{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
@@ -639,7 +645,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
 .lp-example .excap .nm{font-weight:700;font-size:22px;color:#2C2520}
 .lp-example .excap .nm em{font-style:italic;color:#A87C5F}
 .lp-example .excap .dt{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:#8a7c6d;text-transform:uppercase;margin-top:5px}
-.lp-example .exslot{position:absolute;width:56px;height:56px;pointer-events:none;z-index:4}
+.lp-example .exslot{position:absolute;width:18.6%;height:18.6%;pointer-events:none;z-index:4}
 .lp-example .exslot img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 9px rgba(0,0,0,.45))}
 .lp-example .exey{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#A87C5F}
 .lp-example h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.12;letter-spacing:-.01em;color:#2C2520;text-align:left;margin:10px 0 0}
@@ -681,6 +687,37 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
   .lp-example .exlay,.lp-example .exvisit{justify-content:center;white-space:nowrap;padding-left:16px;padding-right:16px}
 }
 @media (prefers-reduced-motion: reduce){.lp-example .exslot img{animation:none!important}.lp-example .exlay,.lp-example .exvisit{transition:none}}
+
+/* ═══ item 49 · global type pass: every small font grows; display type untouched ═══ */
+.lp-step p{font-size:16px;max-width:26ch}
+.lp-t li{font-size:15.5px}
+.lp-t .alt{font-size:15px}
+.lp-t .nm{font-size:21px}
+.lp-compare summary{font-size:14px}
+.lp-crow{font-size:14.5px}
+.lp-crow.h{font-size:11.5px}
+.lp-faq .a{font-size:16px}
+.lp-c q{font-size:16px}
+.lp-c .who{font-size:20px}
+.pledge{font-size:15px}
+.lp .ey{font-size:13.5px}
+.lp-fed .m{font-size:15px}
+.lp-fed .m .hh{font-size:14px}
+.gw-side li{font-size:15px}
+footer .pl,.lp-foot .pl{font-size:13.5px}
+.tier .pr .per,.tier .alt{font-size:14px}
+.vigil .count{font-size:14px}
+.lp-mq .run{font-size:14px}
+.mwhero .mw-counter{font-size:14px}
+/* item 55 · phones: big titles and section headers center; body content stays left */
+@media(max-width:820px){
+  .lp h2,.lp .ey{text-align:center}
+  .lp-feature .fq q,.lp-feature .fq .who,.lp-c q,.lp-c .who,.lp-faq summary,.lp-faq .a{text-align:left}
+}
+/* item 39 · phones never zoom into a field: form text holds 16px */
+@media(max-width:820px){
+  input[type="text"],input[type="email"],input[type="tel"],input:not([type]),textarea,select{font-size:16px!important}
+}
 </style>
 </head>
 <body>
@@ -696,7 +733,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
   <div class="mw-spot" aria-hidden="true"></div>
   <div class="tornbar"><nav class="mw-nav" aria-label="Primary">
     <span class="mw-b"><img src="/brand/imy-mark.svg" alt="" style="height:20px;width:auto;vertical-align:-4px;margin-right:8px">I <em>Miss</em> You Memorial</span>
-    <span class="mw-links"><a href="#memory">Remember</a><a href="#example">Example</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></span>
+    <span class="mw-links"><a href="#memory">Remember</a><a href="/sites/eleanor" target="_blank" rel="noopener">Example</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></span>
     <a class="mw-login" href="/signin">Log in</a>
     <a class="mw-navcta" href="/onboarding">Start a tribute</a>
   </nav></div>
@@ -708,7 +745,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
       <p class="mw-ld">A beautiful place to hold their photos, their stories, and the voice of everyone who loved them.</p>
       <div class="mw-cta">
         <a class="mw-bs" href="/onboarding">Start a tribute</a>
-        <a class="mw-bg2" href="#example">See an example</a>
+        <a class="mw-bg2" href="/sites/eleanor" target="_blank" rel="noopener">See an example</a>
       </div>
       <span class="mw-sig"> · with all our love</span>
       <span class="mw-counter"><b id="trbNum">10,214</b> tributes · and counting</span>
@@ -732,54 +769,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
     </div>
   </div></section>
 
-  <section class="lp-example" id="example">
-    <div class="exlight" aria-hidden="true"></div>
-    <div class="in">
-      <div class="exhang rev" id="exHang">
-        <div class="exswing" id="exSwing">
-          <svg class="exstrings" viewBox="0 0 100 84" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M50 6 L1.5 84"/><path d="M50 6 L98.5 84"/></svg>
-          <figure class="exframe">
-            <div class="exgilt"><div class="exmat">
-              <div class="exgrid">
-                <div class="exside">
-                  <div class="exwr" id="exWr">
-                    <img class="wreath" loading="lazy" src="/art/wreath2-64e82a.png" alt="A green foliage wreath, flowered by the people who loved her">
-                    <div class="exarch"><span class="exil">In loving memory</span><img loading="lazy" src="/art/6c8f0124-0c96-4644-9aea-16af7edeb8c9-98a86b.png" alt="Eleanor Margaret Hayes"></div>
-                  </div>
-                  <div class="excap">
-                    <div class="nm">Eleanor Margaret <em>Hayes</em></div>
-                    <div class="dt">1948 · 2024 · Half Moon Bay</div>
-                  </div>
-                </div>
-                <div class="exmain">
-                  <div class="exey">See an example</div>
-                  <h2>No one should be<br>remembered <em>alone</em>.</h2>
-                  <p class="exsub">Invite everyone who loved them. Grief is lighter when it is carried together.</p>
-                  <p class="exline"><b id="exCt">1,284</b> flowers since her page began · lilies for peace · roses for love</p>
-                </div>
-                <div class="exinfo">
-                  <div class="excomposer">
-                    <div class="lab">Leave a memory</div>
-                    <input class="field" type="text" aria-label="Leave a memory" placeholder="You taught me to ride a bike on Maple St">
-                  </div>
-                  <div class="exmem">
-                    <div class="q">“You taught me to drive on the back roads, laughing the whole way.”</div>
-                    <div class="who">Daniel, her grandson</div>
-                  </div>
-                  <div class="exacts">
-                    <button class="exlay" id="exBtn"><img src="/art/lily2-f5e2ef.png" alt="" aria-hidden="true"> Lay a flower</button>
-                    <a class="exvisit" href="/sites/example" target="_blank" rel="noopener noreferrer">Visit Eleanor's tribute</a>
-                  </div>
-                  <div class="extaste">A sample page, composed with love · yours will be theirs</div>
-                </div>
-              </div>
-            </div></div>
-          </figure>
-        </div>
-        <span class="expin" aria-hidden="true"></span>
-      </div>
-    </div>
-  </section>
+  <!-- item 57 · the framed invitation section is retired; the Example door opens the real page -->
 
   <section class="lp-how" id="how"><div class="in rev">
     <div class="ey">How it works</div>
@@ -873,11 +863,11 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
     <details open><summary>Is it really free?<span class="pl">+</span></summary><div class="a">Yes. A complete tribute page stays online forever, free, with no credit card to begin. Plus adds every photo and video, their voice, and living pictures whenever you are ready.</div></details>
     <details><summary>Will it really be kept forever?<span class="pl">+</span></summary><div class="a">That is our promise. Every tribute is backed up and funded to stay online for generations, so their page is always there when you need it.</div></details>
     <details><summary>What happens if I stop paying for Plus?<span class="pl">+</span></summary><div class="a">The page stays. The premium features simply rest until you return. We will never take a memory offline or charge a family to keep one alive.</div></details>
-    <details><summary>Can I give Plus to a family, as a gift?<span class="pl">+</span></summary><div class="a">Yes — it is given as often as it is bought. On their tribute page, choose “Give this page”: $197, once, no account needed. The wall opens for the whole family, every waiting memory comes home, and if you wish, a quiet line remembers your gift.</div></details>
+    <details><summary>Can I give Plus to a family, as a gift?<span class="pl">+</span></summary><div class="a">Yes. It is given as often as it is bought. On their tribute page, choose “Give this page”: $197, once, no account needed. The wall opens for the whole family, every waiting memory comes home, and if you wish, a quiet line remembers your gift.</div></details>
     <details><summary>Can family and friends add their own photos and memories?<span class="pl">+</span></summary><div class="a">Yes. Share one link and everyone who loved them can add photos, videos, and messages. The page grows together over time.</div></details>
     <details><summary>Who can see the page, and is my information private?<span class="pl">+</span></summary><div class="a">You decide who sees it · public, unlisted, or protected with a password, on every plan, free included. Your photos and words stay private and always yours to export. We never sell your data.</div></details>
     <details><summary>Can I get a printed keepsake book?<span class="pl">+</span></summary><div class="a">Yes. A printed linen keepsake book and a framed portrait come with Concierge, and can be added to any page.</div></details>
-    <details><summary>How do I begin?<span class="pl">+</span></summary><div class="a">Add their name and a favorite photo, and their page exists from that moment. It takes only a few quiet minutes.</div></details>
+    <details><summary>How do I begin?<span class="pl">+</span></summary><div class="a">Add their name and a favorite photo, and their page exists from that moment. It takes a few minutes.</div></details>
   </div></section>
 
   <section class="lp-band lp-final" id="final">
@@ -1051,7 +1041,7 @@ document.addEventListener('keydown', function(e) {
   function seeded(p){return seed.some(function(s){return s[0]===p[0]&&s[1]===p[1]})}
   function lay(pos,anim){
     var d=document.createElement('div');d.className='exslot';
-    d.style.left='calc('+pos[0]+'% - 28px)';d.style.top='calc('+pos[1]+'% - 10px)';
+    d.style.left=pos[0]+'%';d.style.top=pos[1]+'%';d.style.transform='translate(-50%,-18%)';
     var im=document.createElement('img');im.src=pick();im.alt='';
     if(anim&&!RM)im.style.animation='exBloom .7s cubic-bezier(.2,1.4,.4,1) both';
     d.appendChild(im);wr.appendChild(d);
@@ -1134,6 +1124,11 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
 .mqpanel a{display:block;padding:13px 6px;min-height:44px;box-sizing:border-box;font-size:17px;color:#2C2520;text-decoration:none;text-shadow:none;border-bottom:1px dashed rgba(168,124,95,.22);font-family:'Besley',serif;font-weight:600}
 .mqpanel a:last-child{border-bottom:none}
 @media(min-width:861px){.mqpanel{display:none!important}}
+/* item 50 · the mobile header steps away as you read down and slides back the moment you scroll up */
+@media(max-width:860px){
+  .mwhero .tornbar.tb-float{position:fixed!important;top:0!important;left:0;right:0;z-index:400;transition:transform .32s ease;will-change:transform}
+  .mwhero .tornbar.tb-hide{transform:translateY(-108%)}
+}
 @media(max-width:860px){
   /* the whole burger range stacks like a phone — between 681 and 860 the bar
      otherwise becomes a centered flex item and shoves the hero card off-screen */
@@ -1188,9 +1183,9 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .lp-example .exframe{padding:10px}
   .lp-example .exmat{padding:20px 16px 18px}
   .lp-example .exgrid{gap:14px}
-  .lp-example .exwr{width:auto;aspect-ratio:auto;margin:0}
-  .lp-example .exwr .wreath{display:none}
-  .lp-example .exarch{position:static;transform:none;width:80px;aspect-ratio:3/4;border-width:4px}
+  /* item 56 · the wreath and the arch stay together on phones, flowers scaled to the ring */
+  .lp-example .exwr{width:150px;aspect-ratio:1/1;margin:0;flex:0 0 auto}
+  .lp-example .exarch{border-width:4px}
   .lp-example .exil{display:none}
   .lp-example .exside{display:flex;align-items:center;gap:14px}
   .lp-example .excap{text-align:left;margin-top:0}
@@ -1229,6 +1224,26 @@ b.onclick=function(){set(!panel.classList.contains('mqopen'))};
 panel.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
 addEventListener('resize',function(){if(innerWidth>860)set(false)});
+})();
+/* item 50 · on phones the header hides as you scroll down and returns from anywhere
+   on the way up; the open menu closes the moment the page moves, so it never
+   hovers over nothing */
+(function(){
+var bar=document.querySelector('.mwhero .tornbar'),hero=document.querySelector('.mwhero');if(!bar||!hero)return;
+var mq=window.matchMedia('(max-width:860px)');
+var lastY=window.pageYOffset;
+function closeMenu(){var p=document.querySelector('.mqpanel.mqopen');if(p){p.classList.remove('mqopen');var b=document.querySelector('.mqburger');if(b)b.setAttribute('aria-expanded','false')}}
+function ground(){bar.classList.remove('tb-float','tb-hide');hero.style.paddingTop=''}
+addEventListener('scroll',function(){
+  var y=window.pageYOffset,dy=y-lastY;lastY=y;
+  if(Math.abs(dy)>1)closeMenu();
+  if(!mq.matches){ground();return}
+  var bh=bar.offsetHeight||120;
+  if(y<=bh){ground();return}
+  if(!bar.classList.contains('tb-float')){hero.style.paddingTop=bh+'px';bar.classList.add('tb-float','tb-hide')}
+  if(dy>2)bar.classList.add('tb-hide');else if(dy<-2)bar.classList.remove('tb-hide');
+},{passive:true});
+addEventListener('resize',function(){if(!mq.matches)ground()});
 })();
 /* the counter · tributes made so far: counts up once as the note settles, then
    breathes — a few quiet ticks a visit, never theatre. Update BASE as the real

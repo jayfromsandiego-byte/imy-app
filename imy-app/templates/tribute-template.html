@@ -368,8 +368,8 @@ body[data-tier="free"] .piece.isplus .plock{display:block}
 .shelfview{max-width:900px;margin:0 auto;background:linear-gradient(180deg,#241a10,#171009);border-radius:10px;padding:34px 34px 38px;box-shadow:0 46px 100px -34px rgba(20,10,2,.75)}
 .shelfrow{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-bottom:14px;border-bottom:8px solid #3a2a18;margin-bottom:22px}
 .tapeobj{position:relative;background:linear-gradient(180deg,#2e2018,#1d130c);border-radius:8px;padding:11px 12px 14px;box-shadow:0 18px 36px -14px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.07);cursor:pointer;transition:transform .2s}
-.tapeobj:hover{transform:translateY(-5px)}
-.tapeobj .win{position:relative;height:52px;border-radius:3px;overflow:hidden;background:#0e0905}
+.tapeobj:hover{transform:translateY(-6px) scale(1.07)}
+.tapeobj .win{position:relative;aspect-ratio:16/9;height:auto;border-radius:3px;overflow:hidden;background:#0e0905}
 .tapeobj .win img{width:100%;height:100%;object-fit:cover;opacity:.75}
 .tapeobj .win::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 4px)}
 .tapeobj .lbl{background:#f6eed9;border-radius:2px;padding:6px 10px;margin-top:8px}
@@ -453,11 +453,11 @@ footer .credit{font-family:'Caveat',cursive;font-size:20px;color:var(--terra);ma
 footer .url{font-family:'Sometype Mono',monospace;font-size:11px;color:rgba(90,75,60,.75);margin-top:9px}
 .foot-plus .url{color:rgba(201,165,114,.55)}
 .frose{width:44px;margin:0 auto 8px;display:block;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
-.whisper{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:380;background:var(--night);color:#f3ece0;border:1px solid rgba(201,165,114,.45);border-radius:14px;padding:15px 20px;max-width:400px;width:92vw;box-shadow:0 24px 60px -18px rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:.3s;text-align:center}
+.whisper{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:380;background:#FAF5EC;color:var(--ink);border:1px solid #C9A572;border-radius:14px;padding:15px 30px 15px 20px;max-width:400px;width:92vw;box-shadow:0 24px 60px -18px rgba(26,19,13,.45);opacity:0;pointer-events:none;transition:.3s;text-align:center}
 .whisper.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .whisper .wt{font-size:15px;font-style:italic;line-height:1.5}
-.whisper .wp{font-family:'Sometype Mono',monospace;font-size:10.5px;color:var(--flame);margin-top:8px;letter-spacing:.06em}
-.whisper .wx{position:absolute;top:6px;right:11px;background:none;border:none;color:#9c8e76;font-size:15px;cursor:pointer}
+.whisper .wp{font-family:'Sometype Mono',monospace;font-size:10.5px;color:#A87C5F;margin-top:8px;letter-spacing:.06em}
+.whisper .wx{position:absolute;top:6px;right:11px;background:none;border:none;color:#7A6A58;font-size:15px;cursor:pointer}
 .totop{position:fixed;right:20px;bottom:20px;z-index:340;width:46px;height:46px;border-radius:50%;background:var(--night);color:var(--flame);border:1px solid rgba(244,184,96,.4);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 30px -12px rgba(0,0,0,.6)}
 .totop.show{opacity:1;pointer-events:auto}
 #pageScale{zoom:var(--ui-zoom,1)}
@@ -561,7 +561,8 @@ body.a11y-contrast .motifbg{display:none}
 .arr-nm em::after{display:none!important}
 /* nav visible longer */
 @media(max-width:1180px){.nav{display:flex;flex-wrap:wrap}}
-@media(max-width:700px){.nav{display:none}}
+/* item 43 · on phones the bottom tab bar is the map; the top in-page nav rests */
+@media(max-width:820px){.nav{display:none}}
 /* meadow arrival */
 .meadow{position:relative;max-width:1120px;margin:0 auto;height:540px;border-radius:22px;overflow:hidden;box-shadow:0 40px 100px -40px rgba(50,40,14,.45),inset 0 0 0 1px rgba(201,165,114,.35)}
 .meadow .sky{position:absolute;inset:0;background:linear-gradient(180deg,#F6E9C9 0%,#F1DFB4 34%,#E4D9A8 52%,#C9CD96 64%,#9EB278 72%)}
@@ -585,8 +586,8 @@ body.a11y-contrast .motifbg{display:none}
 .hier{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
 .periods{gap:10px;margin-bottom:28px}
 .period{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border-radius:14px;padding:12px 18px;text-transform:none;letter-spacing:0;border:1px solid var(--line);background:#fff;box-shadow:0 12px 30px -22px rgba(20,14,8,.4)}
-.period .pn{font-family:'Besley',serif;font-size:15.5px;font-weight:700;color:var(--ink)}
-.period .py{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--terra)}
+.period .pn{font-family:'Besley',serif;font-size:17.5px;font-weight:700;color:var(--ink)}
+.period .py{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--terra)}
 .period.on{background:var(--night);border-color:var(--night)}
 .period.on .pn{color:#fdf6e9}.period.on .py{color:var(--flame)}
 /* fixed jump buttons */
@@ -708,7 +709,7 @@ body[data-tier="free"] .keepnote::after{content:" · the tape shelf opens with p
 .arrive{padding:10px 0 0;background:linear-gradient(180deg,#F9F2E0,var(--cream) 70%)}
 .arrive::before,.arrive::after{display:none}
 .wrhero{position:relative;display:flex;flex-direction:column;align-items:center;padding:2px 2% 42px;cursor:crosshair}
-.wreathbox{position:relative;width:min(840px,95vw);aspect-ratio:1/1}
+.wreathbox{position:relative;width:min(840px,95vw,max(430px,calc(100svh - 300px)));aspect-ratio:1/1}
 .wreathimg{position:absolute;inset:0;width:100%;height:100%;z-index:1;filter:drop-shadow(0 26px 40px rgba(60,50,18,.28))}
 .wr-arch{position:absolute;left:50%;top:47%;transform:translate(-50%,-52%);width:42%;aspect-ratio:300/380;border-radius:999px 999px 12px 12px;overflow:hidden;z-index:2;box-shadow:0 24px 54px -18px rgba(60,38,10,.5),0 0 0 9px #FFFDF6,0 0 0 10px rgba(138,106,52,.32)}
 .wr-arch img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 28s ease-in-out infinite alternate}
@@ -729,7 +730,7 @@ body[data-tier="free"] .keepnote::after{content:" · the tape shelf opens with p
 .wr-count b{color:#8a3a3a;font-variant-numeric:tabular-nums}
 .wr-total{position:relative;z-index:9;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:11px;text-align:center}
 .wr-total b{color:var(--terra);font-variant-numeric:tabular-nums}
-@media(max-width:720px){.wreathbox{width:96vw}.wr-plate{padding:12px 20px 14px}}
+@media(max-width:720px){.wreathbox{width:min(96vw,max(300px,calc(100svh - 320px)))}.wr-plate{padding:12px 20px 14px}}
 
 /* ===== v9.2 · the five touches ===== */
 /* T3 torn seams + sheet tints */
@@ -764,6 +765,10 @@ body.a11y-nomotion .tick9 .run{animation:none}
 /* T8 · the BIG living number */
 .wr-big{font-family:'Sometype Mono',monospace;font-weight:700;font-size:clamp(30px,4.2vw,48px);letter-spacing:.02em;color:var(--terra);font-variant-numeric:tabular-nums;line-height:1;margin-top:16px}
 .wr-biglab{font-family:'Sometype Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+/* item 12 · the presence bubble keeps watch from the top left corner */
+.wrhero .presence{position:absolute;top:12px;left:14px;margin-top:0;z-index:9}
+/* item 13 · a zero is a beginning, not a bug */
+.wr-big.iszero b{font-size:24px;color:#B7A48B;background:rgba(243,236,221,.92);border:1px solid #E4D9C4;border-radius:100px;padding:7px 20px;display:inline-block;line-height:1}
 .presence{font-size:12.5px;font-weight:700;margin-top:12px}
 .presence i{width:10px;height:10px}
 /* global small-text bump */
@@ -928,9 +933,20 @@ body.a11y-nomotion .living{opacity:0!important}
 .tabbar{display:none}
 @media(max-width:820px){
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:360;display:flex;background:rgba(251,247,239,.97);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-  .tabbar a{flex:1;min-height:54px;display:flex;align-items:center;justify-content:center;font-family:'Besley',serif;font-size:14.5px;color:var(--ink-soft);text-decoration:none;border-top:2px solid transparent}
+  .tabbar a{flex:1;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:'Besley',serif;font-size:12.5px;color:var(--ink-soft);text-decoration:none;border-top:2px solid transparent;padding:6px 0 5px}
+  .tabbar a svg{width:20px;height:20px;display:block}
   .tabbar a.on{color:var(--accent-deep);border-top-color:var(--accent)}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  /* items 54 + 57 · the mobile tribute header: logo and log in on one plane,
+     Add a Memory and Share the row beneath, splitting it half and half */
+  .tb-in{display:grid;grid-template-columns:1fr auto;grid-template-areas:"brand login" "actions actions";gap:10px;align-items:center}
+  .tb-in .brand{grid-area:brand;justify-self:start}
+  #loginTop{grid-area:login;justify-self:end}
+  .tb-in .actions{grid-area:actions;display:flex;gap:8px;margin-left:0;width:100%}
+  #addMemTop,#shareTop{flex:1 1 50%;justify-content:center;text-align:center}
+  #addMemTop{order:1}
+  #shareTop{order:2}
+  #bookBtn{display:none}
   .a11y-fab{bottom:calc(74px + env(safe-area-inset-bottom,0px))!important}
   .galgrid{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:14px;padding:6px 2px 16px;grid-template-columns:none!important}
   .galgrid .print{flex:0 0 74vw;max-width:340px;scroll-snap-align:center;transform:none!important}
@@ -1005,6 +1021,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .preview-in>*{flex:none}
 }
 </style>
+<style>
+/* ═══ item 44 · the family/community divide ═══
+   The family-curated top of the page wears the darker brown; from the memories
+   section down the page turns white, where anyone who loved them may add. */
+.arrive{background:linear-gradient(180deg,#3f2c1a 0%,#46331f 72%,var(--cream) 100%)}
+.arrive .wr-big b{color:#E8CFA4}
+.arrive .presence{background:rgba(250,245,236,.94)}
+.arrive .wr-big.iszero b{background:rgba(250,245,236,.94);color:#8a7c6d}
+#memories.sheetdeep{background:#FFFFFF}
+/* item 55 · phones: big titles and section headers center; names and memories stay left */
+@media(max-width:820px){
+  .section h2,.keep-head h2,.section .kick,.keep-head .kick,.section .hier,.section .lede{text-align:center}
+  .mem-card,.cdrawer,.truth,.mo,.share{text-align:left}
+}
+/* item 39 · phones never zoom into a field: form text holds 16px */
+@media(max-width:820px){
+  input[type="text"],input[type="email"],input:not([type]),textarea,select{font-size:16px!important}
+}
+</style>
 {{TRIBUTE_BOOT}}
 </head>
 <body data-tier="{{TIER}}" data-theme="quiet" data-motif="">
@@ -1014,9 +1049,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <!-- production: the demo preview strip is retired; tier and wall state come from the server -->
 <div class="tornbar"><nav class="tb-in" aria-label="Primary">
-  <a class="brand wm" href="https://imissyoumemorial.com/" aria-label="I Miss You Memorial — home"><img src="/brand/imy-mark.svg" alt="" style="height:19px;width:auto;vertical-align:-4px;margin-right:7px">I <em>Miss</em> You Memorial</a>
+  <a class="brand wm" href="https://imissyoumemorial.com/" aria-label="I Miss You Memorial · home"><img src="/brand/imy-mark.svg" alt="" style="height:19px;width:auto;vertical-align:-4px;margin-right:7px">I <em>Miss</em> You Memorial</a>
   <span class="nav"><a href="#story">Her story</a><a href="#gallery">Pictures</a><a href="#really">Who she was</a><a href="#memories">Memories</a><a href="#keep">The keeping place</a></span>
-  <span class="actions"><button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">＋ Add a memory</button><button class="btn solid" id="bookBtn" style="font-size:12.5px;padding:9px 16px">Buy a memorial book</button></span>
+  <span class="actions"><button class="btn" id="shareTop" style="font-size:11.5px;padding:7px 13px">Share her page</button><button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">＋ Add a memory</button><button class="btn solid" id="bookBtn" style="font-size:12.5px;padding:9px 16px">Buy a memorial book</button></span>
 </nav></div>
 
 {{SERVICE_STRIP}}
@@ -1049,7 +1084,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <span class="wr-count"><b id="wreathCt">0</b> laid on today's wreath · it greens again each morning</span>
     </div>
     <div class="wr-big"><b data-count="{{FLOWER_COUNT}}">0</b></div>
-    <div class="wr-biglab">flowers since {{THEIR}} page began · lilies for peace · chrysanthemums for mourning · roses for love</div>
     <div class="presence" {{PRESENCE_HIDDEN}}><i></i> <span id="presenceTxt">{{PRESENCE_LINE}}</span></div>
   </div>
 </header>
@@ -1065,7 +1099,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="right:-128px;bottom:10%;width:140px;;--mr:-12deg;transform:rotate(-12deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
       <div class="kick">Her story &amp; her legacy</div>
       <h2>A life, in <em>chapters</em>.</h2>
-      <p class="lede">The chapters sit on top. Open one, and the years inside unfold, with the pictures of them alongside.</p>
       <div class="hier">Chapters · the top of her story</div>
       <div class="periods" id="periods" role="tablist" aria-label="Chapters of her life"></div>
       <div class="storygrid2">
@@ -1079,8 +1112,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         </div>
       </div>
       <div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>
-      <div class="cyc">It's the little things. Like <span class="w" id="cycW">black coffee, no sugar</span>.</div>
-      
+
     </section>
   </div>
 
@@ -1097,8 +1129,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="right:-118px;top:14%;width:130px;;--mr:13deg;transform:rotate(13deg)" src="/art/rose2-6094a3.png" alt=""/>
       <div class="kick">Special moments</div>
       <h2>The pictures we <em>hold onto</em>.</h2>
-      <p class="lede">Photographs of Eleanor, only her. The most treasured pictures, chosen by the family · group photographs live together on the bulletin board below.</p>
-      <div style="margin:4px 0 20px"><span class="curated">Curated by her family · only the page&#39;s keeper adds here</span></div>
       <div class="galgrid" id="galGrid"></div>
       <div class="galnav"><button id="galPrev" aria-label="Previous page">‹</button><span class="gp" id="galPg"></span><button id="galNext" aria-label="Next page">›</button></div>
     </section>
@@ -1109,8 +1139,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="left:-124px;top:30%;width:150px;;--mr:-8deg;transform:rotate(-8deg)" src="/art/lily2-f5e2ef.png" alt=""/>
       <div class="really really2" style="position:relative">
         <span class="tape4" style="top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg)"></span>
-        <div class="kick">Who she really was</div>
-        <h2>With everything set aside, <em>this</em> was her.</h2>
+        <h2>Who she really was.</h2>
         <div class="truths">
           <div class="truth"><div class="tl2">Her church</div><div class="tv">A hike that ends at a view. She said more to God up there than <em>in any pew</em>.</div></div>
           <div class="truth"><div class="tl2">Her secret kindness</div><div class="tv">Knitted tiny hats for the children's hospital every winter. <em>Told no one</em> for twenty years.</div></div>
@@ -1120,15 +1149,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="truth"><div class="tl2">Pure joy</div><div class="tv">Dancing in the kitchen to a song only she could hear. <em>Flour everywhere</em>.</div></div>
         </div>
         <div class="handline">money aside, masks off · this is who we miss</div>
-        <div style="text-align:center;margin-top:10px"><span class="curated">written by her family · only they can change it</span></div>
       </div>
     </section>
 
     <section class="section rev sheetdeep" id="memories">
       <img class="mg" style="right:-122px;top:22%;width:132px;;--mr:10deg;transform:rotate(10deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
       <img class="mg" style="left:-118px;bottom:8%;width:118px;;--mr:-14deg;transform:rotate(-14deg)" src="/art/rose2-6094a3.png" alt=""/>
-      <div class="kick">The memories we share</div>
-      <h2>What people <em>remember</em>.</h2>
+      <div class="kick">From here, the page belongs to everyone</div>
+      <h2>Share your memories about <em>Eleanor</em>.</h2>
       <div class="wallbloom" id="wallBloom" aria-hidden="true"></div>
       <div class="unlockline rev" id="unlockLine" hidden>
         <div class="ul-main">The wall is open. <span id="ulCount">Three</span> waiting memories have come home.</div>
@@ -1138,7 +1166,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="memtabs" id="memTabs"></div>
       <div class="wallct" id="wallCt" hidden></div>
       <div class="mem-track" id="memTrack"></div>
-      <div class="mem-nav"><button id="memPrev" aria-label="Previous memory">‹</button><button id="memNext" aria-label="Next memory">›</button></div>
       <div class="wchips" id="wchips" hidden></div>
       <div class="invite rev" id="inviteCard" hidden>
         <div class="inv-flame"><svg viewBox="0 0 22 30" aria-hidden="true"><path d="M11 1 C12.4 6.5 17 8.6 17 15.6 C17 22.3 13.8 28 11 28 C8.2 28 5 22.3 5 15.6 C5 11.2 8.4 10.3 8.6 5.9 C10.1 7.7 10.3 9.9 11 9.9 C11.7 7.2 11.2 3.9 11 1Z" fill="#C9A572"/></svg></div>
@@ -1150,12 +1177,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <button class="inv-trial" id="invTrial" type="button">Or see it open free for three days · $29/month after · cancel anytime</button>
       </div>
       <div class="memkeep">every memory is kept · grouped so no one is lost</div>
+      <!-- item 27 · "It's the little things" lives just above the composer now -->
+      <div class="cyc">It's the little things. Like <span class="w" id="cycW">black coffee, no sugar</span>.</div>
       <div class="share">
         <h3>Share a memory of Eleanor</h3>
         <div class="addingas" id="addingAs"></div>
           <p class="safekeep" id="safekeepLine" hidden>Write it now · your words are kept safe. They will join the wall the moment someone opens it for everyone.</p>
         <textarea id="memInput" placeholder="What do you remember?"></textarea>
-        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a short video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
+        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a short video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.webm,.amr,.flac" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
         <div class="chatbox" id="chatbox" style="display:none">
           <div class="ch-h">Tell me one true thing about Eleanor, and we will shape it together.<span class="mono">Closer to a friend than a form · it never writes for you</span></div>
           <div class="ch-b" id="chatBody"><div class="cmsg bot">What is one small thing you don&#39;t want to forget about her?</div></div>
@@ -1171,11 +1200,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="keep-head rev">
       <span class="pin"></span>
       <div class="kick">The keeping place</div>
-      <h2>Everything ever left for Eleanor, <em>held your way</em>.</h2>
+      <h2>The <em>memory board</em>.</h2>
       <p>The board holds everyone. The shelf keeps her in motion. The family chooses how to look back.</p>
     </div>
     <div class="modes" role="tablist" aria-label="How to hold everything">
-      <button class="mode active" data-mode="board" role="tab" aria-selected="true"><span>📌</span> The bulletin board</button>
+      <button class="mode active" data-mode="board" role="tab" aria-selected="true"><span>📌</span> The memory board</button>
       <button class="mode" data-mode="shelf" role="tab" aria-selected="false"><span>📼</span> The tape shelf <span class="lk">🔒</span></button>
     </div>
 
@@ -1245,7 +1274,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </main>
 </div><!-- /pageScale -->
 
-<a class="bbfab" href="#keep" id="bbFab"><span class="pd"></span>Bulletin board <span class="ar">↓</span></a>
+<a class="bbfab" href="#keep" id="bbFab"><span class="pd"></span>The memory board <span class="ar">↓</span></a>
 
 <div class="idm" id="idm" role="dialog" aria-modal="true" aria-label="Introduce yourself">
   <div class="card">
@@ -1324,11 +1353,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <button class="totop" id="totop" aria-label="Back to top">↑</button>
 
 <nav class="tabbar" id="tabbar" aria-label="On this page">
-  <a href="#story">Story</a>
-  <a href="#gallery">Photos</a>
-  <a href="#really">About</a>
-  <a href="#memories">Memories</a>
-  <a href="#keep">Board</a>
+  <a href="#story"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5V5.5"/><path d="M20 18v3H6.5"/></svg><span>Story</span></a>
+  <a href="#gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.7"/><path d="M4.5 17.5 10 12l4 4 3-3 3 3"/></svg><span>Photos</span></a>
+  <a href="#really"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r=".6" fill="currentColor" stroke="none"/></svg><span>About</span></a>
+  <a href="#memories"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-2-1.8-4.5-2-7-1v13c2.5-1 5-.8 7 1 2-1.8 4.5-2 7-1V5c-2.5-1-5-.8-7 1Z"/><path d="M12 6v13"/><rect x="6.8" y="8" width="3.2" height="3.2" rx=".4"/></svg><span>Memories</span></a>
+  <a href="#keep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="7.4" r=".6" fill="currentColor" stroke="none"/><circle cx="8.2" cy="13.2" r=".6" fill="currentColor" stroke="none"/><circle cx="15.6" cy="11.2" r=".6" fill="currentColor" stroke="none"/><circle cx="11.4" cy="16" r=".6" fill="currentColor" stroke="none"/></svg><span>Board</span></a>
 </nav>
 
 <button class="a11y-fab" id="a11yFab" aria-label="Accessibility options" aria-expanded="false" aria-controls="a11yPanel" aria-haspopup="true">
@@ -1350,7 +1379,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 var body=document.body,RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function noMo(){return RM||body.classList.contains('a11y-nomotion')}
 var whisper=document.getElementById('whisper'),whisperT=document.getElementById('whisperT'),whisperP=document.getElementById('whisperP'),wT=null;
-function say(t,p){whisperT.textContent=t;whisperP.style.display=p===false?'none':'block';whisper.classList.add('show');clearTimeout(wT);wT=setTimeout(function(){whisper.classList.remove('show')},5400)}
+function say(t,p,hold){whisperT.textContent=t;whisperP.style.display=p===false?'none':'block';whisper.classList.add('show');clearTimeout(wT);if(!hold)wT=setTimeout(function(){whisper.classList.remove('show')},5400)}
 document.getElementById('whisperX').onclick=function(){whisper.classList.remove('show')};
 /* memorial book button · every plan */
 document.getElementById('bookBtn').onclick=function(){
@@ -1394,17 +1423,27 @@ function wfind(want){
   }
   return null;
 }
+var roseN=0;
 function layFlower(want){
   var spot=wfind(want);
-  if(!spot){document.querySelector('.wr-count').innerHTML='the wreath is full tonight · <b>'+wn+'</b> hold the ring';return}
+  /* no limit (item 4): when the ring is crowded, flowers layer in — the count never stops */
+  if(!spot){
+    var la=wnorm(want);
+    if(winForbid(la))la=(Math.abs(la-WFORBID[0])<Math.abs(la-WFORBID[1]))?WFORBID[0]-2:WFORBID[1]+2;
+    spot={lane:wn%LANES.length,a:la};
+  }
   var f=WFL[wfi%WFL.length];wfi++;
   var side=wbox.clientWidth;
   var R=side*(LANES[spot.lane]+(Math.random()*0.024-0.012));
+  var scale=spot.lane===2?0.86:(spot.lane===1?0.95:1);
+  /* fit the full frame (items 5, 10): flowers stay inside the wreath box, smaller on phones */
+  var mob=side<560?0.66:1;
+  var wpx=side*f.w*scale*(0.92+Math.random()*0.16)*mob;
+  R=Math.min(R,side/2-wpx/2-2);
   var rad=spot.a*Math.PI/180;
   var x=50+Math.cos(rad)*R/side*100;
   var y=50+Math.sin(rad)*R/side*100;
-  var scale=spot.lane===2?0.86:(spot.lane===1?0.95:1);
-  var wpx=side*f.w*scale*(0.92+Math.random()*0.16);
+  x=Math.max(3,Math.min(97,x));y=Math.max(3,Math.min(97,y));
   var rot=spot.a+90+(Math.random()*26-13);
   var d=document.createElement('div');d.className='fl';
   d.style.cssText='left:'+x+'%;top:'+y+'%;width:'+wpx+'px;--r:'+rot+'deg;z-index:'+(spot.lane===1?4:3);
@@ -1413,7 +1452,10 @@ function layFlower(want){
   if(noMo()){d.style.opacity='1';d.style.transform='translate(-50%,-50%) scale(1) rotate('+rot+'deg)'}
   else requestAnimationFrame(function(){d.classList.add('in')});
   wplaced[spot.lane].push(spot.a);wn++;wreathCt.textContent=wn;
-  if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){var big=document.querySelector('.wr-big b');if(big)big.textContent=Number(j.count).toLocaleString()}if(j&&j.ok&&j.today){wn=Number(j.today);wreathCt.textContent=wn}}).catch(function(){})}catch(e){}}
+  /* the number moves the moment the flower lands (item 4); the server's truth follows */
+  var big=document.querySelector('.wr-big b');
+  if(big){roseN=(roseN||parseInt(String(big.textContent).replace(/,/g,''),10)||0)+1;big.textContent=roseN.toLocaleString();big.parentNode.classList.remove('iszero')}
+  if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){roseN=Number(j.count);if(big)big.textContent=roseN.toLocaleString()}if(j&&j.ok&&j.today){wn=Number(j.today);wreathCt.textContent=wn}}).catch(function(){})}catch(e){}}
 }
 wrHero.addEventListener('click',function(e){
   if(e.target.closest('button,a,.wr-plate'))return;
@@ -1422,8 +1464,16 @@ wrHero.addEventListener('click',function(e){
   layFlower(wnorm(Math.atan2(dy,dx)*180/Math.PI));
 });
 document.getElementById('layBtn').addEventListener('click',function(){layFlower(Math.random()*360)});
+/* item 57 · share the page from the sticky bar */
+(function(){var b=document.getElementById('shareTop');if(!b)return;b.addEventListener('click',function(){
+  var u=location.href.split('#')[0];
+  if(navigator.share){navigator.share({title:document.title,url:u}).catch(function(){});return}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){say('The address is copied. Send it to everyone who loved them.',false)}).catch(function(){})}
+})})();
 function cu(el){var t=+el.getAttribute('data-count'),s=null;function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/1400,1);el.textContent=Math.floor(p*t).toLocaleString();if(p<1)requestAnimationFrame(st);else roseN=t}requestAnimationFrame(st)}
 document.querySelectorAll('[data-count]').forEach(cu);
+/* item 13 · when no flower has been laid yet, the zero rests quietly instead of looking broken */
+(function(){var bb=document.querySelector('.wr-big b');if(bb)bb.parentNode.classList.toggle('iszero',(+bb.getAttribute('data-count')||0)===0)})();
 /* ===== production data · injected by the server as window.__TRIBUTE__ ; the inline demo keeps the standalone preview alive ===== */
 var T=window.__TRIBUTE__||null;
 /* a stranger's words are kept in their own words, not their own tags — every visitor field is entity-escaped right at the innerHTML seam */
@@ -1473,10 +1523,12 @@ var CH=(T&&T.ch)||[
    ['2012','Grandchildren in the rows, learning to be gentle.'],
    ['2022','Danced at Sofia&#39;s wedding. Outdanced everyone.']],
   ph:[['laugh','the last dance'],['kitchen','the full table'],['porch','story hour on the porch']]},
- {name:'Held by all of us',yrs:'and after',mo:[
+ {name:'The Last Chapter',yrs:'her final days',mo:[
+   ['2024','Her last spring · slower walks, the same garden, every rose greeted by name.'],
+   ['2024','The family gathered close. Tea on the porch, stories until dark.'],
    ['2024','Held by all of us, with the smell of roses.'],
    ['2026','The street still leaves its porch lights on.']],
-  ph:[['garden','so long, for now'],['dawn','her garden, still blooming']]}
+  ph:[['garden','so long, for now'],['porch','the porch, those last evenings'],['dawn','her garden, still blooming']]}
 ];
 var periodsBox=document.getElementById('periods'),moBox=document.getElementById('momentsList'),car=document.getElementById('car'),carDots=document.getElementById('carDots'),carCap=document.getElementById('carCap');
 var chI=0,phI=0,auto=null;
@@ -1485,7 +1537,9 @@ function setCh(i,manual){chI=(i+CH.length)%CH.length;phI=0;
   document.querySelectorAll('.period').forEach(function(x,k){x.classList.toggle('on',k===chI)});
   var c=CH[chI];
   moBox.innerHTML=c.mo.map(function(m,k){return '<div class="mo'+(k===0?' on':'')+'" data-k="'+k+'"><span class="yr">'+m[0]+'</span><div class="tx">'+m[1]+'</div></div>'}).join('');
-  moBox.querySelectorAll('.mo').forEach(function(m){m.onclick=function(){moBox.querySelectorAll('.mo').forEach(function(x){x.classList.remove('on')});m.classList.add('on');if(!c.ph.length)return;var k=Math.min(+m.dataset.k,c.ph.length-1);setPh(k,true)}});
+  moBox.querySelectorAll('.mo').forEach(function(m){m.onclick=function(){moBox.querySelectorAll('.mo').forEach(function(x){x.classList.remove('on')});m.classList.add('on');if(!c.ph.length)return;var k=Math.min(+m.dataset.k,c.ph.length-1);setPh(k,true);
+    /* item 24 · tapping a timeline date carries you to that chapter's pictures below */
+    if(window.matchMedia&&window.matchMedia('(max-width:900px)').matches){var cb=document.querySelector('.carbox');if(cb)cb.scrollIntoView({behavior:'smooth',block:'center'})}}});
   car.innerHTML=(c.ph.length?c.ph:[null]).map(function(pp,k){if(!pp)return '<div class="ci'+(k===0?' on':'')+'" style="display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 30%,#F7F0E1,#EFE6D2)"><div class="cc" style="position:static;text-align:center;opacity:.75">no photograph for this moment · yet</div></div>';return '<div class="ci'+(k===0?' on':'')+'"><img src="'+IMGS[pp[0]]+'" alt=""/>'+(body.dataset.tier==='plus'&&LIV[pp[0]]?'<video class="living" src="'+LIV[pp[0]]+'" muted loop playsinline preload="metadata" aria-hidden="true"></video>':'')+'<div class="cv"></div><div class="cc">'+pp[1]+'</div></div>'}).join('');
   carDots.innerHTML=c.ph.map(function(_,k){return '<button'+(k===0?' class="on"':'')+' aria-label="Photo '+(k+1)+'"></button>'}).join('');
   [].forEach.call(carDots.children,function(d,k){d.onclick=function(){setPh(k,true)}});
@@ -1557,10 +1611,10 @@ function memCard(m){
    +'<div class="cdrawer">'+(cms||'<div class="c1" style="color:var(--ink-soft)">Be the first to leave a word.</div>')
    +'<div class="addc2"><input placeholder="Leave a word&hellip;"/><button type="button">Post</button></div></div></div>'}
 function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g===curG});
-  track.className='memgrid';
-  var pages=Math.max(1,Math.ceil(list.length/4));memPage=Math.max(0,Math.min(memPage,pages-1));
-  track.innerHTML=list.slice(memPage*4,memPage*4+4).map(memCard).join('');
-  document.querySelector('.memkeep').textContent='page '+(memPage+1)+' of '+pages+' · every memory is kept · nothing scrolls away';
+  track.className='mem-track';
+  track.innerHTML=list.map(memCard).join('');
+  track.scrollLeft=0;
+  document.querySelector('.memkeep').textContent=list.length+' '+(list.length===1?'memory':'memories')+' · swipe to see more · every memory is kept';
   document.querySelectorAll('.memtab').forEach(function(tb,ti){var g=GROUPS[ti][0];var n2=g==='all'?MEMS.length:MEMS.filter(function(m){return m.g===g}).length;var bb=tb.querySelector('b');if(bb)bb.textContent=n2});
   wireLikes(track);
   track.querySelectorAll('[data-cmt]').forEach(function(btn){btn.addEventListener('click',function(){
@@ -1578,15 +1632,13 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
           if(j&&j.ok){var d=document.createElement('div');d.className='c1';d.style.opacity='.62';
             d.innerHTML='<b>'+esc(ID.fn)+'</b><span class="r">waiting for the family</span><br>'+t.replace(/</g,'&lt;');
             bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value='';
-            say('Kept, '+ID.fn+'. Your words go to the family first &mdash; they join the page the moment they welcome them in.',false)}
-          else say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)})
-        .catch(function(){bp.disabled=false;say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)});
+            say('Your words have been sent for approval by the page\u2019s admin. Once approved, they will join the page.',false,true)}
+          else say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)})
+        .catch(function(){bp.disabled=false;say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)});
         return}
       var d=document.createElement('div');d.className='c1';d.innerHTML='<b>'+esc(ID.fn)+'</b><span class="r">'+esc(ID.relLabel)+'</span><br>'+t.replace(/</g,'&lt;');bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value=''})})});
 }
 renderMems();
-document.getElementById('memNext').onclick=function(){memPage++;renderMems()};
-document.getElementById('memPrev').onclick=function(){memPage--;renderMems()};
 /* a voice memory · Plus · a voicemail kept, a story told aloud; it waits for the family like any other memory */
 /* a photograph rides with a memory · pinned to the board when the family says yes */
 var PHOTO={url:''};
@@ -1603,8 +1655,8 @@ if(pBtn&&pFile){
     fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
       pBtn.disabled=false;
       if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change';say('A photograph is attached · it rides with your memory to the family.',false)}
-      else{pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
-    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
+      else{pBtn.textContent='＋ Add a photograph';say('That didn\u2019t upload. Give it a moment and try again.',false)}
+    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn\u2019t upload. Give it a moment and try again.',false)});
     pFile.value=''});
 }
 /* one short visitor video · always moderated; Free keeps it resting, Plus may publish it */
@@ -1627,7 +1679,7 @@ if(vidBtn&&vidFile){
     if(f.size>40*1024*1024){say('Keep a visitor video under 40MB. A shorter clip will arrive more gently.',false);vidFile.value='';return}
     vidBtn.disabled=true;vidBtn.textContent='Keeping the video safe…';
     uploadVisitorVideo(f).then(function(u){VIDEO.url=u;vidBtn.disabled=false;vidBtn.textContent='✓ A video is attached · change';say('The video is attached. It will wait for the family before it appears.',false)})
-      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn&rsquo;t upload. MP4 under 25MB works on every storage path.',false)});
+      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn\u2019t upload. MP4 under 25MB works on every storage path.',false)});
     vidFile.value=''});
 }
 var VOICE={url:''};
@@ -1645,8 +1697,8 @@ if(vBtn&&vFile){
     fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
       vBtn.disabled=false;
       if(j&&j.ok&&j.urls&&j.urls[0]){VOICE.url=j.urls[0];vBtn.textContent='♪ A voice is attached · change'}
-      else{vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
-    }).catch(function(){vBtn.disabled=false;vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
+      else{vBtn.textContent='＋ Add a voice memory';say('That didn\u2019t upload. Give it a moment and try again.',false)}
+    }).catch(function(){vBtn.disabled=false;vBtn.textContent='＋ Add a voice memory';say('That didn\u2019t upload. Give it a moment and try again.',false)});
     vFile.value=''});
 }
 document.getElementById('shareBtn').onclick=function(){
@@ -1664,16 +1716,16 @@ document.getElementById('shareBtn').onclick=function(){
           VOICE.url='';if(vBtn)vBtn.textContent='＋ Add a voice memory';
           PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photograph';
           VIDEO.url='';if(vidBtn)vidBtn.textContent='＋ Add a short video';
-          say('Kept, '+ID.fn+'. Your memory goes to the family first · it joins the wall the moment they welcome it in.',false)}
-        else say('That didn&rsquo;t save. Give it a moment and try again · nothing you wrote is lost.',false)})
+          say('Your memory has been sent for approval by the page’s admin. Once approved, it will join the memory board.',false,true)}
+        else say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)})
       .catch(function(){btn.disabled=false;btn.textContent=old;
-        say('That didn&rsquo;t save. Give it a moment and try again · nothing you wrote is lost.',false)});
+        say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)});
       return}
     if(wallGateActive()){
       WAITING.push({nm:ID.fn,rel:ID.relLabel,tx:tx,g:ID.g});
       document.getElementById('memInput').value='';
       renderWall();
-      say('Your memory is written and safe. It will join the wall the moment there&rsquo;s room.',false);
+      say('Your memory is written and safe. It will join the wall the moment there\u2019s room.',false);
       return}
     MEMS.unshift({g:ID.g,av:ID.fn[0].toUpperCase(),nm:ID.fn+' '+ID.ln[0].toUpperCase()+'.',rel:ID.relLabel,tx:tx,h:0,cm:[]});
     document.getElementById('memInput').value='';memPage=0;curG='all';
@@ -2018,8 +2070,8 @@ document.getElementById('gsGive').addEventListener('click',function(){
         body:JSON.stringify({plan:'family_unlock',slug:SLUG,sponsorName:sponsorName,sponsorMessage:'',returnTo:'/sites/'+SLUG})})
       .then(function(r){return r.json()}).then(function(j){
         if(j&&j.ok&&j.url){location.href=j.url}
-        else{b.disabled=false;b.textContent='Give this to the family';say('The checkout didn&rsquo;t open. Nothing was charged · please try again.',false)}})
-      .catch(function(){b.disabled=false;b.textContent='Give this to the family';say('The checkout didn&rsquo;t open. Nothing was charged · please try again.',false)});
+        else{b.disabled=false;b.textContent='Give this to the family';say('The checkout didn\u2019t open. Nothing was charged · please try again.',false)}})
+      .catch(function(){b.disabled=false;b.textContent='Give this to the family';say('The checkout didn\u2019t open. Nothing was charged · please try again.',false)});
     };
     if(giftChoice==='named'){requireId(go)}else{go()}
     return}
@@ -2029,8 +2081,8 @@ if(invT){invT.addEventListener('click',function(){
   if(!T){say('On a live memorial, this begins the three-day open. This is the demo.',false);return}
   var lbl=invT.textContent;invT.disabled=true;invT.textContent='Opening a safe checkout\u2026';
   fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({plan:'plus_monthly',slug:SLUG,returnTo:'/sites/'+SLUG})})
-  .then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.url){location.href=j.url}else{invT.disabled=false;invT.textContent=lbl;say('The checkout didn&rsquo;t open. Nothing was charged \u00b7 please try again.',false)}})
-  .catch(function(){invT.disabled=false;invT.textContent=lbl;say('The checkout didn&rsquo;t open. Nothing was charged \u00b7 please try again.',false)})})}
+  .then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.url){location.href=j.url}else{invT.disabled=false;invT.textContent=lbl;say('The checkout didn\u2019t open. Nothing was charged \u00b7 please try again.',false)}})
+  .catch(function(){invT.disabled=false;invT.textContent=lbl;say('The checkout didn\u2019t open. Nothing was charged \u00b7 please try again.',false)})})}
 
 /* living pictures · hover to play (spec of July 5) · a photograph at rest, a film only while someone leans in.
    Desktop: hover or keyboard focus plays; leaving rests it back to the photograph.

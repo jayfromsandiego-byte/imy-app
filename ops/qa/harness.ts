@@ -233,7 +233,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("visitors can attach a moderated video", template.includes('id="videoAdd"') && template.includes("videoUrl:VIDEO.url||''") && template.includes("uploadVisitorVideo"));
   t("the helper calls the real api on live pages", template.includes("fetch('/api/assist'"));
   t("a quiet way home on every page (July 10: a real door)", page.includes('id="loginTop" href="/signin"') && !page.includes(">tend this page</a>"));
-  t("the log-in door sits beside the memorial book", page.includes('Buy a memorial book</button><a id="loginTop"'));
+  t("the log-in door stands beside the logo (item 3)", page.includes('You Memorial</a><a id="loginTop"'));
   t("the memory door steps back a size", page.includes('id="addMemTop" style="font-size:11.5px;padding:7px 13px"') && template.includes('id="addMemTop" style="font-size:12.5px;padding:9px 16px"'));
   t("the demo add-a-moment never reaches a real page", !page.includes("＋ Add a key moment · a year, a line, a photograph") && template.includes("＋ Add a key moment"));
   t("demo binder skips the wired buttons", template.includes("if(g.id)return;"));
