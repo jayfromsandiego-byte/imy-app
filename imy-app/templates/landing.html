@@ -645,7 +645,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
 .lp-example .excap .nm{font-weight:700;font-size:22px;color:#2C2520}
 .lp-example .excap .nm em{font-style:italic;color:#A87C5F}
 .lp-example .excap .dt{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:#8a7c6d;text-transform:uppercase;margin-top:5px}
-.lp-example .exslot{position:absolute;width:56px;height:56px;pointer-events:none;z-index:4}
+.lp-example .exslot{position:absolute;width:18.6%;height:18.6%;pointer-events:none;z-index:4}
 .lp-example .exslot img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 9px rgba(0,0,0,.45))}
 .lp-example .exey{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#A87C5F}
 .lp-example h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.12;letter-spacing:-.01em;color:#2C2520;text-align:left;margin:10px 0 0}
@@ -1057,7 +1057,7 @@ document.addEventListener('keydown', function(e) {
   function seeded(p){return seed.some(function(s){return s[0]===p[0]&&s[1]===p[1]})}
   function lay(pos,anim){
     var d=document.createElement('div');d.className='exslot';
-    d.style.left='calc('+pos[0]+'% - 28px)';d.style.top='calc('+pos[1]+'% - 10px)';
+    d.style.left=pos[0]+'%';d.style.top=pos[1]+'%';d.style.transform='translate(-50%,-18%)';
     var im=document.createElement('img');im.src=pick();im.alt='';
     if(anim&&!RM)im.style.animation='exBloom .7s cubic-bezier(.2,1.4,.4,1) both';
     d.appendChild(im);wr.appendChild(d);
@@ -1199,9 +1199,9 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .lp-example .exframe{padding:10px}
   .lp-example .exmat{padding:20px 16px 18px}
   .lp-example .exgrid{gap:14px}
-  .lp-example .exwr{width:auto;aspect-ratio:auto;margin:0}
-  .lp-example .exwr .wreath{display:none}
-  .lp-example .exarch{position:static;transform:none;width:80px;aspect-ratio:3/4;border-width:4px}
+  /* item 56 · the wreath and the arch stay together on phones, flowers scaled to the ring */
+  .lp-example .exwr{width:150px;aspect-ratio:1/1;margin:0;flex:0 0 auto}
+  .lp-example .exarch{border-width:4px}
   .lp-example .exil{display:none}
   .lp-example .exside{display:flex;align-items:center;gap:14px}
   .lp-example .excap{text-align:left;margin-top:0}

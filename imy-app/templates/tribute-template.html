@@ -708,7 +708,7 @@ body[data-tier="free"] .keepnote::after{content:" · the tape shelf opens with p
 .arrive{padding:10px 0 0;background:linear-gradient(180deg,#F9F2E0,var(--cream) 70%)}
 .arrive::before,.arrive::after{display:none}
 .wrhero{position:relative;display:flex;flex-direction:column;align-items:center;padding:2px 2% 42px;cursor:crosshair}
-.wreathbox{position:relative;width:min(840px,95vw);aspect-ratio:1/1}
+.wreathbox{position:relative;width:min(840px,95vw,max(430px,calc(100svh - 300px)));aspect-ratio:1/1}
 .wreathimg{position:absolute;inset:0;width:100%;height:100%;z-index:1;filter:drop-shadow(0 26px 40px rgba(60,50,18,.28))}
 .wr-arch{position:absolute;left:50%;top:47%;transform:translate(-50%,-52%);width:42%;aspect-ratio:300/380;border-radius:999px 999px 12px 12px;overflow:hidden;z-index:2;box-shadow:0 24px 54px -18px rgba(60,38,10,.5),0 0 0 9px #FFFDF6,0 0 0 10px rgba(138,106,52,.32)}
 .wr-arch img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 28s ease-in-out infinite alternate}
@@ -729,7 +729,7 @@ body[data-tier="free"] .keepnote::after{content:" · the tape shelf opens with p
 .wr-count b{color:#8a3a3a;font-variant-numeric:tabular-nums}
 .wr-total{position:relative;z-index:9;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:11px;text-align:center}
 .wr-total b{color:var(--terra);font-variant-numeric:tabular-nums}
-@media(max-width:720px){.wreathbox{width:96vw}.wr-plate{padding:12px 20px 14px}}
+@media(max-width:720px){.wreathbox{width:min(96vw,max(300px,calc(100svh - 320px)))}.wr-plate{padding:12px 20px 14px}}
 
 /* ===== v9.2 · the five touches ===== */
 /* T3 torn seams + sheet tints */
@@ -764,6 +764,10 @@ body.a11y-nomotion .tick9 .run{animation:none}
 /* T8 · the BIG living number */
 .wr-big{font-family:'Sometype Mono',monospace;font-weight:700;font-size:clamp(30px,4.2vw,48px);letter-spacing:.02em;color:var(--terra);font-variant-numeric:tabular-nums;line-height:1;margin-top:16px}
 .wr-biglab{font-family:'Sometype Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+/* item 12 · the presence bubble keeps watch from the top left corner */
+.wrhero .presence{position:absolute;top:12px;left:14px;margin-top:0;z-index:9}
+/* item 13 · a zero is a beginning, not a bug */
+.wr-big.iszero b{font-size:24px;color:#B7A48B;background:rgba(243,236,221,.92);border:1px solid #E4D9C4;border-radius:100px;padding:7px 20px;display:inline-block;line-height:1}
 .presence{font-size:12.5px;font-weight:700;margin-top:12px}
 .presence i{width:10px;height:10px}
 /* global small-text bump */
@@ -1049,7 +1053,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <span class="wr-count"><b id="wreathCt">0</b> laid on today's wreath · it greens again each morning</span>
     </div>
     <div class="wr-big"><b data-count="{{FLOWER_COUNT}}">0</b></div>
-    <div class="wr-biglab">flowers since {{THEIR}} page began · lilies for peace · chrysanthemums for mourning · roses for love</div>
     <div class="presence" {{PRESENCE_HIDDEN}}><i></i> <span id="presenceTxt">{{PRESENCE_LINE}}</span></div>
   </div>
 </header>
@@ -1424,7 +1427,7 @@ function layFlower(want){
   wplaced[spot.lane].push(spot.a);wn++;wreathCt.textContent=wn;
   /* the number moves the moment the flower lands (item 4); the server's truth follows */
   var big=document.querySelector('.wr-big b');
-  if(big){roseN=(roseN||parseInt(String(big.textContent).replace(/,/g,''),10)||0)+1;big.textContent=roseN.toLocaleString()}
+  if(big){roseN=(roseN||parseInt(String(big.textContent).replace(/,/g,''),10)||0)+1;big.textContent=roseN.toLocaleString();big.parentNode.classList.remove('iszero')}
   if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){roseN=Number(j.count);if(big)big.textContent=roseN.toLocaleString()}if(j&&j.ok&&j.today){wn=Number(j.today);wreathCt.textContent=wn}}).catch(function(){})}catch(e){}}
 }
 wrHero.addEventListener('click',function(e){
@@ -1436,6 +1439,8 @@ wrHero.addEventListener('click',function(e){
 document.getElementById('layBtn').addEventListener('click',function(){layFlower(Math.random()*360)});
 function cu(el){var t=+el.getAttribute('data-count'),s=null;function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/1400,1);el.textContent=Math.floor(p*t).toLocaleString();if(p<1)requestAnimationFrame(st);else roseN=t}requestAnimationFrame(st)}
 document.querySelectorAll('[data-count]').forEach(cu);
+/* item 13 · when no flower has been laid yet, the zero rests quietly instead of looking broken */
+(function(){var bb=document.querySelector('.wr-big b');if(bb)bb.parentNode.classList.toggle('iszero',(+bb.getAttribute('data-count')||0)===0)})();
 /* ===== production data · injected by the server as window.__TRIBUTE__ ; the inline demo keeps the standalone preview alive ===== */
 var T=window.__TRIBUTE__||null;
 /* a stranger's words are kept in their own words, not their own tags — every visitor field is entity-escaped right at the innerHTML seam */

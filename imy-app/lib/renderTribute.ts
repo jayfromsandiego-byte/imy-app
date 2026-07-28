@@ -1028,7 +1028,8 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
   // A Plus page differs in what it holds — and in one visible whisper: a gold
   // ring on the Stone (CSS) and one mono line under the wreath count.
   if (tier === "plus") {
-    const plusLine = `<div class="plusheld" style="font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#C9A572;margin-top:10px">The full memorial \u00b7 every memory open \u00b7 held in full</div>`;
+    // Item 14: the permanence line wears the page's own serif, not the techy mono.
+    const plusLine = `<div class="plusheld" style="font-family:'Besley',serif;font-style:italic;font-size:14px;letter-spacing:.04em;color:#C9A572;margin-top:10px">The full memorial \u00b7 every memory open \u00b7 held in full</div>`;
     html = html.replace('<div class="presence"', plusLine + '<div class="presence"');
   }
 
