@@ -589,6 +589,7 @@ export function renderTribute(template: string, t: Tribute): string {
     ['"her garden rows, just after sunrise"', `"${pn.pos} garden rows, just after sunrise"`],
     ['"seeds in her coat pocket"', `"seeds in ${pn.pos} coat pocket"`],
     ["label:'Her students'", `label:'${pn.Pos} students'`],
+    ["Share her page", `Share ${pn.pos} page`],
   ];
   for (const [from, to] of table) html = html.split(from).join(to);
 
@@ -828,8 +829,9 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
   // bar breathes. One door, always visible, through /signin. The old floating
   // "tend this page" whisper retires; two doors in one corner was noise.
   if (t.slug) {
-    const loginBtn = `<a id="loginTop" href="/signin" style="display:inline-flex;align-items:center;font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;border:1px solid #E4D9C4;border-radius:20px;padding:8px 14px;text-decoration:none;background:transparent;white-space:nowrap">log in</a>`;
-    html = html.replace("Buy a memorial book</button></span>", "Buy a memorial book</button>" + loginBtn + "</span>");
+    // Item 3: the log-in door stands beside the logo now; Add a Memory holds the right.
+    const loginBtn = `<a id="loginTop" href="/signin" style="display:inline-flex;align-items:center;font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;border:1px solid #E4D9C4;border-radius:20px;padding:8px 14px;margin-left:10px;text-decoration:none;background:transparent;white-space:nowrap">log in</a>`;
+    html = html.replace("I <em>Miss</em> You Memorial</a>", "I <em>Miss</em> You Memorial</a>" + loginBtn);
     html = html.replace(
       '<button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">',
       '<button class="btn" id="addMemTop" style="font-size:11.5px;padding:7px 13px">'
