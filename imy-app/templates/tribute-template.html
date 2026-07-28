@@ -1030,6 +1030,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .arrive .presence{background:rgba(250,245,236,.94)}
 .arrive .wr-big.iszero b{background:rgba(250,245,236,.94);color:#8a7c6d}
 #memories.sheetdeep{background:#FFFFFF}
+/* item 55 · phones: big titles and section headers center; names and memories stay left */
+@media(max-width:820px){
+  .section h2,.keep-head h2,.section .kick,.keep-head .kick,.section .hier,.section .lede{text-align:center}
+  .mem-card,.cdrawer,.truth,.mo,.share{text-align:left}
+}
+/* item 39 · phones never zoom into a field: form text holds 16px */
+@media(max-width:820px){
+  input[type="text"],input[type="email"],input:not([type]),textarea,select{font-size:16px!important}
+}
 </style>
 {{TRIBUTE_BOOT}}
 </head>

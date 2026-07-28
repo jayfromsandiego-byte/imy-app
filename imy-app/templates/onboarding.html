@@ -400,6 +400,11 @@
 .qcount,.plabel,.saved,/* pinned date card */ .stamp,.kick,input[type="date"],input[type="time"],label.small,.hint,.skip,.navback,.err,.back,.permanence,#welcome .foot,.stone-empty span,.stone-name span,/* assist */ .assist-toggle,.assist .who,.sp-tab,.sp-next,.m-padd,.addrow,.tile.on::after,.tcount,.otherrow button,.drop .s,.c-note,.slugwrap input,.slugwrap .suffix,.slugprev b,.review .k,.reassure,/* ===== plus tags · address choice · keep chooser ===== */ .ptag,.ah,.aurl,.shuffle,.ahelp,.plusnote,.plan .pr,.plan li .ic,.plansfoot,.pl-price,.ktag,.kp-head,.kp-foot,.plusmoment .pm-x,.ck-price span,.ck-alt,.ck-f label,.ck-note,.fin-msg .cap,.fin-msg .url{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
 /* handwritten answers */ input,textarea,#welcome .hand,.chip,.sp-q,.c-lbl,.review .v,.fin-hand{font-family:'Besley',serif!important;font-style:italic;letter-spacing:0}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #8B5E3C;outline-offset:2px;border-radius:4px}
+
+/* item 39 · phones never zoom into a field: form text holds 16px */
+@media(max-width:820px){
+  input[type="text"],input[type="email"],input:not([type]),textarea,select{font-size:16px!important}
+}
 </style>
 <style>
 /* mobile pass · July 5 · on phones the garland gets its own full row; the ritual keeps its width */
