@@ -1018,7 +1018,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <!-- production: the demo preview strip is retired; tier and wall state come from the server -->
 <div class="tornbar"><nav class="tb-in" aria-label="Primary">
-  <a class="brand wm" href="https://imissyoumemorial.com/" aria-label="I Miss You Memorial — home"><img src="/brand/imy-mark.svg" alt="" style="height:19px;width:auto;vertical-align:-4px;margin-right:7px">I <em>Miss</em> You Memorial</a>
+  <a class="brand wm" href="https://imissyoumemorial.com/" aria-label="I Miss You Memorial · home"><img src="/brand/imy-mark.svg" alt="" style="height:19px;width:auto;vertical-align:-4px;margin-right:7px">I <em>Miss</em> You Memorial</a>
   <span class="nav"><a href="#story">Her story</a><a href="#gallery">Pictures</a><a href="#really">Who she was</a><a href="#memories">Memories</a><a href="#keep">The keeping place</a></span>
   <span class="actions"><button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">＋ Add a memory</button><button class="btn solid" id="bookBtn" style="font-size:12.5px;padding:9px 16px">Buy a memorial book</button></span>
 </nav></div>
@@ -1098,7 +1098,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="right:-118px;top:14%;width:130px;;--mr:13deg;transform:rotate(13deg)" src="/art/rose2-6094a3.png" alt=""/>
       <div class="kick">Special moments</div>
       <h2>The pictures we <em>hold onto</em>.</h2>
-      <div style="margin:4px 0 20px"><span class="curated">Curated by her family · only the page&#39;s keeper adds here</span></div>
       <div class="galgrid" id="galGrid"></div>
       <div class="galnav"><button id="galPrev" aria-label="Previous page">‹</button><span class="gp" id="galPg"></span><button id="galNext" aria-label="Next page">›</button></div>
     </section>
@@ -1109,8 +1108,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="left:-124px;top:30%;width:150px;;--mr:-8deg;transform:rotate(-8deg)" src="/art/lily2-f5e2ef.png" alt=""/>
       <div class="really really2" style="position:relative">
         <span class="tape4" style="top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg)"></span>
-        <div class="kick">Who she really was</div>
-        <h2>With everything set aside, <em>this</em> was her.</h2>
+        <h2>Who she really was.</h2>
         <div class="truths">
           <div class="truth"><div class="tl2">Her church</div><div class="tv">A hike that ends at a view. She said more to God up there than <em>in any pew</em>.</div></div>
           <div class="truth"><div class="tl2">Her secret kindness</div><div class="tv">Knitted tiny hats for the children's hospital every winter. <em>Told no one</em> for twenty years.</div></div>
@@ -1120,7 +1118,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="truth"><div class="tl2">Pure joy</div><div class="tv">Dancing in the kitchen to a song only she could hear. <em>Flour everywhere</em>.</div></div>
         </div>
         <div class="handline">money aside, masks off · this is who we miss</div>
-        <div style="text-align:center;margin-top:10px"><span class="curated">written by her family · only they can change it</span></div>
       </div>
     </section>
 
@@ -1172,11 +1169,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="keep-head rev">
       <span class="pin"></span>
       <div class="kick">The keeping place</div>
-      <h2>Everything ever left for Eleanor, <em>held your way</em>.</h2>
+      <h2>The <em>memory board</em>.</h2>
       <p>The board holds everyone. The shelf keeps her in motion. The family chooses how to look back.</p>
     </div>
     <div class="modes" role="tablist" aria-label="How to hold everything">
-      <button class="mode active" data-mode="board" role="tab" aria-selected="true"><span>📌</span> The bulletin board</button>
+      <button class="mode active" data-mode="board" role="tab" aria-selected="true"><span>📌</span> The memory board</button>
       <button class="mode" data-mode="shelf" role="tab" aria-selected="false"><span>📼</span> The tape shelf <span class="lk">🔒</span></button>
     </div>
 
@@ -1246,7 +1243,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </main>
 </div><!-- /pageScale -->
 
-<a class="bbfab" href="#keep" id="bbFab"><span class="pd"></span>Bulletin board <span class="ar">↓</span></a>
+<a class="bbfab" href="#keep" id="bbFab"><span class="pd"></span>The memory board <span class="ar">↓</span></a>
 
 <div class="idm" id="idm" role="dialog" aria-modal="true" aria-label="Introduce yourself">
   <div class="card">
@@ -1598,9 +1595,9 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
           if(j&&j.ok){var d=document.createElement('div');d.className='c1';d.style.opacity='.62';
             d.innerHTML='<b>'+esc(ID.fn)+'</b><span class="r">waiting for the family</span><br>'+t.replace(/</g,'&lt;');
             bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value='';
-            say('Kept, '+ID.fn+'. Your words go to the family first &mdash; they join the page the moment they welcome them in.',false)}
-          else say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)})
-        .catch(function(){bp.disabled=false;say('That didn&rsquo;t save. Give it a moment and try again &mdash; nothing you wrote is lost.',false)});
+            say('Your words have been sent for approval by the page\u2019s admin. Once approved, they will join the page.',false,true)}
+          else say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)})
+        .catch(function(){bp.disabled=false;say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)});
         return}
       var d=document.createElement('div');d.className='c1';d.innerHTML='<b>'+esc(ID.fn)+'</b><span class="r">'+esc(ID.relLabel)+'</span><br>'+t.replace(/</g,'&lt;');bp.parentNode.parentNode.insertBefore(d,bp.parentNode);inp.value=''})})});
 }
@@ -1621,8 +1618,8 @@ if(pBtn&&pFile){
     fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
       pBtn.disabled=false;
       if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change';say('A photograph is attached · it rides with your memory to the family.',false)}
-      else{pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
-    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
+      else{pBtn.textContent='＋ Add a photograph';say('That didn\u2019t upload. Give it a moment and try again.',false)}
+    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn\u2019t upload. Give it a moment and try again.',false)});
     pFile.value=''});
 }
 /* one short visitor video · always moderated; Free keeps it resting, Plus may publish it */
@@ -1645,7 +1642,7 @@ if(vidBtn&&vidFile){
     if(f.size>40*1024*1024){say('Keep a visitor video under 40MB. A shorter clip will arrive more gently.',false);vidFile.value='';return}
     vidBtn.disabled=true;vidBtn.textContent='Keeping the video safe…';
     uploadVisitorVideo(f).then(function(u){VIDEO.url=u;vidBtn.disabled=false;vidBtn.textContent='✓ A video is attached · change';say('The video is attached. It will wait for the family before it appears.',false)})
-      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn&rsquo;t upload. MP4 under 25MB works on every storage path.',false)});
+      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn\u2019t upload. MP4 under 25MB works on every storage path.',false)});
     vidFile.value=''});
 }
 var VOICE={url:''};
@@ -1663,8 +1660,8 @@ if(vBtn&&vFile){
     fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
       vBtn.disabled=false;
       if(j&&j.ok&&j.urls&&j.urls[0]){VOICE.url=j.urls[0];vBtn.textContent='♪ A voice is attached · change'}
-      else{vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)}
-    }).catch(function(){vBtn.disabled=false;vBtn.textContent='＋ Add a voice memory';say('That didn&rsquo;t upload. Give it a moment and try again.',false)});
+      else{vBtn.textContent='＋ Add a voice memory';say('That didn\u2019t upload. Give it a moment and try again.',false)}
+    }).catch(function(){vBtn.disabled=false;vBtn.textContent='＋ Add a voice memory';say('That didn\u2019t upload. Give it a moment and try again.',false)});
     vFile.value=''});
 }
 document.getElementById('shareBtn').onclick=function(){
@@ -1683,15 +1680,15 @@ document.getElementById('shareBtn').onclick=function(){
           PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photograph';
           VIDEO.url='';if(vidBtn)vidBtn.textContent='＋ Add a short video';
           say('Your memory has been sent for approval by the page’s admin. Once approved, it will join the memory board.',false,true)}
-        else say('That didn&rsquo;t save. Give it a moment and try again · nothing you wrote is lost.',false)})
+        else say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)})
       .catch(function(){btn.disabled=false;btn.textContent=old;
-        say('That didn&rsquo;t save. Give it a moment and try again · nothing you wrote is lost.',false)});
+        say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)});
       return}
     if(wallGateActive()){
       WAITING.push({nm:ID.fn,rel:ID.relLabel,tx:tx,g:ID.g});
       document.getElementById('memInput').value='';
       renderWall();
-      say('Your memory is written and safe. It will join the wall the moment there&rsquo;s room.',false);
+      say('Your memory is written and safe. It will join the wall the moment there\u2019s room.',false);
       return}
     MEMS.unshift({g:ID.g,av:ID.fn[0].toUpperCase(),nm:ID.fn+' '+ID.ln[0].toUpperCase()+'.',rel:ID.relLabel,tx:tx,h:0,cm:[]});
     document.getElementById('memInput').value='';memPage=0;curG='all';
@@ -2036,8 +2033,8 @@ document.getElementById('gsGive').addEventListener('click',function(){
         body:JSON.stringify({plan:'family_unlock',slug:SLUG,sponsorName:sponsorName,sponsorMessage:'',returnTo:'/sites/'+SLUG})})
       .then(function(r){return r.json()}).then(function(j){
         if(j&&j.ok&&j.url){location.href=j.url}
-        else{b.disabled=false;b.textContent='Give this to the family';say('The checkout didn&rsquo;t open. Nothing was charged · please try again.',false)}})
-      .catch(function(){b.disabled=false;b.textContent='Give this to the family';say('The checkout didn&rsquo;t open. Nothing was charged · please try again.',false)});
+        else{b.disabled=false;b.textContent='Give this to the family';say('The checkout didn\u2019t open. Nothing was charged · please try again.',false)}})
+      .catch(function(){b.disabled=false;b.textContent='Give this to the family';say('The checkout didn\u2019t open. Nothing was charged · please try again.',false)});
     };
     if(giftChoice==='named'){requireId(go)}else{go()}
     return}
@@ -2047,8 +2044,8 @@ if(invT){invT.addEventListener('click',function(){
   if(!T){say('On a live memorial, this begins the three-day open. This is the demo.',false);return}
   var lbl=invT.textContent;invT.disabled=true;invT.textContent='Opening a safe checkout\u2026';
   fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({plan:'plus_monthly',slug:SLUG,returnTo:'/sites/'+SLUG})})
-  .then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.url){location.href=j.url}else{invT.disabled=false;invT.textContent=lbl;say('The checkout didn&rsquo;t open. Nothing was charged \u00b7 please try again.',false)}})
-  .catch(function(){invT.disabled=false;invT.textContent=lbl;say('The checkout didn&rsquo;t open. Nothing was charged \u00b7 please try again.',false)})})}
+  .then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.url){location.href=j.url}else{invT.disabled=false;invT.textContent=lbl;say('The checkout didn\u2019t open. Nothing was charged \u00b7 please try again.',false)}})
+  .catch(function(){invT.disabled=false;invT.textContent=lbl;say('The checkout didn\u2019t open. Nothing was charged \u00b7 please try again.',false)})})}
 
 /* living pictures · hover to play (spec of July 5) · a photograph at rest, a film only while someone leans in.
    Desktop: hover or keyboard focus plays; leaving rests it back to the photograph.

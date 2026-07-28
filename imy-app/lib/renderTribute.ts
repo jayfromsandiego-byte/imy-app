@@ -693,11 +693,11 @@ export function renderTribute(template: string, t: Tribute): string {
         const voice =
           `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
           `<div style="max-width:560px;margin:0 auto">` +
-          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">Their voice · kept</div>` +
-          `<div class="vk" role="group" style="text-align:left"><audio preload="none" src="${esc(t.voiceUrl)}" aria-label="Their voice, kept"></audio>` +
-          `<button type="button" class="vk-play" aria-label="Play their voice">▶</button>` +
+          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">In ${pn.pos} own voice</div>` +
+          `<div class="vk" role="group" style="text-align:left"><audio preload="none" src="${esc(t.voiceUrl)}" aria-label="In ${pn.pos} own voice"></audio>` +
+          `<button type="button" class="vk-play" aria-label="Play ${pn.pos} voice">▶</button>` +
           `<div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div>` +
-          `<div class="vk-meta"><span class="vk-time">0:00</span><span class="vk-cap">their voice · kept</span></div></div></div>` +
+          `<div class="vk-meta"><span class="vk-time">0:00</span><span class="vk-cap">in ${pn.pos} own voice</span></div></div></div>` +
           `</div></section>`;
         html = html.slice(0, mIdx) + voice + html.slice(mIdx);
       }
@@ -1044,7 +1044,7 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
       `<div style="max-width:660px;margin:0 auto">` +
       `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#C9A572;margin-bottom:18px">This page is the example</div>` +
       `<h2 style="font-family:'Besley',serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.2;color:#FAF5EC;margin:0 0 14px">Make one for someone <em style="color:#C9A572">you</em> miss.</h2>` +
-      `<p style="font-family:'Besley',serif;font-size:16.5px;line-height:1.65;color:rgba(250,245,236,.82);margin:0 0 30px">Begin free · their page is online in ten quiet minutes, and it stays forever. Everything you just saw here, the Living pictures, her voice, every photograph in motion: that is Plus.</p>` +
+      `<p style="font-family:'Besley',serif;font-size:16.5px;line-height:1.65;color:rgba(250,245,236,.82);margin:0 0 30px">Begin free · their page is online in about ten minutes, and it stays forever. Everything you just saw here, the Living pictures, her voice, every photograph in motion: that is Plus.</p>` +
       `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">` +
       `<a href="/onboarding?plan=plus" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;background:#A87C5F;color:#FBF6ED;border-radius:100px;padding:14px 26px;text-decoration:none">Begin with Plus · $197 once</a>` +
       `<a href="/onboarding" style="font-family:'Besley',serif;font-weight:600;font-size:15.5px;border:1.5px solid rgba(201,165,114,.65);color:#F4E9D4;border-radius:100px;padding:14px 26px;text-decoration:none">Begin free · $0</a>` +
