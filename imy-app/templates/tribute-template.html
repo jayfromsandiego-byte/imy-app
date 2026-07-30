@@ -741,7 +741,9 @@ body[data-tier="free"] .keepnote::after{content:" · the tape shelf opens with p
 .sheetdeep{background:linear-gradient(180deg,rgba(246,238,220,.85),rgba(243,233,210,.55));border-radius:10px;margin-left:-3%;margin-right:-3%;padding-left:3%!important;padding-right:3%!important}
 /* T1 margin garden */
 .mg{position:absolute;mix-blend-mode:multiply;pointer-events:none;opacity:.85;z-index:1}
-@media(max-width:1200px){.mg{display:none}}
+/* m7 (July 29) · the accents live in true gutters only — below 1360px the margins
+   can no longer hold a full sprig clear of the text, so the garden rests */
+@media(max-width:1360px){.mg{display:none}}
 /* T4 hardware */
 .tape4{position:absolute;width:64px;height:19px;background:rgba(214,196,150,.6);border:1px solid rgba(201,165,114,.45);z-index:8}
 .wax4{position:absolute;width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#c08a68,#96573b 62%,#7d452e);box-shadow:0 6px 14px -5px rgba(60,24,6,.5),inset 0 2px 5px rgba(255,220,190,.4);display:grid;place-items:center;transform:rotate(-8deg);z-index:8}
@@ -1040,6 +1042,37 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   input[type="text"],input[type="email"],input:not([type]),textarea,select{font-size:16px!important}
 }
 </style>
+<style>
+/* ═══ visual batch · July 29 2026 ═══ */
+/* m3 · a memory card is only as tall as what it holds — the track stops stretching siblings */
+.mem-track{align-items:flex-start}
+/* m8 · the tape at the card's crown is never clipped */
+.really.really2{overflow:visible}
+/* d5 · the snapshot above "Who she really was" — a taped print in the page's object language */
+.really-snap{position:relative;width:min(240px,64%);margin:2px auto 24px;background:#fff;padding:10px 10px 30px;border-radius:3px;box-shadow:0 24px 50px -20px rgba(20,12,6,.45);transform:rotate(-2.5deg)}
+.really-snap img{width:100%;aspect-ratio:4/3.2;object-fit:cover;border-radius:2px;display:block}
+.really-snap figcaption{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:16px;color:#4a3f34}
+/* d1 · a chapter card speaks two facts two ways: the dates as the line, the moments as a quiet pill */
+.period .pm{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-size:11.5px;line-height:1.3;color:#7A6A58;background:rgba(44,37,32,.07);border-radius:100px;padding:2px 10px;margin-top:4px}
+.period.on .pm{color:#E8CFA4;background:rgba(255,255,255,.14)}
+/* d4 · desktop keeps the peeking sliver and regains its side arrows; phones keep the swipe */
+.memtrackwrap{position:relative}
+.memarr{display:none}
+@media(min-width:821px){
+  .memarr{display:flex;align-items:center;justify-content:center;position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:18px;color:var(--ink);box-shadow:0 10px 22px -12px rgba(60,38,10,.4);z-index:6}
+  .memarr.prev{left:-12px}
+  .memarr.next{right:-12px}
+  .memarr:hover{border-color:var(--terra);color:var(--terra)}
+}
+/* m10 · the composer's four doors sit two by two: photo · video / voice · share */
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.share-row .ghostadd,.share-row .btn{width:100%;justify-content:center;text-align:center}
+#photoAdd{grid-column:1;grid-row:1}
+#videoAdd{grid-column:2;grid-row:1}
+#voiceAdd{grid-column:1;grid-row:2}
+#shareBtn{grid-column:2;grid-row:2}
+#helpBtn{grid-column:1/-1}
+</style>
 {{TRIBUTE_BOOT}}
 </head>
 <body data-tier="{{TIER}}" data-theme="quiet" data-motif="">
@@ -1076,7 +1109,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <span class="tape4" style="top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg)"></span>
         <div class="n1">{{NAME_HTML}}</div>
         <div class="n2">{{DATES_LINE}}</div>
-        <div class="ep">{{EPIGRAPH}}</div>
       </div>
     </div>
     <div class="wr-hud">
@@ -1139,6 +1171,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="left:-124px;top:30%;width:150px;;--mr:-8deg;transform:rotate(-8deg)" src="/art/lily2-f5e2ef.png" alt=""/>
       <div class="really really2" style="position:relative">
         <span class="tape4" style="top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg)"></span>
+        <figure class="really-snap" id="reallySnap">
+          <span class="tape4" style="top:-9px;left:18%;transform:rotate(-6deg)"></span>
+          <img src="/art/bfc0c03d-1044-4932-8bbf-ed164d94d167-a0d7cd.png" alt=""/>
+          <figcaption class="hand">that laugh</figcaption>
+        </figure>
         <h2>Who she really was.</h2>
         <div class="truths">
           <div class="truth"><div class="tl2">Her church</div><div class="tv">A hike that ends at a view. She said more to God up there than <em>in any pew</em>.</div></div>
@@ -1148,7 +1185,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="truth"><div class="tl2">What she fought for</div><div class="tv">Every stray · dog, cat, or teenager. The door was never <em>actually locked</em>.</div></div>
           <div class="truth"><div class="tl2">Pure joy</div><div class="tv">Dancing in the kitchen to a song only she could hear. <em>Flour everywhere</em>.</div></div>
         </div>
-        <div class="handline">money aside, masks off · this is who we miss</div>
+        <!-- truths end -->
       </div>
     </section>
 
@@ -1157,6 +1194,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <img class="mg" style="left:-118px;bottom:8%;width:118px;;--mr:-14deg;transform:rotate(-14deg)" src="/art/rose2-6094a3.png" alt=""/>
       <div class="kick">From here, the page belongs to everyone</div>
       <h2>Share your memories about <em>Eleanor</em>.</h2>
+      <!-- m9 · "It's the little things" sits directly under the heading now (July 29) -->
+      <div class="cyc">It's the little things. Like <span class="w" id="cycW">black coffee, no sugar</span>.</div>
       <div class="wallbloom" id="wallBloom" aria-hidden="true"></div>
       <div class="unlockline rev" id="unlockLine" hidden>
         <div class="ul-main">The wall is open. <span id="ulCount">Three</span> waiting memories have come home.</div>
@@ -1165,7 +1204,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       {{SPONSOR_PLAQUE}}
       <div class="memtabs" id="memTabs"></div>
       <div class="wallct" id="wallCt" hidden></div>
-      <div class="mem-track" id="memTrack"></div>
+      <div class="memtrackwrap"><div class="mem-track" id="memTrack"></div>
+      <button class="memarr prev" id="memPrev" type="button" aria-label="Previous memories">‹</button><button class="memarr next" id="memNext" type="button" aria-label="Next memories">›</button></div>
       <div class="wchips" id="wchips" hidden></div>
       <div class="invite rev" id="inviteCard" hidden>
         <div class="inv-flame"><svg viewBox="0 0 22 30" aria-hidden="true"><path d="M11 1 C12.4 6.5 17 8.6 17 15.6 C17 22.3 13.8 28 11 28 C8.2 28 5 22.3 5 15.6 C5 11.2 8.4 10.3 8.6 5.9 C10.1 7.7 10.3 9.9 11 9.9 C11.7 7.2 11.2 3.9 11 1Z" fill="#C9A572"/></svg></div>
@@ -1177,14 +1217,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <button class="inv-trial" id="invTrial" type="button">Or see it open free for three days · $29/month after · cancel anytime</button>
       </div>
       <div class="memkeep">every memory is kept · grouped so no one is lost</div>
-      <!-- item 27 · "It's the little things" lives just above the composer now -->
-      <div class="cyc">It's the little things. Like <span class="w" id="cycW">black coffee, no sugar</span>.</div>
       <div class="share">
         <h3>Share a memory of Eleanor</h3>
         <div class="addingas" id="addingAs"></div>
           <p class="safekeep" id="safekeepLine" hidden>Write it now · your words are kept safe. They will join the wall the moment someone opens it for everyone.</p>
         <textarea id="memInput" placeholder="What do you remember?"></textarea>
-        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photograph</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a short video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.webm,.amr,.flac" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
+        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photo</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.webm,.amr,.flac" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
         <div class="chatbox" id="chatbox" style="display:none">
           <div class="ch-h">Tell me one true thing about Eleanor, and we will shape it together.<span class="mono">Closer to a friend than a form · it never writes for you</span></div>
           <div class="ch-b" id="chatBody"><div class="cmsg bot">What is one small thing you don&#39;t want to forget about her?</div></div>
@@ -1532,7 +1570,7 @@ var CH=(T&&T.ch)||[
 ];
 var periodsBox=document.getElementById('periods'),moBox=document.getElementById('momentsList'),car=document.getElementById('car'),carDots=document.getElementById('carDots'),carCap=document.getElementById('carCap');
 var chI=0,phI=0,auto=null;
-CH.forEach(function(c,i){var b=document.createElement('button');b.className='period'+(i===0?' on':'');b.setAttribute('role','tab');b.innerHTML='<span class="pn">'+c.name+'</span><span class="py">'+c.yrs+' · '+c.mo.length+' moments</span>';b.onclick=function(){setCh(i,true)};periodsBox.appendChild(b)});
+CH.forEach(function(c,i){var b=document.createElement('button');b.className='period'+(i===0?' on':'');b.setAttribute('role','tab');b.innerHTML='<span class="pn">'+c.name+'</span><span class="py">'+c.yrs+'</span><span class="pm">'+c.mo.length+' moment'+(c.mo.length===1?'':'s')+'</span>';b.onclick=function(){setCh(i,true)};periodsBox.appendChild(b)});
 function setCh(i,manual){chI=(i+CH.length)%CH.length;phI=0;
   document.querySelectorAll('.period').forEach(function(x,k){x.classList.toggle('on',k===chI)});
   var c=CH[chI];
@@ -1655,8 +1693,8 @@ if(pBtn&&pFile){
     fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
       pBtn.disabled=false;
       if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change';say('A photograph is attached · it rides with your memory to the family.',false)}
-      else{pBtn.textContent='＋ Add a photograph';say('That didn\u2019t upload. Give it a moment and try again.',false)}
-    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photograph';say('That didn\u2019t upload. Give it a moment and try again.',false)});
+      else{pBtn.textContent='＋ Add a photo';say('That didn\u2019t upload. Give it a moment and try again.',false)}
+    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photo';say('That didn\u2019t upload. Give it a moment and try again.',false)});
     pFile.value=''});
 }
 /* one short visitor video · always moderated; Free keeps it resting, Plus may publish it */
@@ -1679,7 +1717,7 @@ if(vidBtn&&vidFile){
     if(f.size>40*1024*1024){say('Keep a visitor video under 40MB. A shorter clip will arrive more gently.',false);vidFile.value='';return}
     vidBtn.disabled=true;vidBtn.textContent='Keeping the video safe…';
     uploadVisitorVideo(f).then(function(u){VIDEO.url=u;vidBtn.disabled=false;vidBtn.textContent='✓ A video is attached · change';say('The video is attached. It will wait for the family before it appears.',false)})
-      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a short video';say('That video didn\u2019t upload. MP4 under 25MB works on every storage path.',false)});
+      .catch(function(){vidBtn.disabled=false;vidBtn.textContent='＋ Add a video';say('That video didn\u2019t upload. MP4 under 25MB works on every storage path.',false)});
     vidFile.value=''});
 }
 var VOICE={url:''};
@@ -1714,8 +1752,8 @@ document.getElementById('shareBtn').onclick=function(){
         btn.disabled=false;btn.textContent=old;
         if(j&&j.ok){document.getElementById('memInput').value='';
           VOICE.url='';if(vBtn)vBtn.textContent='＋ Add a voice memory';
-          PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photograph';
-          VIDEO.url='';if(vidBtn)vidBtn.textContent='＋ Add a short video';
+          PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photo';
+          VIDEO.url='';if(vidBtn)vidBtn.textContent='＋ Add a video';
           say('Your memory has been sent for approval by the page’s admin. Once approved, it will join the memory board.',false,true)}
         else say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)})
       .catch(function(){btn.disabled=false;btn.textContent=old;
@@ -2276,6 +2314,14 @@ btn.onclick=function(){opened=true;apply()};
 document.addEventListener('click',function(e){if(e.target.closest('.btab')){opened=false;setTimeout(apply,50)}});
 addEventListener('resize',apply);
 setTimeout(apply,0);
+})();
+/* d4 · the desktop arrows walk the memories row one card at a time */
+(function(){
+var tr=document.getElementById('memTrack'),p=document.getElementById('memPrev'),n=document.getElementById('memNext');
+if(!tr||!p||!n)return;
+function step(d){var c=tr.querySelector('.mem-card');var w=c?c.getBoundingClientRect().width+18:340;try{tr.scrollBy({left:d*w,behavior:'smooth'})}catch(e){tr.scrollLeft+=d*w}}
+p.onclick=function(){step(-1)};
+n.onclick=function(){step(1)};
 })();
 </script>
 </body>

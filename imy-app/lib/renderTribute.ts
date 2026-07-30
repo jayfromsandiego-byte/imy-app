@@ -13,6 +13,7 @@
 // approved memory beyond ten becomes a "waiting" entry until Plus/Family Unlock.
 
 import { type LovedThing } from "./lovedThings";
+import { HERO_BACKGROUNDS, heroBackground } from "./heroBackgrounds";
 
 export type TimelineItem = { id?: string; year: string; title: string; text: string; chapterId?: string };
 // A chapter of the life (0017): the family writes the titles, in their order.
@@ -63,6 +64,7 @@ export type Tribute = {
   tier?: string; // "free" | "plus" | "heirloom"
   theme?: string;
   motif?: string;
+  heroVideoSlot?: string; // the hero's looping scene (0028) — a lib/heroBackgrounds id
   visibility?: string; // "public" | "unlisted" | "private" — SEO only, never rendering
   status?: string;
   discoverable?: boolean; // family opt-in to sitemap + search indexing (0020) — SEO only, never rendering
@@ -340,12 +342,38 @@ export function renderTribute(template: string, t: Tribute): string {
   };
 
   // ── conditional blocks ──
+  // m5b (July 29): the service speaks as a compact announcement bar — one quiet
+  // line (Celebration of life · the day and time · Share the date) that opens on
+  // a tap to show the location and every remaining detail. Same information,
+  // none lost, half the standing height; type stays readable for older eyes.
+  const svcWhen = [fmtDate(t.service?.date), t.service?.time].filter(Boolean).join(" · ");
+  const svcWhere = [t.service?.place, t.service?.address].filter(Boolean).join(", ");
   const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
-    ? `<div class="svcrow"><div class="svcrow-in">
-  <span class="lab">Service</span>
-  <span class="what"><span class="svc-when" style="display:block">${esc([fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "))}</span>${t.service.place ? `<span class="mono" style="display:block;margin-top:2px">${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
-  ${t.service.date ? `<button class="mini" id="shareDateBtn" type="button" style="text-decoration:underline">Share the date</button>` : ""}
-  </div></div>`
+    ? `<style>
+.svcrow .svcrow-in{padding:7px 4.5%;flex-wrap:nowrap}
+.svcrow .svcrow-in[role="button"]{cursor:pointer}
+.svcrow .what{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.svcrow .svclink{font-family:'Sometype Mono',monospace;font-size:14px;color:var(--terra);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:none;padding:0;white-space:nowrap}
+.svcrow .svc-caret{font-size:12px;color:var(--terra);transition:transform .2s}
+.svcrow .svcrow-in[aria-expanded="true"] .svc-caret{transform:rotate(180deg)}
+.svcrow .svcmore{padding:0 4.5% 11px;max-width:1240px;margin:0 auto;font-size:15px;line-height:1.6;color:var(--ink)}
+.svcrow .svcmore .mono{font-size:14px;color:var(--ink-soft);letter-spacing:.04em}
+@media(max-width:640px){.svcrow .what{white-space:normal}}
+</style><div class="svcrow">
+  <div class="svcrow-in"${svcWhere && svcWhen ? ` id="svcBar" role="button" tabindex="0" aria-expanded="false" aria-controls="svcMore" aria-label="Celebration of life · open the details"` : ""}>
+    <span class="lab">Celebration of life</span>
+    <span class="what">${esc(svcWhen || svcWhere)}</span>
+    <span class="right">${t.service.date ? `<button class="svclink" id="shareDateBtn" type="button">Share the date</button>` : ""}${svcWhere && svcWhen ? `<span class="svc-caret" aria-hidden="true">▾</span>` : ""}</span>
+  </div>
+  ${svcWhere && svcWhen ? `<div class="svcmore" id="svcMore" hidden><div>${esc(svcWhere)}</div></div>` : ""}
+</div>
+<script>(function(){
+var bar=document.getElementById('svcBar'),more=document.getElementById('svcMore');
+if(!bar||!more)return;
+function tog(){var open=more.hidden;more.hidden=!open;bar.setAttribute('aria-expanded',open?'true':'false')}
+bar.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#shareDateBtn'))return;tog()});
+bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tog()}});
+})();</script>`
     : "";
 
   const creditBanner = tier === "free"
@@ -384,7 +412,7 @@ export function renderTribute(template: string, t: Tribute): string {
     ? `${Math.floor(filmData.duration / 60)}:${String(Math.round(filmData.duration % 60)).padStart(2, "0")}`
     : "";
   const filmInvite = filmData && tier === "free"
-    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#6E6156">This is a first glimpse. The whole film of ${esc(fpn.pos)} life comes with the full memorial. <a href="/pricing" style="color:#A87C5F">When you are ready.</a></p>`
+    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#453A2C">This is a first glimpse. The whole film of ${esc(fpn.pos)} life comes with the full memorial. <a href="/pricing" style="color:#5E3A20">When you are ready.</a></p>`
     : "";
   const filmSection = filmData
     ? `
@@ -464,7 +492,8 @@ export function renderTribute(template: string, t: Tribute): string {
     .split("{{NAME_PLAIN}}").join(esc(t.fullName))
     .split("{{NAME_HTML}}").join(nameHtml(t.fullName))
     .split("{{DATES_LINE}}").join(datesLine + donateUnderName)
-    .split("{{EPIGRAPH}}").join(esc(t.quote || t.aka || "Loved, and remembered."))
+    // m5d (July 29, owner reversal of item 7): the wreath plate carries no
+    // epigraph line — the mid-page quote band keeps their words instead.
     .split("{{FLOWER_COUNT}}").join(String(Math.max(0, t.flowerCount ?? 0)))
     .split("{{THEIR}}").join("their")
     .split("{{TIER}}").join(tier)
@@ -502,14 +531,15 @@ export function renderTribute(template: string, t: Tribute): string {
       const secStart = html.lastIndexOf('<section class="band rev">', qIdx);
       const secEnd = html.indexOf("</section>", qIdx);
       if (secStart > -1 && secEnd > -1) {
-        // July 9: the banner never wears uploaded photographs — one on-brand
-        // pressed-flower ground for every page; their pictures live in the
-        // gallery, the chapters, and the board.
+        // d7 (July 29): the band wears its photograph again — the design's own
+        // art ground under the original soft veil, so the quote stays legible.
+        // The July 9 rule still holds: never an uploaded photograph here; their
+        // pictures live in the gallery, the chapters, and the board.
         const band = t.quote
-          ? `<section class="band rev" id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)">` +
-            `<img src="/art/mum2-34d609.png" alt="" style="position:absolute;left:5%;top:50%;transform:translateY(-50%) rotate(-9deg);width:clamp(64px,9vw,118px);opacity:.92"/>` +
-            `<img src="/art/lily2-f5e2ef.png" alt="" style="position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(11deg);width:clamp(58px,8vw,104px);opacity:.88"/>` +
-            `<div class="inb" style="position:relative;z-index:2"><div class="q" style="color:#2C2520;text-shadow:none">“${esc(t.quote)}”</div><div class="s" style="color:#7A6A58;text-shadow:none">the thing ${pn.sub} always said</div></div></section>`
+          ? `<section class="band rev" id="quoteband">` +
+            `<div class="bgi"><img src="/art/7bb79736-30a5-4159-97b8-6b753830eae6-8b9c29.png" alt=""></div>` +
+            `<div class="v"></div>` +
+            `<div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
           : "";
         html = html.slice(0, secStart) + band + html.slice(secEnd + "</section>".length);
       }
@@ -521,16 +551,34 @@ export function renderTribute(template: string, t: Tribute): string {
   const detailCards = (t.details || []).filter((d) => d.k && d.v).slice(0, 6);
   {
     const tIdx = html.indexOf('<div class="truths">');
-    const mIdx = tIdx > -1 ? html.indexOf("money aside, masks off", tIdx) : -1;
+    // The handline is gone (m8, July 29); the truths block ends at its marker.
+    const mIdx = tIdx > -1 ? html.indexOf("<!-- truths end -->", tIdx) : -1;
     if (tIdx > -1 && mIdx > -1) {
-      const footStart = html.lastIndexOf("<div", mIdx);
       const cards = detailCards
         .map((d) => `<div class="truth"><div class="tl2">${esc(d.k)}</div><div class="tv">${esc(d.v)}</div></div>`)
         .join("\n          ");
-      html = html.slice(0, tIdx) + `<div class="truths">\n          ${cards}\n        </div>\n        ` + html.slice(footStart);
+      html = html.slice(0, tIdx) + `<div class="truths">\n          ${cards}\n        </div>\n        ` + html.slice(mIdx);
     }
     if (!detailCards.length) {
       html = html.split('<a href="#really">Who she was</a>').join("");
+    }
+  }
+
+  // 2b) The snapshot above "Who they really were" (d5, July 29): a casual taped
+  // print from THIS page's own gallery — a captioned photograph reads as chosen,
+  // so one of those leads; otherwise the last photograph. No photographs, no
+  // frame — and the demo's print never reaches a real page, even from source.
+  {
+    const snapStart = html.indexOf('<figure class="really-snap"');
+    if (snapStart > -1) {
+      const snapEnd = html.indexOf("</figure>", snapStart);
+      if (snapEnd > -1) {
+        const pick = photos.find((p) => p.cap) || photos[photos.length - 1];
+        const snap = pick && pick.url
+          ? `<figure class="really-snap"><span class="tape4" style="top:-9px;left:18%;transform:rotate(-6deg)"></span><img src="${esc(pick.url)}" alt=""/>${pick.cap ? `<figcaption class="hand">${esc(pick.cap)}</figcaption>` : ""}</figure>`
+          : "";
+        html = html.slice(0, snapStart) + snap + html.slice(snapEnd + "</figure>".length);
+      }
     }
   }
 
@@ -694,7 +742,7 @@ export function renderTribute(template: string, t: Tribute): string {
         const voice =
           `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
           `<div style="max-width:560px;margin:0 auto">` +
-          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">In ${pn.pos} own voice</div>` +
+          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#5E3A20;margin-bottom:14px">In ${pn.pos} own voice</div>` +
           `<div class="vk" role="group" style="text-align:left"><audio preload="none" src="${esc(t.voiceUrl)}" aria-label="In ${pn.pos} own voice"></audio>` +
           `<button type="button" class="vk-play" aria-label="Play ${pn.pos} voice">▶</button>` +
           `<div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div>` +
@@ -829,9 +877,19 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
   // bar breathes. One door, always visible, through /signin. The old floating
   // "tend this page" whisper retires; two doors in one corner was noise.
   if (t.slug) {
-    // Item 3: the log-in door stands beside the logo now; Add a Memory holds the right.
-    const loginBtn = `<a id="loginTop" href="/signin" style="display:inline-flex;align-items:center;font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;border:1px solid #E4D9C4;border-radius:20px;padding:8px 14px;margin-left:10px;text-decoration:none;background:transparent;white-space:nowrap">log in</a>`;
+    // Item 3 gave the log-in door a home beside the logo. m5a (July 29): its
+    // label wears Besley now, per brand — the techie mono caps retire. d9
+    // (July 29): on desktop the door stands at the header's top right again
+    // (CSS order only; phones keep their grid, where it already sits top right).
+    const loginBtn = `<a id="loginTop" href="/signin" style="display:inline-flex;align-items:center;font-family:'Besley',serif;font-size:13.5px;font-weight:600;letter-spacing:.01em;color:#5A4F45;border:1px solid #E4D9C4;border-radius:20px;padding:7px 15px;margin-left:10px;text-decoration:none;background:transparent;white-space:nowrap">Log in</a>`;
     html = html.replace("I <em>Miss</em> You Memorial</a>", "I <em>Miss</em> You Memorial</a>" + loginBtn);
+    {
+      const loginCss = `<style>/* d9 (July 29) · desktop: the log-in door returns to the header's top right */
+@media(min-width:821px){#loginTop{order:99;margin-left:12px}}
+</style>`;
+      const lIdx = html.lastIndexOf("</head>");
+      if (lIdx > -1) html = html.slice(0, lIdx) + loginCss + html.slice(lIdx);
+    }
     html = html.replace(
       '<button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">',
       '<button class="btn" id="addMemTop" style="font-size:11.5px;padding:7px 13px">'
@@ -1081,6 +1139,129 @@ addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
 document.querySelectorAll('.tapeobj[data-v]').forEach(function(tp){tp.onclick=function(){open(+tp.getAttribute('data-v'))}});
 })();</script>`;
     html = html.replace("</body>", tvRoom + "\n</body>");
+  }
+
+  // ═══ the hero wears a scene (July 29) ════════════════════════════════════
+  // A full-bleed looping landscape plays quietly behind the wreath — the
+  // family's chosen slot (0028), campfire by default. The poster paints
+  // first; reduced motion, Data Saver, and low-power phones stay on the
+  // poster. The scene picker rests in the hero's lower-right corner: the
+  // owner's choice persists for everyone through /api/tribute/[slug]/hero-video;
+  // anyone else's tap previews in their own browser only.
+  {
+    const hb = heroBackground(t.heroVideoSlot);
+    const heroCss = `<style>/* the hero wears a scene (July 29) · scenic video behind the wreath */
+.arrive{background:linear-gradient(180deg,#F3E7D2 0%,#EFE0C4 70%,var(--cream) 100%)}
+.hv{position:absolute;inset:0;z-index:0;overflow:hidden;background:#F3E7D2}
+.hv .hv-poster,.hv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hv .hv-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(63,44,26,.44) 0%,rgba(63,44,26,.10) 30%,rgba(63,44,26,.14) 60%,rgba(63,44,26,.66) 100%)}
+.arrive .wrhero{z-index:2}
+.hv-pick{position:absolute;right:14px;bottom:14px;z-index:9}
+.hv-pill{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.06em;font-size:13px;color:#F4E9D4;background:rgba(26,19,13,.55);border:1px solid rgba(201,165,114,.5);border-radius:100px;padding:7px 15px;cursor:pointer}
+.hv-pill:hover{background:rgba(26,19,13,.75)}
+.hv-menu{position:absolute;right:0;bottom:calc(100% + 8px);min-width:190px;background:#FFFDF6;border:1px solid #E4D9C4;border-radius:12px;box-shadow:0 24px 60px -20px rgba(26,19,13,.5);padding:6px;max-height:min(320px,60vh);overflow:auto}
+.hv-menu button{display:block;width:100%;text-align:left;font-family:'Besley',serif;font-size:14.5px;color:#2C2520;background:none;border:none;border-radius:8px;padding:9px 12px;cursor:pointer}
+.hv-menu button:hover{background:rgba(168,124,95,.1)}
+.hv-menu button[aria-selected="true"]{color:#A87C5F;font-weight:700}
+</style>`;
+    const hIdx = html.lastIndexOf("</head>");
+    if (hIdx > -1) html = html.slice(0, hIdx) + heroCss + html.slice(hIdx);
+
+    const heroMarkup =
+      `\n<div class="hv" id="heroVid" aria-hidden="true">` +
+      `<img class="hv-poster" id="hvPoster" src="${esc(hb.poster)}" alt=""/>` +
+      `<video id="hvVideo" autoplay muted loop playsinline preload="metadata" poster="${esc(hb.poster)}">` +
+      `<source src="${esc(hb.webm)}" type="video/webm"/><source src="${esc(hb.mp4)}" type="video/mp4"/>` +
+      `</video>` +
+      `<div class="hv-scrim" aria-hidden="true"></div>` +
+      `</div>` +
+      `<script>/* poster-only fallbacks · runs before the wreath parses */
+(function(){try{
+var v=document.getElementById('hvVideo');if(!v)return;
+var still=false;
+try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)still=true}catch(e){}
+try{if(navigator.connection&&navigator.connection.saveData)still=true}catch(e){}
+try{if(matchMedia('(max-width:560px)').matches&&((navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.connection&&/(^|-)2g/.test(navigator.connection.effectiveType||''))))still=true}catch(e){}
+window.__HV_STILL__=still;
+if(still){try{v.pause()}catch(e){}v.removeAttribute('autoplay');while(v.firstChild)v.removeChild(v.firstChild);try{v.load()}catch(e){}v.style.display='none'}
+}catch(e){}})();
+</script>`;
+    html = html.replace('<header class="arrive" id="top">', '<header class="arrive" id="top">' + heroMarkup);
+
+    const menuItems = HERO_BACKGROUNDS
+      .map((b) => `<button type="button" role="option" data-slot="${esc(b.id)}" aria-selected="${b.id === hb.id ? "true" : "false"}">${esc(b.label)}</button>`)
+      .join("");
+    const picker =
+      `<div class="hv-pick" id="hvPick">` +
+      `<button type="button" class="hv-pill" id="hvPillBtn" aria-haspopup="listbox" aria-expanded="false">Scene · <span id="hvCur">${esc(hb.label)}</span></button>` +
+      `<div class="hv-menu" id="hvMenu" role="listbox" aria-label="The scene behind the wreath" hidden>${menuItems}</div>` +
+      `</div>`;
+    html = html.replace("</header>", picker + "\n</header>");
+
+    const hbJson = JSON.stringify(HERO_BACKGROUNDS).replace(/</g, "\\u003c");
+    const heroScript = `<script>/* the scene picker · owner persists for everyone, a visitor previews for themselves */
+(function(){
+var HB=${hbJson},cur=${JSON.stringify(hb.id)},SLUG=${JSON.stringify(slug)};
+var v=document.getElementById('hvVideo'),poster=document.getElementById('hvPoster'),pill=document.getElementById('hvPillBtn'),menu=document.getElementById('hvMenu'),curEl=document.getElementById('hvCur');
+if(!pill||!menu)return;
+function bg(id){for(var i=0;i<HB.length;i++)if(HB[i].id===id)return HB[i];return null}
+function apply(id){var b=bg(id);if(!b)return;cur=b.id;
+  if(poster)poster.src=b.poster;
+  if(v){v.poster=b.poster;while(v.firstChild)v.removeChild(v.firstChild);
+    if(!window.__HV_STILL__){var s1=document.createElement('source');s1.src=b.webm;s1.type='video/webm';var s2=document.createElement('source');s2.src=b.mp4;s2.type='video/mp4';v.appendChild(s1);v.appendChild(s2);v.load();var p=v.play();if(p&&p.catch)p.catch(function(){})}}
+  if(curEl)curEl.textContent=b.label;
+  menu.querySelectorAll('[data-slot]').forEach(function(o){o.setAttribute('aria-selected',o.getAttribute('data-slot')===cur?'true':'false')})}
+try{var pv=localStorage.getItem('imy-hero-slot-'+SLUG);if(pv&&pv!==cur&&bg(pv))apply(pv)}catch(e){}
+function shut(){menu.hidden=true;pill.setAttribute('aria-expanded','false')}
+pill.addEventListener('click',function(){var open=menu.hidden;menu.hidden=!open;pill.setAttribute('aria-expanded',open?'true':'false')});
+document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('#hvPick'))shut()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
+menu.querySelectorAll('[data-slot]').forEach(function(o){o.addEventListener('click',function(){
+  var id=o.getAttribute('data-slot');apply(id);shut();
+  fetch('/api/tribute/'+SLUG+'/hero-video',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({slot:id})})
+  .then(function(r){return r.json()}).then(function(j){
+    if(j&&j.ok){try{localStorage.removeItem('imy-hero-slot-'+SLUG)}catch(e){}}
+    else{try{localStorage.setItem('imy-hero-slot-'+SLUG,id)}catch(e){}}})
+  .catch(function(){try{localStorage.setItem('imy-hero-slot-'+SLUG,id)}catch(e){}})})});
+})();
+</script>`;
+    html = html.replace("</body>", heroScript + "\n</body>");
+  }
+
+  // ═══ the kraft paper ground (July 29) ════════════════════════════════════
+  // Below the scenic hero the whole page rests on a light-brown kraft tile,
+  // handed off through a torn kraft edge at the hero's foot. This supersedes
+  // the July 27 item-44 walnut band: the signal is now scenic-video top →
+  // kraft memory-sharing zone. One exception, by decision: the memory board
+  // section (.keep) keeps its own cork-and-parchment ground — cork brown on
+  // kraft would read too similar. Ink stays the reading color; the terracotta
+  // small-cap labels deepen on kraft so every line passes contrast; cream
+  // cards keep their paper and gain a warmer border to separate from kraft.
+  {
+    const kraftCss = `<style>/* kraft ground (July 29) · the page below the hero */
+#maincontent{background:#C9AB82 url('/art/kraft-tile.webp') repeat;background-size:384px 384px}
+.hv-edge{position:absolute;left:0;right:0;bottom:-1px;height:26px;z-index:4;pointer-events:none;background:#C9AB82 url('/art/kraft-tile.webp') repeat;background-size:384px 384px;clip-path:polygon(0 12px,4% 3px,9% 14px,15% 2px,21% 12px,27% 4px,33% 15px,40% 3px,47% 11px,54% 2px,61% 13px,68% 4px,75% 12px,82% 3px,89% 12px,95% 4px,100% 10px,100% 100%,0 100%)}
+/* the torn cream sheets let the kraft through; spacing and tears keep their shape */
+.section.sheetdeep{background:transparent!important}
+#memories.sheetdeep{background:transparent!important}
+/* the board keeps its own ground (the one exception); everything after returns to kraft */
+.gw-band{background:transparent}
+.foot-free{background:transparent}
+/* contrast retune · terracotta small-caps deepen on kraft (AA on the tile) */
+#film .kick,#story .kick,#gallery .kick,#memories .kick,#story .hier,#story .mo .yr,#gallery .galnav .gp,#memories .memkeep,#memories .wallct,#memories .unlockline .ul-sub{color:#5E3A20}
+#story .lede,#film .lede,#story .mo .tx,#story .carcap{color:#453A2C}
+#memories .cyc .w{color:#7A4E33}
+.foot-free .pledge{color:#453A2C}
+.foot-free .url{color:#5E4A36}
+.foot-free .credit{color:#7A4E33}
+/* cream cards separate from kraft · warmer borders, a touch more shadow */
+#memories .mem-card,#memories .share{border-color:rgba(109,74,38,.32);box-shadow:0 24px 54px -28px rgba(60,38,10,.55)}
+#memories .invite{border-color:rgba(109,74,38,.4)}
+#memories .wchip,#memories .memtab,#story .period,#story .chip-ui{border-color:rgba(109,74,38,.3)}
+</style>`;
+    const kIdx = html.lastIndexOf("</head>");
+    if (kIdx > -1) html = html.slice(0, kIdx) + kraftCss + html.slice(kIdx);
+    html = html.replace("</header>", '<div class="hv-edge" aria-hidden="true"></div>\n</header>');
   }
 
   // Item 57: the framed invitation section is retired from the example page.

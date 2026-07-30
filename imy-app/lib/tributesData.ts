@@ -95,6 +95,8 @@ function rowToTribute(r: any): Tribute {
         }
       : undefined,
     tier: r.tier || "free",
+    // The hero's chosen scene (0028) — renderTribute rests on campfire when absent.
+    heroVideoSlot: r.hero_video_slot || undefined,
     theme: r.theme || undefined,
     motif: r.motif || undefined,
     visibility: r.visibility || undefined,

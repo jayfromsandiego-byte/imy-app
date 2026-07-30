@@ -184,9 +184,9 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("no placements → the gallery graces the board, captions first",
     bareB.boards.length === 1 && bareB.boards[0].items.length === 2 && bareB.boards[0].items[0].img === "https://x/p0.jpg" && bareB.boards[0].items[0].ttl === "Photograph 1" && bareB.boards[0].items[0].who === "Family" && bareB.boards[0].items[1].img === "https://x/p1.jpg" && bareB.boards[0].items[1].ttl === "the bench");
   const bareHtml = renderTribute(template, { ...base, quote: "Measure twice." });
-  t("quote band without a placement rests among flowers on cream", bareHtml.includes('id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)"') && bareHtml.includes("/art/mum2-34d609.png") && !bareHtml.includes('id="quoteband"><div class="bgi">'));
+  t("quote band wears its photographic ground again (d7, July 29)", bareHtml.includes('id="quoteband"><div class="bgi"><img src="/art/7bb79736') && bareHtml.includes('<div class="v"></div>'));
   const withQ = renderTribute(template, { ...base, quote: "Measure twice.", placements: { quote: "ph-b" } });
-  t("the banner never wears uploaded photographs", withQ.includes('id="quoteband" style="background:linear-gradient') && !withQ.includes('id="quoteband"><div class="bgi">'));
+  t("the banner never wears uploaded photographs", withQ.includes('id="quoteband"><div class="bgi"><img src="/art/') && !withQ.includes('<div class="bgi"><img src="https://x/'));
   const pinned = boot(renderTribute(template, { ...base, placements: { board: ["ph-b", "ph-a"] } }));
   t("board follows the family's order", pinned.boards[0].items[0].img === "https://x/p1.jpg" && pinned.boards[0].items[1].img === "https://x/p0.jpg");
   const keeps = boot(renderTribute(template, { ...base, memories: [{ ...mem("99999999-9999-4999-8999-999999999999", "Ana", "a neighbour", "The bench he built.", 2), photos: ["https://x/keep.jpg"] }] }));
@@ -228,7 +228,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
 // ── 14 · the composer's doors are real (July 8) ───────────────────────────────
 {
   const page = renderTribute(template, jonny);
-  t("photo attach is wired, honestly labelled", template.includes('id="photoAdd"') && template.includes("＋ Add a photograph"));
+  t("photo attach is wired, honestly labelled (m10: 'Add a photo')", template.includes('id="photoAdd"') && template.includes("＋ Add a photo") && !template.includes("＋ Add a photograph"));
   t("a memory can carry its photograph", template.includes("photoUrl:PHOTO.url||''"));
   t("visitors can attach a moderated video", template.includes('id="videoAdd"') && template.includes("videoUrl:VIDEO.url||''") && template.includes("uploadVisitorVideo"));
   t("the helper calls the real api on live pages", template.includes("fetch('/api/assist'"));
