@@ -272,6 +272,8 @@ export function renderTribute(template: string, t: Tribute): string {
     au: tier === "plus" && m.audio && /^https:\/\//.test(m.audio) ? m.audio : "",
     vi: tier === "plus" && m.video && /^https:\/\//.test(m.video) ? m.video : "",
     ph: m.photos && m.photos[0] && /^https:\/\//.test(m.photos[0]) ? m.photos[0] : "",
+    // Every attached photograph a card renders (0029) — up to four, https only.
+    phs: (m.photos || []).filter((u) => typeof u === "string" && /^https:\/\//.test(u)).slice(0, 4),
     cm: (m.comments || []).map((c) => [c.name || "A friend", c.rel || "", c.text || ""]).filter((c) => c[2]),
   })).filter((m) => m.tx);
 
@@ -412,7 +414,7 @@ bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.pr
     ? `${Math.floor(filmData.duration / 60)}:${String(Math.round(filmData.duration % 60)).padStart(2, "0")}`
     : "";
   const filmInvite = filmData && tier === "free"
-    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#453A2C">This is a first glimpse. The whole film of ${esc(fpn.pos)} life comes with the full memorial. <a href="/pricing" style="color:#5E3A20">When you are ready.</a></p>`
+    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#6E6156">This is a first glimpse. The whole film of ${esc(fpn.pos)} life comes with the full memorial. <a href="/pricing" style="color:#8A5A3C">When you are ready.</a></p>`
     : "";
   const filmSection = filmData
     ? `
@@ -742,7 +744,7 @@ bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.pr
         const voice =
           `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
           `<div style="max-width:560px;margin:0 auto">` +
-          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#5E3A20;margin-bottom:14px">In ${pn.pos} own voice</div>` +
+          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#8A5A3C;margin-bottom:14px">In ${pn.pos} own voice</div>` +
           `<div class="vk" role="group" style="text-align:left"><audio preload="none" src="${esc(t.voiceUrl)}" aria-label="In ${pn.pos} own voice"></audio>` +
           `<button type="button" class="vk-play" aria-label="Play ${pn.pos} voice">▶</button>` +
           `<div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div>` +
@@ -1226,42 +1228,6 @@ menu.querySelectorAll('[data-slot]').forEach(function(o){o.addEventListener('cli
 })();
 </script>`;
     html = html.replace("</body>", heroScript + "\n</body>");
-  }
-
-  // ═══ the kraft paper ground (July 29) ════════════════════════════════════
-  // Below the scenic hero the whole page rests on a light-brown kraft tile,
-  // handed off through a torn kraft edge at the hero's foot. This supersedes
-  // the July 27 item-44 walnut band: the signal is now scenic-video top →
-  // kraft memory-sharing zone. One exception, by decision: the memory board
-  // section (.keep) keeps its own cork-and-parchment ground — cork brown on
-  // kraft would read too similar. Ink stays the reading color; the terracotta
-  // small-cap labels deepen on kraft so every line passes contrast; cream
-  // cards keep their paper and gain a warmer border to separate from kraft.
-  {
-    const kraftCss = `<style>/* kraft ground (July 29) · the page below the hero */
-#maincontent{background:#C9AB82 url('/art/kraft-tile.webp') repeat;background-size:384px 384px}
-.hv-edge{position:absolute;left:0;right:0;bottom:-1px;height:26px;z-index:4;pointer-events:none;background:#C9AB82 url('/art/kraft-tile.webp') repeat;background-size:384px 384px;clip-path:polygon(0 12px,4% 3px,9% 14px,15% 2px,21% 12px,27% 4px,33% 15px,40% 3px,47% 11px,54% 2px,61% 13px,68% 4px,75% 12px,82% 3px,89% 12px,95% 4px,100% 10px,100% 100%,0 100%)}
-/* the torn cream sheets let the kraft through; spacing and tears keep their shape */
-.section.sheetdeep{background:transparent!important}
-#memories.sheetdeep{background:transparent!important}
-/* the board keeps its own ground (the one exception); everything after returns to kraft */
-.gw-band{background:transparent}
-.foot-free{background:transparent}
-/* contrast retune · terracotta small-caps deepen on kraft (AA on the tile) */
-#film .kick,#story .kick,#gallery .kick,#memories .kick,#story .hier,#story .mo .yr,#gallery .galnav .gp,#memories .memkeep,#memories .wallct,#memories .unlockline .ul-sub{color:#5E3A20}
-#story .lede,#film .lede,#story .mo .tx,#story .carcap{color:#453A2C}
-#memories .cyc .w{color:#7A4E33}
-.foot-free .pledge{color:#453A2C}
-.foot-free .url{color:#5E4A36}
-.foot-free .credit{color:#7A4E33}
-/* cream cards separate from kraft · warmer borders, a touch more shadow */
-#memories .mem-card,#memories .share{border-color:rgba(109,74,38,.32);box-shadow:0 24px 54px -28px rgba(60,38,10,.55)}
-#memories .invite{border-color:rgba(109,74,38,.4)}
-#memories .wchip,#memories .memtab,#story .period,#story .chip-ui{border-color:rgba(109,74,38,.3)}
-</style>`;
-    const kIdx = html.lastIndexOf("</head>");
-    if (kIdx > -1) html = html.slice(0, kIdx) + kraftCss + html.slice(kIdx);
-    html = html.replace("</header>", '<div class="hv-edge" aria-hidden="true"></div>\n</header>');
   }
 
   // Item 57: the framed invitation section is retired from the example page.

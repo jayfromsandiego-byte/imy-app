@@ -228,8 +228,11 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
 // ── 14 · the composer's doors are real (July 8) ───────────────────────────────
 {
   const page = renderTribute(template, jonny);
-  t("photo attach is wired, honestly labelled (m10: 'Add a photo')", template.includes('id="photoAdd"') && template.includes("＋ Add a photo") && !template.includes("＋ Add a photograph"));
-  t("a memory can carry its photograph", template.includes("photoUrl:PHOTO.url||''"));
+  t("photo attach is wired, honestly capped (r2 Task 5: 'up to 4')", template.includes('id="photoAdd"') && template.includes("＋ Add photos · up to 4") && !template.includes("＋ Add a photograph"));
+  t("a memory can carry its photographs (0029: up to four)", template.includes("photoUrls:PHOTOS.map(function(s){return s.url}).filter(Boolean)") && template.includes("photoUrl:(PHOTOS[0]&&PHOTOS[0].url)||''"));
+  t("the composer re-encodes on a canvas (EXIF stripped, HEIC converted where decodable)", template.includes("function shrinkPhoto(") && template.includes("'image/jpeg',.82") && template.includes("MAX=1600"));
+  t("a browser that cannot read a HEIC is asked kindly for a JPG or PNG", template.includes("A JPG or PNG of the same picture will land just fine."));
+  t("chosen photos preview with a remove control before submission", template.includes('id="photoPrev"') && template.includes("aria-label','Remove this photo'"));
   t("visitors can attach a moderated video", template.includes('id="videoAdd"') && template.includes("videoUrl:VIDEO.url||''") && template.includes("uploadVisitorVideo"));
   t("the helper calls the real api on live pages", template.includes("fetch('/api/assist'"));
   t("a quiet way home on every page (July 10: a real door)", page.includes('id="loginTop" href="/signin"') && !page.includes(">tend this page</a>"));
@@ -237,6 +240,58 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("the memory door steps back a size", page.includes('id="addMemTop" style="font-size:11.5px;padding:7px 13px"') && template.includes('id="addMemTop" style="font-size:12.5px;padding:9px 16px"'));
   t("the demo add-a-moment never reaches a real page", !page.includes("＋ Add a key moment · a year, a line, a photograph") && template.includes("＋ Add a key moment"));
   t("demo binder skips the wired buttons", template.includes("if(g.id)return;"));
+}
+
+// ── 14b · photos ride with memories (0029 · r2 Task 5) ────────────────────────
+{
+  const withPhotos: Tribute = { ...jonny, memories: [
+    { ...mem("abcd1111-1111-4111-8111-111111111111", "Maria", "his daughter", "The bench, that summer.", 1),
+      photos: ["https://x/k1.jpg", "https://x/k2.jpg", "https://x/k3.jpg"] },
+    mem("abcd2222-2222-4222-8222-222222222222", "Sam", "a neighbour", "Words only, whole on their own.", 0),
+  ] };
+  const b = boot(renderTribute(template, withPhotos));
+  t("boot carries the full photo set", JSON.stringify(b.mems[0].phs) === JSON.stringify(["https://x/k1.jpg", "https://x/k2.jpg", "https://x/k3.jpg"]));
+  t("the first photograph still rides as ph (board pins, back-compat)", b.mems[0].ph === "https://x/k1.jpg");
+  t("a text-only memory carries no photo scaffolding", Array.isArray(b.mems[1].phs) && b.mems[1].phs.length === 0 && b.mems[1].ph === "");
+  const many = boot(renderTribute(template, { ...jonny, memories: [
+    { ...mem("abcd3333-3333-4333-8333-333333333333", "Ana", "friend", "Five arrived, four ride.", 0),
+      photos: ["https://x/1.jpg", "https://x/2.jpg", "https://x/3.jpg", "https://x/4.jpg", "https://x/5.jpg"] },
+  ] }));
+  t("the wall caps a memory at four photographs", many.mems[0].phs.length === 4);
+  const unsafe = boot(renderTribute(template, { ...jonny, memories: [
+    { ...mem("abcd4444-4444-4444-8444-444444444444", "Ana", "friend", "Only https survives.", 0),
+      photos: ["javascript:alert(1)", "https://x/ok.jpg"] },
+  ] }));
+  t("non-https photo urls never reach the page", JSON.stringify(unsafe.mems[0].phs) === JSON.stringify(["https://x/ok.jpg"]));
+  t("the card builder renders one whole or a small strip", template.includes("function memPhotos(") && template.includes('class="mem-phs"') && template.includes('class="mem-pht"'));
+  t("the photo room is ready, with its exits", template.includes('id="memLb"') && template.includes('id="memLbClose"') && template.includes('id="memLbPrev"') && template.includes('id="memLbNext"'));
+  t("voice and photos coexist on one post (neither replaces the other)", (() => {
+    const both = boot(renderTribute(template, { ...jonny, memories: [
+      { ...mem("abcd5555-5555-4555-8555-555555555555", "Dan", "his son", "Both, together.", 0),
+        photos: ["https://x/p.jpg"], audio: "https://x/v.mp3" },
+    ] }));
+    return both.mems[0].phs.length === 1 && both.mems[0].au === "https://x/v.mp3";
+  })());
+}
+
+// ── 14c · the desktop memory arrows are placed on purpose (r2 Task 6) ─────────
+{
+  t("arrows stand fixed at the carousel's top right, not at 50% of a wrapper",
+    template.includes(".memtrackwrap{padding-top:56px}") && template.includes("position:absolute;top:0;width:44px") && !template.includes(".memarr{display:flex;align-items:center;justify-content:center;position:absolute;top:50%"));
+  t("arrows disable and dim at the row's ends, kept honest on scroll",
+    template.includes("p.disabled=tr.scrollLeft<=2") && template.includes("tr.addEventListener('scroll',sync,{passive:true})") && template.includes(".memarr:disabled{opacity:.35"));
+  t("arrows carry hover and focus-visible states; mobile keeps pure swipe",
+    template.includes(".memarr:hover:not(:disabled)") && template.includes(".memarr:focus-visible") && template.includes(".memarr{display:none}"));
+}
+
+// ── 14d · hero content shadows (r2 Task 7) — the Task 2 scene system untouched ─
+{
+  t("hero text wears one soft shadow setting over every scene",
+    template.includes("--hv-ts:0 1px 3px rgba(26,19,13,.55),0 5px 20px rgba(26,19,13,.38)") && template.includes(".arrive .wr-big b,.arrive .wr-biglab,.arrive .wr-count,.arrive .wr-arch .il{text-shadow:var(--hv-ts)}"));
+  t("the count line turned cream so the shadow can carry it", template.includes(".arrive .wr-count{color:#F7EFDF}"));
+  t("the portrait's FRAME casts the shadow, never the wreath cutout", template.includes(".arrive .wr-arch{box-shadow:0 8px 20px") && !template.includes(".wreathimg{filter:drop-shadow"));
+  const page = renderTribute(template, jonny);
+  t("the Task 2 scene system stands exactly as built", page.includes('id="heroVid"') && page.includes("hv-scrim") && page.includes('id="hvPick"') && page.includes("linear-gradient(180deg,rgba(63,44,26,.44) 0%,rgba(63,44,26,.10) 30%,rgba(63,44,26,.14) 60%,rgba(63,44,26,.66) 100%)"));
 }
 
 // ── 13 · the page in the family's order (July 8) ──────────────────────────────

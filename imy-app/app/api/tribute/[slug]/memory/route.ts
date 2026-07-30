@@ -63,7 +63,14 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   const relation = clean(body.relation, 60) || null;
   // Kept private to the family, never rendered publicly (0016).
   const authorEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(body.email || "")) ? clean(body.email, 200) : null;
-  const photoUrl = keptUrl(body.photoUrl);
+  // Up to four photographs ride with one memory (0029). Each URL passes the
+  // same https re-serialization gate; the first also lands in photo_url so the
+  // board pins, the archive, and older reads keep working unchanged.
+  const photoUrls = (Array.isArray(body.photoUrls) ? body.photoUrls : [])
+    .map(keptUrl)
+    .filter((u: string | null): u is string => Boolean(u))
+    .slice(0, 4);
+  const photoUrl = keptUrl(body.photoUrl) || photoUrls[0] || null;
   const audioUrl = keptUrl(body.audioUrl);
   const videoUrl = keptVideoUrl(body.videoUrl);
   if (text.length < 2) return NextResponse.json({ ok: false, error: "empty" }, { status: 400 });
@@ -86,7 +93,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   // Free keeps it safely at rest; Plus may publish it. Voice remains a Plus promise.
   const isPlus = trib.tier === "plus" || trib.tier === "heirloom";
 
-  const { error } = await db.from("tribute_memories").insert({
+  const row: Record<string, unknown> = {
     tribute_id: trib.id,
     author_name: name,
     relation,
@@ -96,7 +103,15 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
     audio_url: isPlus ? audioUrl : null,
     video_url: videoUrl,
     status: "pending",
-  });
+  };
+  if (photoUrls.length) row.photo_urls = photoUrls;
+  let { error } = await db.from("tribute_memories").insert(row);
+  if (error && row.photo_urls) {
+    // 0029 not applied yet: never refuse a memory over a missing column — the
+    // words and the first photograph are kept the pre-0029 way.
+    delete row.photo_urls;
+    ({ error } = await db.from("tribute_memories").insert(row));
+  }
   if (error) return NextResponse.json({ ok: false, error: "failed" }, { status: 500 });
 
   // Nudge the caretaker when this is the FIRST memory waiting — one gentle

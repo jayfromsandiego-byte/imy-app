@@ -914,7 +914,7 @@ body.a11y-nomotion .living{opacity:0!important}
 .foot-free .price,.foot-plus .price,#footGive{display:none!important}
 #footGive + .pledge{display:none!important}
 /* M9 · the memorial ends with remembrance: pledge + credit + url remain, pricing stack above is gone */
-/* M7 · the board, rethought for small screens: two-column, untilted, cork as a band not a tube */
+/* M7 · the board, rethought for small screens: two-column, untilted, the board ground as a band not a tube */
 @media(max-width:640px){
   .boardstage{padding:16px 12px 20px!important;border-width:8px!important}
   .boardstage .piece{transform:none!important;width:calc(50% - 8px)!important;margin:4px!important}
@@ -1055,14 +1055,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 /* d1 · a chapter card speaks two facts two ways: the dates as the line, the moments as a quiet pill */
 .period .pm{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-size:11.5px;line-height:1.3;color:#7A6A58;background:rgba(44,37,32,.07);border-radius:100px;padding:2px 10px;margin-top:4px}
 .period.on .pm{color:#E8CFA4;background:rgba(255,255,255,.14)}
-/* d4 · desktop keeps the peeking sliver and regains its side arrows; phones keep the swipe */
+/* d4, revised (r2 Task 6) · the arrows leave the cards' flanks. Memory cards
+   conform to their content (m3), so heights vary card to card and tab to tab —
+   an arrow hung at 50% of the wrapper is centered against nothing in
+   particular. Intentional fixed placement instead: the pair stands at the
+   carousel's top right, against the section header's right edge — stable at
+   every card height, obviously joined to the row. Hover, focus-visible, and
+   disabled-at-the-ends states; phones and tablets keep pure swipe. */
 .memtrackwrap{position:relative}
 .memarr{display:none}
 @media(min-width:821px){
-  .memarr{display:flex;align-items:center;justify-content:center;position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:18px;color:var(--ink);box-shadow:0 10px 22px -12px rgba(60,38,10,.4);z-index:6}
-  .memarr.prev{left:-12px}
-  .memarr.next{right:-12px}
-  .memarr:hover{border-color:var(--terra);color:var(--terra)}
+  .memtrackwrap{padding-top:56px}
+  .memarr{display:flex;align-items:center;justify-content:center;position:absolute;top:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:18px;color:var(--ink);box-shadow:0 10px 22px -12px rgba(60,38,10,.4);z-index:6;transition:border-color .16s ease,color .16s ease,opacity .16s ease,background .16s ease}
+  .memarr.prev{left:auto;right:54px}
+  .memarr.next{right:2px}
+  .memarr:hover:not(:disabled){border-color:var(--terra);color:var(--terra);background:#fffaf2}
+  .memarr:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+  .memarr:disabled{opacity:.35;cursor:default;box-shadow:none}
 }
 /* m10 · the composer's four doors sit two by two: photo · video / voice · share */
 .share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -1072,6 +1081,92 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 #voiceAdd{grid-column:1;grid-row:2}
 #shareBtn{grid-column:2;grid-row:2}
 #helpBtn{grid-column:1/-1}
+</style>
+<style>
+/* ═══ visual batch r2 · July 30 2026 ═══ */
+/* Task 3 revised · the light ground. Below the scenic hero the page alternates
+   white and off-white bands, one per section zone: the cream base carries the
+   film, the obituary, and the chapters' surround; her story stands on a white
+   sheet; the gallery keeps its torn cream-deep sheet; the memories sheet turns
+   true white (item 44, now winning its cascade); the memory board section keeps
+   its own ground, as before. Torn-paper edges stay the seam language. */
+#story{background:#FFFFFF;border-radius:14px;margin-left:-3%;margin-right:-3%;padding:76px 3% 68px;box-shadow:0 0 0 1px rgba(201,165,114,.26),0 22px 50px -38px rgba(60,38,10,.28)}
+/* floral accents · botanical line work in terracotta, gold, and walnut strokes,
+   drawn as background layers so they can never stand over text, faces, or a
+   button. Layered corner pieces, hand-made not templated. */
+#story{background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M16 150C50 122 84 86 116 46' stroke='%238A5A3C' stroke-opacity='.5' stroke-width='1.6'/%3E%3Cpath d='M50 122q-18-2-26-16 18-2 26 16z' stroke='%23A87C5F' stroke-opacity='.45' stroke-width='1.3'/%3E%3Cpath d='M72 98q2-18 16-26 2 18-16 26z' stroke='%23A87C5F' stroke-opacity='.45' stroke-width='1.3'/%3E%3Cpath d='M94 72q-18 0-27-13 18-3 27 13z' stroke='%23A87C5F' stroke-opacity='.45' stroke-width='1.3'/%3E%3Cg stroke='%23C9A572' stroke-opacity='.55' stroke-width='1.4'%3E%3Ccircle cx='122' cy='38' r='4.5'/%3E%3Cpath d='M122 25c4 5 4 9 0 9s-4-4 0-9z'/%3E%3Cpath d='M134 34c-1 6-4 9-7 7s-1-6 7-7z'/%3E%3Cpath d='M130 51c-6 1-10-1-9-4s6-3 9 4z'/%3E%3Cpath d='M114 51c-2-6 0-10 3-9s3 6-3 9z'/%3E%3Cpath d='M110 34c6-2 10 0 9 3s-6 3-9-3z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") no-repeat top 18px right 20px / 108px auto,
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='110' viewBox='0 0 90 110'%3E%3Cg fill='none' stroke='%233f2c1a' stroke-opacity='.34' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M46 104C42 78 42 54 48 30'/%3E%3Cpath d='M44 78q-14-2-18-14 13 0 18 14z'/%3E%3Cpath d='M45 56q12-8 20-4-4 10-20 4z'/%3E%3Cpath d='M48 30c-6-8-4-16 2-20 6 4 8 12 2 20-1 2-3 2-4 0z'/%3E%3C/g%3E%3C/svg%3E") no-repeat bottom 26px left 24px / 66px auto,
+  #FFFFFF}
+#gallery.sheetdeep{background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='80' viewBox='0 0 140 80'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M6 70C40 58 92 48 134 16' stroke='%23C9A572' stroke-opacity='.55' stroke-width='1.5'/%3E%3Cpath d='M38 59q-4-12 4-20 6 10-4 20z' stroke='%23A87C5F' stroke-opacity='.42' stroke-width='1.2'/%3E%3Cpath d='M66 52q12-6 20 0-8 8-20 0z' stroke='%23A87C5F' stroke-opacity='.42' stroke-width='1.2'/%3E%3Cpath d='M96 40q-2-13 7-18 4 11-7 18z' stroke='%23A87C5F' stroke-opacity='.42' stroke-width='1.2'/%3E%3Ccircle cx='136' cy='13' r='3' stroke='%23C9A572' stroke-opacity='.5' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E") no-repeat bottom 34px right 4vw / 124px auto,
+  linear-gradient(180deg,#F6EEDC,#F3E9D2)!important}
+#memories.sheetdeep{background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M16 150C50 122 84 86 116 46' stroke='%238A5A3C' stroke-opacity='.5' stroke-width='1.6'/%3E%3Cpath d='M50 122q-18-2-26-16 18-2 26 16z' stroke='%23A87C5F' stroke-opacity='.45' stroke-width='1.3'/%3E%3Cpath d='M72 98q2-18 16-26 2 18-16 26z' stroke='%23A87C5F' stroke-opacity='.45' stroke-width='1.3'/%3E%3Cpath d='M94 72q-18 0-27-13 18-3 27 13z' stroke='%23A87C5F' stroke-opacity='.45' stroke-width='1.3'/%3E%3Cg stroke='%23C9A572' stroke-opacity='.55' stroke-width='1.4'%3E%3Ccircle cx='122' cy='38' r='4.5'/%3E%3Cpath d='M122 25c4 5 4 9 0 9s-4-4 0-9z'/%3E%3Cpath d='M134 34c-1 6-4 9-7 7s-1-6 7-7z'/%3E%3Cpath d='M130 51c-6 1-10-1-9-4s6-3 9 4z'/%3E%3Cpath d='M114 51c-2-6 0-10 3-9s3 6-3 9z'/%3E%3Cpath d='M110 34c6-2 10 0 9 3s-6 3-9-3z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") no-repeat top 92px right 4vw / 120px auto,
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='80' viewBox='0 0 140 80'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M6 70C40 58 92 48 134 16' stroke='%23C9A572' stroke-opacity='.55' stroke-width='1.5'/%3E%3Cpath d='M38 59q-4-12 4-20 6 10-4 20z' stroke='%23A87C5F' stroke-opacity='.42' stroke-width='1.2'/%3E%3Cpath d='M66 52q12-6 20 0-8 8-20 0z' stroke='%23A87C5F' stroke-opacity='.42' stroke-width='1.2'/%3E%3Cpath d='M96 40q-2-13 7-18 4 11-7 18z' stroke='%23A87C5F' stroke-opacity='.42' stroke-width='1.2'/%3E%3Ccircle cx='136' cy='13' r='3' stroke='%23C9A572' stroke-opacity='.5' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E") no-repeat bottom 44px left 4vw / 112px auto,
+  linear-gradient(180deg,#FFFFFF 0%,#FFFDF7 62%,#FFFAF0 100%)!important}
+/* the accents thin, then rest, as the gutters close — low density on small screens */
+@media(max-width:1199px){
+  #story{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='110' viewBox='0 0 90 110'%3E%3Cg fill='none' stroke='%233f2c1a' stroke-opacity='.26' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M46 104C42 78 42 54 48 30'/%3E%3Cpath d='M44 78q-14-2-18-14 13 0 18 14z'/%3E%3Cpath d='M45 56q12-8 20-4-4 10-20 4z'/%3E%3Cpath d='M48 30c-6-8-4-16 2-20 6 4 8 12 2 20-1 2-3 2-4 0z'/%3E%3C/g%3E%3C/svg%3E") no-repeat top 20px right 18px / 52px auto,#FFFFFF}
+  #gallery.sheetdeep{background:linear-gradient(180deg,#F6EEDC,#F3E9D2)!important}
+  #memories.sheetdeep{background:linear-gradient(180deg,#FFFFFF 0%,#FFFDF7 62%,#FFFAF0 100%)!important}
+}
+@media(max-width:899px){
+  #story{background:#FFFFFF}
+}
+/* text retune for the light bands · ink #2C2520 keeps carrying the reading
+   (nothing pure #000); the terracotta small caps deepen to the AA tone the
+   footer already wears (#8A5A3C · 5.8:1 on white, 5.3:1 on cream) */
+#film .kick,#story .kick,#gallery .kick,#memories .kick,#story .hier,#story .mo .yr,#gallery .galnav .gp,#memories .memkeep,#memories .wallct,#memories .unlockline .ul-sub,#memories .memtab b{color:#8A5A3C}
+#memories .ghostadd{color:#8A5A3C;border-color:rgba(138,90,60,.55)}
+#memories .btn{color:#8A5A3C;border-color:#946a4f}
+#memories .btn.solid{color:#fff;background:#946a4f}
+#memories .btn.solid:hover{background:#7d5741}
+/* Task 5 · photos ride with a memory · the composer's preview strip */
+.pp-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.pp-th{position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;border:1px solid var(--goldline);background:#F3ECDD;box-shadow:0 10px 22px -14px rgba(60,38,10,.4)}
+.pp-th img{width:100%;height:100%;object-fit:cover;display:block}
+.pp-th.busy::after{content:"";position:absolute;inset:0;background:rgba(250,245,236,.55);animation:ppwait 1.2s ease-in-out infinite}
+@keyframes ppwait{0%,100%{opacity:.25}50%{opacity:.7}}
+.pp-x{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(26,19,13,.72);color:#F4E9D4;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.pp-x:hover{background:rgba(26,19,13,.9)}
+.pp-x:focus-visible{outline:2px solid #2a6df4;outline-offset:2px}
+/* Task 5 · the photographs a card carries: one whole, two to four as a small strip */
+.mem-ph{cursor:zoom-in}
+.mem-phs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.mem-pht{width:82px;height:82px;flex:0 0 auto;object-fit:cover;border-radius:8px;border:1px solid rgba(201,165,114,.45);background:#241711;cursor:zoom-in;display:block}
+.mem-pht:focus-visible,.mem-ph:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+/* Task 5 · the photo room — the page's dark-room language, kept minimal */
+.memlb{position:fixed;inset:0;z-index:4200;display:none;align-items:center;justify-content:center;gap:6px;padding:22px;background:rgba(20,13,8,.88);backdrop-filter:blur(4px)}
+.memlb.open{display:flex}
+.memlb figure{margin:0;max-width:min(920px,88vw);text-align:center}
+.memlb img{max-width:100%;max-height:82vh;object-fit:contain;border-radius:10px;box-shadow:0 40px 90px -30px #000;background:#171009}
+.memlb figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#d8bd93;margin-top:12px}
+.mlb-x{position:absolute;top:10px;right:14px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;text-shadow:0 2px 8px rgba(0,0,0,.6);z-index:6}
+.mlb-nav{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;background:none;border:none;color:#fff;font-size:30px;cursor:pointer;opacity:.85;text-shadow:0 2px 8px rgba(0,0,0,.6);flex:0 0 auto}
+.mlb-nav:hover{opacity:1}
+.mlb-x:focus-visible,.mlb-nav:focus-visible{outline:2px solid #F4B860;outline-offset:2px;border-radius:8px}
+/* ═══ Task 7 · hero content shadows over the moving scene ═══ */
+/* One setting for all ten backgrounds, tuned against the lightest posters
+   (clouds, snowfall — the brightest pixel under the scrim sits near luminance
+   .28 in the count line's zone, .70 in the plate's) and the busiest
+   (wildflowers, rain bokeh): a soft dark text-shadow — small offset, generous
+   blur, low opacity — gives every floating line its own depth. The scrim is
+   untouched; depth, not glow, never mud. */
+.arrive{--hv-ts:0 1px 3px rgba(26,19,13,.55),0 5px 20px rgba(26,19,13,.38)}
+/* the lines that float straight on the video */
+.arrive .wr-big b,.arrive .wr-biglab,.arrive .wr-count,.arrive .wr-arch .il{text-shadow:var(--hv-ts)}
+/* the count line was ink-dark over the scene; it turns cream so the shadow can carry it */
+.arrive .wr-count{color:#F7EFDF}
+.arrive .wr-count b{color:#F4B860}
+/* the name element and its plate: a whisper of depth on the letters, a real shadow under the paper */
+.arrive .wr-plate{box-shadow:0 5px 14px rgba(26,19,13,.3),0 26px 60px -16px rgba(26,19,13,.55)}
+.arrive .wr-plate .n1,.arrive .wr-plate .n2{text-shadow:0 1px 2px rgba(44,37,32,.14)}
+/* the portrait's frame casts the shadow — never a drop-shadow on the wreath cutout's edges */
+.arrive .wr-arch{box-shadow:0 8px 20px rgba(26,19,13,.32),0 30px 64px -16px rgba(26,19,13,.55),0 0 0 9px #FFFDF6,0 0 0 10px rgba(138,106,52,.32)}
+/* the presence bubble and the zero pill stand on their own paper · the same quiet depth */
+.arrive .presence,.arrive .wr-big.iszero b{box-shadow:0 4px 14px rgba(26,19,13,.3)}
+.arrive .wr-big.iszero b{text-shadow:none}
 </style>
 {{TRIBUTE_BOOT}}
 </head>
@@ -1222,7 +1317,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="addingas" id="addingAs"></div>
           <p class="safekeep" id="safekeepLine" hidden>Write it now · your words are kept safe. They will join the wall the moment someone opens it for everyone.</p>
         <textarea id="memInput" placeholder="What do you remember?"></textarea>
-        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add a photo</button><input type="file" id="photoFile" accept="image/*" hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.webm,.amr,.flac" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
+        <div class="pp-strip" id="photoPrev" style="display:none" aria-label="Photos attached to this memory"></div>
+        <div class="share-row"><button class="ghostadd" id="photoAdd" type="button">＋ Add photos · up to 4</button><input type="file" id="photoFile" accept="image/*,.heic,.heif" multiple hidden/><button class="ghostadd" id="videoAdd" type="button">＋ Add a video</button><input type="file" id="videoFile" accept="video/mp4,video/webm,video/quicktime" hidden/><button class="ghostadd" id="voiceAdd" type="button">＋ Add a voice memory</button><input type="file" id="voiceFile" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.webm,.amr,.flac" hidden/><button class="btn solid" id="shareBtn">Share &amp; save</button><button class="btn" id="helpBtn">If the words are hard · help me begin</button></div>
         <div class="chatbox" id="chatbox" style="display:none">
           <div class="ch-h">Tell me one true thing about Eleanor, and we will shape it together.<span class="mono">Closer to a friend than a form · it never writes for you</span></div>
           <div class="ch-b" id="chatBody"><div class="cmsg bot">What is one small thing you don&#39;t want to forget about her?</div></div>
@@ -1401,6 +1497,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <button class="a11y-fab" id="a11yFab" aria-label="Accessibility options" aria-expanded="false" aria-controls="a11yPanel" aria-haspopup="true">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="3.7" r="2.1"/><path d="M20.3 7.6c0 .55-.45 1-1 1l-4.2-.5v3.2l2.2 7.5c.18.66-.2 1.35-.86 1.53-.66.19-1.35-.19-1.53-.85L12.6 15h-1.2l-1.31 4.28c-.18.66-.87 1.04-1.53.85-.66-.18-1.04-.87-.86-1.53l2.2-7.5V8.1l-4.2.5c-.55 0-1-.45-1-1s.45-1 1-1h13.3c.55 0 1 .45 1 1z"/></svg>
 </button>
+<!-- the photo room (0029) · a quiet dedicated viewer for photographs left with memories.
+     The board lightbox (#lb) is welded to the board's own FLAT dataset (its likes, comments,
+     and prev/next all walk that array), so reusing it would corrupt board state — this is the
+     page's same dark-room language, kept minimal. -->
+<div class="memlb" id="memLb" role="dialog" aria-modal="true" aria-label="A photograph left with a memory">
+  <button class="mlb-x" id="memLbClose" type="button" aria-label="Close">✕</button>
+  <button class="mlb-nav prev" id="memLbPrev" type="button" aria-label="Previous photograph">‹</button>
+  <figure><img id="memLbImg" src="" alt="A photograph left with a memory"/><figcaption class="mono" id="memLbCap"></figcaption></figure>
+  <button class="mlb-nav next" id="memLbNext" type="button" aria-label="Next photograph">›</button>
+</div>
 <div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="Accessibility options">
   <h4>Accessibility</h4>
   <div class="a11y-sub">Adjust this page to suit you.</div>
@@ -1637,12 +1743,21 @@ var curG='all',memPage=0,ID=null;
 /* asked once, truly · the introduction is remembered on this device (July 9) */
 try{var _idKeep=JSON.parse(localStorage.getItem('imy-id')||'null');if(_idKeep&&_idKeep.fn&&_idKeep.ln&&_idKeep.em)ID=_idKeep}catch(e){}
 GROUPS.forEach(function(g,i){var b=document.createElement('button');b.className='memtab'+(i===0?' on':'');var n=g[0]==='all'?MEMS.length:MEMS.filter(function(m){return m.g===g[0]}).length;b.innerHTML=g[1]+' <b>'+n+'</b>';b.onclick=function(){document.querySelectorAll('.memtab').forEach(function(x){x.classList.remove('on')});b.classList.add('on');curG=g[0];memPage=0;renderMems()};memTabs.appendChild(b)});
+/* the photographs a memory carries (0029) · one renders whole, two to four stand
+   as a small strip; every state is finished — a text-only memory carries no
+   empty gallery scaffolding. Clicking opens the photo room (#memLb). */
+function memPhotos(m){
+  var ps=(m.phs&&m.phs.length?m.phs:(m.ph?[m.ph]:[])).slice(0,4);
+  if(!ps.length)return '';
+  if(ps.length===1)return '<img class="mem-ph" data-mph="0" tabindex="0" role="button" aria-label="Open the photograph left with this memory" src="'+esc(ps[0])+'" alt="A photograph left with this memory" loading="lazy"/>';
+  return '<div class="mem-phs" role="group" aria-label="'+ps.length+' photographs left with this memory">'+ps.map(function(u,i){return '<img class="mem-pht" data-mph="'+i+'" tabindex="0" role="button" aria-label="Open photograph '+(i+1)+' of '+ps.length+'" src="'+esc(u)+'" alt="" loading="lazy"/>'}).join('')+'</div>';
+}
 function memCard(m){
   var cms=(m.cm||[]).map(function(x){return '<div class="c1"><b>'+esc(x[0])+'</b><span class="r">'+esc(x[1])+'</span><br>'+esc(x[2])+'</div>'}).join('');
   return '<div class="mem-card'+(m.jj?' enter':'')+'"'+(m.id?' data-mid="'+m.id+'"':'')+'><span class="pin2"></span>'
    +'<div class="mem-head"><div class="mem-av">'+esc(m.av)+'</div><div><div class="mem-nm">'+esc(m.nm)+'</div><div class="mem-rel">'+esc(m.rel)+'</div></div>'+(m.jj?'<span class="jj">Just joined</span>':'')+'</div>'
    +'<div class="mem-text">&ldquo;'+esc(m.tx)+'&rdquo;</div>'
-   +(m.ph?'<img class="mem-ph" src="'+m.ph+'" alt="A photograph left with this memory" loading="lazy"/>':'')
+   +memPhotos(m)
    +(m.au?'<div class="vk" role="group"><audio preload="none" src="'+m.au+'" aria-label="A voice memory"></audio><button type="button" class="vk-play" aria-label="Play the voice memory">▶</button><div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div><div class="vk-meta"><span class="vk-time">0:00</span><span class="vk-cap">a voice, kept</span></div></div></div>':'')
    +(m.vi?'<video class="mem-vid" controls playsinline preload="metadata" src="'+m.vi+'" aria-label="A video memory"></video>':'')
    +'<div class="mem-foot"><span class="like" data-base="'+m.h+'"'+(m.id?' data-id="'+m.id+'"':'')+'><span class="ic">&#9829;</span> <span class="ct">'+m.h+'</span></span><button class="cmt" data-cmt>&#128172; '+(m.cm?m.cm.length:0)+' &middot; read</button></div>'
@@ -1678,24 +1793,77 @@ function renderMems(){var list=MEMS.filter(function(m){return curG==='all'||m.g=
 }
 renderMems();
 /* a voice memory · Plus · a voicemail kept, a story told aloud; it waits for the family like any other memory */
-/* a photograph rides with a memory · pinned to the board when the family says yes */
-var PHOTO={url:''};
-var pBtn=document.getElementById('photoAdd'),pFile=document.getElementById('photoFile');
+/* photographs ride with a memory (0029) · up to four, pinned to the board when the family says yes.
+   Every photo is re-drawn through a canvas before it leaves the browser: JPEG at .82, long edge
+   capped at 1600px — which also strips EXIF (location and all) and turns an iPhone HEIC into a
+   JPEG wherever the browser can decode one (Safari and iOS can). A browser that cannot read the
+   file is asked kindly for a JPG or PNG instead. */
+var PHOTOS=[];
+var pBtn=document.getElementById('photoAdd'),pFile=document.getElementById('photoFile'),pPrev=document.getElementById('photoPrev');
+function shrinkPhoto(f){
+  return new Promise(function(res,rej){
+    var u=URL.createObjectURL(f),im=new Image();
+    im.onload=function(){
+      try{
+        var MAX=1600,w=im.naturalWidth,h=im.naturalHeight;
+        if(!w||!h)throw 0;
+        var s=Math.min(1,MAX/Math.max(w,h)),cw=Math.max(1,Math.round(w*s)),ch=Math.max(1,Math.round(h*s));
+        var c=document.createElement('canvas');c.width=cw;c.height=ch;
+        c.getContext('2d').drawImage(im,0,0,cw,ch);
+        c.toBlob(function(b){URL.revokeObjectURL(u);if(b)res(b);else rej(0)},'image/jpeg',.82);
+      }catch(e){URL.revokeObjectURL(u);rej(e)}
+    };
+    im.onerror=function(){URL.revokeObjectURL(u);rej(0)};
+    im.src=u;
+  });
+}
+function renderPhotoPrev(){
+  if(!pPrev)return;pPrev.innerHTML='';
+  PHOTOS.forEach(function(s){
+    var d=document.createElement('div');d.className='pp-th'+(s.done?'':' busy');
+    if(s.local||s.url){var im=document.createElement('img');im.alt='';im.src=s.local||s.url;d.appendChild(im)}
+    var x=document.createElement('button');x.type='button';x.className='pp-x';x.setAttribute('aria-label','Remove this photo');x.textContent='×';
+    x.onclick=function(){if(s.local){try{URL.revokeObjectURL(s.local)}catch(e){}}var i=PHOTOS.indexOf(s);if(i>-1)PHOTOS.splice(i,1);renderPhotoPrev();syncPhotoBtn()};
+    d.appendChild(x);pPrev.appendChild(d)});
+  pPrev.style.display=PHOTOS.length?'flex':'none';
+}
+function syncPhotoBtn(){
+  if(!pBtn)return;
+  var done=PHOTOS.filter(function(s){return s.done}).length;
+  pBtn.textContent=PHOTOS.length>=4?'✓ 4 photos attached · the most one memory carries'
+    :done?'✓ '+done+(done===1?' photo attached':' photos attached')+' · add more'
+    :'＋ Add photos · up to 4';
+}
+function resetPhotos(){
+  PHOTOS.forEach(function(s){if(s.local){try{URL.revokeObjectURL(s.local)}catch(e){}}});
+  PHOTOS=[];renderPhotoPrev();syncPhotoBtn();
+}
 if(pBtn&&pFile){
   pBtn.onclick=function(){
-    if(!T){say('On a live memorial, this pins a real photograph to your memory. This is the demo.',false);return}
+    if(!T){say('On a live memorial, this pins up to four real photographs to your memory. This is the demo.',false);return}
+    if(PHOTOS.length>=4){say('Four photos ride with one memory. Remove one to swap another in.',false);return}
     requireId(function(){pFile.click()})};
   pFile.addEventListener('change',function(){
-    var f=pFile.files&&pFile.files[0];if(!f)return;
-    if(f.size>25*1024*1024){say('That photograph is over 25MB. A smaller one will land just fine.',false);pFile.value='';return}
-    pBtn.disabled=true;pBtn.textContent='Keeping it safe…';
-    var fd=new FormData();fd.append('files',f);
-    fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
-      pBtn.disabled=false;
-      if(j&&j.ok&&j.urls&&j.urls[0]){PHOTO.url=j.urls[0];pBtn.textContent='✓ A photograph is attached · change';say('A photograph is attached · it rides with your memory to the family.',false)}
-      else{pBtn.textContent='＋ Add a photo';say('That didn\u2019t upload. Give it a moment and try again.',false)}
-    }).catch(function(){pBtn.disabled=false;pBtn.textContent='＋ Add a photo';say('That didn\u2019t upload. Give it a moment and try again.',false)});
-    pFile.value=''});
+    var files=Array.prototype.slice.call(pFile.files||[]);pFile.value='';
+    if(!files.length)return;
+    var room=4-PHOTOS.length;
+    if(files.length>room)say('Up to 4 photos ride with one memory · the first '+room+(room===1?' was':' were')+' kept.',false);
+    files.slice(0,room).forEach(function(f){
+      if(f.size>25*1024*1024){say('That photograph is over 25MB. A smaller one will land just fine.',false);return}
+      var slot={url:'',local:'',done:false};PHOTOS.push(slot);renderPhotoPrev();syncPhotoBtn();
+      function drop(){var i=PHOTOS.indexOf(slot);if(i>-1)PHOTOS.splice(i,1);renderPhotoPrev();syncPhotoBtn()}
+      shrinkPhoto(f).then(function(b){
+        slot.local=URL.createObjectURL(b);renderPhotoPrev();
+        var fd=new FormData();fd.append('context','memory');
+        fd.append('files',new File([b],'memory-photo.jpg',{type:'image/jpeg'}));
+        return fetch('/api/upload',{method:'POST',body:fd}).then(function(r){return r.json()}).then(function(j){
+          if(j&&j.ok&&j.urls&&j.urls[0]){slot.url=j.urls[0];slot.done=true;renderPhotoPrev();syncPhotoBtn()}
+          else{drop();say('That didn\u2019t upload. Give it a moment and try again.',false)}
+        }).catch(function(){drop();say('That didn\u2019t upload. Give it a moment and try again.',false)});
+      },function(){
+        drop();say('That photo could not be read here · iPhone photos (HEIC) open on Apple devices. A JPG or PNG of the same picture will land just fine.',false);
+      })});
+  });
 }
 /* one short visitor video · always moderated; Free keeps it resting, Plus may publish it */
 var VIDEO={url:''};
@@ -1743,16 +1911,17 @@ document.getElementById('shareBtn').onclick=function(){
   requireId(function(){
     var tx=document.getElementById('memInput').value.trim();
     if(!tx){say('Write one small, true thing. The helper is there if the words are hard.',false);return}
+    if(PHOTOS.some(function(s){return !s.done})){say('A photo is still on its way · one more moment.',false);return}
     if(T){
       /* production: memories go to the family first · every word waits for their yes */
       var btn=document.getElementById('shareBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Keeping it safe…';
       fetch('/api/tribute/'+SLUG+'/memory',{method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',email:ID.em||'',audioUrl:VOICE.url||'',photoUrl:PHOTO.url||'',videoUrl:VIDEO.url||''})})
+        body:JSON.stringify({name:ID.fn+' '+ID.ln,relation:ID.relLabel,body:tx,company:'',email:ID.em||'',audioUrl:VOICE.url||'',photoUrl:(PHOTOS[0]&&PHOTOS[0].url)||'',photoUrls:PHOTOS.map(function(s){return s.url}).filter(Boolean),videoUrl:VIDEO.url||''})})
       .then(function(r){return r.json()}).then(function(j){
         btn.disabled=false;btn.textContent=old;
         if(j&&j.ok){document.getElementById('memInput').value='';
           VOICE.url='';if(vBtn)vBtn.textContent='＋ Add a voice memory';
-          PHOTO.url='';if(pBtn)pBtn.textContent='＋ Add a photo';
+          resetPhotos();
           VIDEO.url='';if(vidBtn)vidBtn.textContent='＋ Add a video';
           say('Your memory has been sent for approval by the page’s admin. Once approved, it will join the memory board.',false,true)}
         else say('That didn\u2019t save. Give it a moment and try again. Nothing you wrote is lost.',false)})
@@ -2315,13 +2484,52 @@ document.addEventListener('click',function(e){if(e.target.closest('.btab')){open
 addEventListener('resize',apply);
 setTimeout(apply,0);
 })();
-/* d4 · the desktop arrows walk the memories row one card at a time */
+/* the photo room (0029) · photographs left with memories open here; Escape, arrows, swipe-free minimal */
+(function(){
+var box=document.getElementById('memLb'),img=document.getElementById('memLbImg'),cap=document.getElementById('memLbCap');
+var xB=document.getElementById('memLbClose'),pB=document.getElementById('memLbPrev'),nB=document.getElementById('memLbNext');
+if(!box||!img)return;
+var list=[],at=0,who='',lastFocus=null;
+function show(){var u=list[at];if(!u)return;img.src=u;
+  cap.textContent=[who,list.length>1?(at+1)+' of '+list.length:''].filter(Boolean).join(' · ');
+  var many=list.length>1;pB.style.display=many?'':'none';nB.style.display=many?'':'none';}
+function open(){lastFocus=document.activeElement;box.classList.add('open');document.body.style.overflow='hidden';xB.focus();show()}
+function shut(){box.classList.remove('open');img.src='';document.body.style.overflow='';try{if(lastFocus)lastFocus.focus()}catch(e){}}
+function step(d){if(list.length<2)return;at=(at+d+list.length)%list.length;show()}
+document.addEventListener('click',function(e){
+  var t=e.target.closest&&e.target.closest('[data-mph]');
+  if(!t)return;
+  var card=t.closest('.mem-card');if(!card)return;
+  list=[].map.call(card.querySelectorAll('[data-mph]'),function(x){return x.src});
+  at=+t.getAttribute('data-mph')||0;
+  var nm=card.querySelector('.mem-nm');who=nm&&nm.textContent?'left by '+nm.textContent:'';
+  open();
+});
+document.addEventListener('keydown',function(e){
+  var t=e.target&&e.target.closest&&e.target.closest('[data-mph]');
+  if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.click();return}
+  if(!box.classList.contains('open'))return;
+  if(e.key==='Escape'){e.stopPropagation();shut()}
+  else if(e.key==='ArrowLeft')step(-1);
+  else if(e.key==='ArrowRight')step(1);
+},true);
+xB.onclick=shut;pB.onclick=function(){step(-1)};nB.onclick=function(){step(1)};
+box.addEventListener('click',function(e){if(e.target===box)shut()});
+})();
+/* d4, revised (r2 Task 6) · the desktop arrows walk the memories row one card at a
+   time and tell the truth at the ends: disabled and dimmed at the row's start and
+   finish, kept honest on scroll, on resize, and whenever the row re-renders. */
 (function(){
 var tr=document.getElementById('memTrack'),p=document.getElementById('memPrev'),n=document.getElementById('memNext');
 if(!tr||!p||!n)return;
 function step(d){var c=tr.querySelector('.mem-card');var w=c?c.getBoundingClientRect().width+18:340;try{tr.scrollBy({left:d*w,behavior:'smooth'})}catch(e){tr.scrollLeft+=d*w}}
+function sync(){var max=tr.scrollWidth-tr.clientWidth;p.disabled=tr.scrollLeft<=2;n.disabled=tr.scrollLeft>=max-2}
 p.onclick=function(){step(-1)};
 n.onclick=function(){step(1)};
+tr.addEventListener('scroll',sync,{passive:true});
+addEventListener('resize',sync);
+if('MutationObserver' in window)new MutationObserver(sync).observe(tr,{childList:true});
+sync();
 })();
 </script>
 </body>

@@ -71,12 +71,24 @@ export default async function WaitingPage() {
           <span className="letter-when mono">{timeAgo(item.created_at)}</span>
         </div>
         <p className="letter-body quote">{`"${item.body}"`}</p>
-        {item.photo_url ? (
-          <div style={{ margin: "8px 0 4px" }}>
-            <img src={item.photo_url} alt="" style={{ maxWidth: 220, maxHeight: 160, borderRadius: 9, border: "1px solid var(--line)", display: "block" }} />
-            <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 4 }}>a photograph came with this memory</p>
-          </div>
-        ) : null}
+        {(() => {
+          // Up to four photographs wait with their memory (0029); older rows keep their one.
+          const photos: string[] = Array.isArray(item.photo_urls) && item.photo_urls.length
+            ? item.photo_urls.filter((u: any) => typeof u === "string" && u).slice(0, 4)
+            : item.photo_url ? [item.photo_url] : [];
+          return photos.length ? (
+            <div style={{ margin: "8px 0 4px" }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {photos.map((u, i) => (
+                  <img key={i} src={u} alt="" style={{ maxWidth: 220, maxHeight: 160, borderRadius: 9, border: "1px solid var(--line)", display: "block" }} />
+                ))}
+              </div>
+              <p className="panel-sub mono" style={{ fontSize: 12, marginTop: 4 }}>
+                {photos.length === 1 ? "a photograph came with this memory" : `${photos.length} photographs came with this memory`}
+              </p>
+            </div>
+          ) : null;
+        })()}
         {item.audio_url ? (
           <div style={{ margin: "6px 0 2px" }}>
             <audio controls preload="none" src={item.audio_url} style={{ width: "100%", height: 34, display: "block" }} />

@@ -11,7 +11,11 @@ const SELECT =
   "tribute_timeline(id,year,title,body,sort,chapter_id,deleted_at)," +
   "tribute_photos(id,url,caption,sort,deleted_at)," +
   "tribute_videos(id,url,caption,sort,kind,deleted_at)," +
-  "tribute_memories(id,author_name,relation,body,status,photo_url,audio_url,video_url,hearts,created_at,deleted_at," +
+  // Memories read all their own columns (*): 0029's photo_urls rides along the
+  // moment the migration lands, and a deploy that arrives ahead of the SQL can
+  // never fail the whole page over one named-but-missing column. rowToTribute
+  // still maps explicit fields only — nothing extra ever reaches a page.
+  "tribute_memories(*," +
   "tribute_memory_comments(author_name,relation,body,status,created_at,deleted_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
   "tribute_audio(url,kind)," +
@@ -128,7 +132,10 @@ function rowToTribute(r: any): Tribute {
         hearts: m.hearts ?? 0,
         audio: m.audio_url || undefined,
         video: m.video_url || undefined,
-        photos: m.photo_url ? [m.photo_url] : undefined,
+        // The full set (0029) when it exists; the single pre-0029 photograph otherwise.
+        photos: Array.isArray(m.photo_urls) && m.photo_urls.length
+          ? m.photo_urls.filter((u: any) => typeof u === "string" && u).slice(0, 4)
+          : m.photo_url ? [m.photo_url] : undefined,
         comments: (m.tribute_memory_comments || [])
           .filter((c: any) => c.status === "approved" && !c.deleted_at)
           .sort((a: any, b: any) => String(a.created_at).localeCompare(String(b.created_at)))
