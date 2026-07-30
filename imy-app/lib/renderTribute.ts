@@ -283,6 +283,21 @@ export function renderTribute(template: string, t: Tribute): string {
     ? approved.slice(CAP).map((m) => ({ nm: m.nm, rel: m.rel, tx: m.tx, g: m.g }))
     : [];
 
+  // r3 · the example wall wears the demo pairs (owner-approved placeholder
+  // imagery so the scrapbook card layout can be judged): every card gets a
+  // with-her snapshot (dp) and a writer portrait (pp), mapped by wall group to
+  // the three shot pairs. Identity-pass rule: keyed to the demo slug alone —
+  // a real family's page never carries these paths; its cards use their own
+  // photoUrls, and the portrait slot falls back to the initial treatment.
+  if (slug === "eleanor") {
+    const demoPair: Record<string, string> = { family: "sofia", friends: "ruth", neighbours: "ruth", students: "miguel" };
+    mems.forEach((m: any) => {
+      const k = demoPair[m.g] || "sofia";
+      m.pp = `/art/mem-demo/${k}-portrait.webp`;
+      if (!m.phs.length) m.dp = `/art/mem-demo/${k}-with.webp`;
+    });
+  }
+
   const words = (t.lovedThings || []).map((l) => String(l.label || "").toLowerCase()).filter(Boolean).slice(0, 8);
 
   // The bulletin board (fix 5) is its own place: owner-placed keepsakes first
@@ -344,37 +359,89 @@ export function renderTribute(template: string, t: Tribute): string {
   };
 
   // ── conditional blocks ──
-  // m5b (July 29): the service speaks as a compact announcement bar — one quiet
-  // line (Celebration of life · the day and time · Share the date) that opens on
-  // a tap to show the location and every remaining detail. Same information,
-  // none lost, half the standing height; type stays readable for older eyes.
+  // m5b (July 29), evolved r3 item 5: the service speaks as a ONE-LINE
+  // announcement bar on every width — Celebration of life · the day and time ·
+  // Share the date — truncating with an ellipsis on phones, with a 44px caret
+  // pinned at the line's end. The caret (or the bar itself) opens an OVERLAY
+  // holding everything the section knows: date, time, venue, address, and the
+  // donations line. The round-1 inline expand retires on every width (one code
+  // path, one behavior — desktop opens the same overlay). r3 item 4: the
+  // "Celebration of life" heading ships in three Besley treatments (A · B · C),
+  // switchable by ?heading=a|b|c; a tiny switcher pill renders on the example
+  // page only. Default: A (larger regular-weight small caps — it anchors the
+  // hero without shouting).
   const svcWhen = [fmtDate(t.service?.date), t.service?.time].filter(Boolean).join(" · ");
   const svcWhere = [t.service?.place, t.service?.address].filter(Boolean).join(", ");
+  const svcPn = pronounSet(t.pronouns);
+  const svcHasMore = !!(svcWhere || t.service?.charity);
+  const svcSwitcher = slug === "eleanor"
+    ? `<div class="svc-hswitch" aria-label="Heading options · example page only"><span>Heading</span><button type="button" data-h="a" class="on" aria-pressed="true">A</button><button type="button" data-h="b" aria-pressed="false">B</button><button type="button" data-h="c" aria-pressed="false">C</button></div>`
+    : "";
   const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
     ? `<style>
-.svcrow .svcrow-in{padding:7px 4.5%;flex-wrap:nowrap}
+.svcrow .svcrow-in{padding:8px 4.5%;flex-wrap:nowrap;overflow:hidden}
 .svcrow .svcrow-in[role="button"]{cursor:pointer}
-.svcrow .what{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.svcrow .lab{white-space:nowrap;flex:0 0 auto}
+.svcrow .what{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+.svcrow .right{margin-left:auto;display:flex;gap:8px;align-items:center;flex:0 0 auto}
 .svcrow .svclink{font-family:'Sometype Mono',monospace;font-size:14px;color:var(--terra);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:none;padding:0;white-space:nowrap}
-.svcrow .svc-caret{font-size:12px;color:var(--terra);transition:transform .2s}
-.svcrow .svcrow-in[aria-expanded="true"] .svc-caret{transform:rotate(180deg)}
-.svcrow .svcmore{padding:0 4.5% 11px;max-width:1240px;margin:0 auto;font-size:15px;line-height:1.6;color:var(--ink)}
-.svcrow .svcmore .mono{font-size:14px;color:var(--ink-soft);letter-spacing:.04em}
-@media(max-width:640px){.svcrow .what{white-space:normal}}
-</style><div class="svcrow">
-  <div class="svcrow-in"${svcWhere && svcWhen ? ` id="svcBar" role="button" tabindex="0" aria-expanded="false" aria-controls="svcMore" aria-label="Celebration of life · open the details"` : ""}>
+.svc-caret{width:44px;height:44px;margin:-8px -10px -8px -2px;display:inline-flex;align-items:center;justify-content:center;background:none;border:none;color:var(--terra);font-size:14px;cursor:pointer;flex:0 0 auto}
+@media(max-width:640px){.svcrow #shareDateBtn{display:none}}
+/* r3 item 4 · the heading in three Besley voices (A default) */
+.svcrow[data-heading="a"] .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:all-small-caps;font-size:19px!important;font-weight:500;letter-spacing:.05em;color:var(--ink)}
+.svcrow[data-heading="b"] .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:all-small-caps;font-size:16px!important;font-weight:700;letter-spacing:.14em;color:#8A5A3C}
+.svcrow[data-heading="c"] .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:normal;font-style:italic;font-size:18.5px!important;font-weight:600;letter-spacing:.01em;color:var(--ink)}
+.svc-hswitch{display:flex;align-items:center;gap:6px;justify-content:flex-end;max-width:1240px;margin:0 auto;padding:0 4.5% 7px;font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.06em;font-size:12.5px;color:var(--ink-soft)}
+.svc-hswitch button{min-width:26px;min-height:22px;border:1px solid var(--goldline);border-radius:100px;background:#fff;font-family:'Besley',serif;font-weight:700;font-size:12px;color:var(--ink-soft);cursor:pointer;padding:1px 8px}
+.svc-hswitch button.on{background:var(--terra);border-color:var(--terra);color:#fff}
+/* r3 item 5 · the details overlay */
+.svc-ov{position:fixed;inset:0;z-index:4250;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(20,13,8,.82);backdrop-filter:blur(4px)}
+.svc-ov[hidden]{display:none}
+.svc-ov-card{position:relative;width:100%;max-width:420px;max-height:calc(100dvh - 32px);overflow:auto;background:linear-gradient(180deg,#FFFDF6,#FBF4E4);border:1px solid var(--goldline);border-radius:6px;padding:30px 28px 26px;box-shadow:0 40px 90px -30px #000;text-align:center}
+.svc-ov-x{position:absolute;top:6px;right:6px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;background:rgba(251,246,234,.92);border:1px solid rgba(168,124,95,.3);border-radius:50%;color:#5A4F45;font-size:18px;cursor:pointer;z-index:2}
+.svc-ov-kick{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-size:17px;font-weight:600;color:#8A5A3C;margin-bottom:10px}
+.svc-ov-when{font-family:'Besley',serif;font-weight:700;font-size:20px;line-height:1.3;color:var(--ink)}
+.svc-ov-venue{font-family:'Besley',serif;font-size:16.5px;font-weight:600;color:var(--ink);margin-top:12px}
+.svc-ov-addr{font-family:'Besley',serif;font-size:14.5px;color:var(--ink-soft);line-height:1.55;margin-top:4px}
+.svc-ov-charity{font-family:'Besley',serif;font-size:14px;color:var(--ink-soft);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--goldline)}
+.svc-ov-charity a{color:#8A5A3C}
+.svc-ov-acts{margin-top:18px}
+</style><div class="svcrow" data-heading="a">
+  <div class="svcrow-in" id="svcBar"${svcHasMore ? ` role="button" tabindex="0" aria-haspopup="dialog" aria-label="Celebration of life · open the details"` : ""}>
     <span class="lab">Celebration of life</span>
     <span class="what">${esc(svcWhen || svcWhere)}</span>
-    <span class="right">${t.service.date ? `<button class="svclink" id="shareDateBtn" type="button">Share the date</button>` : ""}${svcWhere && svcWhen ? `<span class="svc-caret" aria-hidden="true">▾</span>` : ""}</span>
+    <span class="right">${t.service.date ? `<button class="svclink" id="shareDateBtn" type="button">Share the date</button>` : ""}${svcHasMore ? `<button class="svc-caret" id="svcCaret" type="button" aria-haspopup="dialog" aria-label="Open the service details">▾</button>` : ""}</span>
   </div>
-  ${svcWhere && svcWhen ? `<div class="svcmore" id="svcMore" hidden><div>${esc(svcWhere)}</div></div>` : ""}
+  ${svcSwitcher}
 </div>
+${svcHasMore ? `<div class="svc-ov" id="svcOv" role="dialog" aria-modal="true" aria-label="Celebration of life · the details" hidden>
+  <div class="svc-ov-card">
+    <button class="svc-ov-x" id="svcOvX" type="button" aria-label="Close">✕</button>
+    <div class="svc-ov-kick">Celebration of life</div>
+    ${svcWhen ? `<div class="svc-ov-when">${esc(svcWhen)}</div>` : ""}
+    ${t.service.place ? `<div class="svc-ov-venue">${esc(t.service.place)}</div>` : ""}
+    ${t.service.address ? `<div class="svc-ov-addr">${esc(t.service.address)}</div>` : ""}
+    ${t.service.charity ? `<div class="svc-ov-charity">In lieu of flowers, donations in ${esc(svcPn.pos)} name may go to ${t.service.charityUrl ? `<a href="${esc(t.service.charityUrl)}" target="_blank" rel="noopener noreferrer">${esc(t.service.charity)}</a>` : esc(t.service.charity)}.</div>` : ""}
+    ${t.service.date ? `<div class="svc-ov-acts"><button class="btn" id="svcOvShare" type="button">Share the date</button></div>` : ""}
+  </div>
+</div>` : ""}
 <script>(function(){
-var bar=document.getElementById('svcBar'),more=document.getElementById('svcMore');
-if(!bar||!more)return;
-function tog(){var open=more.hidden;more.hidden=!open;bar.setAttribute('aria-expanded',open?'true':'false')}
-bar.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#shareDateBtn'))return;tog()});
-bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tog()}});
+var bar=document.getElementById('svcBar'),ov=document.getElementById('svcOv'),x=document.getElementById('svcOvX'),caret=document.getElementById('svcCaret'),last=null;
+function open(){if(!ov)return;last=document.activeElement;ov.hidden=false;document.body.style.overflow='hidden';if(x)x.focus()}
+function shut(){if(!ov||ov.hidden)return;ov.hidden=true;document.body.style.overflow='';try{if(last)last.focus()}catch(e){}}
+if(caret)caret.addEventListener('click',function(e){e.stopPropagation();open()});
+if(bar&&ov){bar.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#shareDateBtn'))return;open()});
+bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})}
+if(x)x.addEventListener('click',shut);
+if(ov)ov.addEventListener('click',function(e){if(e.target===ov)shut()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
+var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',function(){shut();var b=document.getElementById('shareDateBtn');if(b)b.click()});
+/* r3 item 4 · heading variant: ?heading=a|b|c wins; the example page's pill row follows */
+var row=document.querySelector('.svcrow');
+function setH(v){if(!row||['a','b','c'].indexOf(v)<0)return;row.setAttribute('data-heading',v);
+document.querySelectorAll('.svc-hswitch [data-h]').forEach(function(o){var on=o.getAttribute('data-h')===v;o.classList.toggle('on',on);o.setAttribute('aria-pressed',on?'true':'false')})}
+try{var q=(new URLSearchParams(location.search).get('heading')||'').toLowerCase();if(q)setH(q)}catch(e){}
+document.querySelectorAll('.svc-hswitch [data-h]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();setH(b.getAttribute('data-h'))})});
 })();</script>`
     : "";
 
@@ -421,6 +488,7 @@ bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.pr
     <!-- THE FILM · a life, woven (0021 · the room under the wreath) -->
     <section class="section rev" id="film" aria-label="The film of ${esc(fpn.pos)} life">
       <img class="mg" style="right:-124px;top:12%;width:132px;--mr:-10deg;transform:rotate(-10deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
+      <img class="sba" style="top:16px;left:26px;width:86px;opacity:.45;transform:rotate(-8deg)" src="/art/scrapbook/tape.webp" alt="" aria-hidden="true" loading="lazy"/>
       <div class="kick">The film</div>
       <h2>The film of <em>${esc(fpn.pos)} life</em>.</h2>
       <p class="lede">A short film made from ${esc(fpn.pos)} photographs and memories.</p>
@@ -598,6 +666,14 @@ bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.pr
     ).join(`var GROUPS=${JSON.stringify(groups)};`);
   }
 
+  // 4b) The demo wall's example imagery (r3): the inline fallback's photo pairs
+  // leave a real page entirely, even from source — the same strictness the tape
+  // shelf keeps. The fallback array itself stays (the engine needs its shape);
+  // only the demo-pair paths are stripped. The example page keeps them.
+  if (slug !== "eleanor") {
+    html = html.replace(/dp:'\/art\/mem-demo\/[a-z-]+-with\.webp',pp:'\/art\/mem-demo\/[a-z-]+-portrait\.webp',/g, "");
+  }
+
   // 5) The ticker's fallback names become theirs (it already prefers their words).
   {
     const tickerWords = words.length ? words.slice(0, 8).map((w) => esc(w)).join("·") + "·" : `family·friends·always loved·`;
@@ -726,7 +802,9 @@ bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.pr
         ? `<details style="margin-top:16px"><summary style="cursor:pointer;color:#A87C5F;font-weight:700;list-style-position:inside">Read the full obituary</summary><div style="margin-top:14px;white-space:pre-line">${esc(obituaryRest)}</div></details>`
         : "";
       const ob =
-        `<section class="section rev" id="obituary" style="padding:56px 5% 26px">` +
+        // r3 margins audit: this section lives inside .wrap, which already pads
+        // 5% each side — its own 5% doubled the gutter. Vertical padding only.
+        `<section class="section rev" id="obituary" style="padding:56px 0 26px">` +
         `<div style="max-width:720px;margin:0 auto;background:#FDFAF3;border:1px solid #E9DFC9;border-radius:14px;box-shadow:0 30px 70px -44px rgba(60,40,15,.3);padding:clamp(28px,5vw,54px)">` +
         `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:16px">The obituary</div>` +
         `<div style="font-family:'Besley',serif;font-size:16.5px;line-height:1.85;color:#2C2520;white-space:pre-line;overflow-wrap:anywhere;word-break:break-word">${esc(obituaryLead)}${obituaryMore}</div>` +
@@ -737,12 +815,20 @@ bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.pr
       if (at > -1) html = html.slice(0, at) + ob + html.slice(at);
     }
     if (tier === "plus" && t.voiceUrl && /^https:\/\//.test(t.voiceUrl)) {
-      const mIdx = html.indexOf('<section class="section rev sheetdeep" id="memories"');
+      // r3 item 2: "In her own voice" moves up to sit DIRECTLY beneath "The
+      // pictures we hold on to" — inserted after the gallery section's close
+      // (falling back to its old pre-memories spot only if the gallery marker
+      // ever leaves the template). Everything after shifts down unchanged.
+      const gIdx = html.indexOf('<section class="section rev sheetdeep" id="gallery"');
+      const gEnd = gIdx > -1 ? html.indexOf("</section>", gIdx) : -1;
+      const mIdx = gEnd > -1 ? gEnd + "</section>".length : html.indexOf('<section class="section rev sheetdeep" id="memories"');
       if (mIdx > -1) {
         // Their voice wears the same cassette the memory cards keep (the template's
         // delegated .vk wiring plays any cassette on the page — one object language).
+        // r3 margins audit: vertical padding only — the surrounding .wrap already
+        // holds the 5% gutter.
         const voice =
-          `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
+          `<section class="section rev" id="theirvoice" style="padding:44px 0 30px;text-align:center">` +
           `<div style="max-width:560px;margin:0 auto">` +
           `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#8A5A3C;margin-bottom:14px">In ${pn.pos} own voice</div>` +
           `<div class="vk" role="group" style="text-align:left"><audio preload="none" src="${esc(t.voiceUrl)}" aria-label="In ${pn.pos} own voice"></audio>` +

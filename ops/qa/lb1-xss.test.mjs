@@ -30,7 +30,8 @@ function extractFn(src, marker) {
 }
 const escFnSrc = extractFn(template, "var esc=function(s)").replace(/^var esc=/, "");
 const memPhotosSrc = extractFn(template, "function memPhotos(m)");
-const memCardSrc = extractFn(template, "function memCard(m)");
+// r3: memCard takes (m,i) — the index seats each card's paper rotation.
+const memCardSrc = extractFn(template, "function memCard(m,i)");
 // eslint-disable-next-line no-eval
 const esc = eval(`(${escFnSrc})`);
 // memCard delegates its photo block to memPhotos (0029) — lift it too: same file, same truth.
@@ -96,6 +97,8 @@ ok("the family-first comment stub still escapes with the pre-existing pattern",
 const sinkChecks = [
   ["memory photo src, single (0029)", "src=\"'+esc(ps[0])+'\""],
   ["memory photo src, strip (0029)", "src=\"'+esc(u)+'\""],
+  ["demo snapshot src (r3 scrapbook cards)", "src=\"'+esc(m.dp)+'\""],
+  ["writer portrait src (r3 scrapbook cards)", "src=\"'+esc(m.pp)+'\""],
   ["board note title (bnote)", "<div class=\"bt\">'+esc(p.ttl)+'</div>"],
   ["board note body (bnote)", "<div class=\"bx\">'+esc(p.tx)+'</div>"],
   ["board photo caption", "<div class=\"cap\">'+esc(p.ttl)+'</div>"],

@@ -294,6 +294,63 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("the Task 2 scene system stands exactly as built", page.includes('id="heroVid"') && page.includes("hv-scrim") && page.includes('id="hvPick"') && page.includes("linear-gradient(180deg,rgba(63,44,26,.44) 0%,rgba(63,44,26,.10) 30%,rgba(63,44,26,.14) 60%,rgba(63,44,26,.66) 100%)"));
 }
 
+// ── 14e · visual batch r3 (July 30) — the shared off-white band, the voice's new
+//          seat, the scrapbook wall, the heading options, the one-line bar, the
+//          margins grid, and the multiply-blend accents ────────────────────────
+{
+  // item 1 · ONE shared off-white token; only the two named sections read it
+  t("one shared off-white token exists", template.includes("--band-off:#F6F1E6"));
+  t("the film and the chapters both read the single token",
+    template.includes("#story{background:var(--band-off)") && template.includes("#film{background:var(--band-off)"));
+  t("the pictures and the memories keep their own grounds",
+    template.includes("#memories.sheetdeep{background:linear-gradient(180deg,#FFFFFF 0%") && !template.includes("#gallery{background:var(--band-off)"));
+  // item 2 · in their own voice sits directly beneath the pictures
+  const voiced = renderTribute(template, { ...jonny, voiceUrl: "https://x/voice.mp3" });
+  const vIdx = voiced.indexOf('id="theirvoice"');
+  t("the kept voice sits directly beneath the pictures, above who-they-were",
+    vIdx > voiced.indexOf("</section>", voiced.indexOf('id="gallery"')) && vIdx < voiced.indexOf('id="really"'));
+  // item 3 · scrapbook memory cards: taped snapshot lead, round writer portrait,
+  // finished no-photo state, and demo pairs that never leave the example page
+  t("cards lead with a taped 4:3 snapshot and seat a round portrait",
+    template.includes('class="mem-snap"') && template.includes('class="mem-pav"') && template.includes("aspect-ratio:4/3"));
+  t("a card with no photograph still stands finished (initial fallback intact)",
+    template.includes(`'<div class="mem-av">'`) && template.includes("if(ps.length)out=") );
+  const demoWall = boot(renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" }));
+  t("the example wall wears the demo pairs (portrait + with-her snapshot)",
+    demoWall.mems.every((m: any) => m.pp && (m.dp || (m.phs && m.phs.length))));
+  const realPage = renderTribute(template, jonny);
+  t("demo pair paths never reach a real page, even from source", !realPage.includes("/art/mem-demo/"));
+  t("the template's own demo wall keeps its pairs", template.includes("dp:'/art/mem-demo/sofia-with.webp'"));
+  // items 4 + 5 · the announcement bar: heading variants + one-line + overlay
+  const svc = { date: "2026-06-13", time: "11:00 AM", place: "Linden Community Chapel", address: "142 Seaside Avenue, Half Moon Bay, CA 94019", charity: "American Cancer Society" };
+  const barPage = renderTribute(template, { ...jonny, service: svc });
+  t("three heading treatments ship, switchable by query param",
+    barPage.includes('.svcrow[data-heading="a"] .lab') && barPage.includes('.svcrow[data-heading="b"] .lab') && barPage.includes('.svcrow[data-heading="c"] .lab') && barPage.includes("URLSearchParams(location.search).get('heading')"));
+  t("the bar defaults to option A", barPage.includes('<div class="svcrow" data-heading="a">'));
+  t("the heading switcher pill lives on the example page only",
+    renderTribute(template, { ...jonny, slug: "eleanor", service: svc }).includes('<div class="svc-hswitch"') && !barPage.includes('<div class="svc-hswitch"'));
+  t("the bar holds one line and truncates with an ellipsis",
+    barPage.includes("text-overflow:ellipsis") && barPage.includes("flex-wrap:nowrap") && !barPage.includes('id="svcMore"'));
+  t("the caret is a real 44px control pinned at the line's end",
+    barPage.includes('id="svcCaret"') && barPage.includes(".svc-caret{width:44px;height:44px"));
+  t("the caret opens an overlay with the full details and honest exits",
+    barPage.includes('id="svcOv"') && barPage.includes('id="svcOvX"') && barPage.includes("Linden Community Chapel") && barPage.includes("142 Seaside Avenue") && barPage.includes("American Cancer Society") && barPage.includes("if(e.key==='Escape')shut()") && barPage.includes("document.body.style.overflow='hidden'"));
+  t("share the date still rides the bar and the overlay", barPage.includes('id="shareDateBtn"') && barPage.includes('id="svcOvShare"'));
+  // item 6 · the margins grid: torn bands, board, and concierge card align
+  t("torn bands sit on the shared 972px content line", template.includes("calc(50vw - 486px)"));
+  t("the board and the concierge card join the 1080px grid",
+    template.includes(".boardstage{position:relative;max-width:1080px") && template.includes(".gw-inner{max-width:1080px"));
+  t("injected sections stopped doubling the wrap's gutter",
+    voiced.includes(`id="theirvoice" style="padding:44px 0 30px`) && renderTribute(template, { ...jonny, obituary: "Kept." }).includes(`id="obituary" style="padding:56px 0 26px`));
+  // item 7 · scrapbook accents: multiply-blend imgs in gutters, sparse on phones
+  t("accents are lazy multiply-blend images behind all content",
+    template.includes(".sba{position:absolute;z-index:-1;mix-blend-mode:multiply;pointer-events:none") && template.includes('class="sba keep"'));
+  t("at most the two kept accents survive under 900px",
+    template.includes("@media(max-width:899px){.sba{display:none}.sba.keep{display:block}}") && (template.match(/class="sba keep"/g) || []).length <= 3);
+  t("the r2 botanical SVG corners retired where the webps serve the corner",
+    !template.includes("no-repeat top 18px right 20px / 108px auto"));
+}
+
 // ── 13 · the page in the family's order (July 8) ──────────────────────────────
 {
   const withQuote = { ...jonny, quote: "Measure twice.", timeline: [{ id: "tl-a", year: "1968", title: "Married" }] };
