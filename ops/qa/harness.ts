@@ -321,14 +321,31 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const realPage = renderTribute(template, jonny);
   t("demo pair paths never reach a real page, even from source", !realPage.includes("/art/mem-demo/"));
   t("the template's own demo wall keeps its pairs", template.includes("dp:'/art/mem-demo/sofia-with.webp'"));
-  // items 4 + 5 · the announcement bar: heading variants + one-line + overlay
+  // items 4 + 5, rewritten r4 · the bar: heading locked to C, moved under the
+  // name plate inside the hero, one-line + overlay behavior unchanged
   const svc = { date: "2026-06-13", time: "11:00 AM", place: "Linden Community Chapel", address: "142 Seaside Avenue, Half Moon Bay, CA 94019", charity: "American Cancer Society" };
   const barPage = renderTribute(template, { ...jonny, service: svc });
-  t("three heading treatments ship, switchable by query param",
-    barPage.includes('.svcrow[data-heading="a"] .lab') && barPage.includes('.svcrow[data-heading="b"] .lab') && barPage.includes('.svcrow[data-heading="c"] .lab') && barPage.includes("URLSearchParams(location.search).get('heading')"));
-  t("the bar defaults to option A", barPage.includes('<div class="svcrow" data-heading="a">'));
-  t("the heading switcher pill lives on the example page only",
-    renderTribute(template, { ...jonny, slug: "eleanor", service: svc }).includes('<div class="svc-hswitch"') && !barPage.includes('<div class="svc-hswitch"'));
+  t("the heading is locked to the owner's C — one voice, no switcher, no query (r4 1.1)",
+    barPage.includes(".svcrow .svcrow-in .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:normal;font-style:italic;font-size:18.5px!important;font-weight:600") &&
+    !barPage.includes("svc-hswitch") && !barPage.includes("data-heading") && !barPage.includes("URLSearchParams(location.search).get('heading')") &&
+    !renderTribute(template, { ...jonny, slug: "eleanor", service: svc }).includes("svc-hswitch"));
+  t("the label speaks with its capitals — Celebration of Life (r4 1.2)",
+    barPage.includes('<span class="lab">Celebration of Life</span>') &&
+    barPage.includes('aria-label="Celebration of Life · open the details"') &&
+    barPage.includes('<div class="svc-ov-kick">Celebration of Life</div>') &&
+    !barPage.includes("Celebration of life"));
+  t("the bar lives inside the hero, directly under the name plate (r4 1.3)", (() => {
+    const hero = barPage.indexOf('<header class="arrive"');
+    const plate = barPage.indexOf('<div class="wr-plate">');
+    const bar = barPage.indexOf('<div class="svcrow">');
+    const hud = barPage.indexOf('<div class="wr-hud">');
+    return hero > -1 && plate > hero && bar > plate && hud > bar;
+  })());
+  t("the bar stands on its own paper over the scene, and a tap on it never lays a flower",
+    barPage.includes(".svcrow .svcrow-in{margin:0;max-width:min(92vw,620px);background:linear-gradient(180deg,#FFFDF6,#FBF4E4)") &&
+    template.includes(".wr-plate,.svcrow'))return;"));
+  t("no service · no bar in the hero, and nothing reserves the old strip's room",
+    !renderTribute(template, jonny).includes('class="svcrow"') && !template.includes("{{SERVICE_STRIP}}\n\n\n\n{{CREDIT_BANNER}}"));
   t("the bar holds one line and truncates with an ellipsis",
     barPage.includes("text-overflow:ellipsis") && barPage.includes("flex-wrap:nowrap") && !barPage.includes('id="svcMore"'));
   t("the caret is a real 44px control pinned at the line's end",
@@ -342,13 +359,70 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     template.includes(".boardstage{position:relative;max-width:1080px") && template.includes(".gw-inner{max-width:1080px"));
   t("injected sections stopped doubling the wrap's gutter",
     voiced.includes(`id="theirvoice" style="padding:44px 0 30px`) && renderTribute(template, { ...jonny, obituary: "Kept." }).includes(`id="obituary" style="padding:56px 0 26px`));
-  // item 7 · scrapbook accents: multiply-blend imgs in gutters, sparse on phones
+  // item 7, hardened r4 · scrapbook accents: multiply-blend imgs in gutters,
+  // sparse on phones, size-capped, and immune to section-class collisions
   t("accents are lazy multiply-blend images behind all content",
-    template.includes(".sba{position:absolute;z-index:-1;mix-blend-mode:multiply;pointer-events:none") && template.includes('class="sba keep"'));
-  t("at most the two kept accents survive under 900px",
-    template.includes("@media(max-width:899px){.sba{display:none}.sba.keep{display:block}}") && (template.match(/class="sba keep"/g) || []).length <= 3);
+    template.includes(".sba{position:absolute;z-index:-1;mix-blend-mode:multiply;pointer-events:none") && template.includes('class="sba stay"'));
+  t("at most the two staying accents survive under 900px",
+    template.includes("@media(max-width:899px){.sba{display:none}.sba.stay{display:block}}") && (template.match(/class="sba stay"/g) || []).length <= 2);
+  t("the survivor class no longer collides with the keeping place (r4 3.1 · the slabs)",
+    !template.includes('class="sba keep"') && !renderTribute(template, jonny).includes('class="sba keep"'));
+  t("img.sba is capped and immunized — no ground, no padding, no min-height, ≤160px",
+    template.includes("img.sba{max-width:160px;min-height:0;padding:0;border:0;background:none}"));
+  t("no standalone accent wears the tape or torn-paper scraps (off a card they read as artifacts)", (() => {
+    const rx = /class="sba[^"]*"[^>]*src="\/art\/scrapbook\/(tape|tornpaper)\.webp"/;
+    return !rx.test(template) && !rx.test(renderTribute(template, { ...jonny, film: { url: "https://x/film.mp4" } }));
+  })());
   t("the r2 botanical SVG corners retired where the webps serve the corner",
     !template.includes("no-repeat top 18px right 20px / 108px auto"));
+}
+
+// ── 14f · visual batch r4 (July 30) — the hero header block and the
+//          memory-submission identity system ─────────────────────────────────
+{
+  // item 1.4 · the counter's digits: a closed, properly weighted zero. Besley's
+  // tabular figure set carries a hairline zero and Sometype Mono's zero is
+  // slashed — the count wears Noto Serif 700, tabular by default, no jitter.
+  t("the counter wears Noto Serif 700 with tabular lining figures (r4 1.4)",
+    template.includes(".wr-big,.wr-big b{font-family:'Noto Serif','Besley',serif!important;font-variant-caps:normal;font-variant-numeric:lining-nums tabular-nums;font-weight:700") &&
+    template.includes("family=Noto+Serif:wght@700"));
+  t("the count-up stays comma-grouped through the same animation",
+    template.includes("el.textContent=Math.floor(p*t).toLocaleString()"));
+  // item 1.5 · the permanence line: white on the scene, carried by the shadow
+  t("the permanence line reads white with the hero shadow, three sizes up (r4 1.5)",
+    renderTribute(template, jonny).includes(`class="plusheld" style="font-family:'Besley',serif;font-style:italic;font-size:17px;letter-spacing:.04em;color:#F7EFDF;text-shadow:var(--hv-ts)`));
+  // item 1.6 · the presence pill never leaves the viewport
+  t("the presence pill keeps a sane inset at every width (r4 1.6)",
+    template.includes(".wrhero .presence{top:14px;left:clamp(18px,2vw,24px);right:auto;max-width:calc(100vw - 2*clamp(18px,2vw,24px))}"));
+  // item 2 · the identity sheet: asked once at the composer's first touch,
+  // escape/backdrop close it, the photo is optional and never blocks
+  t("the sheet opens once at the composer's first touch (r4 2.1)",
+    template.includes("mi.addEventListener('focus',function(){if(ID||askedOnce)return;askedOnce=true;requireId(null)"));
+  t("escape closes the sheet like the backdrop and the X (r4 2.2)",
+    template.includes("if(e.key==='Escape'&&idm.classList.contains('open')"));
+  t("the sheet speaks the owner's copy — the ask, the photo line, the primary door",
+    template.includes("Want to add your photo so people can see who you are?") &&
+    template.includes("That's me · continue") &&
+    template.includes("Before you add to her page") && template.includes("Tell the family <em>who you are</em>"));
+  t("the photo is optional, circular, and canvas-cropped center-square (r4 2.3)",
+    template.includes('id="idpRing"') && template.includes("function avatarSquare(") &&
+    template.includes("c.getContext('2d').drawImage(im,(w-s)/2,(h-s)/2,s,s,0,0,out,out)") &&
+    template.includes("'image/jpeg',.82") && template.includes('id="idpSkip"') &&
+    template.includes("Add a photo · optional") && template.includes('accept="image/*,.heic,.heif"'));
+  t("the avatar goes up through the narrow avatar door and rides the share POST",
+    template.includes("fd.append('context','avatar')") && template.includes("avatarUrl:ID.pu||''"));
+  t("a returning visitor's email brings their kept details home (r4 2.5)",
+    template.includes("/api/memory-author") && template.includes("Your details are filled in from last time."));
+  // item 2.4 · the avatar renders on the card through the r3 portrait slot
+  const avMem = { ...mem("aaaa0030-1111-4111-8111-111111111111", "Ana", "friend", "Her laugh, kept.", 1), avatarUrl: "https://x/ana.jpg" } as any;
+  t("an approved memory seats its writer's photo in the portrait slot (r4 2.4)",
+    boot(renderTribute(template, { ...jonny, memories: [avMem] })).mems[0].pp === "https://x/ana.jpg");
+  t("a non-https avatar never reaches the page",
+    boot(renderTribute(template, { ...jonny, memories: [{ ...avMem, avatarUrl: "javascript:alert(1)" }] })).mems[0].pp === "");
+  t("no avatar → the soft initial stands in (fallback intact)",
+    boot(renderTribute(template, jonny)).mems[0].pp === "" && template.includes(`'<div class="mem-av">'`));
+  t("a real avatar beats the demo portrait on the example wall",
+    boot(renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes", memories: [avMem] })).mems[0].pp === "https://x/ana.jpg");
 }
 
 // ── 13 · the page in the family's order (July 8) ──────────────────────────────

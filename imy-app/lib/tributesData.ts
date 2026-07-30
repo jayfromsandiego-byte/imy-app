@@ -132,6 +132,8 @@ function rowToTribute(r: any): Tribute {
         hearts: m.hearts ?? 0,
         audio: m.audio_url || undefined,
         video: m.video_url || undefined,
+        // The writer's own photo (0030), denormalized at post time.
+        avatarUrl: m.avatar_url || undefined,
         // The full set (0029) when it exists; the single pre-0029 photograph otherwise.
         photos: Array.isArray(m.photo_urls) && m.photo_urls.length
           ? m.photo_urls.filter((u: any) => typeof u === "string" && u).slice(0, 4)

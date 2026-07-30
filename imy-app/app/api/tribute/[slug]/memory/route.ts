@@ -73,6 +73,10 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   const photoUrl = keptUrl(body.photoUrl) || photoUrls[0] || null;
   const audioUrl = keptUrl(body.audioUrl);
   const videoUrl = keptVideoUrl(body.videoUrl);
+  // The writer's own photo (0030): the same https gate every url passes. It is
+  // denormalized onto the memory at post time and rides the family's queue
+  // exactly like the words do.
+  let avatarUrl = keptUrl(body.avatarUrl);
   if (text.length < 2) return NextResponse.json({ ok: false, error: "empty" }, { status: 400 });
 
   const ip = clientIp(req);
@@ -93,6 +97,20 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   // Free keeps it safely at rest; Plus may publish it. Voice remains a Plus promise.
   const isPlus = trib.tier === "plus" || trib.tier === "heirloom";
 
+  // The same person keeps their photo across memories (0030): when this post
+  // carries no avatar but the author is already known, their kept photo rides
+  // along. Best-effort — a database from before 0030 simply skips it.
+  if (!avatarUrl && authorEmail) {
+    try {
+      const { data: author } = await db
+        .from("memory_authors")
+        .select("avatar_url")
+        .eq("email", authorEmail.toLowerCase())
+        .maybeSingle();
+      if (author?.avatar_url) avatarUrl = keptUrl(author.avatar_url);
+    } catch { /* pre-0030 · nothing to restore */ }
+  }
+
   const row: Record<string, unknown> = {
     tribute_id: trib.id,
     author_name: name,
@@ -105,14 +123,33 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
     status: "pending",
   };
   if (photoUrls.length) row.photo_urls = photoUrls;
+  if (avatarUrl) row.avatar_url = avatarUrl;
   let { error } = await db.from("tribute_memories").insert(row);
-  if (error && row.photo_urls) {
-    // 0029 not applied yet: never refuse a memory over a missing column — the
-    // words and the first photograph are kept the pre-0029 way.
+  if (error && (row.photo_urls || row.avatar_url)) {
+    // 0029/0030 not applied yet: never refuse a memory over a missing column —
+    // the words and the first photograph are kept the earlier way.
     delete row.photo_urls;
+    delete row.avatar_url;
     ({ error } = await db.from("tribute_memories").insert(row));
   }
   if (error) return NextResponse.json({ ok: false, error: "failed" }, { status: 500 });
+
+  // The author is remembered (0030): one row per person, keyed on their
+  // lowercased email, so a returning visitor's name, relation, and photo come
+  // home with them on any device. Best-effort; never blocks the memory.
+  if (authorEmail) {
+    try {
+      const authorRow: Record<string, unknown> = {
+        email: authorEmail.toLowerCase(),
+        name,
+        relation,
+        updated_at: new Date().toISOString(),
+      };
+      // A post without a photo never erases the one they already gave us.
+      if (avatarUrl) authorRow.avatar_url = avatarUrl;
+      await db.from("memory_authors").upsert(authorRow, { onConflict: "email" });
+    } catch { /* pre-0030 · the memory itself is already safe */ }
+  }
 
   // Nudge the caretaker when this is the FIRST memory waiting — one gentle
   // email, not one per visitor. Best-effort; no-op until Resend is configured.

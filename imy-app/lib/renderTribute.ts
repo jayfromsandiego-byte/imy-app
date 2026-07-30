@@ -41,7 +41,7 @@ export function embedSrc(url: string): string | null {
   return null;
 }
 export type MemoryComment = { name: string; rel: string; text: string };
-export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; video?: string; comments?: MemoryComment[]; photos?: string[] };
+export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; video?: string; comments?: MemoryComment[]; photos?: string[]; avatarUrl?: string };
 export type ReelItem = { poster?: string; label?: string; url?: string };
 
 export type Tribute = {
@@ -274,6 +274,9 @@ export function renderTribute(template: string, t: Tribute): string {
     ph: m.photos && m.photos[0] && /^https:\/\//.test(m.photos[0]) ? m.photos[0] : "",
     // Every attached photograph a card renders (0029) — up to four, https only.
     phs: (m.photos || []).filter((u) => typeof u === "string" && /^https:\/\//.test(u)).slice(0, 4),
+    // The writer's own photo (0030) rides the r3 portrait slot (.mem-pav);
+    // absent, the card keeps its soft initial. https only, like every url.
+    pp: m.avatarUrl && /^https:\/\//.test(m.avatarUrl) ? m.avatarUrl : "",
     cm: (m.comments || []).map((c) => [c.name || "A friend", c.rel || "", c.text || ""]).filter((c) => c[2]),
   })).filter((m) => m.tx);
 
@@ -293,7 +296,8 @@ export function renderTribute(template: string, t: Tribute): string {
     const demoPair: Record<string, string> = { family: "sofia", friends: "ruth", neighbours: "ruth", students: "miguel" };
     mems.forEach((m: any) => {
       const k = demoPair[m.g] || "sofia";
-      m.pp = `/art/mem-demo/${k}-portrait.webp`;
+      // r4: a real submission's own avatar (0030) always beats the demo portrait.
+      if (!m.pp) m.pp = `/art/mem-demo/${k}-portrait.webp`;
       if (!m.phs.length) m.dp = `/art/mem-demo/${k}-with.webp`;
     });
   }
@@ -359,27 +363,26 @@ export function renderTribute(template: string, t: Tribute): string {
   };
 
   // ── conditional blocks ──
-  // m5b (July 29), evolved r3 item 5: the service speaks as a ONE-LINE
-  // announcement bar on every width — Celebration of life · the day and time ·
-  // Share the date — truncating with an ellipsis on phones, with a 44px caret
-  // pinned at the line's end. The caret (or the bar itself) opens an OVERLAY
-  // holding everything the section knows: date, time, venue, address, and the
-  // donations line. The round-1 inline expand retires on every width (one code
-  // path, one behavior — desktop opens the same overlay). r3 item 4: the
-  // "Celebration of life" heading ships in three Besley treatments (A · B · C),
-  // switchable by ?heading=a|b|c; a tiny switcher pill renders on the example
-  // page only. Default: A (larger regular-weight small caps — it anchors the
-  // hero without shouting).
+  // m5b (July 29), evolved r3 item 5, moved home r4 (July 30): the service
+  // speaks as ONE line — Celebration of Life · the day and time · Share the
+  // date — that now lives INSIDE the hero, directly underneath the name
+  // plate ({{SERVICE_STRIP}} sits after the wreathbox in the locked template;
+  // nothing renders above the hero any more, and nothing reserves a gap
+  // there). It stands on its own paper so it stays legible over every scene
+  // (the wr-plate's own gradient and box-shadow treatment). The one-line
+  // truncation, the 44px caret, and the full-details overlay are unchanged.
+  // r4 item 1.1: the heading ships in ONE voice — the owner chose C (18.5px
+  // italic 600 sentence case). The A/B/C switcher pill, the ?heading= query,
+  // and the A/B css are retired.
   const svcWhen = [fmtDate(t.service?.date), t.service?.time].filter(Boolean).join(" · ");
   const svcWhere = [t.service?.place, t.service?.address].filter(Boolean).join(", ");
   const svcPn = pronounSet(t.pronouns);
   const svcHasMore = !!(svcWhere || t.service?.charity);
-  const svcSwitcher = slug === "eleanor"
-    ? `<div class="svc-hswitch" aria-label="Heading options · example page only"><span>Heading</span><button type="button" data-h="a" class="on" aria-pressed="true">A</button><button type="button" data-h="b" aria-pressed="false">B</button><button type="button" data-h="c" aria-pressed="false">C</button></div>`
-    : "";
   const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
     ? `<style>
-.svcrow .svcrow-in{padding:8px 4.5%;flex-wrap:nowrap;overflow:hidden}
+/* r4 · the bar lives on the hero surface now — its own soft paper plate */
+.svcrow{position:relative;z-index:9;background:none;border-bottom:none;display:flex;justify-content:center;width:100%;margin-top:16px;padding:0 4%;cursor:auto}
+.svcrow .svcrow-in{margin:0;max-width:min(92vw,620px);background:linear-gradient(180deg,#FFFDF6,#FBF4E4);border-radius:6px;box-shadow:0 5px 14px rgba(26,19,13,.3),0 26px 60px -16px rgba(26,19,13,.55);padding:9px 18px;flex-wrap:nowrap;overflow:hidden;gap:10px 16px}
 .svcrow .svcrow-in[role="button"]{cursor:pointer}
 .svcrow .lab{white-space:nowrap;flex:0 0 auto}
 .svcrow .what{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
@@ -387,13 +390,8 @@ export function renderTribute(template: string, t: Tribute): string {
 .svcrow .svclink{font-family:'Sometype Mono',monospace;font-size:14px;color:var(--terra);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:none;padding:0;white-space:nowrap}
 .svc-caret{width:44px;height:44px;margin:-8px -10px -8px -2px;display:inline-flex;align-items:center;justify-content:center;background:none;border:none;color:var(--terra);font-size:14px;cursor:pointer;flex:0 0 auto}
 @media(max-width:640px){.svcrow #shareDateBtn{display:none}}
-/* r3 item 4 · the heading in three Besley voices (A default) */
-.svcrow[data-heading="a"] .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:all-small-caps;font-size:19px!important;font-weight:500;letter-spacing:.05em;color:var(--ink)}
-.svcrow[data-heading="b"] .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:all-small-caps;font-size:16px!important;font-weight:700;letter-spacing:.14em;color:#8A5A3C}
-.svcrow[data-heading="c"] .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:normal;font-style:italic;font-size:18.5px!important;font-weight:600;letter-spacing:.01em;color:var(--ink)}
-.svc-hswitch{display:flex;align-items:center;gap:6px;justify-content:flex-end;max-width:1240px;margin:0 auto;padding:0 4.5% 7px;font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.06em;font-size:12.5px;color:var(--ink-soft)}
-.svc-hswitch button{min-width:26px;min-height:22px;border:1px solid var(--goldline);border-radius:100px;background:#fff;font-family:'Besley',serif;font-weight:700;font-size:12px;color:var(--ink-soft);cursor:pointer;padding:1px 8px}
-.svc-hswitch button.on{background:var(--terra);border-color:var(--terra);color:#fff}
+/* r4 item 1.1 · the heading, locked to the owner's C: Besley italic, sentence case */
+.svcrow .svcrow-in .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:normal;font-style:italic;font-size:18.5px!important;font-weight:600;letter-spacing:.01em;color:var(--ink)}
 /* r3 item 5 · the details overlay */
 .svc-ov{position:fixed;inset:0;z-index:4250;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(20,13,8,.82);backdrop-filter:blur(4px)}
 .svc-ov[hidden]{display:none}
@@ -406,18 +404,17 @@ export function renderTribute(template: string, t: Tribute): string {
 .svc-ov-charity{font-family:'Besley',serif;font-size:14px;color:var(--ink-soft);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--goldline)}
 .svc-ov-charity a{color:#8A5A3C}
 .svc-ov-acts{margin-top:18px}
-</style><div class="svcrow" data-heading="a">
-  <div class="svcrow-in" id="svcBar"${svcHasMore ? ` role="button" tabindex="0" aria-haspopup="dialog" aria-label="Celebration of life · open the details"` : ""}>
-    <span class="lab">Celebration of life</span>
+</style><div class="svcrow">
+  <div class="svcrow-in" id="svcBar"${svcHasMore ? ` role="button" tabindex="0" aria-haspopup="dialog" aria-label="Celebration of Life · open the details"` : ""}>
+    <span class="lab">Celebration of Life</span>
     <span class="what">${esc(svcWhen || svcWhere)}</span>
     <span class="right">${t.service.date ? `<button class="svclink" id="shareDateBtn" type="button">Share the date</button>` : ""}${svcHasMore ? `<button class="svc-caret" id="svcCaret" type="button" aria-haspopup="dialog" aria-label="Open the service details">▾</button>` : ""}</span>
   </div>
-  ${svcSwitcher}
 </div>
-${svcHasMore ? `<div class="svc-ov" id="svcOv" role="dialog" aria-modal="true" aria-label="Celebration of life · the details" hidden>
+${svcHasMore ? `<div class="svc-ov" id="svcOv" role="dialog" aria-modal="true" aria-label="Celebration of Life · the details" hidden>
   <div class="svc-ov-card">
     <button class="svc-ov-x" id="svcOvX" type="button" aria-label="Close">✕</button>
-    <div class="svc-ov-kick">Celebration of life</div>
+    <div class="svc-ov-kick">Celebration of Life</div>
     ${svcWhen ? `<div class="svc-ov-when">${esc(svcWhen)}</div>` : ""}
     ${t.service.place ? `<div class="svc-ov-venue">${esc(t.service.place)}</div>` : ""}
     ${t.service.address ? `<div class="svc-ov-addr">${esc(t.service.address)}</div>` : ""}
@@ -436,12 +433,6 @@ if(x)x.addEventListener('click',shut);
 if(ov)ov.addEventListener('click',function(e){if(e.target===ov)shut()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
 var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',function(){shut();var b=document.getElementById('shareDateBtn');if(b)b.click()});
-/* r3 item 4 · heading variant: ?heading=a|b|c wins; the example page's pill row follows */
-var row=document.querySelector('.svcrow');
-function setH(v){if(!row||['a','b','c'].indexOf(v)<0)return;row.setAttribute('data-heading',v);
-document.querySelectorAll('.svc-hswitch [data-h]').forEach(function(o){var on=o.getAttribute('data-h')===v;o.classList.toggle('on',on);o.setAttribute('aria-pressed',on?'true':'false')})}
-try{var q=(new URLSearchParams(location.search).get('heading')||'').toLowerCase();if(q)setH(q)}catch(e){}
-document.querySelectorAll('.svc-hswitch [data-h]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();setH(b.getAttribute('data-h'))})});
 })();</script>`
     : "";
 
@@ -488,7 +479,7 @@ document.querySelectorAll('.svc-hswitch [data-h]').forEach(function(b){b.addEven
     <!-- THE FILM · a life, woven (0021 · the room under the wreath) -->
     <section class="section rev" id="film" aria-label="The film of ${esc(fpn.pos)} life">
       <img class="mg" style="right:-124px;top:12%;width:132px;--mr:-10deg;transform:rotate(-10deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
-      <img class="sba" style="top:16px;left:26px;width:86px;opacity:.45;transform:rotate(-8deg)" src="/art/scrapbook/tape.webp" alt="" aria-hidden="true" loading="lazy"/>
+      <img class="sba" style="top:16px;left:26px;width:86px;opacity:.4;transform:rotate(-8deg)" src="/art/scrapbook/sprig.webp" alt="" aria-hidden="true" loading="lazy"/>
       <div class="kick">The film</div>
       <h2>The film of <em>${esc(fpn.pos)} life</em>.</h2>
       <p class="lede">A short film made from ${esc(fpn.pos)} photographs and memories.</p>
@@ -1178,7 +1169,11 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
   // ring on the Stone (CSS) and one mono line under the wreath count.
   if (tier === "plus") {
     // Item 14: the permanence line wears the page's own serif, not the techy mono.
-    const plusLine = `<div class="plusheld" style="font-family:'Besley',serif;font-style:italic;font-size:14px;letter-spacing:.04em;color:#C9A572;margin-top:10px">The full memorial \u00b7 every memory open \u00b7 held in full</div>`;
+    // r4 item 1.5: it floats on the moving scene, so it reads as the hero's other
+    // floating lines do \u2014 cream #F7EFDF (the count line's own white), three sizes
+    // up, carried by the shared hero text-shadow (--hv-ts). Verified against the
+    // lightest posters (clouds, snowfall).
+    const plusLine = `<div class="plusheld" style="font-family:'Besley',serif;font-style:italic;font-size:17px;letter-spacing:.04em;color:#F7EFDF;text-shadow:var(--hv-ts);margin-top:10px">The full memorial \u00b7 every memory open \u00b7 held in full</div>`;
     html = html.replace('<div class="presence"', plusLine + '<div class="presence"');
   }
 
