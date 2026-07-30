@@ -1,1 +1,8 @@
 node_modules
+
+# generated at build by scripts/decode-assets.mjs (sources in assets-b64/)
+imy-app/public/bg/*-poster.jpg
+imy-app/public/bg/*.webm
+imy-app/public/bg/*.mp4
+imy-app/public/art/scrapbook/*.webp
+imy-app/public/art/mem-demo/*.webp

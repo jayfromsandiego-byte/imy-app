@@ -29,11 +29,17 @@ function extractFn(src, marker) {
   return src.slice(start, end);
 }
 const escFnSrc = extractFn(template, "var esc=function(s)").replace(/^var esc=/, "");
-const memCardSrc = extractFn(template, "function memCard(m)");
+const memPhotosSrc = extractFn(template, "function memPhotos(m)");
+// r3: memCard takes (m,i) — the index seats each card's paper rotation.
+const memCardSrc = extractFn(template, "function memCard(m,i)");
 // eslint-disable-next-line no-eval
 const esc = eval(`(${escFnSrc})`);
+// memCard delegates its photo block to memPhotos (0029) — lift it too: same file, same truth.
+// eslint-disable-next-line no-eval
+const memPhotos = eval(`(${memPhotosSrc})`);
 // eslint-disable-next-line no-eval
 const memCard = eval(`(${memCardSrc})`);
+void memPhotos; // the eval'd memCard resolves memPhotos through this module scope
 
 const IMG_PAYLOAD = '<img src=x onerror=alert(1)>';
 const SCRIPT_PAYLOAD = '"><script>alert(1)</script>';
@@ -76,12 +82,23 @@ ok("esc is idempotent-safe against re-reading its own output (no re-escaping sme
     !card.includes("&amp;amp;") && !card.includes("&amp;#39;"));
 }
 
+// ── a hostile photo url stays inside its attribute (0029) ───────────────────
+ok("a photo url cannot break out of its src attribute", (() => {
+  const card = memCard({ id: "m", av: "A", nm: "A", rel: "", tx: "t", h: 0, cm: [],
+    phs: ['https://x/a.jpg" onerror="alert(1)', "https://x/b.jpg"] });
+  return !card.includes('" onerror="') && card.includes("&quot; onerror=&quot;");
+})());
+
 // ── the live-add stub already escapes — untouched, still correct ────────────
 ok("the family-first comment stub still escapes with the pre-existing pattern",
   template.includes("t.replace(/</g,'&lt;')"));
 
 // ── every other named sink calls esc() at the exact seam, in the real file ──
 const sinkChecks = [
+  ["memory photo src, single (0029)", "src=\"'+esc(ps[0])+'\""],
+  ["memory photo src, strip (0029)", "src=\"'+esc(u)+'\""],
+  ["demo snapshot src (r3 scrapbook cards)", "src=\"'+esc(m.dp)+'\""],
+  ["writer portrait src (r3 scrapbook cards)", "src=\"'+esc(m.pp)+'\""],
   ["board note title (bnote)", "<div class=\"bt\">'+esc(p.ttl)+'</div>"],
   ["board note body (bnote)", "<div class=\"bx\">'+esc(p.tx)+'</div>"],
   ["board photo caption", "<div class=\"cap\">'+esc(p.ttl)+'</div>"],

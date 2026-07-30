@@ -16,8 +16,12 @@
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 WORK="$(mktemp -d)"
-sed 's|import { type LovedThing } from "./lovedThings";|type LovedThing = { label?: string; motifKey?: string; note?: string };|' \
+sed -e 's|import { type LovedThing } from "./lovedThings";|type LovedThing = { label?: string; motifKey?: string; note?: string };|' \
+    -e 's|from "./heroBackgrounds";|from "./heroBackgrounds.ts";|' \
   "$ROOT/imy-app/lib/renderTribute.ts" > "$WORK/renderTribute.gen.ts"
+# The hero-scene library (July 29) is a real runtime import: it rides along so
+# the generated module resolves it under plain Node.
+cp "$ROOT/imy-app/lib/heroBackgrounds.ts" "$WORK/heroBackgrounds.ts"
 cp "$ROOT/ops/qa/harness.ts" "$WORK/harness.ts"
 set +e
 rc=0
