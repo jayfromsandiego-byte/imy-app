@@ -42,13 +42,28 @@ export async function POST(req: NextRequest) {
 
   try {
     const form = await req.formData();
-    const files = (form.getAll("files").filter((f) => f instanceof File) as File[]).slice(0, 20);
+    // Memory photos (0029) arrive already re-encoded by the composer's canvas
+    // pass (JPEG/WebP ~0.82, long edge ≤1600, EXIF stripped). This context
+    // accepts only what that pass can produce — a tighter door than the
+    // family's own gallery uploads, which keep their broader welcome.
+    const context = String(form.get("context") || "");
+    const isMemoryPhoto = context === "memory";
+    // A writer's avatar (0030) is even narrower: one ~512px center-square
+    // JPEG from the identity sheet's canvas pass — one file, 3MB is plenty.
+    const isAvatar = context === "avatar";
+    const MEMORY_PHOTO_TYPES = /^image\/(jpeg|png|webp)$/i;
+    const MEMORY_PHOTO_MAX = 8 * 1024 * 1024; // generous for a 1600px re-encode
+    const AVATAR_MAX = 3 * 1024 * 1024;
+    const files = (form.getAll("files").filter((f) => f instanceof File) as File[]).slice(0, isAvatar ? 1 : isMemoryPhoto ? 4 : 20);
     if (!files.length) return NextResponse.json({ ok: false, error: "no_files" }, { status: 400 });
 
     const urls: string[] = [];
     for (const f of files) {
-      if (!SAFE_MEDIA.test(f.type || "")) {
+      if (!((isMemoryPhoto || isAvatar) ? MEMORY_PHOTO_TYPES : SAFE_MEDIA).test(f.type || "")) {
         return NextResponse.json({ ok: false, error: "unsupported_type" }, { status: 415 });
+      }
+      if ((isMemoryPhoto && f.size > MEMORY_PHOTO_MAX) || (isAvatar && f.size > AVATAR_MAX)) {
+        return NextResponse.json({ ok: false, error: "too_large" }, { status: 413 });
       }
       if (f.size > MAX_BYTES) {
         return NextResponse.json(
