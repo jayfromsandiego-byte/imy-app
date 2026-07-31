@@ -286,16 +286,27 @@ export function renderTribute(template: string, t: Tribute): string {
     ? approved.slice(CAP).map((m) => ({ nm: m.nm, rel: m.rel, tx: m.tx, g: m.g }))
     : [];
 
-  // r3 · the example wall wears the demo pairs (owner-approved placeholder
-  // imagery so the scrapbook card layout can be judged): every card gets a
-  // with-her snapshot (dp) and a writer portrait (pp), mapped by wall group to
-  // the three shot pairs. Identity-pass rule: keyed to the demo slug alone —
-  // a real family's page never carries these paths; its cards use their own
-  // photoUrls, and the portrait slot falls back to the initial treatment.
+  // r3, rewired r5 item 9 · the example wall wears SIX demo pairs (owner-approved
+  // placeholder imagery so the scrapbook card layout can be judged), each on
+  // EXACTLY ONE card, matched to its person by the writer's first name:
+  // Sofia (granddaughter) → sofia · Daniel (her son) → daniel · Tom (son-in-law)
+  // → tom · Rebecca (daughter) → rebecca · Marie (neighbour) → ruth · one
+  // student card (Miguel, or James if Miguel is absent) → miguel. Every snapshot
+  // shows the writer WITH her — no portrait-only leads, zero reuse; every other
+  // card is words-only, a state the scrapbook paper finishes. Identity-pass
+  // rule unchanged: keyed to the demo slug alone — a real family's page never
+  // carries these paths; its cards use their own photoUrls, and the portrait
+  // slot falls back to the initial treatment.
   if (slug === "eleanor") {
-    const demoPair: Record<string, string> = { family: "sofia", friends: "ruth", neighbours: "ruth", students: "miguel" };
+    const demoPair: Record<string, string> = {
+      sofia: "sofia", daniel: "daniel", tom: "tom", rebecca: "rebecca",
+      marie: "ruth", miguel: "miguel", james: "miguel",
+    };
+    const worn = new Set<string>();
     mems.forEach((m: any) => {
-      const k = demoPair[m.g] || "sofia";
+      const k = demoPair[String(m.nm || "").trim().split(/\s+/)[0].toLowerCase()];
+      if (!k || worn.has(k)) return;
+      worn.add(k);
       // r4: a real submission's own avatar (0030) always beats the demo portrait.
       if (!m.pp) m.pp = `/art/mem-demo/${k}-portrait.webp`;
       if (!m.phs.length) m.dp = `/art/mem-demo/${k}-with.webp`;
@@ -363,12 +374,13 @@ export function renderTribute(template: string, t: Tribute): string {
   };
 
   // ── conditional blocks ──
-  // m5b (July 29), evolved r3 item 5, moved home r4 (July 30): the service
-  // speaks as ONE line — Celebration of Life · the day and time · Share the
-  // date — that now lives INSIDE the hero, directly underneath the name
-  // plate ({{SERVICE_STRIP}} sits after the wreathbox in the locked template;
-  // nothing renders above the hero any more, and nothing reserves a gap
-  // there). It stands on its own paper so it stays legible over every scene
+  // m5b (July 29), evolved r3 item 5, moved again r5 item 3 (the owner has
+  // seen both placements and chose the top): the service speaks as ONE line —
+  // Celebration of Life · the day and time · Share the date — at the TOP of
+  // the hero, ABOVE the wreath ({{SERVICE_STRIP}} sits before the wreathbox
+  // in the locked template, still INSIDE the hero, never a separate strip
+  // above the section; server-rendered in place, no pop-in, no reserved gap,
+  // no CLS). It stands on its own paper so it stays legible over every scene
   // (the wr-plate's own gradient and box-shadow treatment). The one-line
   // truncation, the 44px caret, and the full-details overlay are unchanged.
   // r4 item 1.1: the heading ships in ONE voice — the owner chose C (18.5px
@@ -380,8 +392,12 @@ export function renderTribute(template: string, t: Tribute): string {
   const svcHasMore = !!(svcWhere || t.service?.charity);
   const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
     ? `<style>
-/* r4 · the bar lives on the hero surface now — its own soft paper plate */
-.svcrow{position:relative;z-index:9;background:none;border-bottom:none;display:flex;justify-content:center;width:100%;margin-top:16px;padding:0 4%;cursor:auto}
+/* r4, reseated r5 item 3 · the bar stands at the hero's TOP, above the wreath —
+   the same soft paper plate over the moving scene */
+.svcrow{position:relative;z-index:9;background:none;border-bottom:none;display:flex;justify-content:center;width:100%;margin:12px 0 2px;padding:0 4%;cursor:auto}
+/* where the bar and the presence pill could meet (narrow screens), the pill
+   keeps its watch just below the bar instead of under it */
+@media(max-width:700px){.wrhero .presence{top:72px}}
 .svcrow .svcrow-in{margin:0;max-width:min(92vw,620px);background:linear-gradient(180deg,#FFFDF6,#FBF4E4);border-radius:6px;box-shadow:0 5px 14px rgba(26,19,13,.3),0 26px 60px -16px rgba(26,19,13,.55);padding:9px 18px;flex-wrap:nowrap;overflow:hidden;gap:10px 16px}
 .svcrow .svcrow-in[role="button"]{cursor:pointer}
 .svcrow .lab{white-space:nowrap;flex:0 0 auto}
@@ -636,7 +652,11 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
       if (snapEnd > -1) {
         const pick = photos.find((p) => p.cap) || photos[photos.length - 1];
         const snap = pick && pick.url
-          ? `<figure class="really-snap"><span class="tape4" style="top:-9px;left:18%;transform:rotate(-6deg)"></span><img src="${esc(pick.url)}" alt=""/>${pick.cap ? `<figcaption class="hand">${esc(pick.cap)}</figcaption>` : ""}</figure>`
+          // r5 item 8: the caption wears hand3 (Caveat), never .hand — the global
+          // handwriting-retire rule maps .hand to Besley italic with !important,
+          // which is how the caption went gray; the chin's own CSS clamps it to
+          // one centered ellipsis line inside the polaroid's white chin.
+          ? `<figure class="really-snap"><span class="tape4" style="top:-9px;left:18%;transform:rotate(-6deg)"></span><img src="${esc(pick.url)}" alt=""/>${pick.cap ? `<figcaption class="hand3">${esc(pick.cap)}</figcaption>` : ""}</figure>`
           : "";
         html = html.slice(0, snapStart) + snap + html.slice(snapEnd + "</figure>".length);
       }
@@ -806,11 +826,13 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
       if (at > -1) html = html.slice(0, at) + ob + html.slice(at);
     }
     if (tier === "plus" && t.voiceUrl && /^https:\/\//.test(t.voiceUrl)) {
-      // r3 item 2: "In her own voice" moves up to sit DIRECTLY beneath "The
-      // pictures we hold on to" — inserted after the gallery section's close
-      // (falling back to its old pre-memories spot only if the gallery marker
-      // ever leaves the template). Everything after shifts down unchanged.
-      const gIdx = html.indexOf('<section class="section rev sheetdeep" id="gallery"');
+      // r3 item 2, moved down one slot r5 item 10: "In her own voice" sits
+      // DIRECTLY beneath "Who she really was" — inserted after the really
+      // section's close (falling back to its old pre-memories spot only if
+      // that marker ever leaves the template). Final order: film → obituary →
+      // chapters → quote band → pictures → who she really was → in her own
+      // voice → memories → the memory board.
+      const gIdx = html.indexOf('<section class="section rev" id="really"');
       const gEnd = gIdx > -1 ? html.indexOf("</section>", gIdx) : -1;
       const mIdx = gEnd > -1 ? gEnd + "</section>".length : html.indexOf('<section class="section rev sheetdeep" id="memories"');
       if (mIdx > -1) {
@@ -1164,18 +1186,9 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
     }
   }
 
-  // ═══ the full memorial says so, quietly (July 12) ═══════════════════════════
-  // A Plus page differs in what it holds — and in one visible whisper: a gold
-  // ring on the Stone (CSS) and one mono line under the wreath count.
-  if (tier === "plus") {
-    // Item 14: the permanence line wears the page's own serif, not the techy mono.
-    // r4 item 1.5: it floats on the moving scene, so it reads as the hero's other
-    // floating lines do \u2014 cream #F7EFDF (the count line's own white), three sizes
-    // up, carried by the shared hero text-shadow (--hv-ts). Verified against the
-    // lightest posters (clouds, snowfall).
-    const plusLine = `<div class="plusheld" style="font-family:'Besley',serif;font-style:italic;font-size:17px;letter-spacing:.04em;color:#F7EFDF;text-shadow:var(--hv-ts);margin-top:10px">The full memorial \u00b7 every memory open \u00b7 held in full</div>`;
-    html = html.replace('<div class="presence"', plusLine + '<div class="presence"');
-  }
+  // The counter caption ("The full memorial · every memory open · held in
+  // full", the .plusheld line) is retired entirely — r5 item 1, owner order.
+  // A Plus page's visible whisper is the gold ring on the Stone (CSS) alone.
 
   // ═══ the example sells the beginning (July 9) ═══════════════════════════════
   // Only the demo carries an ask. A family's memorial never asks a visitor for

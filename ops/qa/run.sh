@@ -34,4 +34,7 @@ IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/film-fulfillment.test.mjs" || rc=1
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/agnesy-review.test.mjs" || rc=1
 # LB-1: a stranger's words stay words — every visitor field is escaped at its innerHTML seam.
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/lb1-xss.test.mjs" || rc=1
+# r5: programmatic scrolling answers a user gesture only — no scrollIntoView or
+# page-level scroll reachable from any setInterval/setTimeout/autoplay path.
+IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/scroll-scan.mjs" || rc=1
 exit $rc

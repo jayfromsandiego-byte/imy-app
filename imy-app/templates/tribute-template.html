@@ -759,8 +759,12 @@ main>.wrap,main>section,main>div{position:relative;z-index:2}
 .tick9 .run span{opacity:.5;margin:0 13px;font-weight:500}
 @keyframes mq9{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .presence{display:inline-flex;align-items:center;gap:8px;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase;margin-top:9px}
-.presence i{width:8px;height:8px;border-radius:50%;background:#7a9464;animation:pulse9 2.4s ease-in-out infinite}
-@keyframes pulse9{0%,100%{opacity:.45}50%{opacity:1}}
+/* r5 item 4 · the watch keeps a rose now, not a green dot — a small layered
+   bloom in the page's terracotta/rose tones, breathing the same gentle blink
+   (the global prefers-reduced-motion rule stills it). */
+.presence i{width:14px;height:14px;flex:0 0 auto;display:inline-flex;background:none;border-radius:0;animation:pulse9 2.4s ease-in-out infinite}
+.presence i svg{width:100%;height:100%;display:block}
+@keyframes pulse9{0%,100%{opacity:.5;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
 body.a11y-nomotion .tick9 .run{animation:none}
 
 /* ===== v9.3 adjustments ===== */
@@ -772,7 +776,6 @@ body.a11y-nomotion .tick9 .run{animation:none}
 /* item 13 · a zero is a beginning, not a bug */
 .wr-big.iszero b{font-size:24px;color:#B7A48B;background:rgba(243,236,221,.92);border:1px solid #E4D9C4;border-radius:100px;padding:7px 20px;display:inline-block;line-height:1}
 .presence{font-size:12.5px;font-weight:700;margin-top:12px}
-.presence i{width:10px;height:10px}
 /* global small-text bump */
 .kick{font-size:12px;font-weight:700}
 .hier{font-size:11px;font-weight:700;margin:10px 0 12px}
@@ -1183,9 +1186,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 /* m8 · the tape at the card's crown is never clipped */
 .really.really2{overflow:visible}
 /* d5 · the snapshot above "Who she really was" — a taped print in the page's object language */
-.really-snap{position:relative;width:min(240px,64%);margin:2px auto 24px;background:#fff;padding:10px 10px 30px;border-radius:3px;box-shadow:0 24px 50px -20px rgba(20,12,6,.45);transform:rotate(-2.5deg)}
+.really-snap{position:relative;width:min(240px,64%);margin:2px auto 24px;background:#fff;padding:10px 10px 34px;border-radius:3px;box-shadow:0 24px 50px -20px rgba(20,12,6,.45);transform:rotate(-2.5deg)}
 .really-snap img{width:100%;aspect-ratio:4/3.2;object-fit:cover;border-radius:2px;display:block}
-.really-snap figcaption{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:16px;color:#4a3f34}
+/* r5 item 8 · the caption lives entirely in the polaroid's white chin: Caveat,
+   ink-soft, one centered line that trims with an ellipsis — never over the
+   image, never spilling. The chin (34px) is sized to hold it. */
+.really-snap figcaption{position:absolute;left:10px;right:10px;bottom:7px;height:22px;line-height:22px;text-align:center;font-family:'Caveat',cursive;font-size:17px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* d1 (retired July 30) · the .pm moments pill belonged to the chapter tab player;
    the memorial book (design final, PR 18) reads era + name on its rail chips */
 /* d4, revised (r2 Task 6) · the arrows leave the cards' flanks. Memory cards
@@ -1387,6 +1393,11 @@ img.sba{max-width:160px;min-height:0;padding:0;border:0;background:none}
 <!-- ARRIVAL -->
 <header class="arrive" id="top">
   <div class="wrhero" id="wrHero">
+    <!-- r5 item 3 (reverses r4 1.3, owner has seen both) · the Celebration of
+         Life bar stands at the TOP of the hero, above the wreath — still INSIDE
+         the hero, over the moving scene, server-rendered in place (no pop-in,
+         no reserved gap), on its own paper so it stays legible everywhere. -->
+    {{SERVICE_STRIP}}
     <div class="wreathbox" id="wbox">
       <img class="wreathimg" src="/art/wreath2-64e82a.png" alt="A green foliage wreath, flowered by visitors"/>
       <div class="wr-arch">
@@ -1401,17 +1412,14 @@ img.sba{max-width:160px;min-height:0;padding:0;border:0;background:none}
         <div class="n2">{{DATES_LINE}}</div>
       </div>
     </div>
-    <!-- r4 item 1.3 · the Celebration of Life bar lives here now, directly under
-         the name plate — server-rendered in place (no pop-in), on its own paper
-         so it stays legible over the moving scene. Nothing renders above the
-         hero any more and nothing reserves the old strip's room. -->
-    {{SERVICE_STRIP}}
+    <!-- r5 item 2 · the flower number stands ABOVE the "Lay a flower" button:
+         count first, then the button. Same Noto Serif face, same count-up. -->
+    <div class="wr-big"><b data-count="{{FLOWER_COUNT}}">0</b></div>
     <div class="wr-hud">
       <button class="btn solid" id="layBtn">Lay a flower</button>
       <span class="wr-count"><b id="wreathCt">0</b> laid on today's wreath · it greens again each morning</span>
     </div>
-    <div class="wr-big"><b data-count="{{FLOWER_COUNT}}">0</b></div>
-    <div class="presence" {{PRESENCE_HIDDEN}}><i></i> <span id="presenceTxt">{{PRESENCE_LINE}}</span></div>
+    <div class="presence" {{PRESENCE_HIDDEN}}><i aria-hidden="true"><svg viewBox="0 0 14 14" focusable="false"><g fill="#C28270"><circle cx="7" cy="3.1" r="3.1"/><circle cx="10.38" cy="5.05" r="3.1"/><circle cx="10.38" cy="8.95" r="3.1"/><circle cx="7" cy="10.9" r="3.1"/><circle cx="3.62" cy="8.95" r="3.1"/><circle cx="3.62" cy="5.05" r="3.1"/></g><g fill="none" stroke="#9E5744" stroke-width=".7" stroke-linecap="round"><path d="M7 1.2C4.4 1.8 2.5 3.6 1.9 6.2"/><path d="M12.1 4.4C11 2.6 9.2 1.4 7.2 1.2"/><path d="M12.2 9.6C12.7 8 12.6 6.2 11.8 4.7"/><path d="M4.8 12.4C6.7 13 8.9 12.7 10.5 11.4"/><path d="M1.8 8.1C2.2 10 3.4 11.5 5.1 12.3"/></g><circle cx="7" cy="7" r="4.3" fill="#B26A55"/><g fill="none" stroke="#8E4A38" stroke-width=".7" stroke-linecap="round"><path d="M7 2.9C5.1 3.2 3.7 4.5 3.2 6.3"/><path d="M10.9 6.1C10.5 4.3 9.2 3.1 7.5 2.8"/><path d="M9.9 10.1C11 9 11.4 7.4 10.9 5.9"/><path d="M4 9.8C5 10.9 6.6 11.4 8.1 11"/></g><circle cx="7" cy="7" r="2.4" fill="#994F3C"/><path d="M7 5.3C8 5.4 8.7 6.3 8.4 7.3 8.1 8.2 7 8.6 6.2 8.1 5.5 7.7 5.4 6.7 6 6.2" fill="none" stroke="#6E3324" stroke-width=".75" stroke-linecap="round"/></svg></i> <span id="presenceTxt">{{PRESENCE_LINE}}</span></div>
   </div>
 </header>
 
@@ -1424,7 +1432,9 @@ img.sba{max-width:160px;min-height:0;padding:0;border:0;background:none}
     <section class="section rev" id="story">
       <img class="mg" style="left:-120px;top:6%;width:150px;;--mr:9deg;transform:rotate(9deg)" src="/art/sprig-5ebc72.png" alt=""/>
       <img class="mg" style="right:-128px;bottom:10%;width:140px;;--mr:-12deg;transform:rotate(-12deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
-      <img class="sba" style="top:14px;right:30px;width:112px;opacity:.42;transform:rotate(7deg)" src="/art/scrapbook/book.webp" alt="" aria-hidden="true" loading="lazy"/>
+      <!-- r5 item 7 · the book accent retired everywhere (it read as a gray slab
+           at two rendered sizes); a mirrored fern holds this corner instead -->
+      <img class="sba" style="top:14px;right:30px;width:110px;opacity:.4;transform:rotate(7deg) scaleX(-1)" src="/art/scrapbook/fern.webp" alt="" aria-hidden="true" loading="lazy"/>
       <img class="sba stay" style="bottom:10px;left:22px;width:120px;opacity:.4;transform:rotate(-6deg)" src="/art/scrapbook/fern.webp" alt="" aria-hidden="true" loading="lazy"/>
       <div class="kick">Her story &amp; her legacy</div>
       <h2>A life, in <em>chapters</em>.</h2>
@@ -1483,7 +1493,7 @@ img.sba{max-width:160px;min-height:0;padding:0;border:0;background:none}
         <figure class="really-snap" id="reallySnap">
           <span class="tape4" style="top:-9px;left:18%;transform:rotate(-6deg)"></span>
           <img src="/art/bfc0c03d-1044-4932-8bbf-ed164d94d167-a0d7cd.png" alt=""/>
-          <figcaption class="hand">that laugh</figcaption>
+          <figcaption class="hand3">that laugh</figcaption>
         </figure>
         <h2>Who she really was.</h2>
         <div class="truths">
@@ -1878,7 +1888,7 @@ var CH=(T&&T.ch)||[
   ph:[['porch','the coast she never left'],['letters','the bakery years'],['coffee','the first of ten thousand cups']]},
  {name:'Walter',yrs:'a love, a family',mo:[
    ['1966','Married the spring after they met. Never stopped dancing.'],
-   ['1968','Daniel arrives · then Michael, two years on.'],
+   ['1968','Daniel arrives · then Rebecca, two years on.'],
    ['1975','The house on Seaside Ave. The porch light goes on.'],
    ['2016','Fifty years married, same dance, same song.']],
   ph:[['laugh','the two of them, always laughing'],['kitchen','the house that fed everyone'],['porch','the porch, their spot']]},
@@ -1934,7 +1944,15 @@ CH.forEach(function(c,i){var chip=document.createElement('div');chip.className='
   b.onclick=function(){goCh(i)};chip.appendChild(b);chbRail.appendChild(chip)});
 if(CH.length<2)chbShell.classList.add('chb-solo');
 function chbMark(i){[].forEach.call(chbRail.children,function(chip,k){chip.classList.toggle('on',k===i);var b=chip.querySelector('.chb-pill');if(b)b.setAttribute('aria-selected',k===i?'true':'false')});
-  var act=chbRail.children[i];if(act&&act.scrollIntoView)act.scrollIntoView({block:'nearest',inline:'center',behavior:noMo()?'auto':'smooth'})}
+  /* r5 item 5 · the rail centers its own chip with horizontal scrollLeft math on
+     the rail container ONLY. The old scrollIntoView here walked every scrollable
+     ancestor — block:'nearest' vertically dragged the whole PAGE to the chapters
+     whenever the rail was offscreen. Programmatic scrolling never leaves this box. */
+  var act=chbRail.children[i];if(!act||!chbScroll)return;
+  var ar=act.getBoundingClientRect(),sr=chbScroll.getBoundingClientRect();
+  var target=chbScroll.scrollLeft+(ar.left+ar.width/2)-(sr.left+sr.width/2);
+  target=Math.max(0,Math.min(target,chbScroll.scrollWidth-chbScroll.clientWidth));
+  if(noMo()){chbScroll.scrollLeft=target}else{try{chbScroll.scrollTo({left:target,behavior:'smooth'})}catch(e){chbScroll.scrollLeft=target}}}
 function chbRailNav(){var over=chbScroll.scrollWidth>chbScroll.clientWidth+4;chbShell.classList.toggle('can-scroll',over);if(!over)return;
   chbPrev.classList.toggle('dim',chbScroll.scrollLeft<=2);
   chbNext.classList.toggle('dim',chbScroll.scrollLeft>=chbScroll.scrollWidth-chbScroll.clientWidth-2)}
@@ -1962,7 +1980,7 @@ function chbRenderR(){var c=CH[chI];rBox.innerHTML=chbRightHTML(c,phI);
     rBox.querySelector('.chb-cnav.next').onclick=function(){setPh(phI+1,true)};
     [].forEach.call(rBox.querySelectorAll('.chb-dots button'),function(d,k){d.onclick=function(){setPh(k,true)}});
     box.addEventListener('mouseenter',function(){clearTimeout(auto)});
-    box.addEventListener('mouseleave',function(){restart(4600)});
+    box.addEventListener('mouseleave',function(){restart()});
     box.addEventListener('pointerdown',function(){clearTimeout(auto)},{passive:true});
     var x0=null;
     box.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
@@ -2018,13 +2036,13 @@ function goCh(i,manual){if(manual===undefined)manual=true;
     if(manual)restart(9000)};
   chbSheet.addEventListener('animationend',done);
   setTimeout(done,1600)}
-/* the quiet player — pictures tick forward, then the book turns its own page */
-function tickCh(){var c=CH[chI];
-  if(c.ph.length&&phI+1<c.ph.length)setPh(phI+1,false);
-  else if(CH.length>1)goCh(chI+1,false);
-  else if(c.ph.length)setPh(0,false)}
-function restart(ms){clearTimeout(auto);if(!noMo())auto=setTimeout(function(){tickCh();restart(4200)},ms||4200)}
-if(CH.length){setCh(0,false);chbRailNav();restart(4600)}else{var _st=document.getElementById('story');if(_st)_st.style.display='none'}
+/* the quiet player — r5 item 6: the pictures cycle INSIDE the open chapter,
+   top to bottom, then wrap back to the top of the SAME chapter. The book never
+   turns its own page and never scrolls anywhere; only a hand turns a chapter.
+   A slower breath, ~6.5s (was ~4.2s). */
+function tickCh(){var c=CH[chI];if(c.ph.length>1)setPh((phI+1)%c.ph.length,false)}
+function restart(ms){clearTimeout(auto);if(!noMo())auto=setTimeout(function(){tickCh();restart(6500)},ms||6500)}
+if(CH.length){setCh(0,false);chbRailNav();restart(6500)}else{var _st=document.getElementById('story');if(_st)_st.style.display='none'}
 renderGal();
 if(T&&!GAL.length){var _ga=document.getElementById('gallery');if(_ga)_ga.style.display='none'}
 if(T&&(!T.boards||!T.boards.length)){var _kp=document.getElementById('keep');if(_kp)_kp.style.display='none'}
@@ -2050,22 +2068,25 @@ fetch('/api/tribute/'+SLUG+'/memory/heart',{method:'POST',headers:{'content-type
 ct.textContent=b+(on?1:0)}})}
 wireLikes();
 /* ===== memories · grouped · 2x2 · working comments ===== */
-/* r3 · the demo wall wears the example pairs: every card carries (a) a snapshot
-   of the sharer WITH her (dp) and (b) the writer's portrait (pp) — three demo
-   pairs (sofia · ruth · miguel) mapped to the closest demo memories by group.
-   Placeholder imagery, owner-approved, so the layout can be judged. A real
-   page's cards get their photographs from T.mems (photoUrls) instead; the
-   identity pass keeps these paths off real tributes. */
+/* r3, rewired r5 item 9 · six demo pairs now exist (miguel · ruth · sofia · tom ·
+   rebecca · daniel — each a with-Eleanor snapshot dp + a matching writer portrait
+   pp) and each pair appears on EXACTLY ONE card, matched to its person: Sofia,
+   Daniel, Tom, Rebecca, Marie (she wears the ruth pair), and one student card
+   (James wears the miguel pair). Every snapshot shows the writer WITH her — no
+   portrait-only leads, zero reuse. Every other card is words-only, a state the
+   scrapbook paper finishes on its own. Placeholder imagery, owner-approved; a
+   real page's cards get their photographs from T.mems (photoUrls) instead, and
+   the identity pass keeps these paths off real tributes. */
 var MEMS=(T&&T.mems)||[
- {g:'family',av:'D',nm:'Daniel',rel:'her son',tx:'She taught me that the best part of any morning was the quiet before everyone woke. I still get up early, just to feel close to her.',h:46,dp:'/art/mem-demo/sofia-with.webp',pp:'/art/mem-demo/sofia-portrait.webp',cm:[['Sofia','granddaughter','Dad, she knew. She always knew.'],['Grace','friend','She bragged about your sunrises.']]},
+ {g:'family',av:'D',nm:'Daniel',rel:'her son',tx:'She taught me that the best part of any morning was the quiet before everyone woke. I still get up early, just to feel close to her.',h:46,dp:'/art/mem-demo/daniel-with.webp',pp:'/art/mem-demo/daniel-portrait.webp',cm:[['Sofia','granddaughter','Dad, she knew. She always knew.'],['Grace','friend','She bragged about your sunrises.']]},
  {g:'family',av:'S',nm:'Sofia',rel:'granddaughter',tx:'Taught me to whistle with two fingers. Mom was furious. Worth it.',h:53,dp:'/art/mem-demo/sofia-with.webp',pp:'/art/mem-demo/sofia-portrait.webp',cm:[['Daniel','her son','She was so proud of that, it was a problem.']]},
- {g:'family',av:'R',nm:'Robert',rel:'her brother',tx:'No conversation before the first cup of coffee. House rule.',h:41,dp:'/art/mem-demo/sofia-with.webp',pp:'/art/mem-demo/sofia-portrait.webp',cm:[['Marie','a neighbor','I learned this the hard way in 1994.'],['Pearl','the tea girls','We all did.']]},
- {g:'family',av:'M',nm:'Michael',rel:'her son',tx:'Every rose in my yard is because of her.',h:44,dp:'/art/mem-demo/sofia-with.webp',pp:'/art/mem-demo/sofia-portrait.webp',cm:[]},
- {g:'friends',av:'G',nm:'Grace',rel:'friend · 52 years',tx:'Tuesday tea, every week since 1974. She never once let me pay.',h:38,dp:'/art/mem-demo/ruth-with.webp',pp:'/art/mem-demo/ruth-portrait.webp',cm:[['Pearl','the tea girls','Gossip strictly forbidden. Gossip always happening.']]},
- {g:'friends',av:'P',nm:'Pearl',rel:'the tea girls',tx:'She kept every one of our secrets and none of her cookies.',h:29,dp:'/art/mem-demo/ruth-with.webp',pp:'/art/mem-demo/ruth-portrait.webp',cm:[]},
+ {g:'family',av:'R',nm:'Robert',rel:'her brother',tx:'No conversation before the first cup of coffee. House rule.',h:41,cm:[['Marie','a neighbor','I learned this the hard way in 1994.'],['Pearl','the tea girls','We all did.']]},
+ {g:'family',av:'R',nm:'Rebecca',rel:'her daughter',tx:'Every rose in my yard is because of her.',h:44,dp:'/art/mem-demo/rebecca-with.webp',pp:'/art/mem-demo/rebecca-portrait.webp',cm:[]},
+ {g:'friends',av:'G',nm:'Grace',rel:'friend · 52 years',tx:'Tuesday tea, every week since 1974. She never once let me pay.',h:38,cm:[['Pearl','the tea girls','Gossip strictly forbidden. Gossip always happening.']]},
+ {g:'friends',av:'P',nm:'Pearl',rel:'the tea girls',tx:'She kept every one of our secrets and none of her cookies.',h:29,cm:[]},
  {g:'neighbours',av:'M',nm:'Marie',rel:'a neighbor',tx:'Every child on the street learned to plant something in her garden. She made the world feel a little gentler.',h:71,dp:'/art/mem-demo/ruth-with.webp',pp:'/art/mem-demo/ruth-portrait.webp',cm:[['Tom','next door','Mine still grows by the fence.'],['Anna','her student','She gave me seeds for my classroom too.']]},
- {g:'neighbours',av:'T',nm:'Tom',rel:'next door, 30 years',tx:'Bread on the porch every Sunday. We never once asked. It never once stopped.',h:33,dp:'/art/mem-demo/ruth-with.webp',pp:'/art/mem-demo/ruth-portrait.webp',cm:[]},
- {g:'students',av:'A',nm:'Anna',rel:'Room 4, class of 1989',tx:'She told me I was a writer when I was eight. I am a writer. That is the whole story.',h:88,dp:'/art/mem-demo/miguel-with.webp',pp:'/art/mem-demo/miguel-portrait.webp',cm:[['James','class of 1991','She did this for all of us.'],['Daniel','her son','She kept your book on her shelf, Anna.']]},
+ {g:'neighbours',av:'T',nm:'Tom',rel:'next door, 30 years',tx:'Bread on the porch every Sunday. We never once asked. It never once stopped.',h:33,dp:'/art/mem-demo/tom-with.webp',pp:'/art/mem-demo/tom-portrait.webp',cm:[]},
+ {g:'students',av:'A',nm:'Anna',rel:'Room 4, class of 1989',tx:'She told me I was a writer when I was eight. I am a writer. That is the whole story.',h:88,cm:[['James','class of 1991','She did this for all of us.'],['Daniel','her son','She kept your book on her shelf, Anna.']]},
  {g:'students',av:'J',nm:'James',rel:'a former student',tx:'Thirty years later she still remembered where I sat.',h:44,dp:'/art/mem-demo/miguel-with.webp',pp:'/art/mem-demo/miguel-portrait.webp',cm:[]}
 ];
 var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbors'],['students','Her students']];
@@ -2413,8 +2434,8 @@ var BIMG=IMGS;
 var BOARDS=(T&&T.boards)||[
  {key:'family',label:'Family',items:[
   {t:'photo',img:BIMG.laugh,ttl:'The whole table, laughing',who:'Daniel',rel:'her son',date:'June 12, 2026',h:52,r:-4,c:[['Marie','a neighbour','She outdanced everyone.']]},
-  {t:'photo',img:BIMG.kitchen,ttl:'Thanksgiving, all of us',who:'Michael',rel:'her son',date:'June 2, 2026',h:24,r:3,c:[['Grace','friend','I can smell it from here.']]},
-  {t:'note',ttl:'The porch light',tx:'She left the porch light on for every one of us, every night, for fifty years. The night she passed, the whole street left theirs on for her. Every window, the whole block, burning till morning.',who:'Michael',rel:'her son',date:'June 20, 2026',h:112,r:-2,c:[['A former student','','I drove past that night. It looked like daylight.']]},
+  {t:'photo',img:BIMG.kitchen,ttl:'Thanksgiving, all of us',who:'Rebecca',rel:'her daughter',date:'June 2, 2026',h:24,r:3,c:[['Grace','friend','I can smell it from here.']]},
+  {t:'note',ttl:'The porch light',tx:'She left the porch light on for every one of us, every night, for fifty years. The night she passed, the whole street left theirs on for her. Every window, the whole block, burning till morning.',who:'Rebecca',rel:'her daughter',date:'June 20, 2026',h:112,r:-2,c:[['A former student','','I drove past that night. It looked like daylight.']]},
   {t:'video',img:BIMG.porch,dur:'0:42',ttl:'The last dance',who:'Sofia',rel:'granddaughter',date:'June 12, 2026',h:52,r:2,plus:true,c:[]},
   {t:'photo',img:BIMG.garden,ttl:'Among her roses',who:'the Hayes family',rel:'together',date:'May 28, 2026',h:64,r:-2,c:[['Robert','her brother','Her whole world, right there.']]},
   {t:'add'}

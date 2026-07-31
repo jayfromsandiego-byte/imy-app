@@ -304,25 +304,59 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     template.includes("#story{background:var(--band-off)") && template.includes("#film{background:var(--band-off)"));
   t("the pictures and the memories keep their own grounds",
     template.includes("#memories.sheetdeep{background:linear-gradient(180deg,#FFFFFF 0%") && !template.includes("#gallery{background:var(--band-off)"));
-  // item 2 · in their own voice sits directly beneath the pictures
+  // item 2 (r3), moved down one slot r5 item 10 · in their own voice sits
+  // directly beneath who-they-really-were, above the memories
   const voiced = renderTribute(template, { ...jonny, voiceUrl: "https://x/voice.mp3" });
   const vIdx = voiced.indexOf('id="theirvoice"');
-  t("the kept voice sits directly beneath the pictures, above who-they-were",
-    vIdx > voiced.indexOf("</section>", voiced.indexOf('id="gallery"')) && vIdx < voiced.indexOf('id="really"'));
+  t("the kept voice sits directly beneath who-they-were, above the memories (r5 10)",
+    vIdx > voiced.indexOf("</section>", voiced.indexOf('id="really"')) && vIdx < voiced.indexOf('id="memories"'));
   // item 3 · scrapbook memory cards: taped snapshot lead, round writer portrait,
   // finished no-photo state, and demo pairs that never leave the example page
   t("cards lead with a taped 4:3 snapshot and seat a round portrait",
     template.includes('class="mem-snap"') && template.includes('class="mem-pav"') && template.includes("aspect-ratio:4/3"));
   t("a card with no photograph still stands finished (initial fallback intact)",
     template.includes(`'<div class="mem-av">'`) && template.includes("if(ps.length)out=") );
-  const demoWall = boot(renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" }));
-  t("the example wall wears the demo pairs (portrait + with-her snapshot)",
-    demoWall.mems.every((m: any) => m.pp && (m.dp || (m.phs && m.phs.length))));
+  // r5 item 9 · six unique pairs, each on exactly one card, matched by name:
+  // Sofia→sofia · Daniel→daniel · Tom→tom · Rebecca→rebecca · Marie→ruth ·
+  // one student (Miguel first, else James)→miguel; everyone else words-only.
+  const demoFolk: Array<[string, string]> = [
+    ["Sofia", "granddaughter"], ["Daniel", "her son"], ["Tom", "her son-in-law"],
+    ["Rebecca", "her daughter"], ["Marie", "a neighbour"], ["Miguel", "her student"],
+    ["James", "a former student"], ["Grace", "friend"],
+  ];
+  const demoWall = boot(renderTribute(template, {
+    ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes",
+    memories: demoFolk.map(([nm, rel], i) => mem(`dddddddd-9999-4999-8999-${String(i).padStart(12, "0")}`, nm, rel, `A memory from ${nm}.`, 0)),
+  }));
+  const pairOf = (nm: string) => {
+    const m = demoWall.mems.find((x: any) => x.nm === nm);
+    return m && m.dp ? String(m.dp).replace("/art/mem-demo/", "").replace("-with.webp", "") : "";
+  };
+  t("each pair sits on exactly one card, matched to its person (r5 9)",
+    pairOf("Sofia") === "sofia" && pairOf("Daniel") === "daniel" && pairOf("Tom") === "tom" &&
+    pairOf("Rebecca") === "rebecca" && pairOf("Marie") === "ruth" && pairOf("Miguel") === "miguel");
+  t("zero reuse — no with-her snapshot or portrait appears twice (r5 9)", (() => {
+    const dps = demoWall.mems.map((m: any) => m.dp).filter(Boolean);
+    const pps = demoWall.mems.map((m: any) => m.pp).filter(Boolean);
+    return new Set(dps).size === dps.length && new Set(pps).size === pps.length && dps.length === 6 && pps.length === 6;
+  })());
+  t("every other demo card is words-only (finished on paper alone) (r5 9)",
+    demoWall.mems.filter((m: any) => !m.dp).every((m: any) => !m.pp) &&
+    demoWall.mems.some((m: any) => !m.dp && !m.pp));
+  t("the second student card stays words-only — miguel is never worn twice (r5 9)", (() => {
+    const james = demoWall.mems.find((x: any) => x.nm === "James");
+    return !!james && !james.dp && !james.pp;
+  })());
   const realPage = renderTribute(template, jonny);
   t("demo pair paths never reach a real page, even from source", !realPage.includes("/art/mem-demo/"));
-  t("the template's own demo wall keeps its pairs", template.includes("dp:'/art/mem-demo/sofia-with.webp'"));
-  // items 4 + 5, rewritten r4 · the bar: heading locked to C, moved under the
-  // name plate inside the hero, one-line + overlay behavior unchanged
+  t("the template's own demo wall wears all six pairs, once each (r5 9)", (() => {
+    const withs = template.match(/dp:'\/art\/mem-demo\/([a-z]+)-with\.webp'/g) || [];
+    const ports = template.match(/pp:'\/art\/mem-demo\/([a-z]+)-portrait\.webp'/g) || [];
+    const names = withs.map((x) => x.replace(/^dp:'\/art\/mem-demo\//, "").replace(/-with\.webp'$/, "")).sort();
+    return names.join() === "daniel,miguel,rebecca,ruth,sofia,tom" && withs.length === 6 && ports.length === 6;
+  })());
+  // items 4 + 5, rewritten r4, reseated r5 · the bar: heading locked to C,
+  // standing at the top of the hero, one-line + overlay behavior unchanged
   const svc = { date: "2026-06-13", time: "11:00 AM", place: "Linden Community Chapel", address: "142 Seaside Avenue, Half Moon Bay, CA 94019", charity: "American Cancer Society" };
   const barPage = renderTribute(template, { ...jonny, service: svc });
   t("the heading is locked to the owner's C — one voice, no switcher, no query (r4 1.1)",
@@ -334,12 +368,13 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     barPage.includes('aria-label="Celebration of Life · open the details"') &&
     barPage.includes('<div class="svc-ov-kick">Celebration of Life</div>') &&
     !barPage.includes("Celebration of life"));
-  t("the bar lives inside the hero, directly under the name plate (r4 1.3)", (() => {
+  t("the bar stands at the top of the hero, above the wreath, still inside it (r5 3)", (() => {
     const hero = barPage.indexOf('<header class="arrive"');
-    const plate = barPage.indexOf('<div class="wr-plate">');
+    const wrhero = barPage.indexOf('<div class="wrhero"');
     const bar = barPage.indexOf('<div class="svcrow">');
-    const hud = barPage.indexOf('<div class="wr-hud">');
-    return hero > -1 && plate > hero && bar > plate && hud > bar;
+    const wreath = barPage.indexOf('<div class="wreathbox"');
+    const plate = barPage.indexOf('<div class="wr-plate">');
+    return hero > -1 && wrhero > hero && bar > wrhero && wreath > bar && plate > wreath;
   })());
   t("the bar stands on its own paper over the scene, and a tap on it never lays a flower",
     barPage.includes(".svcrow .svcrow-in{margin:0;max-width:min(92vw,620px);background:linear-gradient(180deg,#FFFDF6,#FBF4E4)") &&
@@ -388,9 +423,12 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     template.includes("family=Noto+Serif:wght@700"));
   t("the count-up stays comma-grouped through the same animation",
     template.includes("el.textContent=Math.floor(p*t).toLocaleString()"));
-  // item 1.5 · the permanence line: white on the scene, carried by the shadow
-  t("the permanence line reads white with the hero shadow, three sizes up (r4 1.5)",
-    renderTribute(template, jonny).includes(`class="plusheld" style="font-family:'Besley',serif;font-style:italic;font-size:17px;letter-spacing:.04em;color:#F7EFDF;text-shadow:var(--hv-ts)`));
+  // item 1.5 retired by r5 item 1 (owner order): the counter caption — element,
+  // styles, and this contract's old assertion — is gone everywhere.
+  t("the counter caption is removed everywhere (r5 1)",
+    !template.includes("plusheld") && !template.includes("held in full") &&
+    !renderTribute(template, jonny).includes("plusheld") &&
+    !renderTribute(template, jonny).includes("The full memorial · every memory open"));
   // item 1.6 · the presence pill never leaves the viewport
   t("the presence pill keeps a sane inset at every width (r4 1.6)",
     template.includes(".wrhero .presence{top:14px;left:clamp(18px,2vw,24px);right:auto;max-width:calc(100vw - 2*clamp(18px,2vw,24px))}"));
@@ -423,6 +461,64 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     boot(renderTribute(template, jonny)).mems[0].pp === "" && template.includes(`'<div class="mem-av">'`));
   t("a real avatar beats the demo portrait on the example wall",
     boot(renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes", memories: [avMem] })).mems[0].pp === "https://x/ana.jpg");
+}
+
+// ── 14g · visual batch r5 (July 30 evening) — the count above the button, the
+//          bar at the hero's top, the rose watch, the contained book, and the
+//          accents without the book ─────────────────────────────────────────────
+{
+  // item 2 · the flower number stands above the "Lay a flower" button
+  t("the count stands above the button — number first, then the hud (r5 2)", (() => {
+    const big = template.indexOf('<div class="wr-big">');
+    const hud = template.indexOf('<div class="wr-hud">');
+    const btn = template.indexOf('id="layBtn"');
+    return big > -1 && hud > big && btn > hud;
+  })());
+  t("the count keeps its Noto Serif face and its count-up (r5 2)",
+    template.includes(".wr-big,.wr-big b{font-family:'Noto Serif','Besley',serif!important") &&
+    template.includes('<div class="wr-big"><b data-count="{{FLOWER_COUNT}}">0</b></div>'));
+  // item 4 · the presence watch is a blinking rose, no stem, no green
+  t("the presence dot is a rose now — layered petals, no green anywhere (r5 4)",
+    template.includes('<i aria-hidden="true"><svg viewBox="0 0 14 14"') &&
+    template.includes('fill="#C28270"') && template.includes('fill="#B26A55"') &&
+    !template.includes("#7a9464"));
+  t("the rose keeps the gentle blink, stilled under reduced motion (r5 4)",
+    template.includes(".presence i{width:14px;height:14px;flex:0 0 auto;display:inline-flex;background:none;border-radius:0;animation:pulse9 2.4s ease-in-out infinite}") &&
+    template.includes("@keyframes pulse9{0%,100%{opacity:.5;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}") &&
+    template.includes("@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important"));
+  // item 5 · the auto-scroll root cause: rail centering never touches the page.
+  // Programmatic scrolling only answers a user gesture; the rail centers with
+  // scrollLeft math on its own container, and scrollIntoView never rides a timer.
+  t("rail centering is horizontal scrollLeft math on the rail container only (r5 5)",
+    template.includes("var target=chbScroll.scrollLeft+(ar.left+ar.width/2)-(sr.left+sr.width/2);") &&
+    template.includes("chbScroll.scrollTo({left:target,behavior:'smooth'})") &&
+    !template.includes("act.scrollIntoView"));
+  t("the item-24 snap answers a real tap only — never a timer (r5 5)",
+    template.includes("if(chbMob()&&rBox.scrollIntoView)") &&
+    template.includes("m.onclick=go;m.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}"));
+  // item 6 · the quiet player stays inside the open chapter, at a slower breath
+  t("auto-advance cycles inside the chapter and wraps to its own top (r5 6)",
+    template.includes("function tickCh(){var c=CH[chI];if(c.ph.length>1)setPh((phI+1)%c.ph.length,false)}") &&
+    !template.includes("goCh(chI+1,false)"));
+  t("the cadence slowed to ~6.5s; manual chapter turns unchanged (r5 6)",
+    template.includes("auto=setTimeout(function(){tickCh();restart(6500)},ms||6500)") &&
+    !template.includes("restart(4200)") && !template.includes("restart(4600)") &&
+    template.includes("if(manual)restart(9000)"));
+  // item 7 · the book accent retired everywhere; a fern holds its corner
+  t("book.webp is gone from the scatter — everywhere, even from source (r5 7)",
+    !template.includes("book.webp") && !renderTribute(template, jonny).includes("book.webp") &&
+    !renderTribute(template, { ...jonny, slug: "eleanor", fullName: "Eleanor Margaret Hayes" }).includes("book.webp"));
+  t("a mirrored fern reads clearly where the book stood (r5 7)",
+    template.includes('style="top:14px;right:30px;width:110px;opacity:.4;transform:rotate(7deg) scaleX(-1)" src="/art/scrapbook/fern.webp"'));
+  // item 8 · the polaroid caption lives in the chin: Caveat, one ellipsis line
+  t("the who-they-were caption sits inside the chin, one clamped line (r5 8)",
+    template.includes(".really-snap figcaption{position:absolute;left:10px;right:10px;bottom:7px;height:22px;line-height:22px;text-align:center;font-family:'Caveat',cursive;font-size:17px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}") &&
+    template.includes("padding:10px 10px 34px"));
+  t("the caption never wears .hand (Besley-italic override) — hand3 carries Caveat (r5 8)", (() => {
+    const page = renderTribute(template, { ...jonny, photos: [{ url: "https://x/p0.jpg", cap: "Say cheese, then come help" }] });
+    return page.includes('<figcaption class="hand3">Say cheese, then come help</figcaption>') &&
+      !page.includes('<figcaption class="hand">') && !template.includes('<figcaption class="hand">');
+  })());
 }
 
 // ── 13 · the page in the family's order (July 8) ──────────────────────────────
