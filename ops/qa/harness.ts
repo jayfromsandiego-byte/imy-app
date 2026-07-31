@@ -4,7 +4,8 @@
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
 // obituary with the kept voice, a life in chapters, the log-in doors
 // (tribute bar + landing), share the date, the visitor's gift note, the
-// safe board shape, and the personalized gift sheet, the chronological order of a life, network deadlines, and titles that know their person. 149 checks.
+// safe board shape, and the personalized gift sheet, the chronological order of a life, network deadlines, titles that know their person, and the r6
+// refinements (open-sky default, scene coverage, media-first memories, the landing's example doors). 247 checks.
 // Run from repo root: sh ops/qa/run.sh   (needs Node 22.7+; Node 24 recommended)
 import { readFileSync } from "node:fs";
 import { renderTribute, type Tribute } from "./renderTribute.gen.ts";
@@ -724,6 +725,36 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     chapters: [{ id: "ch-1", title: "A chapter", sort: 0 }],
   }));
   t("a chapter's moments sort by year too", chaptered.ch[0].mo[0][1] === "First" && chaptered.ch[0].yrs === "1970 to 1999");
+}
+
+// ── 21 · r6 — the open sky leads, the scene always covers, media-first
+//          memories, and the landing's example doors split (July 30) ──────────
+{
+  const page = renderTribute(template, jonny); // no chosen scene
+  t("a tribute with no chosen scene rests on the open sky",
+    page.includes('src="/bg/clouds-poster.jpg"') && page.includes('Scene · <span id="hvCur">Open sky</span>'));
+  const menuAt = page.indexOf('id="hvMenu"');
+  const firstOpt = page.indexOf('data-slot="', menuAt);
+  t("the picker lists Open sky first",
+    menuAt > -1 && page.slice(firstOpt, firstOpt + 20).includes('data-slot="clouds"'));
+  t("an unknown slot falls back to the sky",
+    renderTribute(template, { ...jonny, heroVideoSlot: "volcano" }).includes('src="/bg/clouds-poster.jpg"'));
+  t("a family's chosen scene still stands",
+    renderTribute(template, { ...jonny, heroVideoSlot: "canopy" }).includes('src="/bg/canopy-poster.jpg"'));
+  t("the scene and its poster always cover — absolute, inset 0, full size, object-fit cover",
+    page.includes(".hv .hv-poster,.hv video{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover}"));
+  t("memories with photographs or recorded media surface first — a stable boot sort",
+    template.includes("function mtier(m){var ph=((m.phs&&m.phs.length)||m.ph||m.dp)?1:0,av=(m.au||m.vi)?1:0;return ph&&av?0:(ph?1:(av?2:3))}") &&
+    template.includes("MEMS.sort(function(a,b){return mtier(a)-mtier(b)||a._bi-b._bi})"));
+  const landing = readFileSync((process.env.IMY_REPO_ROOT || ".") + "/imy-app/templates/landing.html", "utf8");
+  t("the landing hero wears the memory wall exactly once",
+    (landing.match(/\/art\/landing-memorywall\.webp/g) || []).length === 1);
+  t("the nav's Example walks the page to the example section (a plain anchor, gesture-only)",
+    landing.includes('<a href="#example">Example</a>') && landing.includes('id="example"'));
+  t("the hero's See an example still opens Eleanor in a new tab",
+    landing.includes('<a class="mw-bg2" href="/sites/eleanor" target="_blank" rel="noopener">See an example</a>'));
+  t("the nav scroll is smooth, and rests under reduced motion",
+    landing.includes("html{scroll-behavior:smooth}") && landing.includes("html{scroll-behavior:auto}"));
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);

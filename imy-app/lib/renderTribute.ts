@@ -1239,7 +1239,7 @@ document.querySelectorAll('.tapeobj[data-v]').forEach(function(tp){tp.onclick=fu
 
   // ═══ the hero wears a scene (July 29) ════════════════════════════════════
   // A full-bleed looping landscape plays quietly behind the wreath — the
-  // family's chosen slot (0028), campfire by default. The poster paints
+  // family's chosen slot (0028), the open sky by default (0031). The poster paints
   // first; reduced motion, Data Saver, and low-power phones stay on the
   // poster. The scene picker rests in the hero's lower-right corner: the
   // owner's choice persists for everyone through /api/tribute/[slug]/hero-video;
@@ -1249,7 +1249,10 @@ document.querySelectorAll('.tapeobj[data-v]').forEach(function(tp){tp.onclick=fu
     const heroCss = `<style>/* the hero wears a scene (July 29) · scenic video behind the wreath */
 .arrive{background:linear-gradient(180deg,#F3E7D2 0%,#EFE0C4 70%,var(--cream) 100%)}
 .hv{position:absolute;inset:0;z-index:0;overflow:hidden;background:#F3E7D2}
-.hv .hv-poster,.hv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* r6 · the scene always covers: explicit offsets ride beside the inset shorthand
+   so older engines hold the same frame, and max-width can never shrink the clip —
+   no native-edge seams at any viewport, ultrawide included. */
+.hv .hv-poster,.hv video{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover}
 .hv .hv-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(63,44,26,.44) 0%,rgba(63,44,26,.10) 30%,rgba(63,44,26,.14) 60%,rgba(63,44,26,.66) 100%)}
 .arrive .wrhero{z-index:2}
 .hv-pick{position:absolute;right:14px;bottom:14px;z-index:9}

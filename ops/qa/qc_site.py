@@ -156,6 +156,23 @@ def main():
     ok("landing: the permanence promise still lives below", "never charge a family" in pages["landing"])
     print()
 
+    print("— r6 · landing refinements (July 30) —")
+    lp = pages["landing"]
+    ok("landing: the hero wears the memory wall exactly once",
+       lp.count("/art/landing-memorywall.webp") == 1)
+    ok("landing: the old baked-text background is gone",
+       "36eaf3d1-1610-48b5-980c-e275c8f5eebd-8b6e1e.png" not in lp)
+    ok("landing: nav Example scrolls in-page, hero button keeps the new tab",
+       '<a href="#example">Example</a>' in lp
+       and '<a class="mw-bg2" href="/sites/eleanor" target="_blank" rel="noopener">See an example</a>' in lp)
+    ok("landing: smooth scroll rests under reduced motion",
+       "html{scroll-behavior:smooth}" in lp and "html{scroll-behavior:auto}" in lp)
+    ok("tribute: memories wall sorts media first at boot (stable tiers)",
+       "mtier(a)-mtier(b)||a._bi-b._bi" in tri)
+    ok("renderer: the scene and its poster always cover",
+       ".hv .hv-poster,.hv video{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover}" in renderer)
+    print()
+
     print("— tokens —")
     for label in ("landing", "onboarding"):
         stray = re.findall(r"\{\{[A-Z_]+\}\}", pages[label])

@@ -12,10 +12,12 @@ const slot = (id: string, label: string): HeroBackground => ({
   mp4: `/bg/${id}.mp4`,
 });
 
+// The open sky leads (r6, July 30): 'clouds' is the library's first slot and the
+// default scene — the picker lists it first, and heroBackground() rests on it.
 export const HERO_BACKGROUNDS: HeroBackground[] = [
+  slot("clouds", "Open sky"),
   slot("campfire", "Campfire at dusk"),
   slot("ocean", "Ocean shore"),
-  slot("clouds", "Open sky"),
   slot("ridgeline", "Mountain fog"),
   slot("canopy", "Forest light"),
   slot("lake", "Golden lake"),
@@ -25,9 +27,13 @@ export const HERO_BACKGROUNDS: HeroBackground[] = [
   slot("rain", "Rain on glass"),
 ];
 
-export const DEFAULT_HERO_BACKGROUND = "campfire";
+export const DEFAULT_HERO_BACKGROUND = "clouds";
 
-/** The scene for a stored slot id. Unknown or absent ids rest on the campfire default. */
+/** The scene for a stored slot id. Unknown or absent ids rest on the open-sky default. */
 export function heroBackground(id?: string | null): HeroBackground {
-  return HERO_BACKGROUNDS.find((b) => b.id === id) || HERO_BACKGROUNDS[0];
+  return (
+    HERO_BACKGROUNDS.find((b) => b.id === id) ||
+    HERO_BACKGROUNDS.find((b) => b.id === DEFAULT_HERO_BACKGROUND) ||
+    HERO_BACKGROUNDS[0]
+  );
 }
