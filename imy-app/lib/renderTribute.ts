@@ -13,6 +13,7 @@
 // approved memory beyond ten becomes a "waiting" entry until Plus/Family Unlock.
 
 import { type LovedThing } from "./lovedThings";
+import { HERO_BACKGROUNDS, heroBackground } from "./heroBackgrounds";
 
 export type TimelineItem = { id?: string; year: string; title: string; text: string; chapterId?: string };
 // A chapter of the life (0017): the family writes the titles, in their order.
@@ -40,7 +41,7 @@ export function embedSrc(url: string): string | null {
   return null;
 }
 export type MemoryComment = { name: string; rel: string; text: string };
-export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; video?: string; comments?: MemoryComment[]; photos?: string[] };
+export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; video?: string; comments?: MemoryComment[]; photos?: string[]; avatarUrl?: string };
 export type ReelItem = { poster?: string; label?: string; url?: string };
 
 export type Tribute = {
@@ -63,6 +64,7 @@ export type Tribute = {
   tier?: string; // "free" | "plus" | "heirloom"
   theme?: string;
   motif?: string;
+  heroVideoSlot?: string; // the hero's looping scene (0028) — a lib/heroBackgrounds id
   visibility?: string; // "public" | "unlisted" | "private" — SEO only, never rendering
   status?: string;
   discoverable?: boolean; // family opt-in to sitemap + search indexing (0020) — SEO only, never rendering
@@ -270,6 +272,11 @@ export function renderTribute(template: string, t: Tribute): string {
     au: tier === "plus" && m.audio && /^https:\/\//.test(m.audio) ? m.audio : "",
     vi: tier === "plus" && m.video && /^https:\/\//.test(m.video) ? m.video : "",
     ph: m.photos && m.photos[0] && /^https:\/\//.test(m.photos[0]) ? m.photos[0] : "",
+    // Every attached photograph a card renders (0029) — up to four, https only.
+    phs: (m.photos || []).filter((u) => typeof u === "string" && /^https:\/\//.test(u)).slice(0, 4),
+    // The writer's own photo (0030) rides the r3 portrait slot (.mem-pav);
+    // absent, the card keeps its soft initial. https only, like every url.
+    pp: m.avatarUrl && /^https:\/\//.test(m.avatarUrl) ? m.avatarUrl : "",
     cm: (m.comments || []).map((c) => [c.name || "A friend", c.rel || "", c.text || ""]).filter((c) => c[2]),
   })).filter((m) => m.tx);
 
@@ -278,6 +285,33 @@ export function renderTribute(template: string, t: Tribute): string {
   const seedw = tier === "free"
     ? approved.slice(CAP).map((m) => ({ nm: m.nm, rel: m.rel, tx: m.tx, g: m.g }))
     : [];
+
+  // r3, rewired r5 item 9 · the example wall wears SIX demo pairs (owner-approved
+  // placeholder imagery so the scrapbook card layout can be judged), each on
+  // EXACTLY ONE card, matched to its person by the writer's first name:
+  // Sofia (granddaughter) → sofia · Daniel (her son) → daniel · Tom (son-in-law)
+  // → tom · Rebecca (daughter) → rebecca · Marie (neighbour) → ruth · one
+  // student card (Miguel, or James if Miguel is absent) → miguel. Every snapshot
+  // shows the writer WITH her — no portrait-only leads, zero reuse; every other
+  // card is words-only, a state the scrapbook paper finishes. Identity-pass
+  // rule unchanged: keyed to the demo slug alone — a real family's page never
+  // carries these paths; its cards use their own photoUrls, and the portrait
+  // slot falls back to the initial treatment.
+  if (slug === "eleanor") {
+    const demoPair: Record<string, string> = {
+      sofia: "sofia", daniel: "daniel", tom: "tom", rebecca: "rebecca",
+      marie: "ruth", miguel: "miguel", james: "miguel",
+    };
+    const worn = new Set<string>();
+    mems.forEach((m: any) => {
+      const k = demoPair[String(m.nm || "").trim().split(/\s+/)[0].toLowerCase()];
+      if (!k || worn.has(k)) return;
+      worn.add(k);
+      // r4: a real submission's own avatar (0030) always beats the demo portrait.
+      if (!m.pp) m.pp = `/art/mem-demo/${k}-portrait.webp`;
+      if (!m.phs.length) m.dp = `/art/mem-demo/${k}-with.webp`;
+    });
+  }
 
   const words = (t.lovedThings || []).map((l) => String(l.label || "").toLowerCase()).filter(Boolean).slice(0, 8);
 
@@ -340,12 +374,82 @@ export function renderTribute(template: string, t: Tribute): string {
   };
 
   // ── conditional blocks ──
+  // m5b (July 29), evolved r3 item 5, moved again r5 item 3 (the owner has
+  // seen both placements and chose the top): the service speaks as ONE line —
+  // Celebration of Life · the day and time · Share the date — at the TOP of
+  // the hero, ABOVE the wreath ({{SERVICE_STRIP}} sits before the wreathbox
+  // in the locked template, still INSIDE the hero, never a separate strip
+  // above the section; server-rendered in place, no pop-in, no reserved gap,
+  // no CLS). It stands on its own paper so it stays legible over every scene
+  // (the wr-plate's own gradient and box-shadow treatment). The one-line
+  // truncation, the 44px caret, and the full-details overlay are unchanged.
+  // r4 item 1.1: the heading ships in ONE voice — the owner chose C (18.5px
+  // italic 600 sentence case). The A/B/C switcher pill, the ?heading= query,
+  // and the A/B css are retired.
+  const svcWhen = [fmtDate(t.service?.date), t.service?.time].filter(Boolean).join(" · ");
+  const svcWhere = [t.service?.place, t.service?.address].filter(Boolean).join(", ");
+  const svcPn = pronounSet(t.pronouns);
+  const svcHasMore = !!(svcWhere || t.service?.charity);
   const serviceStrip = t.service && (t.service.place || t.service.date || t.service.charity)
-    ? `<div class="svcrow"><div class="svcrow-in">
-  <span class="lab">Service</span>
-  <span class="what"><span class="svc-when" style="display:block">${esc([fmtDate(t.service.date), t.service.time].filter(Boolean).join(" · "))}</span>${t.service.place ? `<span class="mono" style="display:block;margin-top:2px">${esc([t.service.place, t.service.address].filter(Boolean).join(", "))}</span>` : ""}</span>
-  ${t.service.date ? `<button class="mini" id="shareDateBtn" type="button" style="text-decoration:underline">Share the date</button>` : ""}
-  </div></div>`
+    ? `<style>
+/* r4, reseated r5 item 3 · the bar stands at the hero's TOP, above the wreath —
+   the same soft paper plate over the moving scene */
+.svcrow{position:relative;z-index:9;background:none;border-bottom:none;display:flex;justify-content:center;width:100%;margin:12px 0 2px;padding:0 4%;cursor:auto}
+/* where the bar and the presence pill could meet (narrow screens), the pill
+   keeps its watch just below the bar instead of under it */
+@media(max-width:700px){.wrhero .presence{top:72px}}
+.svcrow .svcrow-in{margin:0;max-width:min(92vw,620px);background:linear-gradient(180deg,#FFFDF6,#FBF4E4);border-radius:6px;box-shadow:0 5px 14px rgba(26,19,13,.3),0 26px 60px -16px rgba(26,19,13,.55);padding:9px 18px;flex-wrap:nowrap;overflow:hidden;gap:10px 16px}
+.svcrow .svcrow-in[role="button"]{cursor:pointer}
+.svcrow .lab{white-space:nowrap;flex:0 0 auto}
+.svcrow .what{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+.svcrow .right{margin-left:auto;display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.svcrow .svclink{font-family:'Sometype Mono',monospace;font-size:14px;color:var(--terra);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:none;padding:0;white-space:nowrap}
+.svc-caret{width:44px;height:44px;margin:-8px -10px -8px -2px;display:inline-flex;align-items:center;justify-content:center;background:none;border:none;color:var(--terra);font-size:14px;cursor:pointer;flex:0 0 auto}
+@media(max-width:640px){.svcrow #shareDateBtn{display:none}}
+/* r4 item 1.1 · the heading, locked to the owner's C: Besley italic, sentence case */
+.svcrow .svcrow-in .lab{font-family:'Besley',serif!important;text-transform:none;font-variant-caps:normal;font-style:italic;font-size:18.5px!important;font-weight:600;letter-spacing:.01em;color:var(--ink)}
+/* r3 item 5 · the details overlay */
+.svc-ov{position:fixed;inset:0;z-index:4250;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(20,13,8,.82);backdrop-filter:blur(4px)}
+.svc-ov[hidden]{display:none}
+.svc-ov-card{position:relative;width:100%;max-width:420px;max-height:calc(100dvh - 32px);overflow:auto;background:linear-gradient(180deg,#FFFDF6,#FBF4E4);border:1px solid var(--goldline);border-radius:6px;padding:30px 28px 26px;box-shadow:0 40px 90px -30px #000;text-align:center}
+.svc-ov-x{position:absolute;top:6px;right:6px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;background:rgba(251,246,234,.92);border:1px solid rgba(168,124,95,.3);border-radius:50%;color:#5A4F45;font-size:18px;cursor:pointer;z-index:2}
+.svc-ov-kick{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-size:17px;font-weight:600;color:#8A5A3C;margin-bottom:10px}
+.svc-ov-when{font-family:'Besley',serif;font-weight:700;font-size:20px;line-height:1.3;color:var(--ink)}
+.svc-ov-venue{font-family:'Besley',serif;font-size:16.5px;font-weight:600;color:var(--ink);margin-top:12px}
+.svc-ov-addr{font-family:'Besley',serif;font-size:14.5px;color:var(--ink-soft);line-height:1.55;margin-top:4px}
+.svc-ov-charity{font-family:'Besley',serif;font-size:14px;color:var(--ink-soft);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--goldline)}
+.svc-ov-charity a{color:#8A5A3C}
+.svc-ov-acts{margin-top:18px}
+</style><div class="svcrow">
+  <div class="svcrow-in" id="svcBar"${svcHasMore ? ` role="button" tabindex="0" aria-haspopup="dialog" aria-label="Celebration of Life · open the details"` : ""}>
+    <span class="lab">Celebration of Life</span>
+    <span class="what">${esc(svcWhen || svcWhere)}</span>
+    <span class="right">${t.service.date ? `<button class="svclink" id="shareDateBtn" type="button">Share the date</button>` : ""}${svcHasMore ? `<button class="svc-caret" id="svcCaret" type="button" aria-haspopup="dialog" aria-label="Open the service details">▾</button>` : ""}</span>
+  </div>
+</div>
+${svcHasMore ? `<div class="svc-ov" id="svcOv" role="dialog" aria-modal="true" aria-label="Celebration of Life · the details" hidden>
+  <div class="svc-ov-card">
+    <button class="svc-ov-x" id="svcOvX" type="button" aria-label="Close">✕</button>
+    <div class="svc-ov-kick">Celebration of Life</div>
+    ${svcWhen ? `<div class="svc-ov-when">${esc(svcWhen)}</div>` : ""}
+    ${t.service.place ? `<div class="svc-ov-venue">${esc(t.service.place)}</div>` : ""}
+    ${t.service.address ? `<div class="svc-ov-addr">${esc(t.service.address)}</div>` : ""}
+    ${t.service.charity ? `<div class="svc-ov-charity">In lieu of flowers, donations in ${esc(svcPn.pos)} name may go to ${t.service.charityUrl ? `<a href="${esc(t.service.charityUrl)}" target="_blank" rel="noopener noreferrer">${esc(t.service.charity)}</a>` : esc(t.service.charity)}.</div>` : ""}
+    ${t.service.date ? `<div class="svc-ov-acts"><button class="btn" id="svcOvShare" type="button">Share the date</button></div>` : ""}
+  </div>
+</div>` : ""}
+<script>(function(){
+var bar=document.getElementById('svcBar'),ov=document.getElementById('svcOv'),x=document.getElementById('svcOvX'),caret=document.getElementById('svcCaret'),last=null;
+function open(){if(!ov)return;last=document.activeElement;ov.hidden=false;document.body.style.overflow='hidden';if(x)x.focus()}
+function shut(){if(!ov||ov.hidden)return;ov.hidden=true;document.body.style.overflow='';try{if(last)last.focus()}catch(e){}}
+if(caret)caret.addEventListener('click',function(e){e.stopPropagation();open()});
+if(bar&&ov){bar.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#shareDateBtn'))return;open()});
+bar.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})}
+if(x)x.addEventListener('click',shut);
+if(ov)ov.addEventListener('click',function(e){if(e.target===ov)shut()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
+var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',function(){shut();var b=document.getElementById('shareDateBtn');if(b)b.click()});
+})();</script>`
     : "";
 
   const creditBanner = tier === "free"
@@ -384,13 +488,14 @@ export function renderTribute(template: string, t: Tribute): string {
     ? `${Math.floor(filmData.duration / 60)}:${String(Math.round(filmData.duration % 60)).padStart(2, "0")}`
     : "";
   const filmInvite = filmData && tier === "free"
-    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#6E6156">This is a first glimpse. The whole film of ${esc(fpn.pos)} life comes with the full memorial. <a href="/pricing" style="color:#A87C5F">When you are ready.</a></p>`
+    ? `<p style="max-width:560px;margin:20px auto 0;text-align:center;font-size:15.5px;line-height:1.65;color:#6E6156">This is a first glimpse. The whole film of ${esc(fpn.pos)} life comes with the full memorial. <a href="/pricing" style="color:#8A5A3C">When you are ready.</a></p>`
     : "";
   const filmSection = filmData
     ? `
     <!-- THE FILM · a life, woven (0021 · the room under the wreath) -->
     <section class="section rev" id="film" aria-label="The film of ${esc(fpn.pos)} life">
       <img class="mg" style="right:-124px;top:12%;width:132px;--mr:-10deg;transform:rotate(-10deg) scaleX(-1)" src="/art/sprig-5ebc72.png" alt=""/>
+      <img class="sba" style="top:16px;left:26px;width:86px;opacity:.4;transform:rotate(-8deg)" src="/art/scrapbook/sprig.webp" alt="" aria-hidden="true" loading="lazy"/>
       <div class="kick">The film</div>
       <h2>The film of <em>${esc(fpn.pos)} life</em>.</h2>
       <p class="lede">A short film made from ${esc(fpn.pos)} photographs and memories.</p>
@@ -464,7 +569,8 @@ export function renderTribute(template: string, t: Tribute): string {
     .split("{{NAME_PLAIN}}").join(esc(t.fullName))
     .split("{{NAME_HTML}}").join(nameHtml(t.fullName))
     .split("{{DATES_LINE}}").join(datesLine + donateUnderName)
-    .split("{{EPIGRAPH}}").join(esc(t.quote || t.aka || "Loved, and remembered."))
+    // m5d (July 29, owner reversal of item 7): the wreath plate carries no
+    // epigraph line — the mid-page quote band keeps their words instead.
     .split("{{FLOWER_COUNT}}").join(String(Math.max(0, t.flowerCount ?? 0)))
     .split("{{THEIR}}").join("their")
     .split("{{TIER}}").join(tier)
@@ -502,14 +608,15 @@ export function renderTribute(template: string, t: Tribute): string {
       const secStart = html.lastIndexOf('<section class="band rev">', qIdx);
       const secEnd = html.indexOf("</section>", qIdx);
       if (secStart > -1 && secEnd > -1) {
-        // July 9: the banner never wears uploaded photographs — one on-brand
-        // pressed-flower ground for every page; their pictures live in the
-        // gallery, the chapters, and the board.
+        // d7 (July 29): the band wears its photograph again — the design's own
+        // art ground under the original soft veil, so the quote stays legible.
+        // The July 9 rule still holds: never an uploaded photograph here; their
+        // pictures live in the gallery, the chapters, and the board.
         const band = t.quote
-          ? `<section class="band rev" id="quoteband" style="background:linear-gradient(180deg,#F7F0E1,#EFE3CD)">` +
-            `<img src="/art/mum2-34d609.png" alt="" style="position:absolute;left:5%;top:50%;transform:translateY(-50%) rotate(-9deg);width:clamp(64px,9vw,118px);opacity:.92"/>` +
-            `<img src="/art/lily2-f5e2ef.png" alt="" style="position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(11deg);width:clamp(58px,8vw,104px);opacity:.88"/>` +
-            `<div class="inb" style="position:relative;z-index:2"><div class="q" style="color:#2C2520;text-shadow:none">“${esc(t.quote)}”</div><div class="s" style="color:#7A6A58;text-shadow:none">the thing ${pn.sub} always said</div></div></section>`
+          ? `<section class="band rev" id="quoteband">` +
+            `<div class="bgi"><img src="/art/7bb79736-30a5-4159-97b8-6b753830eae6-8b9c29.png" alt=""></div>` +
+            `<div class="v"></div>` +
+            `<div class="inb"><div class="q">“${esc(t.quote)}”</div><div class="s">the thing ${pn.sub} always said</div></div></section>`
           : "";
         html = html.slice(0, secStart) + band + html.slice(secEnd + "</section>".length);
       }
@@ -521,16 +628,38 @@ export function renderTribute(template: string, t: Tribute): string {
   const detailCards = (t.details || []).filter((d) => d.k && d.v).slice(0, 6);
   {
     const tIdx = html.indexOf('<div class="truths">');
-    const mIdx = tIdx > -1 ? html.indexOf("money aside, masks off", tIdx) : -1;
+    // The handline is gone (m8, July 29); the truths block ends at its marker.
+    const mIdx = tIdx > -1 ? html.indexOf("<!-- truths end -->", tIdx) : -1;
     if (tIdx > -1 && mIdx > -1) {
-      const footStart = html.lastIndexOf("<div", mIdx);
       const cards = detailCards
         .map((d) => `<div class="truth"><div class="tl2">${esc(d.k)}</div><div class="tv">${esc(d.v)}</div></div>`)
         .join("\n          ");
-      html = html.slice(0, tIdx) + `<div class="truths">\n          ${cards}\n        </div>\n        ` + html.slice(footStart);
+      html = html.slice(0, tIdx) + `<div class="truths">\n          ${cards}\n        </div>\n        ` + html.slice(mIdx);
     }
     if (!detailCards.length) {
       html = html.split('<a href="#really">Who she was</a>').join("");
+    }
+  }
+
+  // 2b) The snapshot above "Who they really were" (d5, July 29): a casual taped
+  // print from THIS page's own gallery — a captioned photograph reads as chosen,
+  // so one of those leads; otherwise the last photograph. No photographs, no
+  // frame — and the demo's print never reaches a real page, even from source.
+  {
+    const snapStart = html.indexOf('<figure class="really-snap"');
+    if (snapStart > -1) {
+      const snapEnd = html.indexOf("</figure>", snapStart);
+      if (snapEnd > -1) {
+        const pick = photos.find((p) => p.cap) || photos[photos.length - 1];
+        const snap = pick && pick.url
+          // r5 item 8: the caption wears hand3 (Caveat), never .hand — the global
+          // handwriting-retire rule maps .hand to Besley italic with !important,
+          // which is how the caption went gray; the chin's own CSS clamps it to
+          // one centered ellipsis line inside the polaroid's white chin.
+          ? `<figure class="really-snap"><span class="tape4" style="top:-9px;left:18%;transform:rotate(-6deg)"></span><img src="${esc(pick.url)}" alt=""/>${pick.cap ? `<figcaption class="hand3">${esc(pick.cap)}</figcaption>` : ""}</figure>`
+          : "";
+        html = html.slice(0, snapStart) + snap + html.slice(snapEnd + "</figure>".length);
+      }
     }
   }
 
@@ -546,6 +675,14 @@ export function renderTribute(template: string, t: Tribute): string {
     html = html.split(
       "var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbors'],['students','Her students']];"
     ).join(`var GROUPS=${JSON.stringify(groups)};`);
+  }
+
+  // 4b) The demo wall's example imagery (r3): the inline fallback's photo pairs
+  // leave a real page entirely, even from source — the same strictness the tape
+  // shelf keeps. The fallback array itself stays (the engine needs its shape);
+  // only the demo-pair paths are stripped. The example page keeps them.
+  if (slug !== "eleanor") {
+    html = html.replace(/dp:'\/art\/mem-demo\/[a-z-]+-with\.webp',pp:'\/art\/mem-demo\/[a-z-]+-portrait\.webp',/g, "");
   }
 
   // 5) The ticker's fallback names become theirs (it already prefers their words).
@@ -676,7 +813,9 @@ export function renderTribute(template: string, t: Tribute): string {
         ? `<details style="margin-top:16px"><summary style="cursor:pointer;color:#A87C5F;font-weight:700;list-style-position:inside">Read the full obituary</summary><div style="margin-top:14px;white-space:pre-line">${esc(obituaryRest)}</div></details>`
         : "";
       const ob =
-        `<section class="section rev" id="obituary" style="padding:56px 5% 26px">` +
+        // r3 margins audit: this section lives inside .wrap, which already pads
+        // 5% each side — its own 5% doubled the gutter. Vertical padding only.
+        `<section class="section rev" id="obituary" style="padding:56px 0 26px">` +
         `<div style="max-width:720px;margin:0 auto;background:#FDFAF3;border:1px solid #E9DFC9;border-radius:14px;box-shadow:0 30px 70px -44px rgba(60,40,15,.3);padding:clamp(28px,5vw,54px)">` +
         `<div style="font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:16px">The obituary</div>` +
         `<div style="font-family:'Besley',serif;font-size:16.5px;line-height:1.85;color:#2C2520;white-space:pre-line;overflow-wrap:anywhere;word-break:break-word">${esc(obituaryLead)}${obituaryMore}</div>` +
@@ -687,14 +826,24 @@ export function renderTribute(template: string, t: Tribute): string {
       if (at > -1) html = html.slice(0, at) + ob + html.slice(at);
     }
     if (tier === "plus" && t.voiceUrl && /^https:\/\//.test(t.voiceUrl)) {
-      const mIdx = html.indexOf('<section class="section rev sheetdeep" id="memories"');
+      // r3 item 2, moved down one slot r5 item 10: "In her own voice" sits
+      // DIRECTLY beneath "Who she really was" — inserted after the really
+      // section's close (falling back to its old pre-memories spot only if
+      // that marker ever leaves the template). Final order: film → obituary →
+      // chapters → quote band → pictures → who she really was → in her own
+      // voice → memories → the memory board.
+      const gIdx = html.indexOf('<section class="section rev" id="really"');
+      const gEnd = gIdx > -1 ? html.indexOf("</section>", gIdx) : -1;
+      const mIdx = gEnd > -1 ? gEnd + "</section>".length : html.indexOf('<section class="section rev sheetdeep" id="memories"');
       if (mIdx > -1) {
         // Their voice wears the same cassette the memory cards keep (the template's
         // delegated .vk wiring plays any cassette on the page — one object language).
+        // r3 margins audit: vertical padding only — the surrounding .wrap already
+        // holds the 5% gutter.
         const voice =
-          `<section class="section rev" id="theirvoice" style="padding:44px 5% 30px;text-align:center">` +
+          `<section class="section rev" id="theirvoice" style="padding:44px 0 30px;text-align:center">` +
           `<div style="max-width:560px;margin:0 auto">` +
-          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#A87C5F;margin-bottom:14px">In ${pn.pos} own voice</div>` +
+          `<div style="font-family:'Sometype Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#8A5A3C;margin-bottom:14px">In ${pn.pos} own voice</div>` +
           `<div class="vk" role="group" style="text-align:left"><audio preload="none" src="${esc(t.voiceUrl)}" aria-label="In ${pn.pos} own voice"></audio>` +
           `<button type="button" class="vk-play" aria-label="Play ${pn.pos} voice">▶</button>` +
           `<div class="vk-body"><div class="vk-track" role="slider" aria-label="Seek"><div class="vk-fill"></div></div>` +
@@ -829,9 +978,19 @@ addEventListener("pagehide",()=>{try{c.removeChannel(ch)}catch(e){}});
   // bar breathes. One door, always visible, through /signin. The old floating
   // "tend this page" whisper retires; two doors in one corner was noise.
   if (t.slug) {
-    // Item 3: the log-in door stands beside the logo now; Add a Memory holds the right.
-    const loginBtn = `<a id="loginTop" href="/signin" style="display:inline-flex;align-items:center;font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5A4F45;border:1px solid #E4D9C4;border-radius:20px;padding:8px 14px;margin-left:10px;text-decoration:none;background:transparent;white-space:nowrap">log in</a>`;
+    // Item 3 gave the log-in door a home beside the logo. m5a (July 29): its
+    // label wears Besley now, per brand — the techie mono caps retire. d9
+    // (July 29): on desktop the door stands at the header's top right again
+    // (CSS order only; phones keep their grid, where it already sits top right).
+    const loginBtn = `<a id="loginTop" href="/signin" style="display:inline-flex;align-items:center;font-family:'Besley',serif;font-size:13.5px;font-weight:600;letter-spacing:.01em;color:#5A4F45;border:1px solid #E4D9C4;border-radius:20px;padding:7px 15px;margin-left:10px;text-decoration:none;background:transparent;white-space:nowrap">Log in</a>`;
     html = html.replace("I <em>Miss</em> You Memorial</a>", "I <em>Miss</em> You Memorial</a>" + loginBtn);
+    {
+      const loginCss = `<style>/* d9 (July 29) · desktop: the log-in door returns to the header's top right */
+@media(min-width:821px){#loginTop{order:99;margin-left:12px}}
+</style>`;
+      const lIdx = html.lastIndexOf("</head>");
+      if (lIdx > -1) html = html.slice(0, lIdx) + loginCss + html.slice(lIdx);
+    }
     html = html.replace(
       '<button class="btn" id="addMemTop" style="font-size:12.5px;padding:9px 16px">',
       '<button class="btn" id="addMemTop" style="font-size:11.5px;padding:7px 13px">'
@@ -1027,14 +1186,9 @@ var m=document.getElementById('memories');if(m)m.scrollIntoView({behavior:'smoot
     }
   }
 
-  // ═══ the full memorial says so, quietly (July 12) ═══════════════════════════
-  // A Plus page differs in what it holds — and in one visible whisper: a gold
-  // ring on the Stone (CSS) and one mono line under the wreath count.
-  if (tier === "plus") {
-    // Item 14: the permanence line wears the page's own serif, not the techy mono.
-    const plusLine = `<div class="plusheld" style="font-family:'Besley',serif;font-style:italic;font-size:14px;letter-spacing:.04em;color:#C9A572;margin-top:10px">The full memorial \u00b7 every memory open \u00b7 held in full</div>`;
-    html = html.replace('<div class="presence"', plusLine + '<div class="presence"');
-  }
+  // The counter caption ("The full memorial · every memory open · held in
+  // full", the .plusheld line) is retired entirely — r5 item 1, owner order.
+  // A Plus page's visible whisper is the gold ring on the Stone (CSS) alone.
 
   // ═══ the example sells the beginning (July 9) ═══════════════════════════════
   // Only the demo carries an ask. A family's memorial never asks a visitor for
@@ -1081,6 +1235,93 @@ addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
 document.querySelectorAll('.tapeobj[data-v]').forEach(function(tp){tp.onclick=function(){open(+tp.getAttribute('data-v'))}});
 })();</script>`;
     html = html.replace("</body>", tvRoom + "\n</body>");
+  }
+
+  // ═══ the hero wears a scene (July 29) ════════════════════════════════════
+  // A full-bleed looping landscape plays quietly behind the wreath — the
+  // family's chosen slot (0028), campfire by default. The poster paints
+  // first; reduced motion, Data Saver, and low-power phones stay on the
+  // poster. The scene picker rests in the hero's lower-right corner: the
+  // owner's choice persists for everyone through /api/tribute/[slug]/hero-video;
+  // anyone else's tap previews in their own browser only.
+  {
+    const hb = heroBackground(t.heroVideoSlot);
+    const heroCss = `<style>/* the hero wears a scene (July 29) · scenic video behind the wreath */
+.arrive{background:linear-gradient(180deg,#F3E7D2 0%,#EFE0C4 70%,var(--cream) 100%)}
+.hv{position:absolute;inset:0;z-index:0;overflow:hidden;background:#F3E7D2}
+.hv .hv-poster,.hv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hv .hv-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(63,44,26,.44) 0%,rgba(63,44,26,.10) 30%,rgba(63,44,26,.14) 60%,rgba(63,44,26,.66) 100%)}
+.arrive .wrhero{z-index:2}
+.hv-pick{position:absolute;right:14px;bottom:14px;z-index:9}
+.hv-pill{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.06em;font-size:13px;color:#F4E9D4;background:rgba(26,19,13,.55);border:1px solid rgba(201,165,114,.5);border-radius:100px;padding:7px 15px;cursor:pointer}
+.hv-pill:hover{background:rgba(26,19,13,.75)}
+.hv-menu{position:absolute;right:0;bottom:calc(100% + 8px);min-width:190px;background:#FFFDF6;border:1px solid #E4D9C4;border-radius:12px;box-shadow:0 24px 60px -20px rgba(26,19,13,.5);padding:6px;max-height:min(320px,60vh);overflow:auto}
+.hv-menu button{display:block;width:100%;text-align:left;font-family:'Besley',serif;font-size:14.5px;color:#2C2520;background:none;border:none;border-radius:8px;padding:9px 12px;cursor:pointer}
+.hv-menu button:hover{background:rgba(168,124,95,.1)}
+.hv-menu button[aria-selected="true"]{color:#A87C5F;font-weight:700}
+</style>`;
+    const hIdx = html.lastIndexOf("</head>");
+    if (hIdx > -1) html = html.slice(0, hIdx) + heroCss + html.slice(hIdx);
+
+    const heroMarkup =
+      `\n<div class="hv" id="heroVid" aria-hidden="true">` +
+      `<img class="hv-poster" id="hvPoster" src="${esc(hb.poster)}" alt=""/>` +
+      `<video id="hvVideo" autoplay muted loop playsinline preload="metadata" poster="${esc(hb.poster)}">` +
+      `<source src="${esc(hb.webm)}" type="video/webm"/><source src="${esc(hb.mp4)}" type="video/mp4"/>` +
+      `</video>` +
+      `<div class="hv-scrim" aria-hidden="true"></div>` +
+      `</div>` +
+      `<script>/* poster-only fallbacks · runs before the wreath parses */
+(function(){try{
+var v=document.getElementById('hvVideo');if(!v)return;
+var still=false;
+try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)still=true}catch(e){}
+try{if(navigator.connection&&navigator.connection.saveData)still=true}catch(e){}
+try{if(matchMedia('(max-width:560px)').matches&&((navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.connection&&/(^|-)2g/.test(navigator.connection.effectiveType||''))))still=true}catch(e){}
+window.__HV_STILL__=still;
+if(still){try{v.pause()}catch(e){}v.removeAttribute('autoplay');while(v.firstChild)v.removeChild(v.firstChild);try{v.load()}catch(e){}v.style.display='none'}
+}catch(e){}})();
+</script>`;
+    html = html.replace('<header class="arrive" id="top">', '<header class="arrive" id="top">' + heroMarkup);
+
+    const menuItems = HERO_BACKGROUNDS
+      .map((b) => `<button type="button" role="option" data-slot="${esc(b.id)}" aria-selected="${b.id === hb.id ? "true" : "false"}">${esc(b.label)}</button>`)
+      .join("");
+    const picker =
+      `<div class="hv-pick" id="hvPick">` +
+      `<button type="button" class="hv-pill" id="hvPillBtn" aria-haspopup="listbox" aria-expanded="false">Scene · <span id="hvCur">${esc(hb.label)}</span></button>` +
+      `<div class="hv-menu" id="hvMenu" role="listbox" aria-label="The scene behind the wreath" hidden>${menuItems}</div>` +
+      `</div>`;
+    html = html.replace("</header>", picker + "\n</header>");
+
+    const hbJson = JSON.stringify(HERO_BACKGROUNDS).replace(/</g, "\\u003c");
+    const heroScript = `<script>/* the scene picker · owner persists for everyone, a visitor previews for themselves */
+(function(){
+var HB=${hbJson},cur=${JSON.stringify(hb.id)},SLUG=${JSON.stringify(slug)};
+var v=document.getElementById('hvVideo'),poster=document.getElementById('hvPoster'),pill=document.getElementById('hvPillBtn'),menu=document.getElementById('hvMenu'),curEl=document.getElementById('hvCur');
+if(!pill||!menu)return;
+function bg(id){for(var i=0;i<HB.length;i++)if(HB[i].id===id)return HB[i];return null}
+function apply(id){var b=bg(id);if(!b)return;cur=b.id;
+  if(poster)poster.src=b.poster;
+  if(v){v.poster=b.poster;while(v.firstChild)v.removeChild(v.firstChild);
+    if(!window.__HV_STILL__){var s1=document.createElement('source');s1.src=b.webm;s1.type='video/webm';var s2=document.createElement('source');s2.src=b.mp4;s2.type='video/mp4';v.appendChild(s1);v.appendChild(s2);v.load();var p=v.play();if(p&&p.catch)p.catch(function(){})}}
+  if(curEl)curEl.textContent=b.label;
+  menu.querySelectorAll('[data-slot]').forEach(function(o){o.setAttribute('aria-selected',o.getAttribute('data-slot')===cur?'true':'false')})}
+try{var pv=localStorage.getItem('imy-hero-slot-'+SLUG);if(pv&&pv!==cur&&bg(pv))apply(pv)}catch(e){}
+function shut(){menu.hidden=true;pill.setAttribute('aria-expanded','false')}
+pill.addEventListener('click',function(){var open=menu.hidden;menu.hidden=!open;pill.setAttribute('aria-expanded',open?'true':'false')});
+document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('#hvPick'))shut()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
+menu.querySelectorAll('[data-slot]').forEach(function(o){o.addEventListener('click',function(){
+  var id=o.getAttribute('data-slot');apply(id);shut();
+  fetch('/api/tribute/'+SLUG+'/hero-video',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({slot:id})})
+  .then(function(r){return r.json()}).then(function(j){
+    if(j&&j.ok){try{localStorage.removeItem('imy-hero-slot-'+SLUG)}catch(e){}}
+    else{try{localStorage.setItem('imy-hero-slot-'+SLUG,id)}catch(e){}}})
+  .catch(function(){try{localStorage.setItem('imy-hero-slot-'+SLUG,id)}catch(e){}})})});
+})();
+</script>`;
+    html = html.replace("</body>", heroScript + "\n</body>");
   }
 
   // Item 57: the framed invitation section is retired from the example page.
