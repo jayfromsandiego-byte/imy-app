@@ -2089,6 +2089,16 @@ var MEMS=(T&&T.mems)||[
  {g:'students',av:'A',nm:'Anna',rel:'Room 4, class of 1989',tx:'She told me I was a writer when I was eight. I am a writer. That is the whole story.',h:88,cm:[['James','class of 1991','She did this for all of us.'],['Daniel','her son','She kept your book on her shelf, Anna.']]},
  {g:'students',av:'J',nm:'James',rel:'a former student',tx:'Thirty years later she still remembered where I sat.',h:44,dp:'/art/mem-demo/miguel-with.webp',pp:'/art/mem-demo/miguel-portrait.webp',cm:[]}
 ];
+/* r6 · media first (July 30): memories carrying photographs or recorded media
+   surface at the left of the wall — photographs with a voice first, then
+   photographs, then a voice or video alone, then words alone. The sort is
+   stable (within a tier the original order holds) and runs once at boot, so
+   the demo wall and every real tribute (T.mems) order the same way on every
+   filter tab. Every memory is kept; nothing is dropped. */
+(function(){function mtier(m){var ph=((m.phs&&m.phs.length)||m.ph||m.dp)?1:0,av=(m.au||m.vi)?1:0;return ph&&av?0:(ph?1:(av?2:3))}
+MEMS.forEach(function(m,i){m._bi=i});
+MEMS.sort(function(a,b){return mtier(a)-mtier(b)||a._bi-b._bi});
+MEMS.forEach(function(m){delete m._bi})})();
 var GROUPS=[['all','Everyone'],['family','Family'],['friends','Friends'],['neighbours','Neighbors'],['students','Her students']];
 var memTabs=document.getElementById('memTabs'),track=document.getElementById('memTrack');
 var curG='all',memPage=0,ID=null;
