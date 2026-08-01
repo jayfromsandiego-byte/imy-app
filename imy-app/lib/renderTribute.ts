@@ -668,6 +668,14 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
   // 3) The editor affordance visitors can't use.
   html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
 
+  // Task 5 // the writing companion is part of Plus. On a free page it is not
+  // shown at all // never a locked control in front of a grieving writer. The
+  // real gate holds at the server (/api/assist checks the page's tier), so a
+  // lapsed page rests the helper with the rest of Plus and wakes it on return.
+  if (tier !== "plus") {
+    html = html.split('<button class="btn" id="helpBtn">If the words are hard · help me begin</button>').join("");
+  }
+
   // 4) Wall groups from the people who actually wrote, never Eleanor's.
   {
     const present = new Set([...mems, ...seedw].map((m: any) => m.g));

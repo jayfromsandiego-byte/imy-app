@@ -2309,13 +2309,14 @@ document.getElementById('shareBtn').onclick=function(){
     say('Kept. '+ID.fn+', your memory of Eleanor is on the page, with your name on it.',false)});
 };
 var chatbox=document.getElementById('chatbox'),chatBody=document.getElementById('chatBody'),chatInput=document.getElementById('chatInput');
-document.getElementById('helpBtn').onclick=function(){chatbox.style.display=chatbox.style.display==='none'?'block':'none';if(chatbox.style.display==='block')chatInput.focus()};
+/* Task 5 · the writing companion is part of Plus — on free pages the server strips the button, so the binding stays null-safe */
+var _hb=document.getElementById('helpBtn');if(_hb)_hb.onclick=function(){chatbox.style.display=chatbox.style.display==='none'?'block':'none';if(chatbox.style.display==='block')chatInput.focus()};
 
 function craft(t){t=t.trim();if(!t)return;var me=document.createElement('div');me.className='cmsg me';me.textContent=t;chatBody.appendChild(me);chatInput.value='';chatBody.scrollTop=chatBody.scrollHeight;
 if(T){/* production: the real helper shapes with them · it never writes for them */
   var hold=document.createElement('div');hold.className='cmsg bot';hold.textContent='…';chatBody.appendChild(hold);chatBody.scrollTop=chatBody.scrollHeight;
   var who=(document.title.split(' · ')[0]||'them').trim();
-  fetch('/api/assist',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt:t,name:who})})
+  fetch('/api/assist',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt:t,name:who,slug:SLUG})})
   .then(function(r){return r.json()}).then(function(j){
     hold.innerHTML=(j&&j.ok&&j.text)?String(j.text).replace(/</g,'&lt;').replace(/\n/g,'<br>'):'Keep it in your words · add one more small, true detail.';
     document.getElementById('memInput').value=t;chatBody.scrollTop=chatBody.scrollHeight})
