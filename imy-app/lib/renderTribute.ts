@@ -423,7 +423,7 @@ export function renderTribute(template: string, t: Tribute): string {
 </style><div class="svcrow">
   <div class="svcrow-in" id="svcBar"${svcHasMore ? ` role="button" tabindex="0" aria-haspopup="dialog" aria-label="Celebration of Life · open the details"` : ""}>
     <span class="lab">Celebration of Life</span>
-    <span class="what">${esc(svcWhen || svcWhere)}</span>
+    <span class="what">${esc(svcWhen || svcWhere || "the service details")}</span>
     <span class="right">${t.service.date ? `<button class="svclink" id="shareDateBtn" type="button">Share the date</button>` : ""}${svcHasMore ? `<button class="svc-caret" id="svcCaret" type="button" aria-haspopup="dialog" aria-label="Open the service details">▾</button>` : ""}</span>
   </div>
 </div>
@@ -440,6 +440,8 @@ ${svcHasMore ? `<div class="svc-ov" id="svcOv" role="dialog" aria-modal="true" a
 </div>` : ""}
 <script>(function(){
 var bar=document.getElementById('svcBar'),ov=document.getElementById('svcOv'),x=document.getElementById('svcOvX'),caret=document.getElementById('svcCaret'),last=null;
+/* QA task 1B · Safari cannot be trusted with position:fixed inside the hero's transformed scene — the dialog moves to body so it always surfaces */
+if(ov&&ov.parentNode!==document.body)document.body.appendChild(ov);
 function open(){if(!ov)return;last=document.activeElement;ov.hidden=false;document.body.style.overflow='hidden';if(x)x.focus()}
 function shut(){if(!ov||ov.hidden)return;ov.hidden=true;document.body.style.overflow='';try{if(last)last.focus()}catch(e){}}
 if(caret)caret.addEventListener('click',function(e){e.stopPropagation();open()});
@@ -665,6 +667,14 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
 
   // 3) The editor affordance visitors can't use.
   html = html.split('<div class="under" style="margin-top:20px"><button class="ghostadd">＋ Add a key moment · a year, a line, a photograph</button></div>').join("");
+
+  // Task 5 // the writing companion is part of Plus. On a free page it is not
+  // shown at all // never a locked control in front of a grieving writer. The
+  // real gate holds at the server (/api/assist checks the page's tier), so a
+  // lapsed page rests the helper with the rest of Plus and wakes it on return.
+  if (tier !== "plus") {
+    html = html.split('<button class="btn" id="helpBtn">If the words are hard · help me begin</button>').join("");
+  }
 
   // 4) Wall groups from the people who actually wrote, never Eleanor's.
   {

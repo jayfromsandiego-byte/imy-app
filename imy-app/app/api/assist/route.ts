@@ -1,9 +1,17 @@
 // POST /api/assist — the writing assistant.
 // Works as soon as OPENAI_API_KEY is set in Vercel; until then it returns a
 // graceful, kind fallback so the UI never feels broken.
-// Body: { prompt: string, name?: string }
+// Body: { prompt: string, name?: string, slug: string }
+//
+// Task 5 (July 31 2026) // the writing companion is part of Plus. The gate
+// holds HERE, at the server, not in the UI: the tribute owner's tier decides,
+// so every visitor on a Plus page is helped (the paid page grows more valuable
+// to everyone who visits), visitors on free pages simply never see the button
+// (renderTribute strips it), and a lapsed page rests the helper with the rest
+// of Plus until reactivation. No slug, no help // the door fails closed.
 
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -26,6 +34,24 @@ export async function POST(req: NextRequest) {
   const name = (body.name || "your loved one").toString();
   if (!prompt.trim()) {
     return NextResponse.json({ ok: false, error: "Tell me one true thing to start." }, { status: 400 });
+  }
+
+  // Task 5 gate // Plus pages only, decided by the page, enforced server side.
+  const rawSlug = (body.slug || "").toString().trim().toLowerCase();
+  const slug = rawSlug === "example" ? "eleanor" : rawSlug;
+  if (!slug) {
+    return NextResponse.json({ ok: false, error: "The writing companion is part of Plus." }, { status: 403 });
+  }
+  if (!supabaseConfigured) {
+    return NextResponse.json({ ok: false, error: "not_configured" }, { status: 503 });
+  }
+  try {
+    const { data } = await supabaseAdmin().from("tributes").select("tier").eq("slug", slug).maybeSingle();
+    if (!data || data.tier !== "plus") {
+      return NextResponse.json({ ok: false, error: "The writing companion is part of Plus." }, { status: 403 });
+    }
+  } catch {
+    return NextResponse.json({ ok: false, error: "failed" }, { status: 500 });
   }
 
   // The open door: any OpenAI-compatible provider (Groq, OpenRouter, Cerebras —
