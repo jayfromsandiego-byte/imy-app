@@ -423,7 +423,7 @@ export function renderTribute(template: string, t: Tribute): string {
 </style><div class="svcrow">
   <div class="svcrow-in" id="svcBar"${svcHasMore ? ` role="button" tabindex="0" aria-haspopup="dialog" aria-label="Celebration of Life · open the details"` : ""}>
     <span class="lab">Celebration of Life</span>
-    <span class="what">${esc(svcWhen || svcWhere)}</span>
+    <span class="what">${esc(svcWhen || svcWhere || "the service details")}</span>
     <span class="right">${t.service.date ? `<button class="svclink" id="shareDateBtn" type="button">Share the date</button>` : ""}${svcHasMore ? `<button class="svc-caret" id="svcCaret" type="button" aria-haspopup="dialog" aria-label="Open the service details">▾</button>` : ""}</span>
   </div>
 </div>
@@ -440,6 +440,8 @@ ${svcHasMore ? `<div class="svc-ov" id="svcOv" role="dialog" aria-modal="true" a
 </div>` : ""}
 <script>(function(){
 var bar=document.getElementById('svcBar'),ov=document.getElementById('svcOv'),x=document.getElementById('svcOvX'),caret=document.getElementById('svcCaret'),last=null;
+/* QA task 1B · Safari cannot be trusted with position:fixed inside the hero's transformed scene — the dialog moves to body so it always surfaces */
+if(ov&&ov.parentNode!==document.body)document.body.appendChild(ov);
 function open(){if(!ov)return;last=document.activeElement;ov.hidden=false;document.body.style.overflow='hidden';if(x)x.focus()}
 function shut(){if(!ov||ov.hidden)return;ov.hidden=true;document.body.style.overflow='';try{if(last)last.focus()}catch(e){}}
 if(caret)caret.addEventListener('click',function(e){e.stopPropagation();open()});
