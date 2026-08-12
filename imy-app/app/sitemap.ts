@@ -1,20 +1,28 @@
 import type { MetadataRoute } from "next";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { articles } from "@/lib/blog/articles";
+import { liveEntries, entryPath } from "@/lib/seo/catalog";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
 export const revalidate = 3600; // refresh hourly
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const staticRoutes: MetadataRoute.Sitemap = ["", "/onboarding", "/contact", "/terms", "/privacy", "/refunds"].map(
-    (p) => ({
-      url: `${SITE}${p}`,
-      lastModified: now,
-      changeFrequency: p === "" ? "weekly" : "monthly",
-      priority: p === "" ? 1 : p === "/onboarding" ? 0.8 : 0.4,
-    })
-  );
+  const staticRoutes: MetadataRoute.Sitemap = [
+    "",
+    "/onboarding",
+    "/pricing",
+    "/about",
+    "/contact",
+    "/terms",
+    "/privacy",
+    "/refunds",
+  ].map((p) => ({
+    url: `${SITE}${p}`,
+    lastModified: now,
+    changeFrequency: p === "" ? "weekly" : "monthly",
+    priority: p === "" ? 1 : p === "/onboarding" ? 0.8 : p === "/pricing" ? 0.7 : 0.4,
+  }));
 
   const blogRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
@@ -25,6 +33,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     })),
   ];
+
+  // Tools, templates, and guides join as their catalog entries go live
+  // (lib/seo/catalog.ts). Per-cluster coverage lives at /sitemaps/{segment}.xml.
+  const seoRoutes: MetadataRoute.Sitemap = liveEntries().map((e) => ({
+    url: `${SITE}${entryPath(e)}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: e.section === "tools" ? 0.8 : 0.6,
+  }));
 
   // Tribute pages join the sitemap only when a family has chosen to be
   // discoverable (migration 0020). Reachable-by-link stays the default;
@@ -48,8 +65,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }));
     } catch {
-      /* fall back to static + blog routes only */
+      /* fall back to static + blog + seo routes only */
     }
   }
-  return [...staticRoutes, ...blogRoutes, ...tributes];
+  return [...staticRoutes, ...blogRoutes, ...seoRoutes, ...tributes];
 }
