@@ -194,7 +194,7 @@ export default function ProgramMaker({ variant = "default" }: { variant?: string
 .kb-oi{margin:0 0 5%;width:100%;}
 .kb-oi b{display:block;font-size:10.5px;font-weight:600;}
 .kb-oi span{font-size:9px;color:rgba(44,37,32,.78);}
-.kb-thanks{margin-top:auto;font-size:8.5px;color:rgba(44,37,32,.6);font-style:italic;}
+.kb-thanks{margin-top:auto;font-size:8.5px;color:#5F574E;font-style:italic;}
 @media print{
   body *{visibility:hidden;}
   .kb-sheet,.kb-sheet *{visibility:visible;}
