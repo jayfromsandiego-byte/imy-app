@@ -76,7 +76,7 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
 .km-sections p{font-size:16.5px;color:rgba(44,37,32,.85);margin:0 0 16px;max-width:66ch;}
 .km-sections ul{margin:0 0 16px;padding-left:22px;}
 .km-sections li{font-size:16px;color:rgba(44,37,32,.85);margin-bottom:6px;}
-.km-sections .km-listtitle{font-family:'Sometype Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#A87C5F;margin:0 0 8px;}
+.km-sections .km-listtitle{font-family:'Sometype Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8A5F43;margin:0 0 8px;}
 .km-faq{margin-top:48px;border-top:1px solid rgba(44,37,32,.14);padding-top:8px;}
 .km-faq h3{font-size:17.5px;font-weight:600;margin:26px 0 8px;}
 `,
