@@ -3,9 +3,11 @@
 // the shared way to offer it, followed by the quiet path to a memorial page.
 
 interface FileOption {
-  label: string; // "PDF" | "Word" | "Large print PDF" ...
+  label: string; // "PDF" | "Word" | "Open the free program maker" ...
   href: string;
   note?: string; // "US Letter · bifold · 2 pages"
+  /** Set false for links to the maker (navigation, not a file download). */
+  download?: boolean;
 }
 
 export default function ArtifactDownload({
@@ -37,8 +39,8 @@ export default function ArtifactDownload({
       <p className="kd-title">{title}</p>
       <div className="kd-files">
         {files.map((f) => (
-          <a className="kd-file" key={f.href} href={f.href} download>
-            Download {f.label}
+          <a className="kd-file" key={f.href} href={f.href} {...(f.download === false ? {} : { download: true })}>
+            {f.download === false ? f.label : `Download ${f.label}`}
           </a>
         ))}
       </div>

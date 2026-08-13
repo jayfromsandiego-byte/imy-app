@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { findEntry, entryPath, liveEntries } from "@/lib/seo/catalog";
-import { seoPageMetadata } from "@/lib/seo/meta";
+import { seoPageMetadata, jsonLdScript, SITE } from "@/lib/seo/meta";
+import { getContent } from "@/lib/seo/content/registry";
+import ArtifactDownload from "@/components/seo/ArtifactDownload";
 
 export function generateStaticParams() {
   return liveEntries("templates").map((e) => ({ parts: e.slug.split("/") }));
@@ -16,14 +18,102 @@ export function generateMetadata({ params }: { params: { parts: string[] } }): M
 export default function TemplatePage({ params }: { params: { parts: string[] } }) {
   const entry = findEntry("templates", params.parts);
   if (!entry || entry.status !== "live") notFound();
+  const content = getContent(entry.slug);
 
-  // W2+: each live template mounts its content module here — the variant-specific
-  // section, the ArtifactDownload, and the quiet path to a memorial page.
+  const faqLd =
+    content && content.faq.length
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: content.faq.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }
+      : null;
+
   return (
     <>
+      {faqLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(faqLd) }} />
+      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Templates", item: `${SITE}/templates/` },
+              { "@type": "ListItem", position: 2, name: entry.h1, item: `${SITE}${entryPath(entry)}` },
+            ],
+          }),
+        }}
+      />
       <p className="km-label">Template</p>
       <h1 className="km-h1">{entry.h1}</h1>
-      <p className="km-intro">{entry.description}</p>
+      <p className="km-intro">{content ? content.intro : entry.description}</p>
+
+      {content && (
+        <>
+          <ArtifactDownload
+            title="Make it theirs"
+            files={[
+              {
+                label: "Open the free program maker",
+                href: `/tools/funeral-program-maker/?variant=${content.makerVariant}`,
+                note: content.downloadNote,
+                download: false,
+              },
+            ]}
+          />
+          <div className="km-sections">
+            <style
+              dangerouslySetInnerHTML={{
+                __html: `
+.km-sections h2{font-size:22px;font-weight:600;margin:40px 0 12px;}
+.km-sections p{font-size:16.5px;color:rgba(44,37,32,.85);margin:0 0 16px;max-width:66ch;}
+.km-sections ul{margin:0 0 16px;padding-left:22px;}
+.km-sections li{font-size:16px;color:rgba(44,37,32,.85);margin-bottom:6px;}
+.km-sections .km-listtitle{font-family:'Sometype Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#A87C5F;margin:0 0 8px;}
+.km-faq{margin-top:48px;border-top:1px solid rgba(44,37,32,.14);padding-top:8px;}
+.km-faq h3{font-size:17.5px;font-weight:600;margin:26px 0 8px;}
+`,
+              }}
+            />
+            {content.sections.map((s) => (
+              <section key={s.heading}>
+                <h2>{s.heading}</h2>
+                {s.body.map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+                {s.list && (
+                  <>
+                    {s.list.title && <p className="km-listtitle">{s.list.title}</p>}
+                    <ul>
+                      {s.list.items.map((it, i) => (
+                        <li key={i}>{it}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </section>
+            ))}
+            {content.faq.length > 0 && (
+              <div className="km-faq">
+                <h2>Questions, answered plainly</h2>
+                {content.faq.map((f) => (
+                  <div key={f.q}>
+                    <h3>{f.q}</h3>
+                    <p>{f.a}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 }
