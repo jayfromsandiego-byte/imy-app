@@ -5,6 +5,7 @@ import { seoPageMetadata } from "@/lib/seo/meta";
 import ProgramMaker from "@/components/tools/ProgramMaker";
 import ObituaryWriter from "@/components/tools/ObituaryWriter";
 import CostCalculator from "@/components/tools/CostCalculator";
+import CardMaker from "@/components/tools/CardMaker";
 
 // Tool pages render only when their catalog entry is "live".
 // Queued entries 404 — nothing half-made ever meets a family.
@@ -39,6 +40,7 @@ export default function ToolPage({
       {entry.slug === "obituary-writer" && <ObituaryWriter variant={variant} />}
       {entry.slug === "funeral-cost-calculator" && <CostCalculator mode="funeral" />}
       {entry.slug === "cremation-cost-calculator" && <CostCalculator mode="cremation" />}
+      {entry.slug === "memorial-card-maker" && <CardMaker variant={variant} />}
     </>
   );
 }
