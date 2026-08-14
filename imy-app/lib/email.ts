@@ -179,3 +179,32 @@ export async function sendContactEmail(note: {
     return false;
   }
 }
+
+/** A key, given: someone invited them to help keep a page. */
+export async function sendKeeperInviteEmail(to: string, fullName: string, byEmail: string): Promise<boolean> {
+  const first = firstName(fullName);
+  const html = shell({
+    heading: `You've been given a key to ${esc(first)}'s page.`,
+    bodyHtml:
+      `<p style="margin:0 0 12px">${esc(byEmail || "Someone who loves them")} keeps a memorial page for ${esc(first)}, and has asked you to help tend it.</p>` +
+      `<p style="margin:0 0 12px">As a keeper you can add photographs, welcome memories, and care for the page together. Every change you make is a kindness to everyone who visits.</p>` +
+      `<p style="margin:0">Sign in with this email address, and the page will be waiting on your desk.</p>`,
+    cta: { label: "Open the page", url: `${SITE}/signin?next=${encodeURIComponent("/dashboard")}` },
+    footnote: "You were invited by a family member. If this reaches the wrong hands, simply let it rest — nothing happens without you.",
+  });
+  return send(to, `A key to ${first}'s page`, html);
+}
+
+/** The page has been passed on, whole, into their keeping. */
+export async function sendTransferEmail(to: string, fullName: string, byEmail: string): Promise<boolean> {
+  const first = firstName(fullName);
+  const html = shell({
+    heading: `${esc(first)}'s page is now in your keeping.`,
+    bodyHtml:
+      `<p style="margin:0 0 12px">${esc(byEmail || "The previous keeper")} has passed ${esc(first)}'s memorial page on to you — whole, with every photograph, memory, and word exactly where it was.</p>` +
+      `<p style="margin:0 0 12px">Sign in with this email address and the page will recognise you as its owner. The one who passed it on keeps a key, so you can tend it together for as long as you wish.</p>` +
+      `<p style="margin:0">There is nothing you need to do tonight. The page is safe.</p>`,
+    cta: { label: "Open your desk", url: `${SITE}/signin?next=${encodeURIComponent("/dashboard")}` },
+  });
+  return send(to, `${first}'s page, in your keeping`, html);
+}

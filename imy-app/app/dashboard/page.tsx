@@ -50,7 +50,21 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
     if (email) await db.from("tributes").update({ owner_id: user.id }).is("owner_id", null).eq("owner_email", email);
   } catch {}
 
-  const orFilter = email ? `owner_id.eq.${user.id},owner_email.eq.${email}` : `owner_id.eq.${user.id}`;
+  // Shared keeping (August 14): a key given to this address turns in the lock
+  // the moment they arrive, and every kept page joins the desk beside their own.
+  let keptIds: string[] = [];
+  if (email) {
+    try {
+      await db.from("tribute_keepers").update({ status: "joined" }).ilike("email", email).eq("status", "invited").is("deleted_at", null);
+      const { data: keys } = await db.from("tribute_keepers").select("tribute_id").ilike("email", email).is("deleted_at", null);
+      keptIds = (keys || []).map((k: any) => String(k.tribute_id)).filter(Boolean);
+    } catch {}
+  }
+
+  const orParts = [`owner_id.eq.${user.id}`];
+  if (email) orParts.push(`owner_email.eq.${email}`);
+  if (keptIds.length) orParts.push(`id.in.(${keptIds.join(",")})`);
+  const orFilter = orParts.join(",");
   const { data: tributesData } = await db
     .from("tributes")
     .select("id,slug,loved_one_name,pronouns,tier,status,candle_count,flower_count,died_on,story,created_at")
