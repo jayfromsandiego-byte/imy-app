@@ -13,6 +13,10 @@ export interface ProgramPageContent {
   sections: ProgramSection[];
   faq: { q: string; a: string }[];
   downloadNote: string;
-  /** Preset passed to the program maker as ?variant= */
+  /** Preset passed to the page's tool as ?variant= */
   makerVariant: string;
+  /** Tool this page's artifact button opens. Defaults to the program maker. */
+  toolSlug?: string;
+  /** Button label. Defaults to "Open the free program maker". */
+  toolLabel?: string;
 }

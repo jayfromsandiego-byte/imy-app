@@ -13,6 +13,15 @@ import { content as programMethodist } from "./program-methodist";
 import { content as programLds } from "./program-lds";
 import { content as programJewish } from "./program-jewish";
 import { content as programMilitary } from "./program-military";
+import { content as obituaryHub } from "./obituary-hub";
+import { content as obituaryMother } from "./obituary-mother";
+import { content as obituaryFather } from "./obituary-father";
+import { content as obituaryHusband } from "./obituary-husband";
+import { content as obituaryWife } from "./obituary-wife";
+import { content as obituaryGrandmother } from "./obituary-grandmother";
+import { content as obituaryInfant } from "./obituary-infant";
+import { content as obituaryFriend } from "./obituary-friend";
+import { content as obituaryVeteran } from "./obituary-veteran";
 
 const all = [
   programHub,
@@ -29,6 +38,15 @@ const all = [
   programLds,
   programJewish,
   programMilitary,
+  obituaryHub,
+  obituaryMother,
+  obituaryFather,
+  obituaryHusband,
+  obituaryWife,
+  obituaryGrandmother,
+  obituaryInfant,
+  obituaryFriend,
+  obituaryVeteran,
 ] as unknown as ProgramPageContent[];
 
 const bySlug = new Map(all.map((c) => [c.slug, c]));

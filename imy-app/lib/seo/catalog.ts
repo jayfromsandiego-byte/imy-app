@@ -51,16 +51,16 @@ export const seoCatalog: SeoEntry[] = [
   { slug: "funeral-program/military", section: "templates", cluster: "program", h1: "Military Funeral Program Template", description: "A program that holds the honors — the flag, taps, and the words said when it is presented.", status: "live" },
 
   // ---- Obituary (Nos 16-26) ----
-  { slug: "obituary", section: "templates", cluster: "obituary", h1: "Obituary Templates", description: "Fill-in obituary templates by length and tone, with real examples for every relationship.", status: "queued" },
-  { slug: "obituary-writer", section: "tools", cluster: "obituary", h1: "Free Obituary Writer", description: "Answer a few gentle questions and receive a complete obituary draft to review, line by line. Your words stay yours.", status: "queued" },
-  { slug: "obituary/mother", section: "templates", cluster: "obituary", h1: "Obituary Template for a Mother", description: "What children remember — with prompts and three full example obituaries for a mother.", status: "queued" },
-  { slug: "obituary/father", section: "templates", cluster: "obituary", h1: "Obituary Template for a Father", description: "Work, quiet acts of love, and what he taught — prompts and full examples for a father's obituary.", status: "queued" },
-  { slug: "obituary/husband", section: "templates", cluster: "obituary", h1: "Obituary Template for a Husband", description: "Written in the widow's voice, with the marriage as the spine of the story.", status: "queued" },
-  { slug: "obituary/wife", section: "templates", cluster: "obituary", h1: "Obituary Template for a Wife", description: "Written in the widower's voice, holding the daily life you built together.", status: "queued" },
-  { slug: "obituary/grandmother", section: "templates", cluster: "obituary", h1: "Obituary Template for a Grandmother", description: "Getting the generations right — survived-by formatting for a large, loving family.", status: "queued" },
-  { slug: "obituary/infant", section: "templates", cluster: "obituary", h1: "Obituary for an Infant", description: "The hardest page. Brief forms, gentle prompts, and support for parents writing what no parent should.", status: "queued" },
-  { slug: "obituary/friend", section: "templates", cluster: "obituary", h1: "Obituary for a Friend", description: "For the friend who is good with words, writing on the family's behalf — with a checklist for getting the facts right together.", status: "queued" },
-  { slug: "obituary/veteran", section: "templates", cluster: "obituary", h1: "Obituary Template for a Veteran", description: "Service details done properly — rank, branch, era, and honors, with a note on burial benefits.", status: "queued" },
+  { slug: "obituary", section: "templates", cluster: "obituary", h1: "Obituary Templates", description: "Fill-in obituary templates by length and tone, with real examples for every relationship.", status: "live" },
+  { slug: "obituary-writer", section: "tools", cluster: "obituary", h1: "Free Obituary Writer", description: "Answer a few gentle questions and receive a complete obituary draft to review, line by line. Your words stay yours.", status: "live" },
+  { slug: "obituary/mother", section: "templates", cluster: "obituary", h1: "Obituary Template for a Mother", description: "What children remember — with prompts and three full example obituaries for a mother.", status: "live" },
+  { slug: "obituary/father", section: "templates", cluster: "obituary", h1: "Obituary Template for a Father", description: "Work, quiet acts of love, and what he taught — prompts and full examples for a father's obituary.", status: "live" },
+  { slug: "obituary/husband", section: "templates", cluster: "obituary", h1: "Obituary Template for a Husband", description: "Written in the widow's voice, with the marriage as the spine of the story.", status: "live" },
+  { slug: "obituary/wife", section: "templates", cluster: "obituary", h1: "Obituary Template for a Wife", description: "Written in the widower's voice, holding the daily life you built together.", status: "live" },
+  { slug: "obituary/grandmother", section: "templates", cluster: "obituary", h1: "Obituary Template for a Grandmother", description: "Getting the generations right — survived-by formatting for a large, loving family.", status: "live" },
+  { slug: "obituary/infant", section: "templates", cluster: "obituary", h1: "Obituary for an Infant", description: "The hardest page. Brief forms, gentle prompts, and support for parents writing what no parent should.", status: "live" },
+  { slug: "obituary/friend", section: "templates", cluster: "obituary", h1: "Obituary for a Friend", description: "For the friend who is good with words, writing on the family's behalf — with a checklist for getting the facts right together.", status: "live" },
+  { slug: "obituary/veteran", section: "templates", cluster: "obituary", h1: "Obituary Template for a Veteran", description: "Service details done properly — rank, branch, era, and honors, with a note on burial benefits.", status: "live" },
   { slug: "how-to-write-an-obituary", section: "guides", cluster: "obituary", h1: "How to Write an Obituary", description: "A calm, complete guide to writing an obituary — structure, what to include, and what may be left unsaid.", status: "queued" },
 
   // ---- Eulogy (Nos 27-31) ----
