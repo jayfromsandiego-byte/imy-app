@@ -4,6 +4,7 @@ import { findEntry, entryPath, liveEntries } from "@/lib/seo/catalog";
 import { seoPageMetadata } from "@/lib/seo/meta";
 import ProgramMaker from "@/components/tools/ProgramMaker";
 import ObituaryWriter from "@/components/tools/ObituaryWriter";
+import CostCalculator from "@/components/tools/CostCalculator";
 
 // Tool pages render only when their catalog entry is "live".
 // Queued entries 404 — nothing half-made ever meets a family.
@@ -36,6 +37,8 @@ export default function ToolPage({
       <p className="km-intro">{entry.description}</p>
       {entry.slug === "funeral-program-maker" && <ProgramMaker variant={variant} />}
       {entry.slug === "obituary-writer" && <ObituaryWriter variant={variant} />}
+      {entry.slug === "funeral-cost-calculator" && <CostCalculator mode="funeral" />}
+      {entry.slug === "cremation-cost-calculator" && <CostCalculator mode="cremation" />}
     </>
   );
 }
