@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { findEntry, entryPath, liveEntries } from "@/lib/seo/catalog";
 import { seoPageMetadata } from "@/lib/seo/meta";
 import ProgramMaker from "@/components/tools/ProgramMaker";
+import ObituaryWriter from "@/components/tools/ObituaryWriter";
 
 // Tool pages render only when their catalog entry is "live".
 // Queued entries 404 — nothing half-made ever meets a family.
@@ -26,15 +27,15 @@ export default function ToolPage({
 }) {
   const entry = findEntry("tools", [params.slug]);
   if (!entry || entry.status !== "live") notFound();
+  const variant = searchParams?.variant || "default";
 
   return (
     <>
       <p className="km-label">Free tool</p>
       <h1 className="km-h1">{entry.h1}</h1>
       <p className="km-intro">{entry.description}</p>
-      {entry.slug === "funeral-program-maker" && (
-        <ProgramMaker variant={searchParams?.variant || "default"} />
-      )}
+      {entry.slug === "funeral-program-maker" && <ProgramMaker variant={variant} />}
+      {entry.slug === "obituary-writer" && <ObituaryWriter variant={variant} />}
     </>
   );
 }

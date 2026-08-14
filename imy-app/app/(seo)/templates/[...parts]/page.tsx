@@ -61,8 +61,8 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
             title="Make it theirs"
             files={[
               {
-                label: "Open the free program maker",
-                href: `/tools/funeral-program-maker/?variant=${content.makerVariant}`,
+                label: content.toolLabel || "Open the free program maker",
+                href: `/tools/${content.toolSlug || "funeral-program-maker"}/?variant=${content.makerVariant}`,
                 note: content.downloadNote,
                 download: false,
               },
