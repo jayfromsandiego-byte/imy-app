@@ -80,17 +80,17 @@ export const seoCatalog: SeoEntry[] = [
   { slug: "verses-for-memorial-cards", section: "guides", cluster: "cards", h1: "Verses for Memorial Cards", description: "Verses and lines for memorial cards, organized by faith and by feeling.", status: "queued" },
 
   // ---- Cost and planning (Nos 39-49) ----
-  { slug: "funeral-cost-calculator", section: "tools", cluster: "cost", h1: "Funeral Cost Calculator", description: "An honest, itemized estimate of what a funeral costs, based on the choices you make. Printable, cited, no email required to see it.", status: "queued" },
-  { slug: "cremation-cost-calculator", section: "tools", cluster: "cost", h1: "Cremation Cost Calculator", description: "Direct cremation or a service first — see what each path costs, itemized and cited.", status: "queued" },
-  { slug: "average-funeral-cost", section: "guides", cluster: "cost", h1: "Average Funeral Cost", description: "What a funeral actually costs, from national median data, updated yearly and cited.", status: "queued" },
-  { slug: "funeral-costs/california", section: "guides", cluster: "cost", h1: "Funeral Costs in California", description: "California funeral costs against the national median, with the state's own rules on embalming, home burial, and direct cremation.", status: "queued" },
-  { slug: "funeral-costs/texas", section: "guides", cluster: "cost", h1: "Funeral Costs in Texas", description: "Texas funeral costs and rules — medians, direct cremation, and what the state requires.", status: "queued" },
-  { slug: "funeral-costs/florida", section: "guides", cluster: "cost", h1: "Funeral Costs in Florida", description: "Florida funeral costs and rules, with the state's medians and legal notes.", status: "queued" },
-  { slug: "funeral-costs/new-york", section: "guides", cluster: "cost", h1: "Funeral Costs in New York", description: "New York funeral costs and rules, with the state's medians and legal notes.", status: "queued" },
-  { slug: "funeral-costs/pennsylvania", section: "guides", cluster: "cost", h1: "Funeral Costs in Pennsylvania", description: "Pennsylvania funeral costs and rules, with the state's medians and legal notes.", status: "queued" },
-  { slug: "funeral-costs/illinois", section: "guides", cluster: "cost", h1: "Funeral Costs in Illinois", description: "Illinois funeral costs and rules, with the state's medians and legal notes.", status: "queued" },
-  { slug: "funeral-costs/georgia", section: "guides", cluster: "cost", h1: "Funeral Costs in Georgia", description: "Georgia funeral costs and rules, with the state's medians and legal notes.", status: "queued" },
-  { slug: "funeral-planning-checklist", section: "templates", cluster: "cost", h1: "Funeral Planning Checklist", description: "The first 72 hours, ordered by what cannot wait — printable, with the words for the hardest phone calls.", status: "queued" },
+  { slug: "funeral-cost-calculator", section: "tools", cluster: "cost", h1: "Funeral Cost Calculator", description: "An honest, itemized estimate of what a funeral costs, based on the choices you make. Printable, cited, no email required to see it.", status: "live" },
+  { slug: "cremation-cost-calculator", section: "tools", cluster: "cost", h1: "Cremation Cost Calculator", description: "Direct cremation or a service first — see what each path costs, itemized and cited.", status: "live" },
+  { slug: "average-funeral-cost", section: "guides", cluster: "cost", h1: "Average Funeral Cost", description: "What a funeral actually costs, from national median data, updated yearly and cited.", status: "live" },
+  { slug: "funeral-costs/california", section: "guides", cluster: "cost", h1: "Funeral Costs in California", description: "California funeral costs against the national median, with the state's own rules on embalming, home burial, and direct cremation.", status: "live" },
+  { slug: "funeral-costs/texas", section: "guides", cluster: "cost", h1: "Funeral Costs in Texas", description: "Texas funeral costs and rules — medians, direct cremation, and what the state requires.", status: "live" },
+  { slug: "funeral-costs/florida", section: "guides", cluster: "cost", h1: "Funeral Costs in Florida", description: "Florida funeral costs and rules, with the state's medians and legal notes.", status: "live" },
+  { slug: "funeral-costs/new-york", section: "guides", cluster: "cost", h1: "Funeral Costs in New York", description: "New York funeral costs and rules, with the state's medians and legal notes.", status: "live" },
+  { slug: "funeral-costs/pennsylvania", section: "guides", cluster: "cost", h1: "Funeral Costs in Pennsylvania", description: "Pennsylvania funeral costs and rules, with the state's medians and legal notes.", status: "live" },
+  { slug: "funeral-costs/illinois", section: "guides", cluster: "cost", h1: "Funeral Costs in Illinois", description: "Illinois funeral costs and rules, with the state's medians and legal notes.", status: "live" },
+  { slug: "funeral-costs/georgia", section: "guides", cluster: "cost", h1: "Funeral Costs in Georgia", description: "Georgia funeral costs and rules, with the state's medians and legal notes.", status: "live" },
+  { slug: "funeral-planning-checklist", section: "templates", cluster: "cost", h1: "Funeral Planning Checklist", description: "The first 72 hours, ordered by what cannot wait — printable, with the words for the hardest phone calls.", status: "live" },
 
   // ---- Post-death admin (Nos 50-52) ----
   { slug: "when-someone-dies-checklist", section: "templates", cluster: "admin", h1: "What to Do When Someone Dies", description: "Hour by hour, then week by week — a printable map for the person holding everything together.", status: "queued" },

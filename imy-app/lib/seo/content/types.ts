@@ -19,4 +19,6 @@ export interface ProgramPageContent {
   toolSlug?: string;
   /** Button label. Defaults to "Open the free program maker". */
   toolLabel?: string;
+  /** Cited sources rendered at the foot of guide pages. Required for data guides. */
+  sources?: { label: string; url: string }[];
 }
