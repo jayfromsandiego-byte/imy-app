@@ -64,20 +64,20 @@ export const seoCatalog: SeoEntry[] = [
   { slug: "how-to-write-an-obituary", section: "guides", cluster: "obituary", h1: "How to Write an Obituary", description: "A calm, complete guide to writing an obituary — structure, what to include, and what may be left unsaid.", status: "queued" },
 
   // ---- Eulogy (Nos 27-31) ----
-  { slug: "eulogy", section: "templates", cluster: "eulogy", h1: "Eulogy Template and Worksheet", description: "A worksheet that builds the eulogy from your memories — chronological, thematic, or written as a letter.", status: "queued" },
-  { slug: "eulogy/mother", section: "templates", cluster: "eulogy", h1: "Eulogy for a Mother", description: "Memory prompts for a mother's eulogy, with two full annotated examples.", status: "queued" },
-  { slug: "eulogy/father", section: "templates", cluster: "eulogy", h1: "Eulogy for a Father", description: "Saying what was never said aloud — prompts and annotated examples for a father's eulogy.", status: "queued" },
-  { slug: "eulogy/friend", section: "templates", cluster: "eulogy", h1: "Eulogy for a Friend", description: "You knew them differently than family did. A worksheet for the friend asked to speak.", status: "queued" },
+  { slug: "eulogy", section: "templates", cluster: "eulogy", h1: "Eulogy Template and Worksheet", description: "A worksheet that builds the eulogy from your memories — chronological, thematic, or written as a letter.", status: "live" },
+  { slug: "eulogy/mother", section: "templates", cluster: "eulogy", h1: "Eulogy for a Mother", description: "Memory prompts for a mother's eulogy, with two full annotated examples.", status: "live" },
+  { slug: "eulogy/father", section: "templates", cluster: "eulogy", h1: "Eulogy for a Father", description: "Saying what was never said aloud — prompts and annotated examples for a father's eulogy.", status: "live" },
+  { slug: "eulogy/friend", section: "templates", cluster: "eulogy", h1: "Eulogy for a Friend", description: "You knew them differently than family did. A worksheet for the friend asked to speak.", status: "live" },
   { slug: "how-to-write-a-eulogy", section: "guides", cluster: "eulogy", h1: "How to Write a Eulogy", description: "Writing it is half. Delivering it is the other half — breath, breaking, and having a backup reader.", status: "queued" },
 
   // ---- Cards (Nos 32-38) ----
-  { slug: "memorial-cards", section: "templates", cluster: "cards", h1: "Memorial Card Templates", description: "Memorial and prayer card templates by faith and style, with print specs for card stock.", status: "queued" },
-  { slug: "memorial-card-maker", section: "tools", cluster: "cards", h1: "Free Memorial Card Maker", description: "A front-and-back memorial card with their photo, a verse or a poem, and the dates — ready to print.", status: "queued" },
-  { slug: "memorial-cards/catholic-prayer-cards", section: "templates", cluster: "cards", h1: "Catholic Prayer Card Template", description: "The traditional holy card — Eternal Rest, Psalm 23, and the customs of saint imagery.", status: "queued" },
-  { slug: "memorial-cards/christian", section: "templates", cluster: "cards", h1: "Christian Memorial Card Template", description: "Verses chosen by sentiment, with hymn lines and layouts for a Christian memorial card.", status: "queued" },
-  { slug: "memorial-cards/jewish-yahrzeit", section: "templates", cluster: "cards", h1: "Yahrzeit Card Template", description: "A card that carries the Hebrew date — with the yahrzeit explained and calculated.", status: "queued" },
-  { slug: "memorial-cards/secular", section: "templates", cluster: "cards", h1: "Secular Memorial Card Template", description: "Plain, honest words instead of scripture — poems and lines for a secular memorial card.", status: "queued" },
-  { slug: "verses-for-memorial-cards", section: "guides", cluster: "cards", h1: "Verses for Memorial Cards", description: "Verses and lines for memorial cards, organized by faith and by feeling.", status: "queued" },
+  { slug: "memorial-cards", section: "templates", cluster: "cards", h1: "Memorial Card Templates", description: "Memorial and prayer card templates by faith and style, with print specs for card stock.", status: "live" },
+  { slug: "memorial-card-maker", section: "tools", cluster: "cards", h1: "Free Memorial Card Maker", description: "A front-and-back memorial card with their photo, a verse or a poem, and the dates — ready to print.", status: "live" },
+  { slug: "memorial-cards/catholic-prayer-cards", section: "templates", cluster: "cards", h1: "Catholic Prayer Card Template", description: "The traditional holy card — Eternal Rest, Psalm 23, and the customs of saint imagery.", status: "live" },
+  { slug: "memorial-cards/christian", section: "templates", cluster: "cards", h1: "Christian Memorial Card Template", description: "Verses chosen by sentiment, with hymn lines and layouts for a Christian memorial card.", status: "live" },
+  { slug: "memorial-cards/jewish-yahrzeit", section: "templates", cluster: "cards", h1: "Yahrzeit Card Template", description: "A card that carries the Hebrew date — with the yahrzeit explained and calculated.", status: "live" },
+  { slug: "memorial-cards/secular", section: "templates", cluster: "cards", h1: "Secular Memorial Card Template", description: "Plain, honest words instead of scripture — poems and lines for a secular memorial card.", status: "live" },
+  { slug: "verses-for-memorial-cards", section: "guides", cluster: "cards", h1: "Verses for Memorial Cards", description: "Verses and lines for memorial cards, organized by faith and by feeling.", status: "live" },
 
   // ---- Cost and planning (Nos 39-49) ----
   { slug: "funeral-cost-calculator", section: "tools", cluster: "cost", h1: "Funeral Cost Calculator", description: "An honest, itemized estimate of what a funeral costs, based on the choices you make. Printable, cited, no email required to see it.", status: "live" },
@@ -93,23 +93,23 @@ export const seoCatalog: SeoEntry[] = [
   { slug: "funeral-planning-checklist", section: "templates", cluster: "cost", h1: "Funeral Planning Checklist", description: "The first 72 hours, ordered by what cannot wait — printable, with the words for the hardest phone calls.", status: "live" },
 
   // ---- Post-death admin (Nos 50-52) ----
-  { slug: "when-someone-dies-checklist", section: "templates", cluster: "admin", h1: "What to Do When Someone Dies", description: "Hour by hour, then week by week — a printable map for the person holding everything together.", status: "queued" },
-  { slug: "executor-checklist", section: "templates", cluster: "admin", h1: "Executor Checklist Template", description: "The executor's duties in order, with a document tracker. Plain language, no legal advice.", status: "queued" },
-  { slug: "death-notification-letter", section: "templates", cluster: "admin", h1: "Death Notification Letter Template", description: "Gentle, ready letters for banks, utilities, and subscriptions — copy, personalize, send.", status: "queued" },
+  { slug: "when-someone-dies-checklist", section: "templates", cluster: "admin", h1: "What to Do When Someone Dies", description: "Hour by hour, then week by week — a printable map for the person holding everything together.", status: "live" },
+  { slug: "executor-checklist", section: "templates", cluster: "admin", h1: "Executor Checklist Template", description: "The executor's duties in order, with a document tracker. Plain language, no legal advice.", status: "live" },
+  { slug: "death-notification-letter", section: "templates", cluster: "admin", h1: "Death Notification Letter Template", description: "Gentle, ready letters for banks, utilities, and subscriptions — copy, personalize, send.", status: "live" },
 
   // ---- Photo restoration (Nos 53-54) ----
   { slug: "photo-restoration", section: "tools", cluster: "photo", h1: "Free Photo Restoration", description: "Restore an old or damaged photograph in the browser — scratches mended, faces made clear again. Yours to keep.", status: "queued" },
-  { slug: "restoring-old-family-photos", section: "guides", cluster: "photo", h1: "Restoring Old Family Photos", description: "What restoration can truly recover, what it cannot, and how to scan a printed photo well with just a phone.", status: "queued" },
+  { slug: "restoring-old-family-photos", section: "guides", cluster: "photo", h1: "Restoring Old Family Photos", description: "What restoration can truly recover, what it cannot, and how to scan a printed photo well with just a phone.", status: "live" },
 
   // ---- Poems and readings (Nos 55-57) ----
-  { slug: "printable-memorial-poems", section: "templates", cluster: "poems", h1: "Printable Memorial Poems", description: "Memorial poems set beautifully for frames and programs, each verified public domain.", status: "queued" },
-  { slug: "non-religious-funeral-readings", section: "guides", cluster: "poems", h1: "Non-Religious Funeral Readings", description: "Secular readings organized by feeling, with a printable pack for the service.", status: "queued" },
-  { slug: "rainbow-bridge-poem", section: "templates", cluster: "poems", h1: "Rainbow Bridge Poem Printable", description: "The Rainbow Bridge poem, beautifully set and ready to print, with its history told honestly.", status: "queued" },
+  { slug: "printable-memorial-poems", section: "templates", cluster: "poems", h1: "Printable Memorial Poems", description: "Memorial poems set beautifully for frames and programs, each verified public domain.", status: "live" },
+  { slug: "non-religious-funeral-readings", section: "guides", cluster: "poems", h1: "Non-Religious Funeral Readings", description: "Secular readings organized by feeling, with a printable pack for the service.", status: "live" },
+  { slug: "rainbow-bridge-poem", section: "templates", cluster: "poems", h1: "Rainbow Bridge Poem Printable", description: "The Rainbow Bridge poem, beautifully set and ready to print, with its history told honestly.", status: "live" },
 
   // ---- Pet (No 58) — note: /pet-memorials/ lives outside the (seo) sections as a product page; tracked here for sitemap completeness when built.
   // ---- Pre-need (Nos 59-60) ----
-  { slug: "funeral-wishes", section: "templates", cluster: "pre-need", h1: "Funeral Wishes Template", description: "Write it down while you can — a guided form for the service you would want, kept safe for the people who will need it.", status: "queued" },
-  { slug: "end-of-life-checklist", section: "templates", cluster: "pre-need", h1: "End of Life Planning Checklist", description: "Documents, accounts, and wishes gathered into one binder your family can actually find.", status: "queued" },
+  { slug: "funeral-wishes", section: "templates", cluster: "pre-need", h1: "Funeral Wishes Template", description: "Write it down while you can — a guided form for the service you would want, kept safe for the people who will need it.", status: "live" },
+  { slug: "end-of-life-checklist", section: "templates", cluster: "pre-need", h1: "End of Life Planning Checklist", description: "Documents, accounts, and wishes gathered into one binder your family can actually find.", status: "live" },
 ];
 
 export function liveEntries(section?: SeoSection): SeoEntry[] {

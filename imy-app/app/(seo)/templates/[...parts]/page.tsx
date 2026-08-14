@@ -33,6 +33,8 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
         }
       : null;
 
+  const isPrintArtifact = content?.toolSlug === "print";
+
   return (
     <>
       {faqLd && (
@@ -57,17 +59,25 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
 
       {content && (
         <>
-          <ArtifactDownload
-            title="Make it theirs"
-            files={[
-              {
-                label: content.toolLabel || "Open the free program maker",
-                href: `/tools/${content.toolSlug || "funeral-program-maker"}/?variant=${content.makerVariant}`,
-                note: content.downloadNote,
-                download: false,
-              },
-            ]}
-          />
+          {isPrintArtifact ? (
+            <ArtifactDownload
+              title="Make it yours"
+              printLabel={content.toolLabel || "Print this page"}
+              printNote={content.downloadNote}
+            />
+          ) : (
+            <ArtifactDownload
+              title="Make it theirs"
+              files={[
+                {
+                  label: content.toolLabel || "Open the free program maker",
+                  href: `/tools/${content.toolSlug || "funeral-program-maker"}/?variant=${content.makerVariant}`,
+                  note: content.downloadNote,
+                  download: false,
+                },
+              ]}
+            />
+          )}
           <div className="km-sections">
             <style
               dangerouslySetInnerHTML={{
@@ -79,6 +89,11 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
 .km-sections .km-listtitle{font-family:'Sometype Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8A5F43;margin:0 0 8px;}
 .km-faq{margin-top:48px;border-top:1px solid rgba(44,37,32,.14);padding-top:8px;}
 .km-faq h3{font-size:17.5px;font-weight:600;margin:26px 0 8px;}
+.km-sources{margin-top:48px;border-top:1px solid rgba(44,37,32,.14);padding-top:18px;}
+.km-sources h2{font-size:16px;margin:0 0 10px;}
+.km-sources li{font-size:13.5px;color:rgba(44,37,32,.7);}
+.km-sources a{color:#8A5F43;text-decoration:none;border-bottom:1px solid rgba(138,95,67,.35);word-break:break-all;}
+@media print{.km-label{display:none;}}
 `,
               }}
             />
@@ -109,6 +124,21 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
                     <p>{f.a}</p>
                   </div>
                 ))}
+              </div>
+            )}
+            {content.sources && content.sources.length > 0 && (
+              <div className="km-sources">
+                <h2>Sources</h2>
+                <ul>
+                  {content.sources.map((s) => (
+                    <li key={s.url}>
+                      {s.label} ·{" "}
+                      <a href={s.url} target="_blank" rel="noopener noreferrer">
+                        {s.url}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
