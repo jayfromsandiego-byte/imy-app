@@ -1,0 +1,90 @@
+Keyword,Cluster,Intent,Output,AIO Risk,Volume,KD,Tier,Flags
+obituary template,Obituary,info,artifact,med,,,1,TEMPLATE PAGE // ranks while generator converts
+obituary generator,Obituary,tool,artifact,low,,,1,CTA page for obituary template
+obituary maker,Obituary,tool,artifact,low,,,2,fold into generator page
+free obituary template,Obituary,info,artifact,med,,,1,
+obituary template for mother,Obituary,info,artifact,low,,,1,relationship axis seed
+how to write an obituary,Obituary,info,prose,high,,,2,"ENTITY LOCKED // Legacy.com // support content only, E-E-A-T author required"
+obituary examples,Obituary,info,prose,high,,,2,printable example pack converts to artifact
+short obituary examples,Obituary,info,prose,high,,,3,weak // AIO answers it fully
+obituary format,Obituary,info,prose,high,,,3,weak // AIO food
+how to submit an obituary to [newspaper],Obituary,info,prose,low,,,2,geo axis seed // per-paper data is the moat
+funeral program template,Funeral program,mixed,artifact,low,,,2,ENTITY LOCKED // Canva Etsy Template.net // hub only
+free funeral program template,Funeral program,mixed,artifact,low,,,2,ENTITY LOCKED
+funeral program maker,Funeral program,tool,artifact,low,,,1,CTA // generator variant
+funeral program template Word,Funeral program,mixed,artifact,low,,,1,format axis // .docx is the moat
+funeral program template PDF free,Funeral program,mixed,artifact,low,,,1,format axis
+bifold funeral program template,Funeral program,mixed,artifact,low,,,1,format axis
+trifold funeral program template,Funeral program,mixed,artifact,low,,,1,format axis
+graduated fold funeral program template,Funeral program,mixed,artifact,low,,,2,low volume // director white-label angle
+order of service template funeral,Funeral program,mixed,artifact,low,,,1,
+celebration of life program template,Funeral program,mixed,artifact,low,,,1,
+what to include in a funeral program,Funeral program,info,prose,high,,,2,feeds tool page
+funeral program wording examples,Funeral program,info,prose,med,,,2,
+eulogy template,Eulogy,info,artifact,med,,,1,TEMPLATE PAGE // worksheet PDF is the artifact
+eulogy generator,Eulogy,tool,prose,med,,,2,"weak standalone // prose dies in AIO, on-ramp only"
+how to write a eulogy,Eulogy,info,prose,high,,,2,E-E-A-T author required
+eulogy examples,Eulogy,info,prose,high,,,2,
+eulogy for mother,Eulogy,info,prose,high,,,2,relationship axis seed
+eulogy for father,Eulogy,info,prose,high,,,2,relationship axis
+short eulogy examples,Eulogy,info,prose,high,,,3,weak // AIO food
+funny eulogy examples,Eulogy,info,prose,med,,,3,weak // tone risk
+eulogy outline,Eulogy,info,artifact,med,,,2,worksheet download
+funeral thank you card wording,Sympathy thank you,info,prose,high,,,2,printable pack converts to artifact
+funeral thank you cards,Sympathy thank you,buy,artifact,low,,,3,ENTITY LOCKED // Etsy Canva
+funeral thank you note template,Sympathy thank you,info,artifact,med,,,1,TEMPLATE PAGE for card maker
+sympathy thank you card maker,Sympathy thank you,tool,artifact,low,,,2,CTA // director white-label strong
+bereavement thank you note wording,Sympathy thank you,info,prose,high,,,3,weak // AIO
+thank you for funeral flowers wording,Sympathy thank you,info,prose,high,,,3,weak // AIO food
+funeral acknowledgement wording for newspaper,Sympathy thank you,info,prose,med,,,2,pairs with obituary submission
+memorial card template,Prayer memorial cards,mixed,artifact,low,,,2,ENTITY LOCKED // Canva Etsy // long tail only
+memorial card maker,Prayer memorial cards,tool,artifact,low,,,1,CTA // generator variant
+funeral prayer card template,Prayer memorial cards,mixed,artifact,low,,,1,faith axis seed
+catholic funeral prayer cards,Prayer memorial cards,mixed,artifact,low,,,1,faith axis // strongest single-faith demand
+in loving memory card template,Prayer memorial cards,mixed,artifact,low,,,3,ENTITY LOCKED // Etsy
+memorial bookmark template,Prayer memorial cards,mixed,artifact,low,,,2,director upsell format
+verses for memorial cards,Prayer memorial cards,info,prose,med,,,2,feeds card maker
+free funeral card template,Prayer memorial cards,mixed,artifact,low,,,2,
+funeral poems,Poems readings,info,prose,high,,,2,printable pack is the artifact defense
+funeral poems for mom,Poems readings,info,prose,high,,,2,relationship axis
+funeral poems for dad,Poems readings,info,prose,high,,,2,relationship axis
+non religious funeral readings,Poems readings,info,prose,med,,,1,underserved secular axis
+celebration of life readings,Poems readings,info,prose,med,,,2,
+funeral bible verses,Poems readings,info,prose,high,,,3,weak // AIO food
+printable memorial poems,Poems readings,info,artifact,low,,,1,
+rainbow bridge poem printable,Poems readings,info,artifact,low,,,1,pet crossover // one page only
+funeral cost calculator,Cost calculators,tool,artifact,low,,,1,best AIO immunity in the map
+average funeral cost,Cost calculators,info,prose,high,,,2,hosts calculator // NFDA citation required
+cremation cost calculator,Cost calculators,tool,artifact,low,,,1,
+average cremation cost,Cost calculators,info,prose,high,,,2,
+funeral costs in [state],Cost calculators,info,prose,med,,,1,geo axis seed // per-state data table required
+funeral planning checklist,Cost calculators,info,artifact,med,,,1,PDF download
+burial vs cremation cost,Cost calculators,info,prose,high,,,2,
+how much does a headstone cost,Cost calculators,info,prose,high,,,3,weak // off product
+funeral budget worksheet,Cost calculators,info,artifact,low,,,2,
+restore old photos online free,Photo restoration,tool,artifact,low,,,1,entity pressure MyHeritage Remini
+free photo restoration,Photo restoration,tool,artifact,low,,,1,
+colorize black and white photos free,Photo restoration,tool,artifact,low,,,2,entity pressure Adobe Express // verify SERP
+restore damaged old photos,Photo restoration,mixed,artifact,low,,,2,
+fix blurry old photo,Photo restoration,tool,artifact,low,,,2,
+photo enhancement for funeral,Photo restoration,tool,artifact,low,,,3,Not found demand // validate first
+funeral pre planning checklist,Pre need,info,artifact,med,,,1,
+end of life planning checklist,Pre need,info,artifact,med,,,1,
+funeral wishes template,Pre need,info,artifact,low,,,1,terminates in Living Legacy concierge
+my final wishes planner printable,Pre need,info,artifact,low,,,2,
+letter to my family after I die,Pre need,info,prose,low,,,2,strong brand fit
+end of life binder printable,Pre need,info,artifact,low,,,2,
+advance directive form [state],Pre need,info,artifact,med,,,3,"weak // legal YMYL liability, skip"
+online pet memorial,Pet loss,mixed,artifact,low,,,1,direct product SERP
+pet memorial page,Pet loss,mixed,artifact,low,,,1,
+pet loss sympathy messages,Pet loss,info,prose,high,,,3,weak // AIO food
+dog memorial ideas,Pet loss,info,prose,med,,,3,
+pet cremation cost,Pet loss,info,prose,high,,,2,
+pet memorial card template,Pet loss,mixed,artifact,low,,,2,vet clinic white-label angle
+what to do when someone dies checklist,Post death admin,info,artifact,high,,,1,checklist PDF survives AIO
+executor checklist template,Post death admin,info,artifact,med,,,1,TEMPLATE PAGE
+deceased estate checklist,Post death admin,info,artifact,med,,,2,
+closing accounts after death checklist,Post death admin,info,artifact,med,,,2,
+death notification letter template,Post death admin,info,artifact,low,,,1,church secretary persona fit
+how many death certificates do I need,Post death admin,info,prose,high,,,3,weak // AIO food
+notifying social security of death,Post death admin,info,prose,high,,,3,weak // gov entity owns SERP
