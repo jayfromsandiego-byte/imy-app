@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Eleanor Margaret Hayes · 1948–2024 · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Sometype+Mono:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --ink:#2C2520; --ink-soft:#5F574E;
+  --terra:#A87C5F; --terra-deep:#8A5A3C; --gold:#C9A572; --night:#1A130D;
+  --line:rgba(44,37,32,.14); --card:#FFFDF8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block}
+button{font-family:'Besley',serif;cursor:pointer}
+.mono{font-family:'Sometype Mono',monospace}
+.kick{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra-deep)}
+
+/* ═══ top toolbar · transparent over her, solid on scroll ═══ */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:70;height:62px;display:flex;align-items:center;gap:clamp(16px,3vw,34px);
+  padding:0 clamp(16px,4vw,44px);color:#FBF3E4;background:transparent;
+  transition:background .35s ease,box-shadow .35s ease,color .35s ease,border-color .35s ease;border-bottom:1px solid transparent}
+.topbar .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;flex:none}
+.topbar .brand img{height:26px;width:auto}
+.topbar .brand img.mk-ink{display:none}
+.topbar .brand .wm{font-family:'Besley',serif;font-weight:700;font-size:17.5px;white-space:nowrap;text-shadow:0 1px 10px rgba(16,12,8,.45)}
+.topbar .brand .wm em{font-style:italic;color:#F0C88A}
+.topbar nav{display:flex;gap:clamp(14px,2.4vw,26px);flex:1}
+.topbar nav a{color:inherit;text-decoration:none;font-size:15.5px;font-weight:500;text-shadow:0 1px 10px rgba(16,12,8,.45);padding:8px 2px}
+.topbar nav a:hover{color:#F0C88A}
+.topbar .tacts{display:flex;gap:10px;align-items:center;flex:none;margin-left:auto}
+.topbar .login{font-size:14.5px;font-weight:600;color:inherit;text-decoration:none;border:1.5px solid rgba(251,243,228,.55);border-radius:100px;padding:10px 20px;transition:border-color .35s ease}
+.topbar .start{font-size:14.5px;font-weight:700;color:#FBF6ED;text-decoration:none;background:rgba(168,124,95,.92);border-radius:100px;padding:11px 21px}
+.topbar .start:hover{background:var(--terra-deep)}
+.topbar.solid{background:rgba(250,245,236,.96);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
+  color:var(--ink);border-bottom-color:var(--line);box-shadow:0 10px 30px -18px rgba(44,37,32,.25)}
+.topbar.solid .brand .wm,.topbar.solid nav a{text-shadow:none}
+.topbar.solid .brand .wm em{color:var(--terra)}
+.topbar.solid nav a:hover{color:var(--terra-deep)}
+.topbar.solid .login{border-color:rgba(138,90,60,.5)}
+.topbar.solid .brand img.mk-rev{display:none}
+.topbar.solid .brand img.mk-ink{display:block}
+@media(max-width:900px){.topbar nav{display:none}.topbar{height:56px}}
+
+
+
+/* ═══ hero · the frosted panel ═══ */
+.hero{position:relative;height:min(74vh,620px);overflow:hidden}
+.hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.hero .grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,12,8,.16),transparent 38%,rgba(16,12,8,.34))}
+.glass{position:absolute;left:clamp(14px,4vw,52px);bottom:clamp(14px,4vw,46px);max-width:min(560px,calc(100% - 28px));
+  background:rgba(30,22,14,.25);
+  -webkit-backdrop-filter:blur(14px) saturate(1.75);backdrop-filter:blur(14px) saturate(1.75);
+  border:1px solid rgba(251,243,228,.22);border-radius:18px;
+  padding:clamp(18px,2.6vw,30px) clamp(20px,2.8vw,34px);color:#FBF3E4;
+  box-shadow:0 24px 50px -24px rgba(16,12,8,.6)}
+@supports not (backdrop-filter:blur(1px)){.glass{background:rgba(24,17,11,.78)}}
+.glass h1{font-size:clamp(26px,3.6vw,44px);font-weight:800;line-height:1.06}
+.glass h1 em{font-style:italic;color:#F0C88A}
+.glass .dates{font-family:'Sometype Mono',monospace;font-size:clamp(11.5px,1.2vw,14px);letter-spacing:.12em;font-weight:700;color:#F0E3C8;margin-top:9px}
+.glass .qt{font-style:italic;font-size:clamp(14px,1.4vw,16.5px);line-height:1.55;color:rgba(251,243,228,.92);margin-top:12px;max-width:44ch}
+/* ═══ c2 · one slim ribbon: tabs left · visits center · share right ═══ */
+.ribbon{position:sticky;top:62px;z-index:40;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:10px clamp(14px,3vw,36px);background:rgba(250,245,236,.97);
+  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
+.rtabs{display:flex;gap:8px;flex-wrap:wrap}
+.visits{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin:0 auto}
+.rshare{flex:none;background:var(--terra);color:#FBF6ED;border:none;border-radius:100px;padding:12px 24px;font-size:15px;font-weight:700}
+.rshare:hover{background:var(--terra-deep)}
+@media(max-width:900px){.ribbon{top:56px}}
+@media(max-width:760px){.visits{display:none}}
+@media(max-width:640px){.hero{height:min(88vw,520px)}}
+
+/* ═══ share her page · the flyer ═══ */
+.shwrap{position:fixed;inset:0;z-index:105;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(20,13,8,.66);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.shwrap.open{display:flex}
+.sh{width:min(480px,100%);max-height:94vh;overflow-y:auto;background:#241711;border-radius:20px;padding:22px 22px 24px;color:#E8DCC8}
+.sh .shk{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#C9A572;display:flex;justify-content:space-between;align-items:center}
+.sh .shx{background:none;border:1px solid rgba(201,165,114,.4);color:#E8DCC8;border-radius:10px;min-width:40px;min-height:40px;font-size:16px}
+.flyer{background:#FBF6EC;border:1px solid rgba(138,90,60,.3);border-radius:10px;margin-top:16px;padding:26px 22px;color:var(--ink);text-align:center}
+.flyer .inner{border:1px solid rgba(201,165,114,.6);border-radius:6px;padding:22px 16px}
+.flyer .ilm{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--terra-deep)}
+.flyer .arch{width:150px;height:186px;margin:16px auto 0;border-radius:999px 999px 10px 10px;overflow:hidden;box-shadow:0 12px 26px -12px rgba(60,38,10,.45),0 0 0 5px #fff,0 0 0 6px rgba(138,106,52,.3)}
+.flyer .arch img{width:100%;height:100%;object-fit:cover}
+.flyer h5{font-size:23px;font-weight:700;margin-top:16px}
+.flyer .fd{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--ink-soft);margin-top:3px}
+.flyer .join{font-style:italic;color:var(--terra);margin-top:14px;font-size:15px}
+.flyer .when{font-size:19px;font-weight:800;margin-top:2px}
+.flyer .where{font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.5}
+.flyer .where b{color:var(--ink)}
+.flyer .qrrow{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:18px;text-align:left}
+.flyer .qrrow img{width:86px;height:86px}
+.flyer .qrrow p{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.08em;line-height:1.7;color:var(--ink-soft);max-width:170px}
+.flyer .wm{font-size:13px;margin-top:16px}
+.flyer .wm em{color:var(--terra);font-style:italic}
+.shacts{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+.shacts button{flex:1;min-width:120px;font-size:14.5px;font-weight:700;border-radius:100px;padding:13px 10px;min-height:46px}
+.shacts .solid{background:var(--terra);color:#FBF6ED;border:none}
+.shacts .ghosty{background:none;border:1.5px solid rgba(201,165,114,.55);color:#F4E9D4}
+.sh .shnote{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.1em;color:#C9A572;text-align:center;margin-top:13px}
+@media print{body *{visibility:hidden}.shwrap{position:static;background:none;display:block!important}
+  .flyer,.flyer *{visibility:visible}.flyer{position:absolute;left:0;top:0;width:100%;border:none}}
+
+/* ═══ relation chips ═══ */
+.chips{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+.chip{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-weight:700;font-size:15px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:100px;padding:10px 19px;color:var(--ink);min-height:44px}
+.chip b{color:#B04A3A;font-weight:700;margin-left:6px}
+.chip.on{background:var(--night);color:var(--cream);border-color:var(--night)}
+.chip.on b{color:#F0C88A}
+
+/* ═══ the together snapshot on cards ═══ */
+.snap{position:relative;background:#fff;padding:8px 8px 24px;border-radius:4px;box-shadow:0 12px 26px -14px rgba(60,38,10,.45),0 2px 6px rgba(60,38,10,.12);margin-bottom:14px;cursor:zoom-in;border:none;width:100%;text-align:center}
+.snap img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.snap span{position:absolute;left:0;right:0;bottom:3px;font-family:'Besley',serif;font-style:italic;font-size:13px;color:#6a5642}
+.snap:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+
+/* tabs (live in the ribbon) */
+.tab{font-weight:700;font-size:15px;padding:12px 22px;border-radius:11px;border:1.5px solid rgba(138,90,60,.45);background:#fff;color:var(--ink);box-shadow:0 2px 0 rgba(138,90,60,.28)}
+.tab:hover{border-color:var(--terra)}
+.tab.on{background:var(--night);color:var(--cream);border-color:var(--night);box-shadow:none}
+.tab:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+
+/* ═══ rooms ═══ */
+.room{display:none;max-width:1180px;margin:0 auto;padding:clamp(22px,3.5vw,44px) clamp(16px,4vw,44px) 30px}
+.room.on{display:block}
+
+/* memories · the stage and the wings */
+.stagewings{display:grid;grid-template-columns:1fr 1.8fr 1fr;gap:14px;align-items:center;margin-bottom:6px}
+.scard{position:relative;border-radius:15px;overflow:hidden;border:none;padding:0;background:#1c1712;cursor:pointer;width:100%}
+.scard img{width:100%;height:100%;object-fit:cover;opacity:1;transition:opacity .4s ease}
+.scard .scap{position:absolute;left:0;right:0;bottom:0;padding:44px 15px 12px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.85));color:#FBF3E4;text-align:left}
+.scard .tk{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:#F0C88A}
+.scard .tt{font-weight:800;margin-top:4px;line-height:1.22}
+.scard.stage{height:clamp(240px,30vw,360px)}
+.scard.stage .tt{font-size:clamp(17px,1.9vw,23px)}
+.scard.stage .ts{font-style:italic;font-size:13.5px;color:rgba(251,243,228,.88);margin-top:6px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.scard.wing{height:clamp(170px,21vw,250px);opacity:.82;transform:scale(.97)}
+.scard.wing:hover{opacity:1;transform:scale(1)}
+.scard.wing .tt{font-size:14px}
+.scard:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+@media(max-width:700px){.stagewings{grid-template-columns:1fr}.scard.wing{display:none}}
+.swhint{text-align:center;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep);margin-bottom:16px}
+.chips-center{justify-content:center}
+.river{overflow:hidden;margin-top:20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.river .rtrack{display:flex;gap:38px;width:max-content;animation:rdrift 38s linear infinite}
+.river:hover .rtrack{animation-play-state:paused}
+@keyframes rdrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.river .rq{font-style:italic;font-size:14.5px;color:var(--ink-soft);white-space:nowrap;background:none;border:none;font-family:'Besley',serif;padding:4px 0}
+.river .rq b{font-style:normal;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:var(--terra-deep);margin-left:9px}
+@media(prefers-reduced-motion:reduce){.river .rtrack{animation:none}}
+.stream{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-content:start}
+@media(max-width:1080px){.stream{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.stream{grid-template-columns:1fr}}
+.memcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 19px;box-shadow:0 12px 26px -18px rgba(44,37,32,.3)}
+.memcard .who{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.memcard .who img{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.memcard .who b{font-size:15.5px;display:block;line-height:1.1}
+.memcard .who span{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep)}
+.memcard .mt{font-size:16.5px;font-weight:800;display:block;margin-bottom:5px;line-height:1.3}
+.memcard p.body{font-size:15px;line-height:1.6;font-style:italic}
+.acts{display:flex;gap:9px;margin-top:12px}
+.acts button{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--terra-deep);background:#F6F0E2;border:1px solid transparent;border-radius:100px;padding:9px 16px;min-height:38px}
+.acts button:hover{border-color:rgba(138,90,60,.4)}
+.acts button.hearted{background:var(--terra);color:#fff}
+.cmts{display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.cmts.open{display:block}
+.cmt{display:flex;gap:9px;margin-bottom:10px}
+.cmt .cav{width:28px;height:28px;border-radius:50%;background:var(--cream-deep);color:var(--terra-deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none}
+.cmt p{font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
+.cmt p b{color:var(--ink)}
+.cmtrow{display:flex;gap:8px;margin-top:4px}
+.cmtrow input{flex:1;font-family:'Besley',serif;font-size:14px;border:1.5px solid var(--line);border-radius:100px;padding:10px 16px;background:#fff;color:var(--ink)}
+.cmtrow button{background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:10px 18px;font-size:13.5px;font-weight:700}
+.door{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;background:#fff;border:1.5px solid rgba(138,90,60,.45);border-radius:13px;padding:16px 19px;font-size:16px;font-weight:700;margin-top:16px;box-shadow:0 2px 0 rgba(138,90,60,.28);text-align:left}
+.door span{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep);font-weight:400}
+.door:hover{border-color:var(--terra)}
+.hiddenmems{display:none}
+.hiddenmems.open{display:contents}
+
+/* photos */
+.phpages{position:relative;height:clamp(300px,42vw,460px)}
+.phpage{position:absolute;inset:0;opacity:0;transition:opacity .55s ease;pointer-events:none}
+.phpage.on{opacity:1;pointer-events:auto}
+.prow{display:flex;gap:9px}
+.prow+.prow{margin-top:9px}
+.ph{position:relative;border-radius:12px;overflow:hidden;cursor:zoom-in;border:none;padding:0;background:#EDE6D3}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+.allgrid{display:none;margin-top:6px}
+.allgrid.open{display:block}
+.allgrid .prow{height:clamp(120px,15vw,190px)}
+
+/* her life */
+.lifewrap{display:flex;align-items:center;gap:10px}
+.arrowbtn{width:46px;height:46px;border-radius:50%;background:#fff;border:1.5px solid rgba(138,90,60,.45);font-size:19px;color:var(--ink);flex:none;box-shadow:0 2px 0 rgba(138,90,60,.25)}
+.arrowbtn:hover{border-color:var(--terra)}
+.railline{height:2px;background:linear-gradient(90deg,rgba(201,165,114,.25),var(--gold),rgba(201,165,114,.25));margin:4px 60px 0}
+.chrail{display:flex;gap:11px;overflow-x:auto;padding:14px 2px 16px;scrollbar-width:none;scroll-behavior:smooth;flex:1;-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.chrail::-webkit-scrollbar{display:none}
+.chc{flex:0 0 170px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:13px;overflow:hidden;text-align:left;padding:0;box-shadow:0 2px 0 rgba(138,90,60,.25)}
+.chc img{width:100%;height:86px;object-fit:cover}
+.chc .cy{display:block;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.13em;color:var(--terra-deep);padding:9px 12px 2px}
+.chc b{font-size:14px;line-height:1.25;display:block;padding:0 12px 11px;color:var(--ink)}
+.chc.on{border-color:var(--night);box-shadow:0 0 0 1.5px var(--night)}
+.book{display:grid;grid-template-columns:minmax(280px,410px) 1fr;gap:clamp(18px,3vw,36px);align-items:start}
+@media(max-width:900px){.book{grid-template-columns:1fr}.book .bphoto{order:-1}}
+.yrail{position:relative;margin-top:6px}
+.yrail::before{content:"";position:absolute;left:13px;top:12px;bottom:12px;width:1.5px;background:rgba(201,165,114,.55)}
+.yrow{position:relative;display:block;width:100%;text-align:left;background:none;border:none;padding:13px 12px 13px 36px;border-radius:13px}
+.yrow .dot{position:absolute;left:7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:var(--cream);border:2px solid var(--gold)}
+.yrow .yy{display:block;font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--terra-deep)}
+.yrow .yl{display:block;font-size:16.5px;color:var(--ink);margin-top:3px;line-height:1.3}
+.yrow.on{background:#fff;box-shadow:0 12px 28px -16px rgba(44,37,32,.35)}
+.yrow.on .dot{background:var(--terra);border-color:var(--terra)}
+.yrow.on .yl{font-weight:700}
+.bphoto{position:relative;border-radius:16px;overflow:hidden;min-height:clamp(280px,40vw,480px);box-shadow:0 22px 44px -24px rgba(44,37,32,.45)}
+.bphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .3s ease}
+.bphoto .cap{position:absolute;left:0;right:0;bottom:0;padding:48px 20px 15px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.78));color:#FBF3E4;font-size:16.5px;font-style:italic}
+
+/* service */
+.svcroom{max-width:620px;margin:0 auto}
+.bigcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 24px;text-align:center;box-shadow:0 12px 26px -18px rgba(44,37,32,.3)}
+.bigcard+.bigcard{margin-top:14px;text-align:left}
+.bigcard .when{font-size:clamp(22px,2.4vw,28px);font-weight:800;margin-top:8px}
+.bigcard .where{font-size:16px;color:var(--ink-soft);margin-top:6px;line-height:1.6}
+.bigcard .share2{display:inline-block;background:var(--terra);color:#FBF6ED;border:none;border-radius:100px;padding:15px 30px;font-size:16.5px;font-weight:700;margin-top:16px}
+
+/* floating door + moderation */
+.fab{position:fixed;right:clamp(14px,3vw,34px);bottom:clamp(14px,3vw,26px);z-index:60;display:flex;align-items:center;gap:12px;background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:17px 26px;font-size:16.5px;font-weight:800;box-shadow:0 18px 38px -14px rgba(26,19,13,.65)}
+.fab span{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:400}
+.fab:hover{transform:translateY(-1px)}
+@media(max-width:640px){.fab{left:14px;right:14px;justify-content:space-between}}
+.modline{text-align:center;font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);padding:10px 16px 110px}
+
+/* leave a memory modal */
+.lmwrap{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;background:rgba(20,13,8,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.lmwrap.open{display:flex}
+@media(min-width:700px){.lmwrap{align-items:center}}
+.lm{width:min(560px,100%);max-height:92vh;overflow-y:auto;background:var(--cream);border-radius:22px 22px 0 0;padding:26px 24px 30px}
+@media(min-width:700px){.lm{border-radius:22px}}
+.lm h3{font-size:23px;font-weight:800}
+.lm .sub{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-top:6px}
+.lm label{display:block;font-weight:700;font-size:15px;margin:18px 0 7px}
+.lm label small{font-weight:400;color:var(--ink-soft);font-style:italic;font-size:13.5px}
+.lm input[type=text],.lm textarea,.lm select{width:100%;font-family:'Besley',serif;font-size:16.5px;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;padding:14px 15px;background:#fff;color:var(--ink)}
+.lm textarea{min-height:130px;resize:vertical;line-height:1.6}
+.lm input:focus,.lm textarea:focus,.lm select:focus{outline:3px solid rgba(168,124,95,.4)}
+.lm .addrow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.lm .ghost{flex:1;min-width:150px;background:#fff;border:1.5px dashed rgba(138,90,60,.5);border-radius:12px;padding:14px;font-size:14.5px;color:var(--terra-deep);font-weight:600}
+.lm .send{width:100%;background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:17px;font-size:17px;font-weight:800;margin-top:20px}
+.lm .send:hover{background:#000}
+.lm .cancel{width:100%;background:none;border:none;color:var(--ink-soft);font-size:14.5px;padding:13px;margin-top:4px;text-decoration:underline;text-underline-offset:3px}
+.lm .modnote{text-align:center;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep);margin-top:14px;line-height:1.8}
+.lm .done{display:none;text-align:center;padding:30px 6px 10px}
+.lm .done .bloom{font-size:40px}
+.lm .done h4{font-size:22px;font-weight:800;margin-top:12px}
+.lm .done p{color:var(--ink-soft);font-style:italic;margin-top:8px;font-size:15.5px}
+.lm.sent form{display:none}
+.lm.sent .done{display:block}
+
+/* viewing room */
+.vroom{position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;gap:10px;padding:24px;background:rgba(20,13,8,.92);backdrop-filter:blur(5px)}
+.vroom.open{display:flex}
+.vroom figure{margin:0;max-width:min(980px,90vw);text-align:center}
+.vroom img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:10px;box-shadow:0 40px 90px -30px #000}
+.vroom figcaption{font-style:italic;font-size:16px;color:#E8D5B5;margin-top:14px}
+.vroom .vx{position:absolute;top:14px;right:18px;min-width:46px;min-height:46px;background:none;border:none;color:#fff;font-size:26px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.vroom .vn{min-width:46px;min-height:46px;background:none;border:none;color:#fff;font-size:34px;opacity:.85;text-shadow:0 2px 8px rgba(0,0,0,.6);flex:none}
+.vroom .vn:hover{opacity:1}
+
+/* footer */
+.foot{background:linear-gradient(180deg,#2a1c11,#1c120a);color:#cdbea4;padding:52px clamp(20px,5vw,60px) 24px}
+.foot .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;max-width:1040px;margin:0 auto}
+@media(max-width:760px){.foot .cols{grid-template-columns:1fr 1fr}.foot .brand{grid-column:1/-1}}
+.foot .fm{font-weight:700;font-size:19px;color:#F5EBD9}
+.foot .fm em{color:var(--gold);font-style:italic}
+.foot .pl{font-style:italic;font-size:14.5px;color:#CDBEA4;margin-top:10px;max-width:30ch;line-height:1.6}
+.foot .h{font-variant-caps:all-small-caps;letter-spacing:.14em;font-weight:700;font-size:15px;color:var(--gold);margin-bottom:11px}
+.foot a{display:block;color:#E8DCC8;text-decoration:none;font-size:15px;margin-bottom:9px}
+.foot a:hover{color:#F4B860}
+.foot .bar{max-width:1040px;margin:40px auto 0;padding-top:16px;border-top:1px solid rgba(201,165,114,.22);display:flex;justify-content:space-between;gap:12px;font-variant-caps:all-small-caps;letter-spacing:.14em;font-size:13px;color:#9d8a6e}
+@media(prefers-reduced-motion:reduce){.today img,.bphoto img,.phpage{transition:none}}
+</style>
+</head>
+<body>
+
+<!-- TOP TOOLBAR -->
+<div class="topbar" id="topbar">
+  <a class="brand" href="https://imissyoumemorial.com" target="_blank" rel="noopener noreferrer">
+    <img class="mk-rev" src="https://imissyoumemorial.com/brand/imy-mark-reversed.svg" alt=""/>
+    <img class="mk-ink" src="https://imissyoumemorial.com/brand/imy-mark.svg" alt=""/>
+    <span class="wm">I <em>Miss</em> You Memorial</span>
+  </a>
+  <nav aria-label="I Miss You Memorial">
+    <a href="https://imissyoumemorial.com" target="_blank" rel="noopener noreferrer">Remember</a>
+    <a href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">Example</a>
+    <a href="https://imissyoumemorial.com/#how" target="_blank" rel="noopener noreferrer">How it works</a>
+    <a href="https://imissyoumemorial.com/pricing" target="_blank" rel="noopener noreferrer">Pricing</a>
+  </nav>
+  <div class="tacts">
+    <a class="login" href="https://imissyoumemorial.com/login" target="_blank" rel="noopener noreferrer">Log in</a>
+    <a class="start" href="https://imissyoumemorial.com/onboarding" target="_blank" rel="noopener noreferrer">Start a tribute</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor in her kitchen, waving"/>
+  <div class="grade"></div>
+  <div class="glass">
+    <h1>Eleanor Margaret <em>Hayes</em></h1>
+    <div class="dates">MARCH 12, 1948 — OCTOBER 22, 2024 · HALF MOON BAY, CA</div>
+    <div class="qt">&ldquo;Put the kettle on, sit in the garden, and notice something lovely. I&rsquo;ll be in all of it.&rdquo;</div>
+  </div>
+</header>
+<!-- THE RIBBON · tabs · visits · share -->
+<nav class="ribbon" role="tablist" aria-label="Her page">
+  <div class="rtabs">
+    <button class="tab on" data-room="mem" role="tab" aria-selected="true">Memories</button>
+    <button class="tab" data-room="pho" role="tab" aria-selected="false">Photos</button>
+    <button class="tab" data-room="life" role="tab" aria-selected="false">Her life</button>
+    <button class="tab" data-room="svc" role="tab" aria-selected="false">Service</button>
+  </div>
+  <div class="visits">♥ <span id="visN">12,438</span> people have visited her page</div>
+  <button class="rshare" id="shareBtn" type="button">Share ↗</button>
+</nav>
+
+<!-- MEMORIES -->
+<main>
+<section class="room on" id="room-mem">
+  <div class="stagewings" id="stageWings">
+    <button class="scard wing" id="wingL" type="button" aria-label="Previous moment"><img id="wLi" src="" alt=""/><div class="scap"><div class="tk" id="wLk"></div><div class="tt" id="wLt"></div></div></button>
+    <button class="scard stage" id="stageC" type="button" aria-label="Open this moment"><img id="sCi" src="" alt=""/><div class="scap"><div class="tk" id="sCk"></div><div class="tt" id="sCt"></div><p class="ts" id="sCs"></p></div></button>
+    <button class="scard wing" id="wingR" type="button" aria-label="Next moment"><img id="wRi" src="" alt=""/><div class="scap"><div class="tk" id="wRk"></div><div class="tt" id="wRt"></div></div></button>
+  </div>
+  <div class="swhint">her moments · they turn on their own · tap a wing to walk them</div>
+  <div class="chips chips-center" id="chips"></div>
+  <div class="stream" id="stream"></div>
+  <button class="door" id="allMemDoor" type="button">All ten memories · grouped by who knew her <span>every one is kept</span></button>
+  <div class="river" aria-label="Every memory, passing by"><div class="rtrack" id="memRiver"></div></div>
+</section>
+
+<!-- PHOTOS -->
+<section class="room" id="room-pho">
+  <div class="phpages" id="phPages"></div>
+  <button class="door" id="allPhDoor" type="button">All 11 photographs · her life in chapters <span>1948 → 2024 · tap any photo</span></button>
+  <div class="allgrid" id="allGrid"></div>
+</section>
+
+<!-- HER LIFE -->
+<section class="room" id="room-life">
+  <div class="railline"></div>
+  <div class="lifewrap">
+    <button class="arrowbtn" id="chL" type="button" aria-label="Earlier chapters">‹</button>
+    <div class="chrail" id="chRail"></div>
+    <button class="arrowbtn" id="chR" type="button" aria-label="Later chapters">›</button>
+  </div>
+  <div class="book">
+    <div>
+      <div class="kick" style="margin:4px 2px 6px">Year by year · tap a moment</div>
+      <div class="yrail" id="yRail"></div>
+    </div>
+    <div class="bphoto"><img id="bImg" src="" alt=""/><div class="cap" id="bCap"></div></div>
+  </div>
+</section>
+
+<!-- SERVICE -->
+<section class="room" id="room-svc">
+  <div class="svcroom">
+    <div class="bigcard">
+      <div class="kick">Celebration of life</div>
+      <div class="when">June 13, 2026 · 6:00 PM</div>
+      <div class="where">Linden Community Chapel<br/>142 Seaside Avenue, Half Moon Bay, CA</div>
+      <button class="share2" type="button" onclick="document.getElementById('shareBtn').click()">Share the date ↗</button>
+    </div>
+    <div class="bigcard">
+      <b style="font-size:17px">Getting there</b>
+      <p style="font-size:15px;color:var(--ink-soft);margin-top:6px">Parking behind the chapel · the family gathers at 5:30 · the garden gate stays open after</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<button class="fab" id="fab" type="button">＋ Leave a memory <span>a photo · a message · their voice</span></button>
+<div class="modline">every word waits for the family before it appears</div>
+
+<!-- LEAVE A MEMORY -->
+<div class="lmwrap" id="lmWrap" role="dialog" aria-modal="true" aria-label="Leave a memory">
+  <div class="lm" id="lm">
+    <form id="lmForm">
+      <h3>Leave a memory of Eleanor</h3>
+      <div class="sub">no account needed · it takes about a minute</div>
+      <label for="lmName">Your name <small>· and how you knew her</small></label>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:10px">
+        <input type="text" id="lmName" placeholder="Ruth Alvarez" required/>
+        <select id="lmRel" aria-label="How you knew her"><option>Family</option><option>Friend</option><option>Neighbour</option><option>Her student</option><option>Another way</option></select>
+      </div>
+      <label for="lmTitle">Give it a title <small>· like a line from a letter</small></label>
+      <input type="text" id="lmTitle" placeholder="Fifty years of Tuesdays" required/>
+      <label for="lmStory">The whole story <small>· take all the room you need</small></label>
+      <textarea id="lmStory" placeholder="What do you remember?" required></textarea>
+      <div class="addrow">
+        <button class="ghost" type="button" id="lmPhoto">＋ Add photos · up to 4</button>
+        <input type="file" id="lmFile" accept="image/*" multiple hidden/>
+        <button class="ghost" type="button">＋ Add a voice memory</button>
+      </div>
+      <button class="send" type="submit">Share it with the family</button>
+      <button class="cancel" type="button" id="lmCancel">Not right now</button>
+      <div class="modnote">every word waits for the family before it appears ·<br/>nothing is ever taken down without them</div>
+    </form>
+    <div class="done">
+      <div class="bloom">✿</div>
+      <h4>It's with the family now.</h4>
+      <p>Your memory is safe. The moment they welcome it, it joins her wall — and they'll know it came from you.</p>
+      <button class="send" type="button" id="lmClose" style="max-width:280px">Back to her page</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE HER PAGE -->
+<div class="shwrap" id="shWrap" role="dialog" aria-modal="true" aria-label="Share her page">
+  <div class="sh">
+    <div class="shk">Share her page <button class="shx" id="shX" type="button" aria-label="Close">✕</button></div>
+    <div class="flyer" id="flyer"><div class="inner">
+      <div class="ilm">In loving memory</div>
+      <div class="arch"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></div>
+      <h5>Eleanor Margaret Hayes</h5>
+      <div class="fd">1948 · 2024</div>
+      <div class="join">Join us to remember</div>
+      <div class="when">June 13, 2026 · 6:00 PM</div>
+      <div class="where"><b>Linden Community Chapel</b><br/>142 Seaside Avenue, Half Moon Bay, CA 94019</div>
+      <div class="qrrow"><img src="https://api.qrserver.com/v1/create-qr-code/?size=172x172&color=2C2520&bgcolor=FBF6EC&data=https%3A%2F%2Feleanor.imissyoumemorial.com" alt="QR code to her page"/><p>scan to visit · leave a memory, a photo, a kind word</p></div>
+      <div class="wm">I <em>Miss</em> You Memorial</div>
+    </div></div>
+    <div class="shacts">
+      <button class="solid" id="shText" type="button">Send by text</button>
+      <button class="ghosty" id="shPrint" type="button">Download</button>
+      <button class="ghosty" id="shCopy" type="button">Copy the link</button>
+    </div>
+    <div class="shnote">the code on the flyer opens eleanor.imissyoumemorial.com ·<br/>after the service, the flyer quietly becomes her page&rsquo;s card</div>
+  </div>
+</div>
+
+<!-- VIEWING ROOM -->
+<div class="vroom" id="vRoom" role="dialog" aria-modal="true" aria-label="Photo viewing room">
+  <button class="vn" id="vPrev" aria-label="Previous">‹</button>
+  <figure><img id="vImg" src="" alt=""/><figcaption id="vCap"></figcaption></figure>
+  <button class="vn" id="vNext" aria-label="Next">›</button>
+  <button class="vx" id="vX" aria-label="Close">✕</button>
+</div>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="cols">
+    <div class="brand">
+      <div class="fm">I <em>Miss</em> You Memorial</div>
+      <p class="pl">Every tribute stays online. We never charge a family to keep a memory alive.</p>
+    </div>
+    <div><div class="h">Begin</div><a href="https://imissyoumemorial.com/onboarding" target="_blank" rel="noopener noreferrer">Create a tribute</a><a href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">See Eleanor's page</a><a href="#" onclick="return false">Give this page</a></div>
+    <div><div class="h">Plans</div><a href="https://imissyoumemorial.com/pricing" target="_blank" rel="noopener noreferrer">Free</a><a href="https://imissyoumemorial.com/pricing" target="_blank" rel="noopener noreferrer">Plus</a><a href="https://imissyoumemorial.com/concierge" target="_blank" rel="noopener noreferrer">Concierge</a></div>
+    <div><div class="h">Care</div><a href="https://imissyoumemorial.com/contact" target="_blank" rel="noopener noreferrer">Contact us</a><a href="https://imissyoumemorial.com/privacy" target="_blank" rel="noopener noreferrer">Privacy</a><a href="https://imissyoumemorial.com/terms" target="_blank" rel="noopener noreferrer">Terms</a></div>
+  </div>
+  <div class="bar"><span>© I Miss You Memorial</span><span>Made with love</span></div>
+</footer>
+
+<script>
+var P='https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-';
+var M='https://imissyoumemorial.com/art/mem-demo/';
+var REDUCE=false;try{REDUCE=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+
+/* ── top toolbar · clear over her, solid past the photograph ── */
+(function(){
+  var tb=document.getElementById('topbar');
+  function sync(){tb.classList.toggle('solid',window.scrollY>48)}
+  addEventListener('scroll',sync,{passive:true});sync();
+})();
+
+/* ── tabs ── */
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');x.setAttribute('aria-selected','false')});
+    document.querySelectorAll('.room').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');t.setAttribute('aria-selected','true');
+    document.getElementById('room-'+t.dataset.room).classList.add('on');
+  });
+});
+
+/* ── her moments · the stage and the wings ── */
+var TODAY=[
+ {img:P+'2019.jpg',k:'around 2019 · from her photographs',t:'First light over the garden',s:'She was out there before the kettle finished — every morning, rain or fog. The roses never stood a chance of being anyone else\u2019s.'},
+ {img:M+'ruth-with.webp',k:'remembered by Ruth · her friend',t:'Fifty years of Tuesdays',s:'Tea at the garden gate, every week since 1974. Nobody tells you that\u2019s what friendship is — until the Tuesdays stop.'},
+ {img:P+'1989.jpg',k:'around 1989 · placed by the family',t:'The chairs multiplied',s:'Thanksgiving, the year everyone came. She counted twenty-three and put the leaf in the table like it was nothing.'},
+ {img:M+'daniel-with.webp',k:'remembered by Daniel · her son',t:'The quiet before everyone arrived',s:'She taught me the best part of any gathering was the half hour before it. I still show up early, just to feel close to her.'},
+ {img:P+'hands.jpg',k:'around 2015 · from her photographs',t:'Her hands, always working',s:'Dough, dirt, yarn, a grandchild\u2019s shoelaces. Nobody remembers them still.'},
+ {img:M+'miguel-with.webp',k:'remembered by Miguel · a neighbour',t:'The harvest over the fence',s:'Every August, tomatoes appeared on our porch. We never once caught her doing it.'}
+];
+var ti=0;
+function md(n){return ((n%TODAY.length)+TODAY.length)%TODAY.length}
+function setSlot(pre,m,fade){
+  var img=document.getElementById(pre+'i');
+  if(fade&&!REDUCE){img.style.opacity=0;setTimeout(function(){img.src=m.img;img.style.opacity=1},300)}
+  else img.src=m.img;
+  document.getElementById(pre+'k').textContent=m.k;
+  document.getElementById(pre+'t').textContent=m.t;
+}
+function renderMoments(fade){
+  setSlot('wL',TODAY[md(ti-1)],fade);
+  setSlot('sC',TODAY[md(ti)],fade);
+  setSlot('wR',TODAY[md(ti+1)],fade);
+  document.getElementById('sCs').textContent=TODAY[md(ti)].s;
+}
+renderMoments(false);
+document.getElementById('wingL').addEventListener('click',function(){ti=md(ti-1);renderMoments(true)});
+document.getElementById('wingR').addEventListener('click',function(){ti=md(ti+1);renderMoments(true)});
+document.getElementById('stageC').addEventListener('click',function(){
+  var m=TODAY[md(ti)];vImg.src=m.img;vCap.textContent=m.t+' — '+m.s;
+  vRoom.classList.add('open');document.body.style.overflow='hidden';
+});
+if(!REDUCE){
+  var thov=false,sw=document.getElementById('stageWings');
+  ['mouseenter','touchstart','focusin'].forEach(function(ev){sw.addEventListener(ev,function(){thov=true},{passive:true})});
+  sw.addEventListener('mouseleave',function(){thov=false});
+  setInterval(function(){if(!thov&&!document.hidden&&document.getElementById('room-mem').classList.contains('on')){ti=md(ti+1);renderMoments(true)}},4500);
+}
+
+/* ── the stream ── */
+var MEMS=[
+ {av:M+'ruth-portrait.webp',n:'Ruth',r:'her friend · 2 hours ago',rel:'friends',ph:M+'ruth-with.webp',t:'Fifty years of Tuesdays',b:'"Fifty years of Tuesdays. Nobody tells you that\u2019s what friendship is — until the Tuesdays stop."',h:12,c:[['S','<b>Sarah</b> · She talked about your Tuesdays all the time, Ruth.'],['D','<b>Daniel</b> · Thank you for every one of them.']]},
+ {av:M+'rebecca-portrait.webp',n:'Sarah',r:'her granddaughter · Monday',rel:'family',ph:P+'1988.jpg',t:'Cinnamon rolls at five in the morning',b:'"She woke me at five to make cinnamon rolls. I complained every time. I\u2019d give anything for one more morning."',h:25,c:[['R','<b>Ruth</b> · She saved you the middle one, always.'],['T','<b>Tom</b> · She brought those to Room 12 once. Legendary.']]},
+ {av:M+'daniel-portrait.webp',n:'Daniel',r:'her son · Tuesday',rel:'family',ph:M+'daniel-with.webp',t:'The quiet before everyone arrived',b:'"She taught me that the best part of any gathering was the quiet before everyone arrived. I still show up early, just to feel close to her."',h:19,c:[['M','<b>Marie</b> · That was her hour. You have it now.']]},
+ {av:M+'tom-portrait.webp',n:'Tom',r:'her student · yesterday',rel:'students',t:'Miss Hayes taught me to read',voice:'0:37',h:8,c:[['S','<b>Sarah</b> · Grandma kept your class photo on the fridge, Tom.']]},
+ {av:M+'miguel-portrait.webp',n:'Miguel',r:'a neighbour · last week',rel:'neighbors',ph:M+'miguel-with.webp',t:'The harvest over the fence',b:'"Every August, tomatoes appeared on our porch. We never once caught her doing it."',h:14,c:[],hide:true},
+ {av:M+'ruth-portrait.webp',n:'Marie',r:'a neighbour · last week',rel:'neighbors',ph:P+'2016.jpg',t:'She made the world feel gentler',b:'"Every child on the street learned to plant something in her garden. She made the world feel a little gentler."',h:25,c:[['D','<b>Daniel</b> · The street misses her too.']],hide:true}
+];
+var stream=document.getElementById('stream');
+MEMS.forEach(function(m,idx){
+  var card=document.createElement('div');card.className='memcard';card.dataset.rel=m.rel;if(m.hide){card.style.display='none';card.dataset.extra='1'}
+  var inner='';
+  if(m.ph)inner+='<button class="snap" type="button" data-src="'+m.ph+'" data-cap="together · '+m.n+'"><img loading="lazy" src="'+m.ph+'" alt="together"/><span>together</span></button>';
+  inner+='<div class="who"><img src="'+m.av+'" alt=""/><div><b>'+m.n+'</b><span>'+m.r+'</span></div></div><span class="mt">'+m.t+'</span>';
+  if(m.voice){inner+='<div style="display:flex;align-items:center;gap:10px;background:#F6F0E2;border-radius:11px;padding:13px 14px"><button type="button" aria-label="Play voice memory" style="width:40px;height:40px;border-radius:50%;background:var(--terra);color:#fff;border:none;font-size:15px">▶</button><div style="flex:1;height:17px;background:repeating-linear-gradient(90deg,var(--gold) 0 2px,transparent 2px 5px);border-radius:3px;opacity:.6"></div><span class="mono" style="font-size:11px;color:var(--terra-deep)">'+m.voice+'</span></div><p class="body" style="margin-top:9px;font-size:13px;color:var(--ink-soft)">a voice, kept</p>'}
+  else{inner+='<p class="body">'+m.b+'</p>'}
+  inner+='<div class="acts"><button type="button" class="heart">♥ <b>'+m.h+'</b></button><button type="button" class="ctog">💬 '+m.c.length+(m.c.length===1?' comment':' comments')+'</button></div>';
+  inner+='<div class="cmts">'+m.c.map(function(c){return '<div class="cmt"><div class="cav">'+c[0]+'</div><p>'+c[1]+'</p></div>'}).join('')+'<div class="cmtrow"><input type="text" placeholder="Leave a kind word…" aria-label="Leave a kind word"/><button type="button">Send</button></div></div>';
+  card.innerHTML=inner;
+  var hb=card.querySelector('.heart'),hearted=false;
+  hb.addEventListener('click',function(){hearted=!hearted;m.h+=hearted?1:-1;hb.classList.toggle('hearted',hearted);hb.innerHTML='♥ <b>'+m.h+'</b>'});
+  card.querySelector('.ctog').addEventListener('click',function(){card.querySelector('.cmts').classList.toggle('open')});
+  var ci=card.querySelector('.cmtrow input'),cb=card.querySelector('.cmtrow button');
+  function addC(){var v=ci.value.trim();if(!v)return;var d=document.createElement('div');d.className='cmt';d.innerHTML='<div class="cav">Y</div><p><b>You</b> · '+v.replace(/</g,'&lt;')+' <i style="font-style:normal;font-family:\'Sometype Mono\',monospace;font-size:9px;color:var(--terra-deep)">· waiting for the family</i></p>';card.querySelector('.cmtrow').before(d);ci.value=''}
+  cb.addEventListener('click',addC);
+  ci.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addC()}});
+  stream.appendChild(card);
+});
+/* the river · every memory as one passing line */
+(function(){
+  var lines=MEMS.map(function(m){var q=m.voice?('a voice, kept · '+m.t):(m.b||'').replace(/^"|"$/g,'');if(q.length>64)q=q.slice(0,64)+'…';return [q,m.n]});
+  var tr=document.getElementById('memRiver');
+  tr.innerHTML=lines.concat(lines).map(function(l){return '<span class="rq">\u201c'+l[0]+'\u201d<b>— '+l[1]+'</b></span>'}).join('');
+})();
+/* relation chips · everyone is kept, grouped by who knew her */
+var CHIPS=[['everyone','Everyone'],['family','Family'],['friends','Friends'],['neighbors','Neighbors'],['students','Her students']];
+var chipbar=document.getElementById('chips');
+function chipCount(k){return k==='everyone'?MEMS.length:MEMS.filter(function(m){return m.rel===k}).length}
+CHIPS.forEach(function(cdef,i){
+  var b=document.createElement('button');b.type='button';b.className='chip'+(i===0?' on':'');
+  b.innerHTML=cdef[1]+'<b>'+chipCount(cdef[0])+'</b>';
+  b.addEventListener('click',function(){
+    chipbar.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    var k=cdef[0];
+    stream.querySelectorAll('.memcard').forEach(function(card,j){
+      if(k==='everyone'){card.style.display=card.dataset.extra?'none':''}
+      else{card.style.display=card.dataset.rel===k?'':'none'}
+    });
+    document.getElementById('allMemDoor').style.display=k==='everyone'?'':'none';
+  });
+  chipbar.appendChild(b);
+});
+document.getElementById('allMemDoor').addEventListener('click',function(){
+  var extra=stream.querySelectorAll('[data-extra]');
+  var open=extra[0]&&extra[0].style.display==='none';
+  extra.forEach(function(x){x.style.display=open?'':'none'});
+  this.firstChild.textContent=open?'Showing everyone · newest first ':'All ten memories · grouped by who knew her ';
+});
+
+/* ── photos ── */
+var PHOTOS=[
+ {src:M+'ruth-with.webp',cap:'At the garden gate',f:1.4},
+ {src:P+'1988.jpg',cap:'Flour everywhere, always · around 1988',f:1},
+ {src:P+'2005.jpg',cap:'Dahlias, given away over the fence · 2005',f:1.2},
+ {src:P+'hands.jpg',cap:'Her hands, always working',f:1},
+ {src:M+'rebecca-with.webp',cap:'Among her roses',f:1.3},
+ {src:P+'1989.jpg',cap:'The chairs multiplied · 1989',f:1},
+ {src:P+'1995.jpg',cap:'One good afternoon · 1995',f:1.1},
+ {src:P+'2016.jpg',cap:'Caught planting, mid-sentence · 2016',f:1.2},
+ {src:P+'2019.jpg',cap:'Still hers · 2019',f:1},
+ {src:M+'daniel-with.webp',cap:'Early morning',f:1.4},
+ {src:M+'miguel-with.webp',cap:'The harvest, shared · every August',f:1.2}
+];
+function phButton(p,i,h){return '<button class="ph" data-vi="'+i+'" style="flex:'+p.f+';height:'+h+'" aria-label="'+p.cap+'"><img loading="lazy" src="'+p.src+'" alt="'+p.cap+'"/></button>'}
+var pages=[[0,1,2,3,4,5],[6,7,8,9,10,0]];
+var pp=document.getElementById('phPages');
+pages.forEach(function(pg,pi){
+  var d=document.createElement('div');d.className='phpage'+(pi===0?' on':'');
+  d.innerHTML='<div class="prow" style="height:54%">'+pg.slice(0,3).map(function(i){return phButton(PHOTOS[i],i,'100%')}).join('')+'</div>'+
+              '<div class="prow" style="height:calc(46% - 9px)">'+pg.slice(3,6).map(function(i){return phButton(PHOTOS[i],i,'100%')}).join('')+'</div>';
+  pp.appendChild(d);
+});
+if(!REDUCE){
+  var phov=false,pi=0;
+  ['mouseenter','touchstart','focusin'].forEach(function(ev){pp.addEventListener(ev,function(){phov=true},{passive:true})});
+  pp.addEventListener('mouseleave',function(){phov=false});
+  setInterval(function(){if(phov||document.hidden||!document.getElementById('room-pho').classList.contains('on'))return;
+    var pgs=pp.querySelectorAll('.phpage');pi=(pi+1)%pgs.length;pgs.forEach(function(g,j){g.classList.toggle('on',j===pi)})},2400);
+}
+var allGrid=document.getElementById('allGrid');
+(function(){
+  var rows=[[0,1,2],[3,4,5,6],[7,8,9],[10,1,4]];
+  allGrid.innerHTML=rows.map(function(r){return '<div class="prow">'+r.map(function(i){return phButton(PHOTOS[i],i,'100%')}).join('')+'</div>'}).join('');
+})();
+document.getElementById('allPhDoor').addEventListener('click',function(){
+  var open=!allGrid.classList.contains('open');
+  allGrid.classList.toggle('open',open);
+  this.firstChild.textContent=open?'Close the album ':'All 11 photographs · her life in chapters ';
+});
+/* viewing room */
+var vRoom=document.getElementById('vRoom'),vImg=document.getElementById('vImg'),vCap=document.getElementById('vCap'),vi=0;
+function vOpen(i){vi=i;vImg.src=PHOTOS[vi].src;vCap.textContent=PHOTOS[vi].cap;vRoom.classList.add('open');document.body.style.overflow='hidden'}
+function vShut(){vRoom.classList.remove('open');document.body.style.overflow=''}
+function vStep(d){vi=((vi+d)%PHOTOS.length+PHOTOS.length)%PHOTOS.length;vImg.src=PHOTOS[vi].src;vCap.textContent=PHOTOS[vi].cap}
+document.addEventListener('click',function(e){var b=e.target.closest('.ph');if(b){vOpen(+b.dataset.vi);return}
+  var s=e.target.closest('.snap');if(s){vImg.src=s.dataset.src;vCap.textContent=s.dataset.cap;vRoom.classList.add('open');document.body.style.overflow='hidden'}});
+document.getElementById('vX').addEventListener('click',vShut);
+document.getElementById('vPrev').addEventListener('click',function(){vStep(-1)});
+document.getElementById('vNext').addEventListener('click',function(){vStep(1)});
+vRoom.addEventListener('click',function(e){if(e.target===vRoom)vShut()});
+
+/* ── her life ── */
+var CH=[
+ {era:'1948 → 1966',t:'The girl by the sea',cover:P+'1988.jpg',ms:[
+   {y:'1948',l:'Born in Half Moon Bay',img:P+'1988.jpg',cap:'Born in Half Moon Bay'},
+   {y:'1954',l:'Started at Ocean Shore School',img:P+'1989.jpg',cap:'Walking the little ones to school'},
+   {y:'1959',l:'First job, at eleven',img:P+'hands.jpg',cap:'Cinnamon at five in the morning'},
+   {y:'1966',l:'Graduated Half Moon Bay High',img:M+'ruth-with.webp',cap:'The beach before school'}]},
+ {era:'1970 → 2009',t:'The teacher',cover:P+'1989.jpg',ms:[
+   {y:'1970',l:'Room 12, Ocean Shore Elementary',img:P+'1995.jpg',cap:'Room 12, September'},
+   {y:'1971',l:'The morning she left for teachers college',img:P+'1997.jpg',cap:'The morning she left'},
+   {y:'1997',l:'A thousand students and counting',img:P+'2005.jpg',cap:'Twenty-seven years in'},
+   {y:'2009',l:'The last first day of school',img:M+'tom-with.webp',cap:'The last first day'}]},
+ {era:'1972 → 2015',t:'The kitchen',cover:P+'hands.jpg',ms:[
+   {y:'1972',l:'The sourdough starter arrives',img:P+'hands.jpg',cap:'Her hands, always working'},
+   {y:'1988',l:'Cinnamon at five in the morning',img:P+'1988.jpg',cap:'Flour everywhere, always'},
+   {y:'2005',l:'Feeding anyone who came to the door',img:P+'2008.jpg',cap:'The chairs multiplied'},
+   {y:'2015',l:'The recipe cards, handed down',img:M+'daniel-with.webp',cap:'Handed down, one by one'}]},
+ {era:'1993 → 2018',t:'The garden',cover:M+'rebecca-with.webp',ms:[
+   {y:'1993',l:'The first June rows',img:M+'rebecca-with.webp',cap:'The June rows'},
+   {y:'2005',l:'Dahlias, given away over the fence',img:P+'2005.jpg',cap:'Dahlias, given away'},
+   {y:'2016',l:'Every child on the street planted something',img:P+'2016.jpg',cap:'Caught planting, mid-sentence'},
+   {y:'2018',l:'First light, as always',img:P+'2019.jpg',cap:'First light over the garden'}]}
+];
+CH.push(
+ {era:'1967 → 1971',t:'Teachers college',cover:P+'1997.jpg',ms:[
+   {y:'1967',l:'The Greyhound out of town',img:P+'1997.jpg',cap:'The morning she left'},
+   {y:'1969',l:'Student teaching, first classroom',img:P+'1995.jpg',cap:'Room of her own'},
+   {y:'1971',l:'The diploma, framed by her mother',img:P+'hands.jpg',cap:'Hands that earned it'}]},
+ {era:'1976 → 1990',t:'The young family',cover:M+'daniel-with.webp',ms:[
+   {y:'1976',l:'The house on Seaside Avenue',img:M+'daniel-with.webp',cap:'Home, begun'},
+   {y:'1982',l:'Two children, four bikes',img:P+'1989.jpg',cap:'The chairs multiplied'},
+   {y:'1990',l:'The kitchen table years',img:P+'1988.jpg',cap:'Flour everywhere, always'}]},
+ {era:'1998 → 2020',t:'The Tuesday teas',cover:M+'ruth-with.webp',ms:[
+   {y:'1998',l:'Ruth moves in next door',img:M+'ruth-with.webp',cap:'The garden gate opens'},
+   {y:'2010',l:'Tea, every single Tuesday',img:P+'2010.jpg',cap:'Late summer, 2010'},
+   {y:'2020',l:'Tea by phone, that strange spring',img:P+'2016.jpg',cap:'Still Tuesdays'}]},
+ {era:'2019 → 2024',t:'Still hers',cover:P+'2019.jpg',ms:[
+   {y:'2019',l:'First light, as always',img:P+'2019.jpg',cap:'First light over the garden'},
+   {y:'2022',l:'The great-grandchild visits',img:M+'rebecca-with.webp',cap:'Among her roses'},
+   {y:'2024',l:'October, the garden resting',img:P+'2016.jpg',cap:'The garden, kept'}]}
+);
+var chRail=document.getElementById('chRail'),yRail=document.getElementById('yRail'),bImg=document.getElementById('bImg'),bCap=document.getElementById('bCap');
+document.getElementById('chL').addEventListener('click',function(){chRail.scrollBy({left:-chRail.clientWidth,behavior:'smooth'})});
+document.getElementById('chR').addEventListener('click',function(){chRail.scrollBy({left:chRail.clientWidth,behavior:'smooth'})});
+bImg.style.transition='opacity .3s ease';
+CH.forEach(function(c,i){
+  var b=document.createElement('button');b.type='button';b.className='chc'+(i===0?' on':'');
+  b.innerHTML='<img src="'+c.cover+'" alt=""/><span class="cy">'+c.era+'</span><b>'+c.t+'</b>';
+  b.addEventListener('click',function(){
+    chRail.querySelectorAll('.chc').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');renderChapter(i);
+  });
+  chRail.appendChild(b);
+});
+function setMoment(ci,mi){var m=CH[ci].ms[mi];
+  bImg.style.opacity=0;
+  setTimeout(function(){bImg.src=m.img;bCap.textContent=m.cap;bImg.style.opacity=1},REDUCE?0:260);
+  yRail.querySelectorAll('.yrow').forEach(function(r,j){r.classList.toggle('on',j===mi)});
+}
+function renderChapter(ci){
+  yRail.innerHTML='';
+  CH[ci].ms.forEach(function(m,j){
+    var b=document.createElement('button');b.type='button';b.className='yrow'+(j===0?' on':'');
+    b.innerHTML='<span class="dot"></span><span class="yy">'+m.y+'</span><span class="yl">'+m.l+'</span>';
+    b.addEventListener('click',function(){setMoment(ci,j)});
+    yRail.appendChild(b);
+  });
+  var m=CH[ci].ms[0];bImg.src=m.img;bCap.textContent=m.cap;
+}
+renderChapter(0);
+
+/* ── visits ── */
+if(!REDUCE){var vN=document.getElementById('visN'),vv=12438;
+  setInterval(function(){if(Math.random()<.5){vv++;vN.textContent=vv.toLocaleString()}},6000);}
+
+/* ── share her page · the flyer hub ── */
+var shWrap=document.getElementById('shWrap');
+function shOpen(){shWrap.classList.add('open');document.body.style.overflow='hidden'}
+function shShut(){shWrap.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('shareBtn').addEventListener('click',shOpen);
+document.getElementById('shX').addEventListener('click',shShut);
+shWrap.addEventListener('click',function(e){if(e.target===shWrap)shShut()});
+var SHURL='https://eleanor.imissyoumemorial.com';
+var SHTXT='Remembering Eleanor Margaret Hayes · leave a memory, a photo, a kind word · '+SHURL;
+document.getElementById('shText').addEventListener('click',function(){
+  if(navigator.share){navigator.share({title:'Eleanor Margaret Hayes',text:SHTXT,url:SHURL}).catch(function(){})}
+  else{location.href='sms:?&body='+encodeURIComponent(SHTXT)}
+});
+document.getElementById('shPrint').addEventListener('click',function(){window.print()});
+document.getElementById('shCopy').addEventListener('click',function(){
+  var b=this;try{navigator.clipboard.writeText(SHURL).then(function(){b.textContent='Copied ✓';setTimeout(function(){b.textContent='Copy the link'},1600)})}catch(e){}
+});
+
+/* ── leave a memory ── */
+var lmWrap=document.getElementById('lmWrap'),lm=document.getElementById('lm');
+function lmOpen(){lm.classList.remove('sent');document.getElementById('lmForm').reset();lmWrap.classList.add('open');document.body.style.overflow='hidden';document.getElementById('lmName').focus()}
+function lmShut(){lmWrap.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('fab').addEventListener('click',lmOpen);
+document.getElementById('lmCancel').addEventListener('click',lmShut);
+document.getElementById('lmClose').addEventListener('click',lmShut);
+lmWrap.addEventListener('click',function(e){if(e.target===lmWrap)lmShut()});
+document.getElementById('lmPhoto').addEventListener('click',function(){document.getElementById('lmFile').click()});
+document.getElementById('lmFile').addEventListener('change',function(){
+  if(this.files.length)document.getElementById('lmPhoto').textContent='✓ '+this.files.length+(this.files.length>1?' photos ready':' photo ready');
+});
+document.getElementById('lmForm').addEventListener('submit',function(e){e.preventDefault();lm.classList.add('sent')});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){if(vRoom.classList.contains('open'))vShut();else if(shWrap.classList.contains('open'))shShut();else if(lmWrap.classList.contains('open'))lmShut();
+    else if(window.parent!==window)window.parent.postMessage({type:'close-fullscreen'},'*')}
+  if(vRoom.classList.contains('open')){if(e.key==='ArrowLeft')vStep(-1);if(e.key==='ArrowRight')vStep(1)}
+});
+</script>
+</body>
+</html>

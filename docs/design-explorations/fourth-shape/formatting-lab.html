@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Formatting Lab · Three Problems × Five Variations · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Sometype+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --ink:#2C2520; --ink-soft:#5F574E;
+  --terra:#A87C5F; --terra-deep:#8A5A3C; --gold:#C9A572; --night:#1A130D;
+  --line:rgba(44,37,32,.14); --card:#FFFDF8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(18px,4.5vw,52px)}
+.lbl{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra-deep)}
+img{display:block}
+button{font-family:'Besley',serif;cursor:pointer}
+h2{font-size:clamp(25px,3.6vw,36px);font-weight:800;line-height:1.12;margin:10px 0 8px}
+h2 em{font-style:italic;color:var(--terra)}
+section{padding:clamp(40px,5.5vw,66px) 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:none}
+header{padding:clamp(50px,7vw,78px) 0 clamp(16px,2.5vw,28px);text-align:center}
+header h1{font-size:clamp(30px,4.8vw,48px);font-weight:800;line-height:1.06;margin:14px 0 12px}
+header h1 em{font-style:italic;color:var(--terra)}
+header p{max-width:60ch;margin:0 auto;font-style:italic;color:var(--ink-soft);font-size:16.5px}
+
+.var{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:22px;overflow:hidden}
+.var.pick{border:2px solid var(--terra)}
+.var .vh{padding:20px 24px 0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.var .vh .lbl{flex:none}
+.var .vh h3{font-size:20px;font-weight:800}
+.var .vh .pickbadge{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;background:var(--terra);color:#fff;border-radius:100px;padding:5px 12px;margin-left:auto}
+.var .vp{padding:4px 24px 0;font-size:14.5px;color:var(--ink-soft);max-width:76ch}
+.var .canvas{margin:16px 18px 0;background:#F4F1EA;border:1px solid var(--line);border-radius:12px;padding:clamp(14px,2.4vw,24px);overflow:hidden}
+.var .trade{display:flex;gap:14px;padding:14px 24px 20px;flex-wrap:wrap}
+.var .trade div{flex:1;min-width:240px;font-size:13.5px;color:var(--ink-soft)}
+.var .trade b{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:3px}
+.var .trade .w b{color:#5c7d58}.var .trade .c b{color:#B04A3A}
+
+/* shared mini pieces */
+.mchip{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-weight:700;font-size:14px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:100px;padding:8px 16px;color:var(--ink)}
+.mchip b{color:#B04A3A;margin-left:5px}
+.mchip.on{background:var(--night);color:var(--cream);border-color:var(--night)}
+.mchip.on b{color:#F0C88A}
+.arrowbtn{width:44px;height:44px;border-radius:50%;background:#fff;border:1.5px solid rgba(138,90,60,.45);font-size:18px;color:var(--ink);flex:none;box-shadow:0 2px 0 rgba(138,90,60,.25)}
+.arrowbtn:hover{border-color:var(--terra)}
+.chcard{flex:0 0 158px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;overflow:hidden;text-align:left;padding:0;box-shadow:0 2px 0 rgba(138,90,60,.25)}
+.chcard img{width:100%;height:72px;object-fit:cover}
+.chcard .cy{display:block;font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.12em;color:var(--terra-deep);padding:8px 11px 2px}
+.chcard b{font-size:12.5px;line-height:1.25;display:block;padding:0 11px 10px;color:var(--ink)}
+.chcard.on{border-color:var(--night);box-shadow:0 0 0 1.5px var(--night)}
+.minicard{background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px 15px;box-shadow:0 10px 22px -16px rgba(44,37,32,.3)}
+.minicard .who{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.minicard .who img{width:30px;height:30px;border-radius:50%;object-fit:cover}
+.minicard .who b{font-size:12.5px;display:block;line-height:1.1}
+.minicard .who span{font-family:'Sometype Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.minicard .mt{font-size:13.5px;font-weight:800;display:block;margin-bottom:3px}
+.minicard p{font-size:12px;line-height:1.5;font-style:italic;color:var(--ink-soft)}
+.minicard .acts{display:flex;gap:6px;margin-top:8px}
+.minicard .acts span{font-family:'Sometype Mono',monospace;font-size:8.5px;color:var(--terra-deep);background:#F6F0E2;border-radius:100px;padding:4px 10px}
+footer{padding:34px 0 64px;text-align:center}
+footer p{font-style:italic;color:var(--ink-soft);font-size:15.5px;max-width:58ch;margin:0 auto}
+
+/* ── A demos ── */
+.a1wrap{display:flex;align-items:center;gap:10px}
+.a1rail{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;flex:1;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);padding:6px 2px}
+.a1rail::-webkit-scrollbar{display:none}
+.a2grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:760px){.a2grid{grid-template-columns:repeat(2,1fr)}}
+.a2grid .chcard{flex:none;width:100%}
+.a3dec{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.a4line{position:relative;height:2px;background:linear-gradient(90deg,rgba(201,165,114,.3),var(--gold),rgba(201,165,114,.3));margin:34px 8px 40px}
+.a4line .nd{position:absolute;top:50%;transform:translate(-50%,-50%);background:none;border:none;padding:14px 6px}
+.a4line .nd i{display:block;width:13px;height:13px;border-radius:50%;background:var(--cream);border:2px solid var(--gold)}
+.a4line .nd span{position:absolute;top:100%;left:50%;transform:translateX(-50%);font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:var(--terra-deep);white-space:nowrap;margin-top:2px}
+.a4line .nd em{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-style:normal;font-size:11px;font-weight:700;white-space:nowrap;margin-bottom:4px;color:var(--ink-soft)}
+.a4line .nd.on i{background:var(--terra);border-color:var(--terra)}
+.a4line .nd.on em{color:var(--ink)}
+.a4card{display:grid;grid-template-columns:1fr 1.1fr;gap:14px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px;align-items:center}
+@media(max-width:680px){.a4card{grid-template-columns:1fr}}
+.a4card img{width:100%;height:140px;object-fit:cover;border-radius:9px}
+.a5{display:grid;grid-template-columns:1fr 1.1fr;gap:14px;align-items:start}
+@media(max-width:680px){.a5{grid-template-columns:1fr}}
+.a5 .acc{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.a5 .accrow{width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--line);padding:13px 15px;display:flex;gap:10px;align-items:baseline}
+.a5 .accrow:first-child{border-top:none}
+.a5 .accrow .cy{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--terra-deep);flex:none;width:86px}
+.a5 .accrow b{font-size:14px}
+.a5 .accrow.on{background:var(--cream-deep)}
+.a5 .accbody{display:none;padding:4px 15px 13px;font-size:12.5px;color:var(--ink-soft);line-height:1.8}
+.a5 .accbody.on{display:block}
+.a5 img{width:100%;height:230px;object-fit:cover;border-radius:12px}
+
+/* ── B demos ── */
+.b1stage{position:relative;border-radius:12px;overflow:hidden;height:220px}
+.b1stage img{width:100%;height:100%;object-fit:cover}
+.b1stage .cap{position:absolute;left:0;right:0;bottom:0;padding:36px 16px 12px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.82));color:#FBF3E4}
+.b1stage .cap .tk{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#F0C88A}
+.b1stage .cap .tt{font-size:17px;font-weight:800;margin-top:3px}
+.b1chips{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap}
+.b1cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:760px){.b1cards{grid-template-columns:1fr}}
+.river{overflow:hidden;margin-top:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.river .rtrack{display:flex;gap:34px;width:max-content;animation:rdrift 36s linear infinite}
+.river:hover .rtrack{animation-play-state:paused}
+@keyframes rdrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.river .rq{font-style:italic;font-size:13.5px;color:var(--ink-soft);white-space:nowrap}
+.river .rq b{font-style:normal;font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--terra-deep);margin-left:8px}
+@media(prefers-reduced-motion:reduce){.river .rtrack{animation:none}}
+.b2{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:12px;align-items:center}
+@media(max-width:760px){.b2{grid-template-columns:1fr}}
+.b2 .wing{opacity:.75;transform:scale(.94)}
+.b3page{display:flex;align-items:center;gap:12px}
+.b3cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1}
+@media(max-width:760px){.b3cards{grid-template-columns:1fr}}
+.b3dots{display:flex;gap:6px;justify-content:center;margin-top:12px}
+.b3dots i{width:8px;height:8px;border-radius:50%;background:#D8CFBB}
+.b3dots i.on{background:var(--terra)}
+.b4{display:grid;grid-template-columns:1fr 1.5fr;gap:14px;align-items:start}
+@media(max-width:680px){.b4{grid-template-columns:1fr}}
+.b4 .idx{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.b4 .idxrow{width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--line);padding:12px 14px}
+.b4 .idxrow:first-child{border-top:none}
+.b4 .idxrow b{font-size:13.5px;display:block}
+.b4 .idxrow span{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.b4 .idxrow.on{background:var(--cream-deep)}
+.b5grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:760px){.b5grid{grid-template-columns:1fr 1fr}}
+.b5q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 14px;text-align:left;cursor:pointer}
+.b5q .mt{font-size:13px;font-weight:800;display:block}
+.b5q p{font-size:11.5px;font-style:italic;color:var(--ink-soft);margin-top:3px}
+.b5q span{font-family:'Sometype Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep);display:block;margin-top:7px}
+
+/* ── C demos ── */
+.cmock{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.cmock .chero{position:relative;height:150px}
+.cmock .chero img{width:100%;height:100%;object-fit:cover}
+.cmock .cglass{position:absolute;left:12px;bottom:10px;background:rgba(30,22,14,.32);backdrop-filter:blur(8px);border:1px solid rgba(251,243,228,.25);border-radius:10px;padding:9px 13px;color:#FBF3E4}
+.cmock .cglass b{font-size:14px;display:block}
+.cmock .cglass b em{color:#F0C88A;font-style:italic}
+.cmock .cglass span{font-family:'Sometype Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:#F0E3C8}
+.cbar{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:11px}
+.cbar .cb{font-weight:700;font-size:10.5px;border:1px solid rgba(138,90,60,.45);background:#fff;border-radius:8px;padding:6px 12px;box-shadow:0 1.5px 0 rgba(138,90,60,.25)}
+.cbar .cb.on{background:var(--night);color:var(--cream);border-color:var(--night)}
+.cbar .mono2{font-family:'Sometype Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep)}
+.cbar .cshare{margin-left:auto;background:var(--terra);color:#fff;border:none;border-radius:100px;padding:6px 13px;font-size:10.5px;font-weight:700}
+.ccontent{display:flex;gap:8px;padding:10px 12px 12px}
+.ccontent .blk{border-radius:8px;background:#EDE6D3;flex:1;height:52px}
+.ccontent .blk.ph{background:linear-gradient(135deg,#d9d2c2,#a99c82)}
+.ctop{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(250,245,236,.97);border-bottom:1px solid var(--line);font-size:10px}
+.ctop .cwm{font-weight:700;font-size:11px}
+.ctop .cwm em{color:var(--terra);font-style:italic}
+.crail{display:flex;flex-direction:column;gap:6px;padding:10px 8px;background:rgba(250,245,236,.97);border-right:1px solid var(--line)}
+.crail .cb{font-size:9px;padding:7px 8px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="lbl">I Miss You Memorial · the formatting lab · desktop</span>
+    <h1>Three problems, <em>fifteen answers</em></h1>
+    <p>Every variation below is live at miniature scale — tap, scroll, and hover them. The ★ marks where I'd put my money, but each card carries its honest trade so we can decide together.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ═════════ PROBLEM A ═════════ -->
+<section>
+  <span class="lbl">problem a · her life</span>
+  <h2>Eight chapters, not <em>four</em></h2>
+  <p style="color:var(--ink-soft);max-width:74ch;font-size:15.5px">A full life easily carries 6–10 chapters. Here's the same rail populated with eight, formatted five ways.</p>
+
+  <div class="var pick">
+    <div class="vh"><span class="lbl">a1</span><h3>The arrow rail</h3><span class="pickbadge">★ my pick</span></div>
+    <p class="vp">The rail keeps its golden line, and honest ‹ › arrows page it one screenful at a time — the same manners as the memory arrows, so nothing new to learn. Edges fade to whisper "there's more."</p>
+    <div class="canvas">
+      <div class="a1wrap">
+        <button class="arrowbtn" id="a1L" aria-label="Earlier chapters">‹</button>
+        <div class="a1rail" id="a1rail"></div>
+        <button class="arrowbtn" id="a1R" aria-label="Later chapters">›</button>
+      </div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Scales to any number of chapters · arrows are visible, tappable, learned once</div><div class="c"><b>costs</b>Later chapters live "offstage" — the fade must be obvious enough to invite the arrow</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">a2</span><h3>The bookshelf</h3></div>
+    <p class="vp">No scrolling at all: chapters wrap into a quiet grid, every era visible at once like spines on a shelf. Tap one, the book opens below.</p>
+    <div class="canvas"><div class="a2grid" id="a2grid"></div></div>
+    <div class="trade"><div class="w"><b>wins</b>Zero hidden content — the whole life in one glance · calmest for older visitors</div><div class="c"><b>costs</b>Takes vertical room as chapters grow · loses the left-to-right "journey" feeling you love</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">a3</span><h3>The decade doors</h3></div>
+    <p class="vp">Decade pills above the rail — 1940s · 1970s · 1990s · 2010s. Tap a decade and the rail glides to those chapters. Arrows still work; decades are the express lane.</p>
+    <div class="canvas">
+      <div class="a3dec" id="a3dec"></div>
+      <div class="a1wrap"><div class="a1rail" id="a3rail"></div></div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Fast travel across a long life · reads like a timeline index</div><div class="c"><b>costs</b>Two navigation layers to understand — slightly more to learn</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">a4</span><h3>The stations line</h3></div>
+    <p class="vp">The chapters compress to stations on one golden line — era below, title above, no cards at all. Tap a station, the one big chapter card opens beneath. Maximum left-to-right, minimum furniture.</p>
+    <div class="canvas">
+      <div class="a4line" id="a4line"></div>
+      <div class="a4card"><img id="a4img" src="" alt=""/><div><div class="lbl" id="a4era"></div><b id="a4t" style="font-size:17px;display:block;margin:3px 0 6px"></b><p id="a4b" style="font-size:12.5px;color:var(--ink-soft);line-height:1.8"></p></div></div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>The purest timeline — the whole life is literally one line · elegant at any count</div><div class="c"><b>costs</b>Stations get tight past ~10 chapters · small tap targets need care on touch</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">a5</span><h3>The table of contents</h3></div>
+    <p class="vp">Chapters as a vertical contents column — era, title, expandable years — with the photograph answering on the right. Reads like the front of a book; nothing moves sideways at all.</p>
+    <div class="canvas"><div class="a5">
+      <div class="acc" id="a5acc"></div>
+      <img id="a5img" src="" alt=""/>
+    </div></div>
+    <div class="trade"><div class="w"><b>wins</b>Infinitely scalable · screen-reader and keyboard friendly by nature</div><div class="c"><b>costs</b>Abandons the horizontal journey entirely · tall with many chapters open</div></div>
+  </div>
+</section>
+
+<!-- ═════════ PROBLEM B ═════════ -->
+<section>
+  <span class="lbl">problem b · the memories room</span>
+  <h2>No more infinite <em>scroll</em></h2>
+  <p style="color:var(--ink-soft);max-width:74ch;font-size:15.5px">Your sketch, plus four alternates. Every one kills the endless feed and keeps photos, comments, and hearts first-class.</p>
+
+  <div class="var pick">
+    <div class="vh"><span class="lbl">b1</span><h3>Your sketch, built — the four-course room</h3><span class="pickbadge">★ my pick</span></div>
+    <p class="vp">Exactly as you described, top to bottom: the moment of hers takes the whole width like a scene · the chips sit centered beneath it · a finite row of full cards with snapshots, hearts, comments · and beneath, the river — every memory as a one-liner drifting left, pausable, tap any line to open it.</p>
+    <div class="canvas">
+      <div class="b1stage"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-2019.jpg" alt=""/><div class="cap"><div class="tk">a moment of hers · around 2019</div><div class="tt">First light over the garden</div></div></div>
+      <div class="b1chips"><button class="mchip on">Everyone<b>10</b></button><button class="mchip">Family<b>5</b></button><button class="mchip">Friends<b>1</b></button><button class="mchip">Neighbors<b>2</b></button><button class="mchip">Her students<b>2</b></button></div>
+      <div class="b1cards">
+        <div class="minicard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/ruth-portrait.webp" alt=""><div><b>Ruth</b><span>her friend</span></div></div><span class="mt">Fifty years of Tuesdays</span><p>"Nobody tells you that's what friendship is — until the Tuesdays stop."</p><div class="acts"><span>♥ 12</span><span>💬 2</span></div></div>
+        <div class="minicard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/rebecca-portrait.webp" alt=""><div><b>Sarah</b><span>her granddaughter</span></div></div><span class="mt">Cinnamon rolls at five</span><p>"I complained every time. I'd give anything for one more morning."</p><div class="acts"><span>♥ 25</span><span>💬 2</span></div></div>
+        <div class="minicard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/daniel-portrait.webp" alt=""><div><b>Daniel</b><span>her son</span></div></div><span class="mt">The quiet before everyone</span><p>"I still show up early, just to feel close to her."</p><div class="acts"><span>♥ 19</span><span>💬 1</span></div></div>
+      </div>
+      <div class="river"><div class="rtrack" id="b1river"></div></div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>One screen tells the whole story: her moment, the family map, the best words, and the living river · finite by design</div><div class="c"><b>costs</b>Which cards earn the featured row? Hearts decide — the rule must be quietly stated</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">b2</span><h3>The stage and the wings</h3></div>
+    <p class="vp">The moment holds center stage; the previous and next memories peek in from the wings, slightly faded. Everything advances together — one glance always shows three beats of her life.</p>
+    <div class="canvas"><div class="b2">
+      <div class="minicard wing"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/ruth-portrait.webp" alt=""><div><b>Ruth</b><span>her friend</span></div></div><span class="mt">Fifty years of Tuesdays</span><p>"…until the Tuesdays stop."</p></div>
+      <div class="b1stage" style="height:190px"><img src="https://imissyoumemorial.com/art/mem-demo/daniel-with.webp" alt=""/><div class="cap"><div class="tk">remembered by Daniel · her son</div><div class="tt">The quiet before everyone arrived</div></div></div>
+      <div class="minicard wing"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/rebecca-portrait.webp" alt=""><div><b>Sarah</b><span>her granddaughter</span></div></div><span class="mt">Cinnamon rolls at five</span><p>"…one more morning."</p></div>
+    </div></div>
+    <div class="trade"><div class="w"><b>wins</b>Cinematic — one memory truly read at a time (the pattern research favors this for grief)</div><div class="c"><b>costs</b>Slowest way to meet ten memories · comments need a second click</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">b3</span><h3>Three at a time</h3></div>
+    <p class="vp">The stream becomes pages: exactly three full cards, big honest arrows, dots that promise a finite amount. Chips filter; pages never scroll. Tap the arrows — they work.</p>
+    <div class="canvas">
+      <div class="b3page">
+        <button class="arrowbtn" id="b3L" aria-label="Previous">‹</button>
+        <div class="b3cards" id="b3cards"></div>
+        <button class="arrowbtn" id="b3R" aria-label="Next">›</button>
+      </div>
+      <div class="b3dots" id="b3dots"></div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Fully finite, fully calm — the Netflix row grammar older visitors already know</div><div class="c"><b>costs</b>Ten memories = four pages; the river's "aliveness" is lost unless paired with B1's ticker</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">b4</span><h3>The index and the reading chair</h3></div>
+    <p class="vp">Every memory's title and author in a quiet list on the left — the whole wall scannable in five seconds. Tap one; it opens fully in the reading pane with its snapshot, story, hearts, and comments. Tap the list — it works.</p>
+    <div class="canvas"><div class="b4">
+      <div class="idx" id="b4idx"></div>
+      <div class="minicard" id="b4pane" style="min-height:200px"></div>
+    </div></div>
+    <div class="trade"><div class="w"><b>wins</b>Ten or a hundred memories, same calm — the archive pattern that never overwhelms</div><div class="c"><b>costs</b>Less emotional at first sight — titles must carry weight before any photo is seen</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">b5</span><h3>The quilt</h3></div>
+    <p class="vp">Every memory as a small square — title, one line, author — stitched into one quilt you can take in whole. Tap a square and it blooms into the full card. No scroll, no pages: one fabric of love.</p>
+    <div class="canvas"><div class="b5grid" id="b5grid"></div></div>
+    <div class="trade"><div class="w"><b>wins</b>"So many people loved her," visible as a single object · beautiful when the wall grows</div><div class="c"><b>costs</b>Photos demoted to the open state · squares tempt skimming over reading</div></div>
+  </div>
+</section>
+
+<!-- ═════════ PROBLEM C ═════════ -->
+<section>
+  <span class="lbl">problem c · the arrival</span>
+  <h2>Faster to the <em>good stuff</em></h2>
+  <p style="color:var(--ink-soft);max-width:74ch;font-size:15.5px">Today the visitor crosses three bands — hero, share band, tab row — before touching a memory. Five ways to collapse the stack. (Mini mockups; the toolbar row at top of each stands for the solid state.)</p>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">c1</span><h3>Tabs live in the toolbar</h3></div>
+    <p class="vp">The room tabs move into the top toolbar itself, next to the brand; Share becomes a toolbar button. Zero bands between the photograph and the memories — content begins immediately.</p>
+    <div class="canvas"><div class="cmock">
+      <div class="ctop"><span class="cwm">I <em>Miss</em> You</span><span class="cb on">Memories</span><span class="cb">Photos</span><span class="cb">Her life</span><span class="cb">Service</span><button class="cshare" style="margin-left:auto">Share ↗</button></div>
+      <div class="chero"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt=""/><div class="cglass"><b>Eleanor Margaret <em>Hayes</em></b><span>1948 — 2024 · HALF MOON BAY</span></div></div>
+      <div class="ccontent"><div class="blk ph"></div><div class="blk"></div><div class="blk"></div></div>
+    </div></div>
+    <div class="trade"><div class="w"><b>wins</b>The fastest arrival possible — one chrome row, then her</div><div class="c"><b>costs</b>Toolbar gets crowded; the brand's site links (Pricing etc.) must move into a menu</div></div>
+  </div>
+
+  <div class="var pick">
+    <div class="vh"><span class="lbl">c2</span><h3>One slim ribbon</h3><span class="pickbadge">★ my pick</span></div>
+    <p class="vp">Share band + tab row merge into a single 56px ribbon under the photo: tabs left, visits whispering center, Share right. One decision row instead of two bands — half the distance to the good stuff, nothing lost.</p>
+    <div class="canvas"><div class="cmock">
+      <div class="chero"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt=""/><div class="cglass"><b>Eleanor Margaret <em>Hayes</em></b><span>1948 — 2024 · HALF MOON BAY</span></div></div>
+      <div class="cbar" style="border-bottom:1px solid var(--line)"><span class="cb on">Memories</span><span class="cb">Photos</span><span class="cb">Her life</span><span class="cb">Service</span><span class="mono2" style="margin:0 auto">♥ 12,441 have visited</span><button class="cshare">Share ↗</button></div>
+      <div class="ccontent"><div class="blk ph"></div><div class="blk"></div><div class="blk"></div></div>
+    </div></div>
+    <div class="trade"><div class="w"><b>wins</b>Halves the chrome with zero feature loss · the ribbon is the natural sticky bar on scroll</div><div class="c"><b>costs</b>Share is quieter — the flyer needs its moment elsewhere too (footer, service room)</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">c3</span><h3>Tabs on the glass</h3></div>
+    <p class="vp">The room buttons sit inside the frosted panel itself, under her name — the hero is the navigation. Below the photo, content starts instantly; Share floats quietly in the hero's top-right corner.</p>
+    <div class="canvas"><div class="cmock">
+      <div class="chero" style="height:170px"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt=""/>
+        <button class="cshare" style="position:absolute;top:10px;right:10px">Share ↗</button>
+        <div class="cglass"><b>Eleanor Margaret <em>Hayes</em></b><span>1948 — 2024 · HALF MOON BAY</span>
+        <div style="display:flex;gap:5px;margin-top:8px"><span class="cb on" style="font-size:9px;padding:5px 9px">Memories</span><span class="cb" style="font-size:9px;padding:5px 9px;background:rgba(255,255,255,.9)">Photos</span><span class="cb" style="font-size:9px;padding:5px 9px;background:rgba(255,255,255,.9)">Her life</span><span class="cb" style="font-size:9px;padding:5px 9px;background:rgba(255,255,255,.9)">Service</span></div></div>
+      </div>
+      <div class="ccontent"><div class="blk ph"></div><div class="blk"></div><div class="blk"></div></div>
+    </div></div>
+    <div class="trade"><div class="w"><b>wins</b>Beautiful — navigation becomes part of the ceremony · zero bands at all</div><div class="c"><b>costs</b>Tabs vanish when the hero scrolls away unless they detach and stick — two states to design</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">c4</span><h3>The side rail</h3></div>
+    <p class="vp">Desktop earns a slim left rail: the four rooms and Share stacked vertically, always visible, never consuming a single pixel of height. The hero and content own the full width.</p>
+    <div class="canvas"><div class="cmock"><div style="display:flex">
+      <div class="crail"><span class="cb on">Memories</span><span class="cb">Photos</span><span class="cb">Her life</span><span class="cb">Service</span><button class="cshare" style="margin-top:6px">Share</button></div>
+      <div style="flex:1"><div class="chero" style="height:120px"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt=""/><div class="cglass" style="left:8px;bottom:6px;padding:6px 10px"><b style="font-size:11px">Eleanor Margaret <em>Hayes</em></b></div></div>
+      <div class="ccontent"><div class="blk ph"></div><div class="blk"></div></div></div>
+    </div></div></div>
+    <div class="trade"><div class="w"><b>wins</b>No vertical cost ever · rooms visible at all times — strong for revisits</div><div class="c"><b>costs</b>Left rails read "app," not "keepsake" · no mobile equivalent, so the two layouts diverge</div></div>
+  </div>
+
+  <div class="var">
+    <div class="vh"><span class="lbl">c5</span><h3>The rising cards</h3></div>
+    <p class="vp">The hero shortens and the first memories physically rise into the photograph — the good stuff is literally on screen one. The ribbon (C2) slides in only when you scroll.</p>
+    <div class="canvas"><div class="cmock">
+      <div class="chero" style="height:150px;overflow:visible;z-index:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="" style="height:150px"/><div class="cglass" style="bottom:auto;top:10px"><b>Eleanor Margaret <em>Hayes</em></b><span>1948 — 2024</span></div>
+        <div style="position:absolute;left:10%;right:10%;bottom:-26px;display:flex;gap:10px">
+          <div class="minicard" style="flex:1;box-shadow:0 16px 32px -14px rgba(44,37,32,.5)"><span class="mt" style="font-size:12px">Fifty years of Tuesdays</span><p style="font-size:10.5px">Ruth · her friend</p></div>
+          <div class="minicard" style="flex:1;box-shadow:0 16px 32px -14px rgba(44,37,32,.5)"><span class="mt" style="font-size:12px">Cinnamon rolls at five</span><p style="font-size:10.5px">Sarah · her granddaughter</p></div>
+        </div>
+      </div>
+      <div style="height:40px"></div>
+      <div class="ccontent"><div class="blk"></div><div class="blk ph"></div></div>
+    </div></div>
+    <div class="trade"><div class="w"><b>wins</b>Memories visible before a single scroll — the strongest "get to the good stuff"</div><div class="c"><b>costs</b>Covers part of her photograph · overlap layouts are the fussiest to keep calm at every width</div></div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>My combined bet: A1's arrows + B1's four-course room + C2's slim ribbon — but tap everything first. The right answer is the one that feels obvious in the hand.</p>
+</footer>
+
+<script>
+var P='https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-';
+var M='https://imissyoumemorial.com/art/mem-demo/';
+var CH8=[
+ {era:'1948 → 1966',t:'The girl by the sea',img:P+'1988.jpg',dec:'1940s'},
+ {era:'1967 → 1971',t:'Teachers college',img:P+'1997.jpg',dec:'1940s'},
+ {era:'1970 → 2009',t:'The teacher',img:P+'1989.jpg',dec:'1970s'},
+ {era:'1972 → 2015',t:'The kitchen',img:P+'hands.jpg',dec:'1970s'},
+ {era:'1976 → 1990',t:'The young family',img:M+'daniel-with.webp',dec:'1970s'},
+ {era:'1993 → 2018',t:'The garden',img:M+'rebecca-with.webp',dec:'1990s'},
+ {era:'1998 → 2020',t:'The Tuesday teas',img:M+'ruth-with.webp',dec:'1990s'},
+ {era:'2019 → 2024',t:'Still hers',img:P+'2019.jpg',dec:'2010s'}
+];
+function chcard(c,on){return '<button class="chcard'+(on?' on':'')+'" type="button"><img src="'+c.img+'" alt=""/><span class="cy">'+c.era+'</span><b>'+c.t+'</b></button>'}
+/* A1 */
+var a1=document.getElementById('a1rail');
+a1.innerHTML=CH8.map(function(c,i){return chcard(c,i===0)}).join('');
+document.getElementById('a1L').onclick=function(){a1.scrollBy({left:-a1.clientWidth,behavior:'smooth'})};
+document.getElementById('a1R').onclick=function(){a1.scrollBy({left:a1.clientWidth,behavior:'smooth'})};
+a1.addEventListener('click',function(e){var b=e.target.closest('.chcard');if(!b)return;a1.querySelectorAll('.chcard').forEach(function(x){x.classList.remove('on')});b.classList.add('on')});
+/* A2 */
+var a2=document.getElementById('a2grid');
+a2.innerHTML=CH8.map(function(c,i){return chcard(c,i===0)}).join('');
+a2.addEventListener('click',function(e){var b=e.target.closest('.chcard');if(!b)return;a2.querySelectorAll('.chcard').forEach(function(x){x.classList.remove('on')});b.classList.add('on')});
+/* A3 */
+var a3r=document.getElementById('a3rail'),a3d=document.getElementById('a3dec');
+a3r.innerHTML=CH8.map(function(c,i){return chcard(c,i===0)}).join('');
+['1940s','1970s','1990s','2010s'].forEach(function(d,i){
+  var b=document.createElement('button');b.className='mchip'+(i===0?' on':'');b.textContent=d;
+  b.onclick=function(){
+    a3d.querySelectorAll('.mchip').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    var idx=CH8.findIndex(function(c){return c.dec===d});
+    var card=a3r.children[idx];if(card)a3r.scrollTo({left:card.offsetLeft-a3r.offsetLeft-10,behavior:'smooth'});
+  };
+  a3d.appendChild(b);
+});
+a3r.addEventListener('click',function(e){var b=e.target.closest('.chcard');if(!b)return;a3r.querySelectorAll('.chcard').forEach(function(x){x.classList.remove('on')});b.classList.add('on')});
+/* A4 */
+var a4line=document.getElementById('a4line');
+var A4Y=[['1948','Born in Half Moon Bay'],['1954','Ocean Shore School'],['1959','First job, at eleven'],['1966','Graduated']];
+function a4set(i){
+  a4line.querySelectorAll('.nd').forEach(function(n,j){n.classList.toggle('on',j===i)});
+  var c=CH8[i];
+  document.getElementById('a4img').src=c.img;
+  document.getElementById('a4era').textContent=c.era;
+  document.getElementById('a4t').textContent=c.t;
+  document.getElementById('a4b').innerHTML=A4Y.map(function(y){return '<i style="font-style:normal;font-family:\'Sometype Mono\',monospace;font-size:9px;color:var(--terra-deep);margin-right:7px">'+y[0]+'</i>'+y[1]}).join('<br>');
+}
+CH8.forEach(function(c,i){
+  var n=document.createElement('button');n.className='nd'+(i===0?' on':'');n.style.left=(4+i*(92/(CH8.length-1)))+'%';
+  n.innerHTML='<em>'+c.t.split(' ').slice(-1)+'</em><i></i><span>'+c.era.split(' ')[0]+'</span>';
+  n.onclick=function(){a4set(i)};
+  a4line.appendChild(n);
+});
+a4set(0);
+/* A5 */
+var a5acc=document.getElementById('a5acc');
+CH8.slice(0,5).forEach(function(c,i){
+  var r=document.createElement('button');r.className='accrow'+(i===0?' on':'');r.innerHTML='<span class="cy">'+c.era+'</span><b>'+c.t+'</b>';
+  var body=document.createElement('div');body.className='accbody'+(i===0?' on':'');body.innerHTML='1948 · Born in Half Moon Bay<br>1954 · Ocean Shore School<br>1966 · Graduated';
+  r.onclick=function(){
+    a5acc.querySelectorAll('.accrow').forEach(function(x){x.classList.remove('on')});
+    a5acc.querySelectorAll('.accbody').forEach(function(x){x.classList.remove('on')});
+    r.classList.add('on');body.classList.add('on');
+    document.getElementById('a5img').src=c.img;
+  };
+  a5acc.appendChild(r);a5acc.appendChild(body);
+});
+document.getElementById('a5img').src=CH8[0].img;
+
+/* B1 river */
+var LINES=[['“She saved you the middle cinnamon roll, always.”','Ruth'],
+ ['“The street misses her too.”','Marie'],
+ ['“Tomatoes on our porch, every August.”','Miguel'],
+ ['“Miss Hayes taught me to read.”','Tom'],
+ ['“Fifty years of Tuesdays.”','Ruth'],
+ ['“I still show up early, just to feel close to her.”','Daniel'],
+ ['“One more morning. I’d give anything.”','Sarah'],
+ ['“She made the world feel a little gentler.”','Marie']];
+var riv=document.getElementById('b1river');
+riv.innerHTML=LINES.concat(LINES).map(function(l){return '<span class="rq">'+l[0]+'<b>— '+l[1]+'</b></span>'}).join('');
+
+/* B3 pages */
+var B3=[
+ [['Ruth','her friend','Fifty years of Tuesdays','"Nobody tells you that\'s what friendship is."',M+'ruth-portrait.webp'],
+  ['Sarah','her granddaughter','Cinnamon rolls at five','"I\'d give anything for one more morning."',M+'rebecca-portrait.webp'],
+  ['Daniel','her son','The quiet before everyone','"I still show up early."',M+'daniel-portrait.webp']],
+ [['Tom','her student','Miss Hayes taught me to read','a voice, kept · 0:37',M+'tom-portrait.webp'],
+  ['Miguel','a neighbour','The harvest over the fence','"We never once caught her doing it."',M+'miguel-portrait.webp'],
+  ['Marie','a neighbour','She made the world gentler','"Every child learned to plant something."',M+'ruth-portrait.webp']]
+];
+var b3i=0,b3c=document.getElementById('b3cards'),b3d=document.getElementById('b3dots');
+function b3render(){
+  b3c.innerHTML=B3[b3i].map(function(m){return '<div class="minicard"><div class="who"><img src="'+m[4]+'" alt=""><div><b>'+m[0]+'</b><span>'+m[1]+'</span></div></div><span class="mt">'+m[2]+'</span><p>'+m[3]+'</p><div class="acts"><span>♥</span><span>💬</span></div></div>'}).join('');
+  b3d.innerHTML=B3.map(function(_,j){return '<i class="'+(j===b3i?'on':'')+'"></i>'}).join('');
+}
+document.getElementById('b3L').onclick=function(){b3i=(b3i-1+B3.length)%B3.length;b3render()};
+document.getElementById('b3R').onclick=function(){b3i=(b3i+1)%B3.length;b3render()};
+b3render();
+
+/* B4 index/pane */
+var B4=[['Fifty years of Tuesdays','Ruth · her friend','"Fifty years of Tuesdays. Nobody tells you that\'s what friendship is — until the Tuesdays stop."',M+'ruth-with.webp'],
+ ['Cinnamon rolls at five','Sarah · her granddaughter','"She woke me at five to make cinnamon rolls. I complained every time. I\'d give anything for one more morning."',P+'1988.jpg'],
+ ['The quiet before everyone','Daniel · her son','"The best part of any gathering was the quiet before everyone arrived. I still show up early."',M+'daniel-with.webp'],
+ ['The harvest over the fence','Miguel · a neighbour','"Every August, tomatoes appeared on our porch. We never once caught her doing it."',M+'miguel-with.webp']];
+var b4idx=document.getElementById('b4idx'),b4p=document.getElementById('b4pane');
+function b4set(i){
+  b4idx.querySelectorAll('.idxrow').forEach(function(r,j){r.classList.toggle('on',j===i)});
+  var m=B4[i];
+  b4p.innerHTML='<img src="'+m[3]+'" alt="" style="width:100%;height:120px;object-fit:cover;border-radius:9px;margin-bottom:10px"/><span class="mt" style="font-size:15px">'+m[0]+'</span><p style="font-size:13px">'+m[2]+'</p><div class="acts" style="margin-top:10px"><span>♥ 12</span><span>💬 2 comments</span></div>';
+}
+B4.forEach(function(m,i){
+  var r=document.createElement('button');r.className='idxrow'+(i===0?' on':'');r.innerHTML='<b>'+m[0]+'</b><span>'+m[1]+'</span>';
+  r.onclick=function(){b4set(i)};b4idx.appendChild(r);
+});
+b4set(0);
+
+/* B5 quilt */
+var b5=document.getElementById('b5grid');
+B4.concat([['She made the world gentler','Marie · a neighbour','"Every child on the street learned to plant something in her garden."',P+'2016.jpg'],['Miss Hayes taught me to read','Tom · her student','a voice, kept · 0:37',M+'tom-with.webp']]).forEach(function(m){
+  var q=document.createElement('button');q.className='b5q';q.innerHTML='<span class="mt">'+m[0]+'</span><p>'+m[2].slice(0,52)+'…</p><span>'+m[1]+' · ♥ 💬</span>';
+  q.onclick=function(){alert('In the real page this blooms into the full card — photo, story, hearts, comments.')};
+  b5.appendChild(q);
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&window.parent!==window){window.parent.postMessage({type:'close-fullscreen'},'*')}});
+</script>
+</body>
+</html>

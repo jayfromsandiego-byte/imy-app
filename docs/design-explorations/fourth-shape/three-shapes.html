@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Three Shapes, Made Visible · Interactive Direction Comparison · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Sometype+Mono:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --ink:#2C2520; --ink-soft:#5F574E;
+  --terra:#A87C5F; --terra-deep:#8A5A3C; --gold:#C9A572; --night:#1A130D; --walnut:#3f2c1a;
+  --flame:#F4B860; --line:rgba(44,37,32,.14); --card:#FFFDF8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4.5vw,52px)}
+.lbl{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra-deep)}
+img{display:block}
+
+header{padding:clamp(52px,7vw,84px) 0 clamp(24px,3.5vw,40px);text-align:center}
+header h1{font-size:clamp(32px,5vw,50px);font-weight:800;line-height:1.06;margin:14px 0 12px}
+header h1 em{font-style:italic;color:var(--terra)}
+header p{max-width:62ch;margin:0 auto;font-style:italic;color:var(--ink-soft);font-size:16.5px}
+.northstar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.ns{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--terra-deep);background:var(--card);border:1px solid var(--line);border-radius:100px;padding:8px 16px}
+
+/* tabs */
+.tabs{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--cream) 82%,rgba(250,245,236,0));padding:14px 0 18px}
+.tabrow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tab{font-family:'Besley',serif;font-weight:700;font-size:14.5px;letter-spacing:.04em;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:12px 22px;cursor:pointer;transition:.2s}
+.tab:hover{border-color:var(--terra)}
+.tab.on{background:var(--night);color:var(--cream);border-color:var(--night)}
+.tab .k{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;display:block;opacity:.65;font-weight:400}
+
+/* direction panel */
+.panel{display:none}
+.panel.on{display:block}
+.p-head{text-align:center;padding:8px 0 26px}
+.p-head h2{font-size:clamp(26px,3.8vw,38px);font-weight:800;line-height:1.1}
+.p-head h2 em{font-style:italic;color:var(--terra)}
+.p-head .intent{max-width:58ch;margin:10px auto 0;color:var(--ink-soft);font-size:16px}
+.p-head .intent b{color:var(--ink)}
+.whofor{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.wf{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;background:#EFE7D4;border-radius:100px;padding:7px 14px;color:var(--terra-deep)}
+
+.stage{display:grid;grid-template-columns:minmax(300px,400px) 1fr;gap:clamp(22px,4vw,52px);align-items:start}
+@media(max-width:860px){.stage{grid-template-columns:1fr}}
+
+/* phone */
+.phone{position:relative;margin:0 auto;width:min(375px,92vw);background:#1c1712;border-radius:38px;padding:10px;box-shadow:0 40px 80px -34px rgba(28,20,10,.55),0 6px 16px rgba(28,20,10,.2)}
+.phone .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:110px;height:22px;background:#1c1712;border-radius:0 0 14px 14px;z-index:5}
+.screen{position:relative;height:min(690px,74vh);overflow-y:auto;border-radius:28px;background:var(--cream);scrollbar-width:none;overscroll-behavior:contain}
+.screen::-webkit-scrollbar{display:none}
+.scrollhint{position:absolute;right:18px;bottom:16px;z-index:6;font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:rgba(26,19,13,.72);color:#F4E9D4;border-radius:100px;padding:6px 11px;pointer-events:none;animation:hintfade 1s 3.2s forwards}
+@keyframes hintfade{to{opacity:0}}
+
+/* shared mock language */
+.mk{font-family:'Besley',serif}
+.mk .m-kick{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra-deep)}
+.mk .m-h{font-weight:800;line-height:1.12}
+.m-door{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:13.5px;font-weight:600;margin-top:10px}
+.m-door span{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:var(--terra-deep);font-weight:400}
+.m-door i{font-style:normal;color:var(--terra)}
+.memcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-top:10px;box-shadow:0 10px 22px -16px rgba(44,37,32,.28)}
+.memcard .who{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.memcard .who img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.memcard .who b{font-size:13px;display:block;line-height:1.1}
+.memcard .who span{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep)}
+.memcard p{font-size:13.5px;line-height:1.55;color:var(--ink);font-style:italic}
+.memcard .acts{display:flex;gap:8px;margin-top:9px}
+.memcard .acts span{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--terra-deep);background:#F6F0E2;border-radius:100px;padding:4px 10px}
+.m-photo{border-radius:10px;overflow:hidden;position:relative}
+.m-photo img{width:100%;height:100%;object-fit:cover}
+.m-ritual{background:linear-gradient(180deg,#2a1c11,#241711);border-radius:14px;color:#F4E9D4;text-align:center;padding:18px 14px;margin-top:10px}
+.m-ritual .cnt{font-size:26px;font-weight:800;color:var(--flame)}
+.m-ritual .cl{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:#d8bd93;margin-top:2px}
+.m-ritual .rbtn{display:inline-block;background:var(--terra);color:#FBF6ED;border-radius:100px;padding:9px 20px;font-size:13px;font-weight:600;margin-top:11px}
+.m-foot{background:linear-gradient(180deg,#2a1c11,#1c120a);color:#cdbea4;text-align:center;padding:22px 16px;font-size:11.5px}
+.m-foot .fm{font-weight:700;font-size:15px;color:#F5EBD9}
+.m-foot .fm em{color:var(--gold);font-style:italic}
+.m-foot .pl{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--gold);margin-top:6px;line-height:1.7}
+
+/* notes column */
+.notes{display:flex;flex-direction:column;gap:14px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.note .lbl{display:block;margin-bottom:8px}
+.note p{font-size:14.5px;color:var(--ink-soft)}
+.note ul{margin:4px 0 0 17px;font-size:14.5px;color:var(--ink-soft)}
+.note li{margin-bottom:7px}
+.note li b{color:var(--ink)}
+.procon{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.procon{grid-template-columns:1fr}}
+.note.pro{background:#F1EFE2}
+.note.con{background:#F5EBE0}
+
+/* matrix */
+.matrix{padding:clamp(40px,6vw,70px) 0}
+.matrix h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;text-align:center;margin:8px 0 26px}
+.matrix h2 em{font-style:italic;color:var(--terra)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+th,td{padding:13px 16px;font-size:14px;border-bottom:1px solid var(--line);text-align:left}
+th{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep);background:#F6F0E2}
+td:first-child{font-weight:600;color:var(--ink)}
+td{color:var(--ink-soft)}
+tr:last-child td{border-bottom:none}
+.dots{letter-spacing:2px;color:var(--terra);white-space:nowrap}
+.dots .off{color:#D8CFBB}
+.verdict{max-width:66ch;margin:26px auto 0;text-align:center;font-style:italic;color:var(--ink-soft);font-size:16px}
+.verdict b{color:var(--ink);font-style:normal}
+
+/* album tabs inside phone */
+.rmtabs{position:sticky;top:0;z-index:4;display:flex;gap:5px;background:rgba(250,245,236,.94);backdrop-filter:blur(6px);padding:9px 10px;border-bottom:1px solid var(--line)}
+.rmtab{flex:1;font-family:'Besley',serif;font-weight:700;font-size:10.5px;text-align:center;padding:9px 2px;border-radius:9px;border:1px solid transparent;color:var(--ink-soft);cursor:pointer;background:none}
+.rmtab.on{background:var(--night);color:var(--cream)}
+.room{display:none;padding:14px 14px 0}
+.room.on{display:block}
+
+/* vigil bits */
+.presence{display:flex;align-items:center;gap:7px;justify-content:center;font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#5F574E;background:#F1EAD8;border-radius:100px;padding:6px 13px;width:fit-content;margin:10px auto 0}
+.presence i{width:7px;height:7px;border-radius:50%;background:#7FA07A;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.evt{display:flex;align-items:center;gap:9px;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:var(--terra-deep);background:#F6F0E2;border-radius:100px;padding:8px 14px;margin-top:10px;width:fit-content}
+body.nomotion .presence i{animation:none}
+footer{padding:30px 0 64px;text-align:center}
+footer p{font-style:italic;color:var(--ink-soft);font-size:15.5px;max-width:56ch;margin:0 auto}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="lbl">I Miss You Memorial · direction comparison · interactive</span>
+    <h1>Three shapes, <em>made visible</em></h1>
+    <p>Each phone below is a living mockup — scroll inside it, tap what invites tapping. Same brand, same Eleanor, three different skeletons. Built around your orbit: her people's words first, then her life in photographs, then the ceremony of her name, then the rituals.</p>
+    <div class="northstar">
+      <span class="ns">"I could really see her again"</span>
+      <span class="ns">"So many people loved her"</span>
+      <span class="ns">"I want to come back tomorrow"</span>
+    </div>
+  </div>
+</header>
+
+<div class="tabs"><div class="wrap tabrow">
+  <button class="tab on" data-p="a"><span class="k">direction a</span>The Portrait</button>
+  <button class="tab" data-p="b"><span class="k">direction b</span>The Album</button>
+  <button class="tab" data-p="c"><span class="k">direction c</span>The Vigil</button>
+</div></div>
+
+<div class="wrap">
+
+<!-- ═══════════ A · THE PORTRAIT ═══════════ -->
+<div class="panel on" id="p-a">
+  <div class="p-head">
+    <h2>The Portrait — <em>one ceremonial column</em></h2>
+    <p class="intent"><b>The intention:</b> a page you can hold in one breath. Five movements, one crescendo, every archive behind a labeled door with an honest count. Designed so the most fragile visitor — older, grieving, on a phone at night — is never lost and never asked to work.</p>
+    <div class="whofor"><span class="wf">older visitors first</span><span class="wf">the 30-second glance</span><span class="wf">one beautiful sitting</span><span class="wf">lowest cognitive load</span></div>
+  </div>
+  <div class="stage">
+    <div class="phone"><div class="notch"></div><div class="screen mk">
+      <div style="position:relative;padding:34px 18px 22px;text-align:center;background:linear-gradient(180deg,#EFE7D4,var(--cream))">
+        <div style="width:150px;height:150px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 14px 30px -14px rgba(60,38,10,.45),0 0 0 6px #FFFDF6,0 0 0 7px rgba(138,106,52,.3)"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="m-h" style="font-size:24px;margin-top:14px">Eleanor Margaret <em style="color:var(--terra)">Hayes</em></div>
+        <div class="m-kick" style="margin-top:6px">1948 · 2024 · Half Moon Bay</div>
+        <div class="m-kick" style="margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:8px 14px;display:inline-block;color:var(--ink)">Celebration of Life · June 13 · <i style="color:var(--terra);font-style:normal">Share ↗</i></div>
+      </div>
+      <div style="padding:10px 14px 0">
+        <div class="m-kick">What people remember</div>
+        <div class="memcard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/rebecca-portrait.webp" alt=""><div><b>Sarah</b><span>her granddaughter</span></div></div><p>"She woke me at five to make cinnamon rolls. I complained every time. I'd give anything for one more morning."</p><div class="acts"><span>♥ 25</span><span>2 replies</span></div></div>
+        <div class="memcard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/miguel-portrait.webp" alt=""><div><b>Marie</b><span>a neighbour</span></div></div><p>"Every child on the street learned to plant something in her garden. She made the world feel a little gentler."</p><div class="acts"><span>♥ 19</span><span>read</span></div></div>
+        <div class="m-door">All ten memories <span>grouped by who knew her</span> <i>→</i></div>
+        <div class="m-door" style="background:#F6F0E2">＋ Leave a memory <span>no account needed</span> <i>→</i></div>
+      </div>
+      <div style="padding:22px 14px 0">
+        <div class="m-kick">Her life in photographs</div>
+        <div style="display:flex;gap:5px;margin-top:9px;height:86px"><div class="m-photo" style="flex:1.4"><img src="https://imissyoumemorial.com/art/mem-demo/ruth-with.webp" alt=""></div><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1988.jpg" alt=""></div></div>
+        <div style="display:flex;gap:5px;margin-top:5px;height:74px"><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hands.jpg" alt=""></div><div class="m-photo" style="flex:1.3"><img src="https://imissyoumemorial.com/art/mem-demo/rebecca-with.webp" alt=""></div><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-2016.jpg" alt=""></div></div>
+        <div class="m-door">35 photographs · her life in chapters <span>1948 → 2024</span> <i>→</i></div>
+      </div>
+      <div style="padding:22px 14px 14px">
+        <div class="m-ritual"><div class="cnt">2,168</div><div class="cl">flowers laid for her</div><div class="rbtn">Lay a flower</div></div>
+      </div>
+      <div class="m-foot"><div class="fm">I <em>Miss</em> You Memorial</div><div class="pl">held, for as long as love needs ·<br>we never charge a family to keep a memory</div></div>
+    </div><div class="scrollhint">scroll ↓</div></div>
+
+    <div class="notes">
+      <div class="note"><span class="lbl">why it's shaped this way</span>
+        <ul>
+          <li><b>Voices sit directly under her name</b> — your #1 orbit. The first scroll lands on Sarah's words, not on a feature.</li>
+          <li><b>Two doors, honest counts.</b> "All ten memories," "35 photographs" — depth is felt, never dumped. This is the pattern older users navigate best: recognition, not exploration.</li>
+          <li><b>One crescendo:</b> her face → her people → her life → do something → held forever. The end note is the pledge (peak-end rule).</li>
+          <li><b>"Leave a memory" is on the first screen-and-a-half</b>, not buried at the bottom.</li>
+        </ul>
+      </div>
+      <div class="procon">
+        <div class="note pro"><span class="lbl">what it wins</span><ul>
+          <li>Fastest comprehension — nothing to learn</li>
+          <li>Gentlest on grief-load and older hands</li>
+          <li>The glance posture is perfect: 30 seconds gives the whole story</li>
+          <li>Easiest to keep beautiful — few surfaces to hold</li>
+        </ul></div>
+        <div class="note con"><span class="lbl">what it costs</span><ul>
+          <li>Least alive — return-tomorrow is weakest of the three</li>
+          <li>Wall of love is behind a door, so "so many loved her" is told by counts, not felt on the surface</li>
+          <li>Doors must be irresistible or depth goes unseen</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ B · THE ALBUM ═══════════ -->
+<div class="panel" id="p-b">
+  <div class="p-head">
+    <h2>The Album — <em>a cover and four rooms</em></h2>
+    <p class="intent"><b>The intention:</b> a short ceremonial cover, then four rooms that never move: Memories · Photos · Her life · Service. Nothing is ever more than one tap away, and the second visit feels like a house you already know. Try the tabs inside the phone.</p>
+    <div class="whofor"><span class="wf">revisiting family</span><span class="wf">older visitors who return</span><span class="wf">the service week</span><span class="wf">everything one tap away</span></div>
+  </div>
+  <div class="stage">
+    <div class="phone"><div class="notch"></div><div class="screen mk">
+      <div style="position:relative;padding:32px 18px 18px;text-align:center;background:linear-gradient(180deg,#EFE7D4,var(--cream))">
+        <div style="width:118px;height:118px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 12px 26px -12px rgba(60,38,10,.45),0 0 0 5px #FFFDF6,0 0 0 6px rgba(138,106,52,.3)"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="m-h" style="font-size:21px;margin-top:12px">Eleanor Margaret <em style="color:var(--terra)">Hayes</em></div>
+        <div class="m-kick" style="margin-top:5px">1948 · 2024 · Half Moon Bay</div>
+        <div class="m-kick" style="margin-top:10px;color:var(--ink)">🌸 2,168 flowers · 🕯 214 candles · 10 memories</div>
+      </div>
+      <div class="rmtabs">
+        <button class="rmtab on" data-r="mem">Memories</button>
+        <button class="rmtab" data-r="pho">Photos</button>
+        <button class="rmtab" data-r="life">Her life</button>
+        <button class="rmtab" data-r="svc">Service</button>
+      </div>
+      <div class="room on" id="r-mem">
+        <div class="memcard" style="margin-top:4px"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/rebecca-portrait.webp" alt=""><div><b>Sarah</b><span>her granddaughter</span></div></div><p>"She woke me at five to make cinnamon rolls. I complained every time. I'd give anything for one more morning."</p><div class="acts"><span>♥ 25</span><span>2 replies</span></div></div>
+        <div class="memcard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/daniel-portrait.webp" alt=""><div><b>Daniel</b><span>her son</span></div></div><p>"She taught me that the best part of any gathering was the quiet before everyone arrived. I still show up early, just to feel close to her."</p><div class="acts"><span>♥ 19</span><span>read</span></div></div>
+        <div class="m-door" style="background:#F6F0E2">＋ Leave a memory <span>no account needed</span> <i>→</i></div>
+        <div class="m-door">Family · Friends · Neighbours · Her students <span>everyone is kept</span> <i>→</i></div>
+        <div style="height:14px"></div>
+      </div>
+      <div class="room" id="r-pho">
+        <div style="display:flex;gap:5px;height:92px;margin-top:4px"><div class="m-photo" style="flex:1.4"><img src="https://imissyoumemorial.com/art/mem-demo/ruth-with.webp" alt=""></div><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1988.jpg" alt=""></div></div>
+        <div style="display:flex;gap:5px;height:78px;margin-top:5px"><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1989.jpg" alt=""></div><div class="m-photo" style="flex:1.2"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hands.jpg" alt=""></div><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-2005.jpg" alt=""></div></div>
+        <div style="display:flex;gap:5px;height:78px;margin-top:5px"><div class="m-photo" style="flex:1.2"><img src="https://imissyoumemorial.com/art/mem-demo/rebecca-with.webp" alt=""></div><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-2016.jpg" alt=""></div><div class="m-photo" style="flex:1"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-2019.jpg" alt=""></div></div>
+        <div class="m-door">Most loved rise to the front <span>♥ decides, quietly</span> <i>→</i></div>
+        <div style="height:14px"></div>
+      </div>
+      <div class="room" id="r-life">
+        <div class="m-kick" style="margin-top:4px">A life in chapters</div>
+        <div class="memcard"><b style="font-size:14px">The girl by the sea</b><div class="m-kick" style="margin:3px 0 6px">1948 → 1966</div><p style="font-style:normal;font-size:12.5px">Born in Half Moon Bay · first job at eleven · graduated 1966</p></div>
+        <div class="memcard"><b style="font-size:14px">The teacher</b><div class="m-kick" style="margin:3px 0 6px">1970 → 2009</div><p style="font-style:normal;font-size:12.5px">Thirty-eight years of third grade · Room 12 · a thousand students</p></div>
+        <div class="m-door">All seven chapters <span>year by year, with pictures</span> <i>→</i></div>
+        <div style="height:14px"></div>
+      </div>
+      <div class="room" id="r-svc">
+        <div class="memcard" style="text-align:center;margin-top:4px"><div class="m-kick">Celebration of life</div><b style="font-size:17px;display:block;margin-top:6px">June 13, 2026 · 6:00 PM</b><p style="font-style:normal;font-size:12.5px;margin-top:5px">Linden Community Chapel<br>142 Seaside Avenue, Half Moon Bay</p><div class="rbtn" style="display:inline-block;background:var(--terra);color:#FBF6ED;border-radius:100px;padding:8px 18px;font-size:12.5px;font-weight:600;margin-top:10px">Share the date</div></div>
+        <div class="m-ritual"><div class="cnt">2,168</div><div class="cl">flowers laid for her</div><div class="rbtn">Lay a flower</div></div>
+        <div style="height:14px"></div>
+      </div>
+      <div class="m-foot"><div class="fm">I <em>Miss</em> You Memorial</div><div class="pl">held, for as long as love needs ·<br>we never charge a family to keep a memory</div></div>
+    </div><div class="scrollhint">tap the tabs</div></div>
+
+    <div class="notes">
+      <div class="note"><span class="lbl">why it's shaped this way</span>
+        <ul>
+          <li><b>Memories is the default room</b> — the page opens on the voices, your #1 orbit, before a single tap.</li>
+          <li><b>Rooms never move.</b> Grandma learns the four tabs once; on visit five, muscle memory does the navigating. This is recognition-over-recall taken to its logical end.</li>
+          <li><b>The cover carries the counts</b> — "so many people loved her" is stated before any room opens.</li>
+          <li><b>Service is a room, not a scroll-hunt</b> — during the service week, the one practical errand is one tap, always.</li>
+        </ul>
+      </div>
+      <div class="procon">
+        <div class="note pro"><span class="lbl">what it wins</span><ul>
+          <li>Shortest distance to everything — best for repeat visits</li>
+          <li>Strongest during the service week (Service room)</li>
+          <li>Each room can be short and perfect instead of long and even</li>
+          <li>Scales gracefully as content grows — rooms deepen, page never lengthens</li>
+        </ul></div>
+        <div class="note con"><span class="lbl">what it costs</span><ul>
+          <li>No single crescendo — the page is a place, not a story</li>
+          <li>Tabs are an interface: a small but real thing to learn once</li>
+          <li>Cinematic first impressions are harder; the cover must carry all the ceremony</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ C · THE VIGIL ═══════════ -->
+<div class="panel" id="p-c">
+  <div class="p-head">
+    <h2>The Vigil — <em>presence-first</em></h2>
+    <p class="intent"><b>The intention:</b> the page as a room where the vigil never ends. A compact ceiling holds her name and the living counts; beneath it, one stream interleaves the newest words, photos, and voices — and you can see, truthfully, that others are sitting with her right now. Designed for the return: every day the stream has something new at the top.</p>
+    <div class="whofor"><span class="wf">the daily return</span><span class="wf">watching together, apart</span><span class="wf">"so many loved her," felt live</span><span class="wf">the family's inner circle</span></div>
+  </div>
+  <div class="stage">
+    <div class="phone"><div class="notch"></div><div class="screen mk">
+      <div style="position:sticky;top:0;z-index:4;background:rgba(250,245,236,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:26px 14px 12px;display:flex;align-items:center;gap:12px">
+        <div style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex:none;box-shadow:0 6px 14px -6px rgba(60,38,10,.4),0 0 0 3px #FFFDF6,0 0 0 4px rgba(138,106,52,.3)"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1"><div class="m-h" style="font-size:15px">Eleanor Margaret <em style="color:var(--terra)">Hayes</em></div><div class="m-kick" style="margin-top:2px">🌸 <span id="vigilCount">2,168</span> · 🕯 214 · 10 memories</div></div>
+        <div style="font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:#7FA07A;text-transform:uppercase">● 3 here</div>
+      </div>
+      <div style="padding:12px 14px 0">
+        <div class="presence"><i></i> three people are sitting with her now</div>
+        <div class="m-kick" style="margin-top:16px">Today · on this day in 2019</div>
+        <div class="m-photo" style="height:150px;margin-top:8px"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-2019.jpg" alt=""><div style="position:absolute;left:0;right:0;bottom:0;padding:22px 12px 9px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.72));color:#FBF3E4;font-size:12px;font-style:italic">Still hers · the garden, seven years ago today</div></div>
+        <div class="evt">🌸 a flower just landed · from Portland</div>
+        <div class="memcard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/ruth-portrait.webp" alt=""><div><b>Ruth</b><span>her friend · 2 hours ago</span></div></div><p>"Fifty years of Tuesdays. Nobody tells you that's what friendship is — until the Tuesdays stop."</p><div class="acts"><span>♥ 12</span><span>reply</span></div></div>
+        <div class="memcard" style="padding:12px"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/tom-portrait.webp" alt=""><div><b>Tom</b><span>her student · yesterday</span></div></div><div style="display:flex;align-items:center;gap:9px;background:#F6F0E2;border-radius:10px;padding:10px 12px"><div style="width:30px;height:30px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px">▶</div><div style="flex:1;height:16px;background:repeating-linear-gradient(90deg,var(--gold) 0 2px,transparent 2px 5px);border-radius:3px;opacity:.6"></div><span style="font-family:'Sometype Mono',monospace;font-size:9px;color:var(--terra-deep)">0:37</span></div><p style="margin-top:8px;font-size:11.5px;color:var(--ink-soft)">a voice, kept · "Miss Hayes taught me to read"</p></div>
+        <div class="m-photo" style="height:120px;margin-top:10px"><img src="https://imissyoumemorial.com/art/mem-demo/daniel-with.webp" alt=""><div style="position:absolute;left:0;right:0;bottom:0;padding:20px 12px 8px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.7));color:#FBF3E4;font-size:11.5px;font-style:italic">added by Daniel · this morning</div></div>
+        <div class="evt">🕯 a candle, lit quietly · 4 minutes ago</div>
+        <div class="memcard"><div class="who"><img src="https://imissyoumemorial.com/art/mem-demo/rebecca-portrait.webp" alt=""><div><b>Sarah</b><span>her granddaughter · Monday</span></div></div><p>"She woke me at five to make cinnamon rolls. I complained every time. I'd give anything for one more morning."</p><div class="acts"><span>♥ 25</span><span>2 replies</span></div></div>
+      </div>
+      <div style="padding:14px;position:sticky;bottom:0;background:linear-gradient(0deg,var(--cream) 62%,rgba(250,245,236,0))">
+        <div class="m-door" style="background:var(--night);color:var(--cream);border-color:var(--night);margin:0">＋ Add to her vigil <span style="color:var(--gold)">a memory · a photo · a flower</span> <i style="color:var(--gold)">→</i></div>
+      </div>
+      <div class="m-foot"><div class="fm">I <em>Miss</em> You Memorial</div><div class="pl">held, for as long as love needs ·<br>we never charge a family to keep a memory</div></div>
+    </div><div class="scrollhint">scroll ↓</div></div>
+
+    <div class="notes">
+      <div class="note"><span class="lbl">why it's shaped this way</span>
+        <ul>
+          <li><b>The stream is the voices</b> — words, photos, and voice notes interleave as one river of love, newest first. Your #1 and #2 orbits share the same surface.</li>
+          <li><b>"Today" opens every visit</b> — one chosen moment (Apple-Memories pattern) gives the daily-return reason you asked for.</li>
+          <li><b>Presence is ambient and truthful</b> — a flower lands while you watch; three people are here. Watching together without a single "social" feature.</li>
+          <li><b>The ceiling never leaves</b> — her name and counts stay gently pinned, so the ceremony holds even mid-stream.</li>
+          <li><b>One travelling door</b> — "Add to her vigil" floats at the thumb, from anywhere.</li>
+        </ul>
+      </div>
+      <div class="procon">
+        <div class="note pro"><span class="lbl">what it wins</span><ul>
+          <li>Strongest return-tomorrow of the three — the page is alive</li>
+          <li>"So many people loved her" is <b>felt live</b>, not counted</li>
+          <li>Collaborative by nature — the family watches it together, apart</li>
+          <li>Contribution is always one thumb-tap away</li>
+        </ul></div>
+        <div class="note con"><span class="lbl">what it costs</span><ul>
+          <li>Feed-gravity is real — one wrong detail and it feels like social media at a funeral</li>
+          <li>Needs activity: quiet pages must degrade gracefully to a Portrait-like stillness</li>
+          <li>Chronology fights curation — the best things sink over time without "most loved" surfacing</li>
+          <li>Most complex to hold to the dignity bar</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MATRIX ═══════════ -->
+<section class="matrix">
+  <h2>Side by <em>side</em></h2>
+  <table>
+    <tr><th>what matters</th><th>A · Portrait</th><th>B · Album</th><th>C · Vigil</th></tr>
+    <tr><td>"I could really see her again"</td><td><span class="dots">●●<span class="off">●</span></span> her face + chapters</td><td><span class="dots">●●<span class="off">●</span></span> photos one tap away</td><td><span class="dots">●●●</span> her life keeps arriving</td></tr>
+    <tr><td>"So many people loved her"</td><td><span class="dots">●<span class="off">●●</span></span> counted, behind doors</td><td><span class="dots">●●<span class="off">●</span></span> stated on the cover</td><td><span class="dots">●●●</span> felt live, in the stream</td></tr>
+    <tr><td>"I want to come back tomorrow"</td><td><span class="dots">●<span class="off">●●</span></span> little changes</td><td><span class="dots">●●<span class="off">●</span></span> rooms refresh quietly</td><td><span class="dots">●●●</span> built for the return</td></tr>
+    <tr><td>Older visitors, first visit</td><td><span class="dots">●●●</span> nothing to learn</td><td><span class="dots">●●<span class="off">●</span></span> four tabs, learned once</td><td><span class="dots">●●<span class="off">●</span></span> familiar if they use feeds</td></tr>
+    <tr><td>The 30-second glance</td><td><span class="dots">●●●</span> whole story in one scroll</td><td><span class="dots">●●●</span> cover says everything</td><td><span class="dots">●<span class="off">●●</span></span> a stream needs a minute</td></tr>
+    <tr><td>The service week</td><td><span class="dots">●●<span class="off">●</span></span> service bar up top</td><td><span class="dots">●●●</span> service is a room</td><td><span class="dots">●●<span class="off">●</span></span> vigil fits the week itself</td></tr>
+    <tr><td>Voices first (your orbit)</td><td><span class="dots">●●●</span> directly under her name</td><td><span class="dots">●●●</span> the default room</td><td><span class="dots">●●●</span> they are the stream</td></tr>
+    <tr><td>Risk to dignity</td><td><span class="dots">●<span class="off">●●</span></span> lowest</td><td><span class="dots">●<span class="off">●●</span></span> low</td><td><span class="dots">●●<span class="off">●</span></span> real — needs discipline</td></tr>
+  </table>
+  <p class="verdict">Reading your three feelings against this: <b>the honest blend is a Portrait spine with the Vigil's heartbeat and one Album habit</b> — a single ceremonial column (nothing to learn), whose memories section behaves like the living stream (newest first, presence, "today"), with a Service room-door pinned during the service week and "most loved" quietly curating what floats up. But sit with each phone first — the right answer should feel obvious in the hands, not in the table.</p>
+</section>
+
+</div>
+
+<footer>
+  <p>Scroll each phone. Tap the Album's rooms. Imagine handing each one to the oldest person you love — that's the real test.</p>
+</footer>
+
+<script>
+/* direction tabs */
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+    document.getElementById('p-'+t.dataset.p).classList.add('on');
+  });
+});
+/* album rooms */
+document.querySelectorAll('.rmtab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.rmtab').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.room').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+    document.getElementById('r-'+t.dataset.r).classList.add('on');
+  });
+});
+/* vigil: the count breathes, truthfully-shaped */
+try{
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.body.classList.add('nomotion')}
+  else{
+    var c=document.getElementById('vigilCount'),n=2168;
+    setInterval(function(){ if(Math.random()<.4){n++;c.textContent=n.toLocaleString();} },7000);
+  }
+}catch(e){}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&window.parent!==window){window.parent.postMessage({type:'close-fullscreen'},'*')}});
+</script>
+</body>
+</html>

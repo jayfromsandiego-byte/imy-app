@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Shape of Remembering · A First-Principles Design Brief · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Sometype+Mono:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --ink:#2C2520; --ink-soft:#5F574E;
+  --terra:#A87C5F; --terra-deep:#8A5A3C; --gold:#C9A572; --night:#1A130D; --walnut:#3f2c1a;
+  --line:rgba(44,37,32,.14); --card:#FFFDF8;
+  --g1:#e9e4d8; --g2:#d9d2c2; --g3:#c3b9a4; --g4:#a99c82;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1020px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
+.lbl{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra-deep)}
+h2{font-size:clamp(26px,3.6vw,36px);font-weight:700;line-height:1.15;margin:10px 0 14px}
+h2 em{font-style:italic;color:var(--terra)}
+h3{font-size:19px;font-weight:700;margin:0 0 6px}
+p{color:var(--ink-soft)}
+p b{color:var(--ink)}
+section{padding:clamp(44px,6vw,76px) 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:none}
+
+/* header */
+header{padding:clamp(60px,8vw,100px) 0 clamp(36px,5vw,56px);text-align:center}
+header h1{font-size:clamp(34px,5.4vw,56px);font-weight:800;line-height:1.05;margin:16px 0 14px}
+header h1 em{font-style:italic;color:var(--terra)}
+header p{max-width:58ch;margin:0 auto;font-style:italic;font-size:17px}
+
+/* jobs strip */
+.jobs{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:26px}
+.job{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 14px;text-align:center}
+.job .n{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--terra-deep);display:block;margin-bottom:8px}
+.job b{font-size:15.5px;display:block;line-height:1.3}
+.job span{font-size:12.5px;color:var(--ink-soft);font-style:italic;display:block;margin-top:6px;line-height:1.4}
+@media(max-width:860px){.jobs{grid-template-columns:repeat(2,1fr)}.job:last-child{grid-column:1/-1}}
+
+/* factor cards */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.fc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.fc .lbl{display:block;margin-bottom:8px}
+.fc p{font-size:15px}
+.fc ul{margin:8px 0 0 18px;color:var(--ink-soft);font-size:15px}
+.fc li{margin-bottom:5px}
+
+/* psychology list */
+.psy{margin-top:20px;display:flex;flex-direction:column;gap:0}
+.psy .row{display:grid;grid-template-columns:220px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--line)}
+.psy .row:last-child{border-bottom:none}
+.psy .row b{font-size:16px}
+.psy .row .why{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep);display:block;margin-top:5px}
+.psy .row p{font-size:15px}
+@media(max-width:700px){.psy .row{grid-template-columns:1fr;gap:6px}}
+
+/* audit */
+.audit{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+@media(max-width:760px){.audit{grid-template-columns:1fr}}
+.aud{border-radius:14px;padding:22px 24px;border:1px solid var(--line)}
+.aud.keep{background:#F3F0E4}
+.aud.fix{background:#F5EBE0}
+.aud .lbl{display:block;margin-bottom:10px}
+.aud ul{margin:0 0 0 18px;font-size:15px;color:var(--ink-soft)}
+.aud li{margin-bottom:8px}
+.aud li b{color:var(--ink)}
+
+/* inspiration */
+.insp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:22px}
+@media(max-width:860px){.insp{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.insp{grid-template-columns:1fr}}
+.in{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.in .src{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep);display:block;margin-bottom:8px}
+.in b{font-size:16px;display:block;margin-bottom:6px}
+.in p{font-size:14px}
+
+/* wireframes */
+.dirs{display:flex;flex-direction:column;gap:26px;margin-top:26px}
+.dir{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.dir .dh{padding:22px 26px 0}
+.dir .dh .lbl{display:block;margin-bottom:6px}
+.dir .dh h3{font-size:22px}
+.dir .dh p{font-size:15px;max-width:64ch;margin-top:6px}
+.dir .canvas{display:flex;gap:clamp(18px,4vw,44px);align-items:flex-start;justify-content:center;padding:clamp(22px,3.5vw,36px);background:#F4F1EA;margin-top:18px;flex-wrap:wrap}
+.frame{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;box-shadow:0 20px 40px -26px rgba(44,37,32,.4)}
+.frame .cap{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);text-align:center;padding:8px 0 2px}
+.scr{border-radius:8px;overflow:hidden;background:var(--cream);display:flex;flex-direction:column;gap:3px;padding:3px}
+.mob .scr{width:150px;height:300px}
+.dsk .scr{width:330px;height:220px}
+.blk{border-radius:4px;flex:none}
+.b-photo{background:linear-gradient(135deg,var(--g2),var(--g4))}
+.b-photo.dk{background:linear-gradient(135deg,var(--g3),#8d8069)}
+.b-text{background:var(--g1)}
+.b-accent{background:#CBA57F}
+.b-dark{background:#3b2e20}
+.rowk{display:flex;gap:3px;flex:none}
+.rowk .blk{flex:1}
+/* legend */
+.legend{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;padding:0 20px 20px;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+
+/* merge map */
+.merge{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px}
+.merge .m-row{display:grid;grid-template-columns:1fr 44px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.merge .m-row:last-child{border-bottom:none}
+.merge .from{font-size:14.5px;color:var(--ink-soft)}
+.merge .from b{color:var(--ink);font-size:15.5px;display:block}
+.merge .arr{text-align:center;color:var(--terra);font-size:20px}
+.merge .to{font-size:14.5px;color:var(--ink-soft)}
+.merge .to b{color:var(--terra-deep);font-size:15.5px;display:block}
+@media(max-width:640px){.merge .m-row{grid-template-columns:1fr;gap:4px}.merge .arr{text-align:left}}
+
+footer{padding:clamp(40px,6vw,64px) 0 clamp(56px,7vw,84px);text-align:center;border-top:1px solid var(--line)}
+footer p{font-style:italic;max-width:52ch;margin:0 auto;font-size:16px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="lbl">I Miss You Memorial · internal design brief · august 2026</span>
+    <h1>The shape of <em>remembering</em></h1>
+    <p>A first-principles look at what a tribute page has to do, the psychology underneath it, an honest audit of where Eleanor's page stands, and three structural directions — before we choose anything.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <span class="lbl">01 · first principles</span>
+  <h2>What is this page, <em>actually?</em></h2>
+  <p>Strip away every feature and a tribute page has five jobs. Every design decision should serve one of them — anything that serves none is ornament, and ornament competes with her.</p>
+  <div class="jobs">
+    <div class="job"><span class="n">job 1</span><b>Recognize</b><span>"That's her." Her face, her name, instantly — the whole reason the page exists.</span></div>
+    <div class="job"><span class="n">job 2</span><b>Feel</b><span>Sit with her for a moment. One thing at a time, at the visitor's own pace.</span></div>
+    <div class="job"><span class="n">job 3</span><b>Contribute</b><span>Lay a flower, light a candle, leave a memory — in under a minute, without an account.</span></div>
+    <div class="job"><span class="n">job 4</span><b>Coordinate</b><span>The service. Date, place, share — the one practical errand, always findable.</span></div>
+    <div class="job"><span class="n">job 5</span><b>Return</b><span>A reason to come back tomorrow. Something new to see; someone new was here.</span></div>
+  </div>
+  <p style="margin-top:20px">And it serves <b>three postures</b>: the <b>glance</b> (30 seconds, from a text-message link, probably standing), the <b>sit</b> (five quiet minutes, often at night), and the <b>add</b> (someone with something to give). The page today mostly serves the sit. The glance and the add have to work harder than they should.</p>
+</section>
+
+<section>
+  <span class="lbl">02 · the factors</span>
+  <h2>What a designer weighs <em>here</em></h2>
+  <div class="grid2">
+    <div class="fc"><span class="lbl">grieving cognition</span>
+      <p>Grief measurably reduces working memory and attention. The research is consistent: <b>less text, fewer simultaneous choices, one idea per screen.</b> A grieving visitor doesn't scan — they drift. The design must be navigable by drifting.</p>
+    </div>
+    <div class="fc"><span class="lbl">older hands, older eyes</span>
+      <p>Many visitors are 65+, on phones. That means:</p>
+      <ul>
+        <li>Touch targets ≥ 44px, generously spaced</li>
+        <li>No hover-only reveals — hover is a desktop luxury; every caption needs a tap path</li>
+        <li>No drags, no sliders, no pinch — <b>taps and vertical scroll only</b></li>
+        <li>Body text ≥ 17px, real contrast on every surface</li>
+      </ul>
+    </div>
+    <div class="fc"><span class="lbl">one canvas, every screen</span>
+      <p><b>Design the phone column first; let desktop be a wider, calmer version of the same column.</b> Horizontal patterns (rails, rivers, side-by-side splits) are desktop thinking — on mobile they become hidden content and accidental swipes. Everything important lives in the vertical scroll.</p>
+    </div>
+    <div class="fc"><span class="lbl">universal, not neutral-gray</span>
+      <p>The page must hold a grandmother, a father, a young man, a wife. <b>Universality comes from structure, not from stripping warmth:</b> the person's own photos carry their character; the frame stays quiet and lets them color it. One family of surfaces, one accent, zero themed ornament.</p>
+    </div>
+    <div class="fc"><span class="lbl">motion discipline</span>
+      <p>Motion should mean something is alive (a count rising, a new memory arriving) — never that the page is performing. <b>Nothing moves that the visitor didn't ask to move</b>, except one heartbeat surface, clearly pausable. Auto-rotation fights reading and older reflexes.</p>
+    </div>
+    <div class="fc"><span class="lbl">trust &amp; permanence</span>
+      <p>Families are handing us the most precious thing they have. The design signals permanence through <b>stillness, weight, and consistency</b> — the same care on every surface, no seams where the "product" shows through the keepsake.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="lbl">03 · the psychology</span>
+  <h2>Why things sit <em>where they sit</em></h2>
+  <div class="psy">
+    <div class="row">
+      <div><b>Center = ceremony<br/>Left = reading</b><span class="why">alignment carries meaning</span></div>
+      <p>Centered composition reads as formal, held, monumental — right for her name, her portrait, the count of flowers. Left-aligned reads as human and tellable — right for stories, memories, anything longer than a line. The page should use exactly these two alignments, each with one meaning. Mixing them per-section (as we do now) is why it feels less composed than it is.</p>
+    </div>
+    <div class="row">
+      <div><b>First and last</b><span class="why">serial position effect</span></div>
+      <p>People remember the first thing and the last thing. First: her face and name — never a feature. Last: the permanence pledge — the feeling that this is held. Everything commercial belongs in the middle-shadow, quiet, or off the tribute entirely.</p>
+    </div>
+    <div class="row">
+      <div><b>One door per depth</b><span class="why">progressive disclosure</span></div>
+      <p>The calm products never show the archive — they show a taste and one labeled door ("35 photographs →"). Depth behind doors is felt as richness; depth on the page is felt as weight. Our page currently opens every door at once, which is why it runs nine screens long.</p>
+    </div>
+    <div class="row">
+      <div><b>Recognition over recall</b><span class="why">how older users navigate</span></div>
+      <p>A visitor should never have to remember where something was. A short, always-visible map (3–5 words) beats a long scroll of surprises. Sections need stable, predictable shapes — same header pattern, same rhythm — so the second visit feels like a place they know.</p>
+    </div>
+    <div class="row">
+      <div><b>The visible count</b><span class="why">social proof of love</span></div>
+      <p>"2,168 flowers" does more emotional work than any paragraph — it's the crowd at the funeral, countable. Contribution numbers (flowers, candles, memories) are the page's honest heartbeat and deserve prime placement; they also invite the next contribution better than any button copy.</p>
+    </div>
+    <div class="row">
+      <div><b>Together, apart</b><span class="why">ambient co-presence</span></div>
+      <p>Grieving happens alone at 2am and together on the anniversary. A quiet presence signal — "three people are sitting with her now," a flower landing as you watch — turns a page into a vigil without a single chat feature. Presence is the collaborative feature; it just has to be truthful.</p>
+    </div>
+    <div class="row">
+      <div><b>The peak and the end</b><span class="why">emotional pacing</span></div>
+      <p>A visit should have a shape: arrive (her face) → warm (her life) → peak (the voices of people who loved her) → settle (add your own, see the service) → close (held forever). One emotional crescendo, not nine equal sections shouting evenly.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="lbl">04 · the audit</span>
+  <h2>Eleanor's page, <em>honestly</em></h2>
+  <div class="audit">
+    <div class="aud keep"><span class="lbl">what's true and working</span>
+      <ul>
+        <li><b>The rituals are real.</b> Flowers, candles, a truthful count — no other memorial product has an honest heartbeat.</li>
+        <li><b>The Stone + wreath</b> is a genuinely ownable identity — recognizable at thumbnail size.</li>
+        <li><b>Memory cards carry voice.</b> Name, relation, words, hearts — the ingredients are right.</li>
+        <li><b>The brand type system</b> (Besley + mono details) is warm and distinct without being gendered.</li>
+        <li><b>The accessibility widget</b> and pronoun care are ahead of the category.</li>
+      </ul>
+    </div>
+    <div class="aud fix"><span class="lbl">what's fighting us</span>
+      <ul>
+        <li><b>Nine screens of equal loudness.</b> No crescendo, no doors — every archive fully open on the page.</li>
+        <li><b>Three photo systems</b> (gallery grid, garden river, memory snapshots) doing one job with three different manners.</li>
+        <li><b>Layered ornament</b> — pressed flowers + tape + torn paper + scrapbook + leaves. Each is lovely; together they're the papier-mâché we're scrapping.</li>
+        <li><b>Alignment drift.</b> Centered, left, and justified sections alternate without a rule.</li>
+        <li><b>Hover-dependent reveals</b> and horizontal patterns that mobile can't honor.</li>
+        <li><b>The add-a-memory door is buried</b> at the bottom of the longest section.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="lbl">05 · the landscape</span>
+  <h2>Where the good answers <em>already live</em></h2>
+  <p>Nobody has designed this page perfectly — but pieces of it are solved in adjacent worlds. Steal the bones, not the skin:</p>
+  <div class="insp">
+    <div class="in"><span class="src">NYT · Guardian obituaries</span><b>The editorial column</b><p>One measured column, one portrait treatment, ceremonial name, restrained rule lines. Proof that dignity is a layout, not a decoration.</p></div>
+    <div class="in"><span class="src">Apple &amp; Google Photos memories</span><b>One thing today</b><p>The archive greets you with a single chosen moment. A thousand photos behind one card — the strongest anti-overwhelm pattern there is, and the reason to return daily.</p></div>
+    <div class="in"><span class="src">Zola · Joy wedding sites</span><b>The life-event page</b><p>The closest structural cousin: one person-pair, one event block, many contributors, guest photo albums, zero-account participation. Their info architecture is battle-tested on every generation of relative.</p></div>
+    <div class="in"><span class="src">Unsplash · Flickr</span><b>The index and the room</b><p>A quiet justified grid as index; tap opens a dark room — one photo, whispered caption, swipe. Browsing and beholding as two separate postures.</p></div>
+    <div class="in"><span class="src">9/11 Memorial · Vietnam Wall</span><b>Names as monument</b><p>The most moving memorials are typography and count, almost nothing else. Restraint reads as respect; the count reads as love made visible.</p></div>
+    <div class="in"><span class="src">Aesop · Le Labo</span><b>One accent, many rooms</b><p>A single surface family and a single accent color holding wildly different content together. Cohesion is repetition of a few decisions, not variety of many.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="lbl">06 · three shapes</span>
+  <h2>Structural directions, <em>sketched</em></h2>
+  <p>Same brand, same content, three different skeletons. Wireframes only — tone comes later. Each is drawn phone-first; desktop is the same column, wider and calmer.</p>
+
+  <div class="dirs">
+
+    <div class="dir">
+      <div class="dh"><span class="lbl">direction a</span><h3>The Portrait — one ceremonial column</h3>
+      <p>Five screens, one crescendo. Everything present, every archive behind one labeled door. The compact answer: a visitor can hold the whole page in their head after one visit.</p></div>
+      <div class="canvas">
+        <div class="frame mob"><div class="scr">
+          <div class="blk b-photo dk" style="height:96px"></div>
+          <div class="blk b-accent" style="height:12px"></div>
+          <div class="blk b-text" style="height:10px"></div>
+          <div class="blk b-text" style="height:34px"></div>
+          <div class="rowk" style="height:40px"><div class="blk b-photo"></div><div class="blk b-photo dk"></div><div class="blk b-photo"></div></div>
+          <div class="blk b-text" style="height:8px"></div>
+          <div class="blk b-text" style="height:44px"></div>
+          <div class="blk b-accent" style="height:14px"></div>
+          <div class="blk b-dark" style="height:26px"></div>
+        </div><div class="cap">phone · 5 screens total</div></div>
+        <div class="frame dsk"><div class="scr">
+          <div class="blk b-photo dk" style="height:70px"></div>
+          <div class="blk b-accent" style="height:10px"></div>
+          <div class="rowk" style="height:52px"><div class="blk b-text" style="flex:1.4"></div><div class="blk b-photo" style="flex:1"></div></div>
+          <div class="rowk" style="height:38px"><div class="blk b-photo"></div><div class="blk b-photo dk"></div><div class="blk b-photo"></div><div class="blk b-photo dk"></div></div>
+          <div class="blk b-text" style="height:16px"></div>
+          <div class="blk b-dark" style="height:20px"></div>
+        </div><div class="cap">desktop · same column, wider</div></div>
+      </div>
+      <div class="legend"><span><i style="background:linear-gradient(135deg,var(--g2),var(--g4))"></i>photography</span><span><i style="background:var(--g1)"></i>words</span><span><i style="background:#CBA57F"></i>ritual / contribute</span><span><i style="background:#3b2e20"></i>pledge</span></div>
+    </div>
+
+    <div class="dir">
+      <div class="dh"><span class="lbl">direction b</span><h3>The Album — a cover and four rooms</h3>
+      <p>A short ceremonial cover (portrait, name, rituals, service), then four stable tabs: Her life · Photos · Memories · Service. Nothing is long; everything is one tap away. The app-like answer — strongest for older visitors who revisit, because rooms never move.</p></div>
+      <div class="canvas">
+        <div class="frame mob"><div class="scr">
+          <div class="blk b-photo dk" style="height:84px"></div>
+          <div class="blk b-accent" style="height:12px"></div>
+          <div class="rowk" style="height:18px"><div class="blk b-text"></div><div class="blk b-text"></div><div class="blk b-text"></div><div class="blk b-text"></div></div>
+          <div class="blk b-photo" style="height:74px"></div>
+          <div class="blk b-text" style="height:8px"></div>
+          <div class="blk b-text" style="height:36px"></div>
+          <div class="blk b-accent" style="height:14px"></div>
+          <div class="blk b-dark" style="height:22px"></div>
+        </div><div class="cap">phone · tabs stay pinned</div></div>
+        <div class="frame dsk"><div class="scr">
+          <div class="blk b-photo dk" style="height:62px"></div>
+          <div class="rowk" style="height:16px"><div class="blk b-text"></div><div class="blk b-text"></div><div class="blk b-text"></div><div class="blk b-text"></div></div>
+          <div class="rowk" style="height:88px"><div class="blk b-photo" style="flex:1"></div><div class="blk b-text" style="flex:1.3"></div></div>
+          <div class="blk b-accent" style="height:12px"></div>
+          <div class="blk b-dark" style="height:18px"></div>
+        </div><div class="cap">desktop · rooms, not scroll</div></div>
+      </div>
+      <div class="legend"><span><i style="background:linear-gradient(135deg,var(--g2),var(--g4))"></i>photography</span><span><i style="background:var(--g1)"></i>words / tabs</span><span><i style="background:#CBA57F"></i>ritual / contribute</span><span><i style="background:#3b2e20"></i>pledge</span></div>
+    </div>
+
+    <div class="dir">
+      <div class="dh"><span class="lbl">direction c</span><h3>The Vigil — presence-first</h3>
+      <p>Her portrait and the living counts stay gently pinned while one stream flows beneath: today's chosen moment, then the newest memories, photos, and voices interleaved as one chronological river of love. Presence is ambient — you see flowers land, you see who's sitting with her. The collaborative answer; the strongest reason to return.</p></div>
+      <div class="canvas">
+        <div class="frame mob"><div class="scr">
+          <div class="blk b-photo dk" style="height:64px"></div>
+          <div class="blk b-accent" style="height:16px"></div>
+          <div class="blk b-photo" style="height:64px"></div>
+          <div class="blk b-text" style="height:40px"></div>
+          <div class="blk b-photo dk" style="height:52px"></div>
+          <div class="blk b-text" style="height:34px"></div>
+          <div class="blk b-dark" style="height:20px"></div>
+        </div><div class="cap">phone · one living stream</div></div>
+        <div class="frame dsk"><div class="scr">
+          <div class="rowk" style="height:100%"><div style="display:flex;flex-direction:column;gap:3px;flex:1"><div class="blk b-photo dk" style="height:110px"></div><div class="blk b-accent" style="height:26px"></div><div class="blk b-text" style="flex:1"></div></div><div style="display:flex;flex-direction:column;gap:3px;flex:1.35"><div class="blk b-photo" style="height:58px"></div><div class="blk b-text" style="height:40px"></div><div class="blk b-photo dk" style="height:48px"></div><div class="blk b-text" style="flex:1"></div></div></div>
+        </div><div class="cap">desktop · portrait holds, stream flows</div></div>
+      </div>
+      <div class="legend"><span><i style="background:linear-gradient(135deg,var(--g2),var(--g4))"></i>photography</span><span><i style="background:var(--g1)"></i>words / memories</span><span><i style="background:#CBA57F"></i>ritual / presence</span><span><i style="background:#3b2e20"></i>pledge</span></div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <span class="lbl">07 · consolidation</span>
+  <h2>What merges, whatever <em>we choose</em></h2>
+  <p>Independent of direction, the audit points to the same consolidations — including the honest answer on Special moments:</p>
+  <div class="merge">
+    <div class="m-row">
+      <div class="from"><b>Three photo surfaces</b>Special moments grid · garden river · memory snapshots</div>
+      <div class="arr">→</div>
+      <div class="to"><b>One photo system</b>A quiet index (chapters or one river) + one dark viewing room. "Special moments" stops being a section and becomes a state: the most-loved photos float to the front.</div>
+    </div>
+    <div class="m-row">
+      <div class="from"><b>Five ornament languages</b>Pressed flowers, tape, torn paper, scrapbook accents, leaf beds</div>
+      <div class="arr">→</div>
+      <div class="to"><b>One surface family</b>Cream paper, one hairline, one accent. Her photographs are the only decoration the page needs.</div>
+    </div>
+    <div class="m-row">
+      <div class="from"><b>The buried composer</b>Add-a-memory at the bottom of the longest section</div>
+      <div class="arr">→</div>
+      <div class="to"><b>A door that travels</b>One persistent, gentle "Leave a memory" — visible from every zone, opening a focused single-question flow.</div>
+    </div>
+    <div class="m-row">
+      <div class="from"><b>Nine equal sections</b>Everything expanded, everything loud</div>
+      <div class="arr">→</div>
+      <div class="to"><b>One crescendo</b>Arrive → her life → the voices → contribute → held. Archives behind labeled doors with honest counts.</div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>None of this is decided. It's the ground to stand on while we choose — the questions come next, and they're doors, not fences.</p>
+  </div>
+</footer>
+
+</body>
+</html>

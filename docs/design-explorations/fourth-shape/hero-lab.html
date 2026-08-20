@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Hero Lab · Moments as the Hero · Five Variations · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Sometype+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --ink:#2C2520; --ink-soft:#5F574E;
+  --terra:#A87C5F; --terra-deep:#8A5A3C; --gold:#C9A572; --night:#1A130D; --walnut:#3f2c1a;
+  --line:rgba(44,37,32,.14); --card:#FFFDF8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+.lbl{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra-deep)}
+img{display:block}
+button{font-family:'Besley',serif;cursor:pointer}
+header{padding:clamp(48px,6.5vw,74px) 0 clamp(10px,2vw,20px);text-align:center}
+header h1{font-size:clamp(30px,4.6vw,46px);font-weight:800;line-height:1.06;margin:14px 0 12px}
+header h1 em{font-style:italic;color:var(--terra)}
+header p{max-width:62ch;margin:0 auto;font-style:italic;color:var(--ink-soft);font-size:16.5px}
+
+.var{margin-top:clamp(30px,4.5vw,52px)}
+.var .vh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:0 4px 12px}
+.var .vh h3{font-size:21px;font-weight:800}
+.var .vh p{font-size:14px;color:var(--ink-soft);flex-basis:100%;max-width:78ch}
+.var .vh .pickbadge{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;background:var(--terra);color:#fff;border-radius:100px;padding:5px 12px;margin-left:auto}
+.heromock{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 60px -34px rgba(44,37,32,.5)}
+.var.pick .heromock{box-shadow:0 0 0 2px var(--terra),0 30px 60px -34px rgba(44,37,32,.5)}
+.trade{display:flex;gap:14px;padding:12px 4px 0;flex-wrap:wrap}
+.trade div{flex:1;min-width:250px;font-size:13.5px;color:var(--ink-soft)}
+.trade b{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:2px}
+.trade .w b{color:#5c7d58}.trade .c b{color:#B04A3A}
+
+/* shared: identity chip */
+.idchip{display:flex;align-items:center;gap:13px}
+.idchip .pfp{width:56px;height:56px;border-radius:10px;overflow:hidden;flex:none;box-shadow:0 6px 16px -6px rgba(16,12,8,.5),0 0 0 3px rgba(255,253,246,.95),0 0 0 4px rgba(138,106,52,.35)}
+.idchip .pfp img{width:100%;height:100%;object-fit:cover}
+.idchip .nm{font-size:clamp(19px,2vw,25px);font-weight:800;line-height:1.05}
+.idchip .nm em{font-style:italic}
+.idchip .dt{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.12em;font-weight:700;margin-top:4px}
+
+/* shared: the trio */
+.trio{display:grid;grid-template-columns:1fr 1.75fr 1fr;gap:clamp(10px,1.6vw,18px);align-items:center}
+.mcard{position:relative;border-radius:13px;overflow:hidden;border:none;padding:0;background:#14100b;cursor:pointer;width:100%}
+.mcard img{width:100%;height:100%;object-fit:cover;transition:opacity .4s ease}
+.mcard .mcap{position:absolute;left:0;right:0;bottom:0;padding:36px 13px 10px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.85));color:#FBF3E4;text-align:left}
+.mcard .tk{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#F0C88A}
+.mcard .tt{font-weight:800;margin-top:3px;line-height:1.2}
+.mcard.big{height:clamp(200px,24vw,300px)}
+.mcard.big .tt{font-size:clamp(15px,1.6vw,20px)}
+.mcard.small{height:clamp(140px,17vw,210px);opacity:.85;transform:scale(.97)}
+.mcard.small .tt{font-size:12.5px}
+.mcard.small:hover{opacity:1;transform:scale(1)}
+@media(max-width:640px){.trio{grid-template-columns:1fr}.mcard.small{display:none}}
+
+footer{padding:44px 0 66px;text-align:center}
+footer p{font-style:italic;color:var(--ink-soft);font-size:15.5px;max-width:58ch;margin:0 auto}
+@media(prefers-reduced-motion:reduce){.mcard img{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="lbl">I Miss You Memorial · the hero lab · her moments up front</span>
+    <h1>Her moments, as the <em>hero</em></h1>
+    <p>Five treatments of the same idea: the cycling trio takes the top fold, her name and a small square portrait hold the identity, and the background changes everything. All five are live and turning — the trios advance together.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- H1 · tinted hero photo -->
+  <div class="var pick">
+    <div class="vh"><span class="lbl">h1</span><h3>The tinted portrait</h3><span class="pickbadge">★ my pick</span>
+    <p>Your instinct: the main hero photo, deep-tinted and softly blurred, becomes the room the moments live in. She's everywhere at once — the atmosphere and the pictures.</p></div>
+    <div class="heromock" style="background:#14100b">
+      <div style="position:absolute;inset:0;background:url(https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg) center 28%/cover no-repeat;filter:blur(7px) saturate(.85);opacity:.5;transform:scale(1.05)"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,14,9,.72),rgba(20,14,9,.4) 40%,rgba(20,14,9,.78))"></div>
+      <div style="position:relative;padding:clamp(18px,3vw,30px) clamp(16px,3.4vw,36px) clamp(20px,3vw,32px)">
+        <div class="idchip" style="color:#FBF3E4;margin-bottom:clamp(14px,2.4vw,24px)">
+          <div class="pfp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></div>
+          <div><div class="nm">Eleanor Margaret <em style="color:#F0C88A">Hayes</em></div><div class="dt" style="color:#F0E3C8">MARCH 12, 1948 — OCTOBER 22, 2024 · HALF MOON BAY, CA</div></div>
+        </div>
+        <div class="trio" data-trio>
+          <button class="mcard small" data-slot="l" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard big" data-slot="c" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard small" data-slot="r" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Most her — the whole fold is made of her · moments pop against the deep tint · night-time warmth</div><div class="c"><b>costs</b>Dark opening register — the page must brighten as it descends</div></div>
+  </div>
+
+  <!-- H2 · scenic sky -->
+  <div class="var">
+    <div class="vh"><span class="lbl">h2</span><h3>The open sky</h3>
+    <p>The scenic route: the old hero's soft clouds return as the backdrop — light, eternal, gender-neutral by nature. The moments float like photographs pinned to the sky.</p></div>
+    <div class="heromock" style="background:#cfd7de">
+      <div style="position:absolute;inset:0;background:url(https://imissyoumemorial.com/bg/clouds-poster.jpg) center 40%/cover no-repeat"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(250,245,236,.14),rgba(63,44,26,.24) 88%)"></div>
+      <div style="position:relative;padding:clamp(18px,3vw,30px) clamp(16px,3.4vw,36px) clamp(20px,3vw,32px)">
+        <div class="idchip" style="color:#3A2E22;margin-bottom:clamp(14px,2.4vw,24px)">
+          <div class="pfp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></div>
+          <div><div class="nm" style="text-shadow:0 1px 12px rgba(250,245,236,.8)">Eleanor Margaret <em style="color:var(--terra-deep)">Hayes</em></div><div class="dt" style="color:var(--terra-deep)">MARCH 12, 1948 — OCTOBER 22, 2024 · HALF MOON BAY, CA</div></div>
+        </div>
+        <div class="trio" data-trio>
+          <button class="mcard small" data-slot="l" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard big" data-slot="c" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard small" data-slot="r" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Light and hopeful opening · the moments carry all the color · calm at any age</div><div class="c"><b>costs</b>Less personal — the sky is anyone's · identity text needs care over bright clouds</div></div>
+  </div>
+
+  <!-- H3 · the leaf bed -->
+  <div class="var">
+    <div class="vh"><span class="lbl">h3</span><h3>The bed of leaves</h3>
+    <p>The wreath's own greens, laid flat as the surface her moments rest on — the brand's mark grown into a whole room. Quietly botanical without a single flower.</p></div>
+    <div class="heromock" style="background:#22301f">
+      <div style="position:absolute;inset:0;background:url(https://pub.hyperagent.com/api/published/pbf01M0EJD97G_VBM1HQPZMC7N0SWE/ecfd28bf-6155-4e69-ae2d-c5528461b433.png) center/cover no-repeat;opacity:.9"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,12,8,.42),rgba(16,12,8,.2) 45%,rgba(16,12,8,.5))"></div>
+      <div style="position:relative;padding:clamp(18px,3vw,30px) clamp(16px,3.4vw,36px) clamp(20px,3vw,32px)">
+        <div class="idchip" style="color:#FBF3E4;margin-bottom:clamp(14px,2.4vw,24px)">
+          <div class="pfp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></div>
+          <div><div class="nm">Eleanor Margaret <em style="color:#F0C88A">Hayes</em></div><div class="dt" style="color:#EFE3C6">MARCH 12, 1948 — OCTOBER 22, 2024 · HALF MOON BAY, CA</div></div>
+        </div>
+        <div class="trio" data-trio>
+          <button class="mcard small" data-slot="l" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard big" data-slot="c" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard small" data-slot="r" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Ownable — no other memorial looks like this · ties the page to the wreath and the Stone</div><div class="c"><b>costs</b>Green sets a strong mood — needs the family to love it · busier texture behind small type</div></div>
+  </div>
+
+  <!-- H4 · walnut gallery -->
+  <div class="var">
+    <div class="vh"><span class="lbl">h4</span><h3>The gallery wall</h3>
+    <p>No photo behind at all: deep walnut, a hairline of gold, her name in cream. The moments hang like lit frames in a quiet gallery after hours. The most formal of the five.</p></div>
+    <div class="heromock" style="background:linear-gradient(180deg,#2a1c11,#1c120a)">
+      <div style="position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,165,114,.5),transparent)"></div>
+      <div style="position:relative;padding:clamp(18px,3vw,30px) clamp(16px,3.4vw,36px) clamp(20px,3vw,32px)">
+        <div class="idchip" style="color:#F5EBD9;margin-bottom:clamp(14px,2.4vw,24px)">
+          <div class="pfp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></div>
+          <div><div class="nm">Eleanor Margaret <em style="color:var(--gold)">Hayes</em></div><div class="dt" style="color:#C9B48F">MARCH 12, 1948 — OCTOBER 22, 2024 · HALF MOON BAY, CA</div></div>
+        </div>
+        <div class="trio" data-trio>
+          <button class="mcard small" data-slot="l" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard big" data-slot="c" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard small" data-slot="r" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Timeless, dignified, zero competition with the photos · matches the footer for a closed loop</div><div class="c"><b>costs</b>The most formal — less warm than the tinted portrait · dark like H1</div></div>
+  </div>
+
+  <!-- H5 · paper morning -->
+  <div class="var">
+    <div class="vh"><span class="lbl">h5</span><h3>The morning paper</h3>
+    <p>The light answer: cream paper, ink name, the moments as the only imagery. Feels like an heirloom album opened on a kitchen table in daylight — the brightest way into the page.</p></div>
+    <div class="heromock" style="background:linear-gradient(180deg,#F6EFDF,var(--cream))">
+      <div style="position:relative;padding:clamp(18px,3vw,30px) clamp(16px,3.4vw,36px) clamp(20px,3vw,32px)">
+        <div class="idchip" style="color:var(--ink);margin-bottom:clamp(14px,2.4vw,24px)">
+          <div class="pfp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></div>
+          <div><div class="nm">Eleanor Margaret <em style="color:var(--terra)">Hayes</em></div><div class="dt" style="color:var(--terra-deep)">MARCH 12, 1948 — OCTOBER 22, 2024 · HALF MOON BAY, CA</div></div>
+        </div>
+        <div class="trio" data-trio>
+          <button class="mcard small" data-slot="l" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard big" data-slot="c" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+          <button class="mcard small" data-slot="r" type="button"><img alt=""/><div class="mcap"><div class="tk"></div><div class="tt"></div></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="trade"><div class="w"><b>wins</b>Brightest, gentlest arrival · text always perfectly readable · flows seamlessly into the cream page</div><div class="c"><b>costs</b>Least dramatic — the fold relies entirely on the photos to carry emotion</div></div>
+  </div>
+
+</div>
+
+<footer>
+  <p>When one of these becomes the hero, the memories room gives up its carousel — chips, the full cards, and the river stay. Tap the wings in any variation; they all walk.</p>
+</footer>
+
+<script>
+var P='https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-';
+var M='https://imissyoumemorial.com/art/mem-demo/';
+var REDUCE=false;try{REDUCE=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+var TODAY=[
+ {img:P+'2019.jpg',k:'around 2019 · from her photographs',t:'First light over the garden'},
+ {img:M+'ruth-with.webp',k:'remembered by Ruth · her friend',t:'Fifty years of Tuesdays'},
+ {img:P+'1989.jpg',k:'around 1989 · placed by the family',t:'The chairs multiplied'},
+ {img:M+'daniel-with.webp',k:'remembered by Daniel · her son',t:'The quiet before everyone arrived'},
+ {img:P+'hands.jpg',k:'around 2015 · from her photographs',t:'Her hands, always working'},
+ {img:M+'miguel-with.webp',k:'remembered by Miguel · a neighbour',t:'The harvest over the fence'}
+];
+var ti=0;
+function md(n){return ((n%TODAY.length)+TODAY.length)%TODAY.length}
+var trios=Array.prototype.slice.call(document.querySelectorAll('[data-trio]'));
+function setCard(card,m,fade){
+  var img=card.querySelector('img');
+  if(fade&&!REDUCE){img.style.opacity=0;setTimeout(function(){img.src=m.img;img.style.opacity=1},300)}
+  else img.src=m.img;
+  card.querySelector('.tk').textContent=m.k;
+  card.querySelector('.tt').textContent=m.t;
+}
+function renderAll(fade){
+  trios.forEach(function(t){
+    setCard(t.querySelector('[data-slot=l]'),TODAY[md(ti-1)],fade);
+    setCard(t.querySelector('[data-slot=c]'),TODAY[md(ti)],fade);
+    setCard(t.querySelector('[data-slot=r]'),TODAY[md(ti+1)],fade);
+  });
+}
+renderAll(false);
+var paused=false;
+trios.forEach(function(t){
+  ['mouseenter','touchstart','focusin'].forEach(function(ev){t.addEventListener(ev,function(){paused=true},{passive:true})});
+  t.addEventListener('mouseleave',function(){paused=false});
+  t.querySelector('[data-slot=l]').addEventListener('click',function(){ti=md(ti-1);renderAll(true)});
+  t.querySelector('[data-slot=r]').addEventListener('click',function(){ti=md(ti+1);renderAll(true)});
+});
+if(!REDUCE){setInterval(function(){if(!paused&&!document.hidden){ti=md(ti+1);renderAll(true)}},4500)}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&window.parent!==window){window.parent.postMessage({type:'close-fullscreen'},'*')}});
+</script>
+</body>
+</html>
