@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The Dashboard Study · I Miss You Memorial Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Sometype+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --well:#ECE1CC; --ink:#2C2520; --ink-soft:#5c5249;
+  --terra:#A87C5F; --terra-text:#8a5a3c; --gold:#C9A572; --goldline:rgba(201,165,114,.42);
+  --night:#1A130D; --brown:#3f2c1a; --brown-deep:#241711; --flame:#F4B860;
+  --hairline:rgba(44,37,32,.13);
+  --sh-rest:0 1px 2px rgba(74,52,32,.05);
+  --sh-lift:0 1px 2px rgba(74,52,32,.05),0 6px 16px rgba(74,52,32,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',Georgia,serif;font-size:16.5px;line-height:1.6}
+.mono{font-family:'Sometype Mono',monospace}
+a{color:var(--terra-text)}
+em{color:var(--terra-text)}
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
+
+/* header */
+header{padding:64px 0 44px;border-bottom:1px solid var(--hairline);background:linear-gradient(180deg,var(--cream-deep),var(--cream))}
+.kicker{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra-text)}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;line-height:1.12;margin:12px 0 14px;max-width:20ch}
+h1 em{font-style:italic;color:var(--terra)}
+.lede{font-size:17.5px;color:var(--ink-soft);max-width:62ch;margin:0}
+.meta-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.meta-row span b{color:var(--terra-text);font-weight:700}
+
+/* sections */
+section{padding:52px 0 8px}
+.sec-num{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+h2{font-size:clamp(24px,3.4vw,31px);font-weight:800;line-height:1.15;margin:8px 0 8px}
+.sec-sub{color:var(--ink-soft);max-width:66ch;margin:0 0 28px;font-size:16px}
+h3{font-size:19px;font-weight:700;margin:34px 0 14px}
+
+/* law cards */
+.law-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.law{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:16px;padding:18px 20px;box-shadow:var(--sh-rest)}
+.law .ln{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.law .lt{font-weight:700;font-size:15.5px;margin:4px 0 6px}
+.law .ld{font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.law .lc{font-size:13.5px;margin-top:8px;line-height:1.5}
+.law .lc b{color:var(--terra-text)}
+
+/* anatomy */
+.zones{display:flex;flex-direction:column;gap:0;border:1px solid var(--goldline);border-radius:20px;overflow:hidden;box-shadow:var(--sh-lift)}
+.zone{display:grid;grid-template-columns:190px 1fr;gap:18px;padding:20px 26px;background:var(--cream-deep);border-bottom:1px solid var(--hairline)}
+.zone:last-child{border-bottom:none}
+.zone:nth-child(odd){background:var(--cream)}
+.zone .zn{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text);padding-top:3px}
+.zone .zq{font-weight:700;font-size:15.5px}
+.zone .zw{font-size:14px;color:var(--ink-soft);margin-top:4px;line-height:1.55}
+
+/* exemplar cards */
+.shelf-label{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin:30px 0 12px;display:flex;align-items:center;gap:12px}
+.shelf-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--goldline),transparent)}
+.ex-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.ex{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:18px;padding:22px 24px;box-shadow:var(--sh-rest)}
+.ex .xh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ex .xn{font-weight:800;font-size:17px}
+.ex .xt{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.ex .xone{font-size:14.5px;line-height:1.55;margin:0 0 10px}
+.ex .xone b{color:var(--terra-text)}
+.ex ul{margin:0;padding-left:18px;font-size:13.8px;color:var(--ink-soft);line-height:1.55}
+.ex ul li{margin-bottom:7px}
+.ex ul li i{color:var(--terra-text);font-style:italic}
+.ex .xm{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.05em;color:var(--ink-soft);margin-top:12px;padding-top:10px;border-top:1px dashed var(--goldline)}
+.ex .xm b{color:var(--terra-text);font-weight:700}
+
+/* taxonomy table */
+.tax{border:1px solid var(--goldline);border-radius:18px;overflow:hidden;box-shadow:var(--sh-rest)}
+.tax-row{display:grid;grid-template-columns:130px 1fr 1fr 120px;gap:16px;padding:15px 22px;border-bottom:1px solid var(--hairline);background:var(--cream-deep);font-size:13.8px;align-items:start}
+.tax-row:nth-child(odd){background:var(--cream)}
+.tax-row:last-child{border-bottom:none}
+.tax-row.head{background:var(--brown);color:#EFE6D6;font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.tax-row .tn{font-weight:700}
+.tax-row .tp{color:var(--ink-soft)}
+.tax-row .tv{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.04em}
+.v-yes{color:#4c6b45;font-weight:700}
+.v-care{color:var(--terra-text);font-weight:700}
+.v-no{color:#933f2c;font-weight:700}
+
+/* universals */
+.uni{counter-reset:uni;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.uni .u{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:14px;padding:15px 18px 15px 52px;position:relative;font-size:14px;line-height:1.55;color:var(--ink-soft)}
+.uni .u b{color:var(--ink)}
+.uni .u::before{counter-increment:uni;content:counter(uni,decimal-leading-zero);position:absolute;left:16px;top:15px;font-family:'Sometype Mono',monospace;font-size:11px;color:var(--gold)}
+
+/* grief lens */
+.lens{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lens .col{border-radius:18px;padding:22px 24px}
+.lens .harm{background:var(--brown-deep);color:#EFE6D6;border:1px solid rgba(244,184,96,.25)}
+.lens .harm h4{color:var(--flame)}
+.lens .gentle{background:var(--cream-deep);border:1px solid var(--goldline)}
+.lens h4{font-size:15px;font-weight:800;margin:0 0 12px;font-family:'Sometype Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
+.lens .gentle h4{color:var(--terra-text)}
+.lens ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6}
+.lens .harm ul{color:#d9cbb6}
+.lens .gentle ul{color:var(--ink-soft)}
+.lens li{margin-bottom:9px}
+.lens .harm li b{color:var(--flame)}
+.lens .gentle li b{color:var(--terra-text)}
+
+/* mistakes */
+.mist{columns:2;column-gap:28px;font-size:14px;color:var(--ink-soft);line-height:1.6}
+.mist p{break-inside:avoid;margin:0 0 10px;padding-left:24px;position:relative}
+.mist p::before{content:"✕";position:absolute;left:2px;color:#933f2c;font-family:'Sometype Mono',monospace;font-size:12px}
+.mist p b{color:var(--ink)}
+
+/* directions */
+.dir{border:1px solid var(--goldline);border-radius:22px;background:var(--cream-deep);padding:28px 30px;margin-bottom:20px;box-shadow:var(--sh-lift);position:relative;overflow:hidden}
+.dir .dk{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.dir h3{font-size:23px;font-weight:800;margin:6px 0 4px}
+.dir h3 em{font-style:italic;color:var(--terra)}
+.dir .dsrc{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:14px}
+.dir .dbody{display:grid;grid-template-columns:1.2fr 1fr;gap:26px}
+.dir .skel{background:var(--cream);border:1px solid var(--hairline);border-radius:14px;padding:16px 18px;font-family:'Sometype Mono',monospace;font-size:12px;line-height:1.9;color:var(--ink-soft);white-space:pre;overflow-x:auto}
+.dir .dwhy{font-size:14.5px;line-height:1.6;color:var(--ink-soft)}
+.dir .dwhy b{color:var(--terra-text)}
+.dir .dwhy .risk{display:block;margin-top:12px;padding-top:10px;border-top:1px dashed var(--goldline);font-size:13.5px}
+.dir .dwhy .risk b{color:#933f2c}
+
+/* audit strip */
+.audit{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.audit .a-col{border-radius:16px;padding:20px 22px;border:1px solid var(--hairline);background:var(--cream-deep)}
+.audit h4{margin:0 0 10px;font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.audit .keeps h4{color:#4c6b45}
+.audit .gaps h4{color:#933f2c}
+.audit ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-soft);line-height:1.6}
+.audit li{margin-bottom:7px}
+.audit li b{color:var(--ink)}
+
+footer{margin-top:64px;padding:34px 0 44px;border-top:1px solid var(--hairline);font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-align:center}
+footer em{color:var(--terra);font-style:italic;font-family:'Besley',serif;text-transform:none;letter-spacing:0}
+
+@media(max-width:880px){
+  .law-grid{grid-template-columns:repeat(2,1fr)}
+  .ex-grid{grid-template-columns:1fr}
+  .uni{grid-template-columns:1fr}
+  .lens{grid-template-columns:1fr}
+  .audit{grid-template-columns:1fr}
+  .dir .dbody{grid-template-columns:1fr}
+  .tax-row{grid-template-columns:110px 1fr;grid-template-rows:auto auto}
+  .tax-row .tp{grid-column:2}
+  .tax-row .tv{grid-column:1/-1}
+  .tax-row.head .tp,.tax-row.head .tv{display:none}
+  .zone{grid-template-columns:1fr;gap:6px}
+  .mist{columns:1}
+}
+@media(max-width:560px){
+  .law-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">I Miss You Memorial Studio · Design Research · August 18, 2026</div>
+    <h1>The Dashboard Study — what the best ones do, and <em>why</em></h1>
+    <p class="lede">Twenty-three dashboards across five industries, reduced to the principles underneath them. Each explanation is one sentence on purpose. At the end: four candidate directions for the Study, for you to choose from.</p>
+    <div class="meta-row">
+      <span><b>23</b> exemplars</span><span><b>12</b> laws</span><span><b>8</b> progress meters ranked</span><span><b>4</b> directions to pick</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ I. FIRST PRINCIPLES ============ -->
+<section id="laws">
+  <div class="sec-num">Part I</div>
+  <h2>The twelve laws every great dashboard obeys</h2>
+  <p class="sec-sub">These are not opinions — they're measured properties of human attention. Every pattern in Part III exists because of one of these.</p>
+  <div class="law-grid">
+    <div class="law"><div class="ln">01 · Hick's Law</div><div class="lt">More choices, slower decisions</div><div class="ld">Decision time grows with the number of options offered.</div><div class="lc"><b>→</b> A home screen earns 3–5 actions, never 12.</div></div>
+    <div class="law"><div class="ln">02 · Fitts's Law</div><div class="lt">Big and close is fast</div><div class="ld">Time to reach a target depends on its size and distance.</div><div class="lc"><b>→</b> The most-used action gets the biggest, nearest button.</div></div>
+    <div class="law"><div class="ln">03 · Miller's Law</div><div class="lt">Memory holds 7±2 chunks</div><div class="ld">People can only hold a handful of things in mind at once.</div><div class="lc"><b>→</b> Group content into labeled clusters of 3–5, never a wall of 15 equal numbers.</div></div>
+    <div class="law"><div class="ln">04 · Jakob's Law</div><div class="lt">Users live on other sites</div><div class="ld">People expect your product to work like everything else they use.</div><div class="lc"><b>→</b> Put nav, search, and settings where every dashboard puts them; invent in the content, not the chrome.</div></div>
+    <div class="law"><div class="ln">05 · Tesler's Law</div><div class="lt">Complexity must live somewhere</div><div class="ld">Either the designer absorbs complexity or the user does.</div><div class="lc"><b>→</b> Smart defaults and pre-computed comparisons — never make the user configure.</div></div>
+    <div class="law"><div class="ln">06 · Doherty Threshold</div><div class="lt">Respond under 400ms</div><div class="ld">Engagement collapses when the system makes people wait.</div><div class="lc"><b>→</b> Skeletons and cached numbers instantly; a slow dashboard stops being consulted.</div></div>
+    <div class="law"><div class="ln">07 · Aesthetic–Usability</div><div class="lt">Beautiful feels usable</div><div class="ld">Pleasing designs are perceived as more trustworthy and forgiven more.</div><div class="lc"><b>→</b> Aligned grids and a restrained palette buy real trust in the numbers.</div></div>
+    <div class="law"><div class="ln">08 · Peak–End Rule</div><div class="lt">Endings are remembered</div><div class="ld">People judge an experience by its peak and its final moment.</div><div class="lc"><b>→</b> Design the "all clear" state deliberately — it's what checking in feels like.</div></div>
+    <div class="law"><div class="ln">09 · Gestalt Proximity</div><div class="lt">Nearness means together</div><div class="ld">Things placed close are read as one group.</div><div class="lc"><b>→</b> Whitespace is the grouping tool — gaps instead of boxes inside boxes.</div></div>
+    <div class="law"><div class="ln">10 · Von Restorff</div><div class="lt">The different one is seen</div><div class="ld">Among similar items, only the one that differs gets remembered.</div><div class="lc"><b>→</b> Accent color marks exactly one thing per screen; highlight everything, and nothing is.</div></div>
+    <div class="law"><div class="ln">11 · Data-Ink Ratio (Tufte)</div><div class="lt">Erase everything that isn't data</div><div class="ld">Every pixel should carry information or be removed.</div><div class="lc"><b>→</b> Strip borders, shadows, and decorative icons before you ever shrink the number.</div></div>
+    <div class="law"><div class="ln">12 · Information Scent</div><div class="lt">Links must smell like their destination</div><div class="ld">People only follow paths that clearly promise their goal.</div><div class="lc"><b>→</b> "Read the 3 waiting memories," never "More."</div></div>
+  </div>
+</section>
+
+<!-- ============ II. ANATOMY ============ -->
+<section id="anatomy">
+  <div class="sec-num">Part II</div>
+  <h2>The anatomy — six zones, in the order people ask</h2>
+  <p class="sec-sub">Every good dashboard answers the same questions in the same order: <em>where am I → am I okay → what needs me → where can I go → tell me more → can I rest now.</em> Status always precedes navigation, because people came to check, not to browse.</p>
+  <div class="zones">
+    <div class="zone"><div class="zn">1 · Identity</div><div><div class="zq">"Where am I, and whose is this?"</div><div class="zw">Account, person, date scope. Every number below is meaningless without it. (Ours: the arch portrait and her name.)</div></div></div>
+    <div class="zone"><div class="zn">2 · Status</div><div><div class="zq">"Am I okay?"</div><div class="zw">One glanceable answer, above the fold, no scroll. Most visits should be able to end here, satisfied.</div></div></div>
+    <div class="zone"><div class="zn">3 · Attention</div><div><div class="zq">"What needs me?"</div><div class="zw">Exceptions and decisions, pressing-first. This zone hosts the screen's single primary action — the only zone allowed to speak up.</div></div></div>
+    <div class="zone"><div class="zn">4 · Navigation</div><div><div class="zq">"Where else can I go?"</div><div class="zw">3–5 high-scent destinations. It ranks below status because navigation is a means, not the goal.</div></div></div>
+    <div class="zone"><div class="zn">5 · Detail</div><div><div class="zq">"Why is it like that?"</div><div class="zw">Depth behind taps — progressive disclosure gives the few their depth without cluttering the glance for the many.</div></div></div>
+    <div class="zone"><div class="zn">6 · Reassurance</div><div><div class="zq">"Can I trust this, and may I stop?"</div><div class="zw">Freshness, permanence, a calm close. The peak–end rule says this quiet footer is what the visit feels like afterward. (Ours: the Permanence Pledge.)</div></div></div>
+  </div>
+</section>
+
+<!-- ============ III. EXEMPLARS ============ -->
+<section id="exemplars">
+  <div class="sec-num">Part III</div>
+  <h2>The exemplars — who does it best, and what to take</h2>
+  <p class="sec-sub">Grouped by kind. For each: what the home screen is, the signature moves, the principle behind them <i>(in italics)</i>, and how it goes mobile.</p>
+
+  <div class="shelf-label">Operator dashboards — a person tending something they care about (closest to us)</div>
+  <div class="ex-grid">
+    <div class="ex"><div class="xh"><span class="xn">Airbnb Host</span><span class="xt">Hospitality</span></div>
+      <p class="xone">Home is a <b>day-planner, not a report</b> — the "Today" tab orders blocks from most to least pressing.</p>
+      <ul><li>Reservation cards with the suggested action attached ("send check-in message") — <i>context and action colocated kills the tab-shuffle.</i></li>
+      <li>Five tabs total; pro tools demoted to sub-menus — <i>optimize for the loyal individual, not the power user.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> app-first, bottom tabs — "everything is inside the app."</div></div>
+    <div class="ex"><div class="xh"><span class="xn">GoFundMe Organizer</span><span class="xt">Emotional stakes · closest cousin</span></div>
+      <p class="xone">Organizer home = <b>momentum + gratitude queue</b> under high emotion.</p>
+      <ul><li>Thank-you conveyor: thank one donor, the next un-thanked donor auto-appears — <i>one decision at a time becomes a flow state.</i></li>
+      <li>Scaffolded update composer (photo + news + thanks template) — <i>lower the emotional cost of writing.</i></li>
+      <li>Comments can be turned off entirely when they turn hostile — <i>the nuclear option is itself a form of care.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> left menu on desktop becomes bottom menu on mobile.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Shopify Admin</span><span class="xt">Commerce</span></div>
+      <p class="xone">Home is a <b>task feed</b>: today's numbers strip, then cards like "5 orders to fulfill" that vanish at zero.</p>
+      <ul><li>Rows deep-link straight to the fix — <i>the overview mirrors the merchant's mental model: not "here's data" but "here's what needs you."</i></li>
+      <li>Only ships metrics proven to trigger a follow-up action — <i>a metric without a next action is decoration.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> full-parity app, bottom tabs, designed mobile-first.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">YouTube Studio</span><span class="xt">Best moderation queue anywhere</span></div>
+      <p class="xone">The <b>held-for-review queue</b> is the reference design for approval work.</p>
+      <ul><li>One "Held" tab, four verbs per item (approve / remove / report / hide user) — <i>moderation is defaults + exceptions, never a settings matrix.</i></li>
+      <li>Strictness dial plus a trusted-people allowlist that skips review — <i>set policy once, then only handle edge cases.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> dedicated Studio app; full moderation from a phone.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Monzo / Revolut</span><span class="xt">Banking</span></div>
+      <p class="xone">Home = <b>one number (balance) + a row of verbs</b>; five actions max, three taps to anything.</p>
+      <ul><li>Thirty products hidden behind labeled sections — <i>surface frequency, bury depth.</i></li>
+      <li>Monzo measured "change aversion" and let users snooze a redesign — <i>operators feel redesigns as broken muscle memory; ship change gently.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> mobile-only by design — the purest thumb-first layouts in the industry.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">One Medical (vs MyChart)</span><span class="xt">Healthcare · sensitive context</span></div>
+      <p class="xone">Bottom nav of exactly <b>four jobs</b>: Home, Appointments, Messages, Records. MyChart is the cautionary tale — what people need buried under institutional structure.</p>
+      <ul><li>Suggested appointment times shown immediately raised bookings 20% — <i>a ready default beats an open search.</i></li>
+      <li>Single triaged inbox, provider photos for trust — <i>in vulnerable moments, one clear channel beats many.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> app-first, four bottom tabs.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Etsy Shop Manager</span><span class="xt">Craft commerce</span></div>
+      <p class="xone">Leads with <b>"Today's top tasks"</b> before any statistic.</p>
+      <ul><li>Task tabs deep-link into the fix — <i>the dashboard is a router for work, not a destination.</i></li>
+      <li>Shop Advisor speaks plain-language reminders — <i>the system remembers deadlines so the seller doesn't.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> separate seller app; the desktop stays the full cockpit.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Squarespace / Wix</span><span class="xt">Site owners</span></div>
+      <p class="xone">Home framed as <b>guidance, not analytics</b>: setup tasks, advice, one clear next step.</p>
+      <ul><li>Dismissible task checklists are the industry standard — <i>operators must own their own to-do list.</i></li>
+      <li>Empty sections become full-width invitations with one CTA — <i>an empty state is the first task, not a blank.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> responsive + companion apps; desktop-leaning.</div></div>
+  </div>
+
+  <div class="shelf-label">Product &amp; SaaS dashboards — the craft benchmark</div>
+  <div class="ex-grid">
+    <div class="ex"><div class="xh"><span class="xn">Stripe</span><span class="xt">Fintech</span></div>
+      <p class="xone">Home = <b>"Today" number row</b> (gross, net, vs yesterday), then mirrored chart cards. Sixty seconds of your morning.</p>
+      <ul><li>Identical chart grammar on every card — <i>when everything is formatted the same, differences become the signal.</i></li>
+      <li>Every row inspectable down to the event — <i>density is earned only when every row is actionable.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> scoped companion app (monitoring + quick actions) + home-screen widgets.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Linear</span><span class="xt">Software</span></div>
+      <p class="xone">No metrics home at all — home is an <b>inbox/triage queue</b>.</p>
+      <ul><li>One item, one decision, next — <i>queues minimize decision latency.</i></li>
+      <li>Empty states are one sentence + one action — <i>the blank screen is peak uncertainty, so teach exactly there.</i></li>
+      <li>Optimistic UI, 120–180ms motion — <i>perceived speed is trust.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> native "sidekick" app for away-from-desk triage — not desktop parity.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Vercel</span><span class="xt">Developer tools</span></div>
+      <p class="xone">Overview = <b>grid of project cards</b> with live status; header and activity stream deleted "to get to what matters faster."</p>
+      <ul><li>Status visible even in the browser favicon — <i>status you can see without switching focus costs zero attention.</i></li>
+      <li>Empty state shows the literal command in monospace — <i>instructions beat decoration.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> responsive web with a floating bottom bar "optimized for one-handed use."</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Plausible / Fathom</span><span class="xt">Analytics</span></div>
+      <p class="xone">The <b>entire product is one page</b>: six KPIs, one chart, panel grid. No sidebar, no report tree.</p>
+      <ul><li>Anti-GA4 by design — <i>eliminating navigation eliminates the recall tax.</i></li>
+      <li>Click any row to filter the whole page — <i>direct manipulation beats abstract configuration.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> no app needed — one page just stacks. The one-page bet makes responsive trivial.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Notion Home</span><span class="xt">Workspace</span></div>
+      <p class="xone">A <b>curated widget landing</b>: greeting, recently visited, My Tasks aggregated from everywhere.</p>
+      <ul><li>Aggregation by person, not by container — <i>people think in "my work," not in your information architecture.</i></li>
+      <li>Barely customizable on purpose — <i>an opinionated home is the guardrail that guarantees a useful default.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> single column, bottom tabs (Home / Search / Inbox).</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Mercury</span><span class="xt">Banking for founders</span></div>
+      <p class="xone">One huge number — <b>balance + trend</b> — then recent activity. Density calibrated to the founder, not the finance team.</p>
+      <ul><li>Single hero metric — <i>lead with the number that answers the user's first question; the wrong hero signals you don't understand their job.</i></li>
+      <li>Deliberate friction on big transfers — <i>in high-stakes moments, friction is the trust signal.</i></li></ul>
+      <div class="xm"><b>Mobile:</b> near parity — a one-metric layout survives the phone unchanged.</div></div>
+  </div>
+
+  <div class="shelf-label">Progress &amp; wellbeing dashboards — where the meters live</div>
+  <div class="ex-grid">
+    <div class="ex"><div class="xh"><span class="xn">Apple Fitness Rings</span><span class="xt">Health</span></div>
+      <p class="xone">Glance level shows <b>three rings and nothing else</b> — numbers live one layer deeper.</p>
+      <ul><li>A 90%-complete circle begs to be closed — <i>Gestalt closure + the goal-gradient effect (effort accelerates near completion).</i></li>
+      <li>Daily reset keeps stakes low, deadline firm. Cost: 11:45pm compulsive ring-closing — noted.</li></ul>
+      <div class="xm"><b>Restraint:</b> three goals compressed into one "did I win the day?" state.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Whoop / Oura</span><span class="xt">Recovery</span></div>
+      <p class="xone">One <b>0–100 score at 72pt</b> answers "how should I live today?" — charts two taps deeper.</p>
+      <ul><li>Dozens of biometrics compressed into one authoritative number — <i>cognitive simplification: one number is the coaching.</i></li>
+      <li>Oura's scores explain themselves via named "contributors" — <i>interpretability over raw data.</i> Rest Mode = permission to stop, built in.</li></ul>
+      <div class="xm"><b>Restraint:</b> no streaks, no leaderboards, no raw data up front.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Duolingo</span><span class="xt">Learning · the cautionary king</span></div>
+      <p class="xone">The <b>streak</b> is the business model: loss aversion on a counter.</p>
+      <ul><li>Works brutally well — 9M+ year-long streaks — <i>loss aversion + sunk cost, the strongest and most dangerous mechanic.</i></li>
+      <li>Its guilt-trip notifications are the canonical dark pattern; a user quit forever after losing an 850-day streak to a dropped connection.</li></ul>
+      <div class="xm"><b>Lesson for us:</b> import nothing whose engine is loss.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Headspace</span><span class="xt">Meditation · the tone teacher</span></div>
+      <p class="xone">Home is a <b>concierge, not a library</b>: one recommended session by time of day, one big start button.</p>
+      <ul><li>Course bars use unfinished-sequence pull — <i>the Zeigarnik effect, gently.</i></li>
+      <li>Completion = a 1-second gentle settle, never confetti; 400–800ms transitions physically slow you down — <i>the interface behaves like a considerate presence.</i></li></ul>
+      <div class="xm"><b>Restraint:</b> no points, no levels, no leaderboards, ever.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Gentler Streak</span><span class="xt">The anti-streak · most transferable</span></div>
+      <p class="xone">Progress is a <b>tolerance band, not a target</b> — rest days sit inside the band, so the streak survives rest.</p>
+      <ul><li>"Ill / injured / away" states formally excuse absence — <i>guilt is designed out, autonomy designed in.</i></li>
+      <li>Compares you only to your own history — never to others.</li></ul>
+      <div class="xm"><b>For us:</b> the closest existing philosophy to a grief-safe meter.</div></div>
+    <div class="ex"><div class="xh"><span class="xn">Finch</span><span class="xt">Self-care · the care-outward insight</span></div>
+      <p class="xone">You don't maintain your own metric — you <b>tend a creature you love</b>. One progress bar, no leaderboards.</p>
+      <ul><li>Retention beats Duolingo's without a single nag — <i>devotion to something outside yourself outmotivates self-metrics.</i></li>
+      <li>This is <b>the</b> mechanic for memorials: contributing "for her," never for a score.</li></ul>
+      <div class="xm"><b>For us:</b> the page itself is the tended thing — the wreath, the vigil, the wall.</div></div>
+  </div>
+</section>
+
+<!-- ============ IV. TAXONOMY ============ -->
+<section id="meters">
+  <div class="sec-num">Part IV</div>
+  <h2>Progress meters, ranked for our house</h2>
+  <p class="sec-sub">Every indicator has a psychology. One rule above all: <b>one indicator at glance level</b> — every failure mode in the research began with competing meters.</p>
+  <div class="tax">
+    <div class="tax-row head"><div>Meter</div><div>When it's right</div><div class="tp">The psychology</div><div class="tv">Verdict for IMY</div></div>
+    <div class="tax-row"><div class="tn">Count</div><div>Honoring accumulation with no deadline — "127 memories shared."</div><div class="tp">Endowed progress: what's built motivates and can never be lost.</div><div class="tv v-yes">✓ Our native meter</div></div>
+    <div class="tax-row"><div class="tn">Bar</div><div>A finite sequence with a known end — onboarding, a page "becoming whole."</div><div class="tp">Zeigarnik effect: unfinished sequences gently occupy the mind.</div><div class="tv v-yes">✓ As care, pre-seeded</div></div>
+    <div class="tax-row"><div class="tn">Band / corridor</div><div>Sustainable tending where rest is legitimate.</div><div class="tp">Autonomy support: success is a range, not a target.</div><div class="tv v-yes">✓ Philosophy fits</div></div>
+    <div class="tax-row"><div class="tn">Path / map</div><div>Long journeys where orientation matters more than speed.</div><div class="tp">Journey metaphor gives narrative meaning.</div><div class="tv v-care">◐ Only as her life's timeline — never user productivity</div></div>
+    <div class="tax-row"><div class="tn">Score (0–100)</div><div>Compressing many signals into one decision.</div><div class="tp">Cognitive simplification — but false precision is a real danger.</div><div class="tv v-care">◐ Never grade a tribute</div></div>
+    <div class="tax-row"><div class="tn">Ring</div><div>A bounded daily goal that resets.</div><div class="tp">Gestalt closure + goal gradient — the open loop begs to close.</div><div class="tv v-no">✗ Grief has no daily reset</div></div>
+    <div class="tax-row"><div class="tn">Streak</div><div>Only when daily frequency truly is the outcome.</div><div class="tp">Loss aversion + sunk cost — the strongest and cruelest mechanic.</div><div class="tv v-no">✗ Never</div></div>
+    <div class="tax-row"><div class="tn">Leaderboard</div><div>Competitive communities.</div><div class="tp">Social comparison.</div><div class="tv v-no">✗ Never</div></div>
+  </div>
+</section>
+
+<!-- ============ V. UNIVERSALS ============ -->
+<section id="universals">
+  <div class="sec-num">Part V</div>
+  <h2>The ten universals</h2>
+  <p class="sec-sub">The patterns that appeared in nearly every excellent dashboard, across all five industries.</p>
+  <div class="uni">
+    <div class="u"><b>Overview = status + next action, never just data.</b> A dashboard that doesn't propose the next step is a report.</div>
+    <div class="u"><b>One hero answer above the fold.</b> The home must answer the user's first question without scrolling — most visits should end there, satisfied.</div>
+    <div class="u"><b>Task feed over chart grid</b> for operators: plain-language sentences the system has already interpreted ("3 memories are waiting"), not metrics to compute.</div>
+    <div class="u"><b>One decision at a time, auto-advancing.</b> Queues with 2–4 verbs per item (GoFundMe's thank-conveyor, YouTube's Held tab) turn duty into flow.</div>
+    <div class="u"><b>Empty states teach.</b> One sentence + one action at the moment of maximum uncertainty; an empty operator dashboard is the first task, not a blank.</div>
+    <div class="u"><b>Progressive disclosure.</b> Show the headline, hide the breakdown behind a tap; depth on demand, never up front.</div>
+    <div class="u"><b>Consistent card grammar.</b> When every card is formatted identically, the differences become the signal.</div>
+    <div class="u"><b>Perceived speed is trust.</b> Skeletons over spinners, optimistic UI, under 400ms — a slow dashboard stops being visited.</div>
+    <div class="u"><b>Motion is rationed.</b> Animation reserved for meaningful moments; motion on information display creates anxiety, not delight.</div>
+    <div class="u"><b>Mobile is a scoped companion, not shrunken parity.</b> Bottom tabs, thumb-zone actions, glance + unblock; depth stays where the keyboard is.</div>
+  </div>
+
+  <h3>And the ten mistakes (what "bad dashboard" actually means)</h3>
+  <div class="mist">
+    <p><b>Chart-grid with no hierarchy</b> — nothing is the answer.</p>
+    <p><b>Vanity metrics up top</b> — numbers that answer no question.</p>
+    <p><b>Everything-equal cards</b> — the anomaly drowns.</p>
+    <p><b>Mystery icons without labels</b> — people won't tap what they can't predict.</p>
+    <p><b>Infinite settings</b> — the designer's complexity, pushed onto the user.</p>
+    <p><b>Scrolling to learn "am I okay?"</b> — the one unforgivable fold violation.</p>
+    <p><b>Gauges, 3D, decoration</b> — chartjunk slows comprehension.</p>
+    <p><b>Numbers without comparison</b> — a raw figure can't be judged.</p>
+    <p><b>False precision</b> — "$3,848,305.93" where "$3.85M" belongs.</p>
+    <p><b>Slow filters, blank loads</b> — trains people to stop exploring.</p>
+  </div>
+</section>
+
+<!-- ============ VI. GRIEF LENS ============ -->
+<section id="lens">
+  <div class="sec-num">Part VI</div>
+  <h2>The grief lens — what crosses over, what never may</h2>
+  <p class="sec-sub">Our caretakers are grieving. The research is unusually clear about which mechanics would wound here, and which translate into care. In grief, restraint is the feature.</p>
+  <div class="lens">
+    <div class="col harm">
+      <h4>Never import</h4>
+      <ul>
+        <li><b>Streaks &amp; daily resets</b> — loss aversion weaponizes the exact emotion they're carrying. "A broken streak of visiting her page" is cruelty rendered in UI.</li>
+        <li><b>Urgency &amp; countdowns</b> — grief has no deadline; time pressure implies mourning can be done wrong or late.</li>
+        <li><b>Comparison &amp; leaderboards</b> — comparing whose tribute is fuller invites shame.</li>
+        <li><b>Guilt-toned re-engagement</b> — never "it's been three days since you visited Mom's page."</li>
+        <li><b>Confetti &amp; variable rewards</b> — slot-machine dopamine feels obscene against loss; a gentle settle, never sparks.</li>
+      </ul>
+    </div>
+    <div class="col gentle">
+      <h4>Translates gently</h4>
+      <ul>
+        <li><b>Quiet cumulative counts</b> — "127 memories · 34 people" only ever grows, never breaks. Already ours.</li>
+        <li><b>Completeness as care</b> — "her page is nearly whole," pre-seeded with what already exists so a family starts at 40%, never zero; the unfinished part reads as invitation, not debt.</li>
+        <li><b>Care directed outward</b> (Finch's insight) — tending something beloved outmotivates any self-metric; the wreath is the tended thing.</li>
+        <li><b>Permission structures</b> (Gentler Streak) — away states without penalty; return greeted with what arrived, never what was missed: "welcome back — three new memories were added while you were away."</li>
+        <li><b>Peak–end sessions</b> — end every visit on her: a photo, a line from a memory, not an interface.</li>
+        <li><b>Slow motion, warm surfaces</b> (Headspace) — 400–800ms easing; the interface as a considerate presence in the room.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VII. AUDIT + DIRECTIONS ============ -->
+<section id="directions">
+  <div class="sec-num">Part VII</div>
+  <h2>Where the Study stands, and four directions to choose</h2>
+  <p class="sec-sub">First, honestly: measured against all of the above, the current Study already gets a lot right — and has clear gaps. Then four directions, each a coherent whole. Pick one; we break down every part of it together next.</p>
+
+  <div class="audit">
+    <div class="a-col keeps">
+      <h4>✓ Already aligned with the research</h4>
+      <ul>
+        <li><b>Plain-language sentence cards</b> — the operator universal, already our voice.</li>
+        <li><b>Inline decide</b> — one memory, two verbs, right on the overview.</li>
+        <li><b>Quiet counts</b> — flowers and candles as truthful accumulation.</li>
+        <li><b>No streaks, no urgency, no comparison</b> — the grief lens holds.</li>
+        <li><b>Reassurance zone</b> — the plan strip's "always" is a peak-end close.</li>
+      </ul>
+    </div>
+    <div class="a-col gaps">
+      <h4>✕ Gaps the research exposes</h4>
+      <ul>
+        <li><b>No single status answer above the fold</b> — "am I okay?" takes reading eight cards.</li>
+        <li><b>No auto-advancing queue</b> — deciding memory 2 of 3 means a page change; GoFundMe's conveyor is the fix.</li>
+        <li><b>Cards are everything-equal</b> — waiting, pictures, story, anniversary all same weight; the anomaly drowns.</li>
+        <li><b>Mobile nav is a hamburger</b> — bottom tabs win for frequent, repeated visits.</li>
+        <li><b>No completeness meter</b> — endowed progress framed as care is our biggest unused gentle mechanic.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top:44px">The four directions</h3>
+
+  <div class="dir">
+    <div class="dk">Direction A · Headspace × One Medical</div>
+    <h3>The Quiet <em>Concierge</em></h3>
+    <div class="dsrc">One recommended act per visit · four bottom tabs · everything else recedes</div>
+    <div class="dbody">
+      <div class="skel">┌────────────────────────────┐
+│ her portrait · her name    │
+│                            │
+│ "Tonight, one thing:       │
+│  a memory from Miriam      │
+│  is waiting to be read."   │
+│  [ Read it ]               │
+│                            │
+│ everything else, quiet ↓   │
+└────────────────────────────┘
+ [Home] [Waiting] [Pictures] [Her]</div>
+      <div class="dwhy">The home offers <b>exactly one thing</b>, chosen for you — like Headspace's single session, One Medical's ready appointment. All other zones collapse to whispers. <b>Why it could win:</b> the gentlest possible posture; Hick's law taken to its logical end; perfect for overwhelmed, older, grieving visitors on phones. <span class="risk"><b>Risk:</b> families with active pages (many pending memories, multiple tributes) may feel the concierge is hiding their desk from them.</span></div>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dk">Direction B · GoFundMe × Shopify × YouTube Studio</div>
+    <h3>The Sharpened <em>Desk</em></h3>
+    <div class="dsrc">Evolution, not revolution · status sentence up top · one-decision conveyor</div>
+    <div class="dbody">
+      <div class="skel">┌────────────────────────────┐
+│ "Her page is tended.       │
+│  3 memories wait." ← status│
+├────────────────────────────┤
+│ MEMORY 1 of 3   · Miriam   │
+│ "She kept a chair..."      │
+│ [Share on her page] [Keep] │
+│  → next appears in place   │
+├────────────────────────────┤
+│ pictures · story · the day │
+│ (quiet, smaller, grouped)  │
+└────────────────────────────┘</div>
+      <div class="dwhy">Keep today's sentence-card soul, fix the four gaps: a <b>one-line status verdict</b> above the fold, the waiting queue becomes an <b>auto-advancing conveyor</b> (decide → the next memory rises in place, GoFundMe-style), secondary cards shrink into a grouped shelf so the one thing that needs her is the <b>only loud thing</b>. Trusted-people allowlist later, YouTube-style. <b>Why it could win:</b> highest value for lowest risk — it's our desk, sharpened by everything the research proved. <span class="risk"><b>Risk:</b> least dramatic; if you want a new room, this is a better-lit version of the old one.</span></div>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dk">Direction C · Monzo × Whoop × Mercury</div>
+    <h3>The <em>Hearth</em> — one warm number</h3>
+    <div class="dsrc">A single tended-state hero · verbs beneath · depth on demand</div>
+    <div class="dbody">
+      <div class="skel">┌────────────────────────────┐
+│        ( her portrait )    │
+│                            │
+│   Her page is <b>tended</b>.     │
+│   341 flowers · 127 candles│
+│   3 memories wait for you  │
+│                            │
+│ [Read them] [Add] [Visit]  │
+├────────────────────────────┤
+│ tap anything to go deeper  │
+└────────────────────────────┘</div>
+      <div class="dwhy">One hero state — <b>"tended / waiting for you / resting"</b> — plays the role of Monzo's balance and Whoop's score: the whole page compressed into a word a grieving person can absorb in one breath, with three verbs beneath. Everything else is disclosure. <b>Why it could win:</b> the strongest possible answer to "am I okay?"; radically calm; survives the phone untouched. <span class="risk"><b>Risk:</b> a computed "state" for a memorial must never feel like the app grading their grief — the vocabulary needs extreme care.</span></div>
+    </div>
+  </div>
+
+  <div class="dir">
+    <div class="dk">Direction D · Plausible × Apple's restraint</div>
+    <h3>One <em>Page</em>, no doors</h3>
+    <div class="dsrc">Zero navigation · everything on one calm scroll · sections as rooms</div>
+    <div class="dbody">
+      <div class="skel">┌────────────────────────────┐
+│ her name · status sentence │
+│ ── what waits ──           │
+│ ── what people remember ── │
+│ ── the pictures ──         │
+│ ── her story ──            │
+│ ── the vigil ──            │
+│ ── that day, gently ──     │
+│ ── it stays, always ──     │
+└────────────────────────────┘</div>
+      <div class="dwhy">Delete the sidebar entirely. The whole caretaker experience is <b>one scrolling page</b> with labeled rooms — Plausible's bet that eliminating navigation eliminates the recall tax, and NN/g's layer-cake scanning made literal. Editing happens inline, in place. <b>Why it could win:</b> zero learning curve, zero getting lost — the structure a 70-year-old widow never has to think about; trivially responsive. <span class="risk"><b>Risk:</b> billing/account chores must still live somewhere discreet, and very full pages make the scroll long — needs a sticky "what waits" anchor.</span></div>
+    </div>
+  </div>
+
+</section>
+
+</div>
+
+<footer>
+  Compiled from 23 exemplars · NN Group, Laws of UX, Tufte, Few, Hoober, and each product's own design writing<br/><br/>
+  <em>I Miss You Memorial Studio</em>
+</footer>
+
+</body>
+</html>

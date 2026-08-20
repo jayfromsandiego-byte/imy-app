@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Four Directions for the Study · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Sometype+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --well:#ECE1CC; --ink:#2C2520; --ink-soft:#5c5249;
+  --terra:#A87C5F; --terra-btn:#946a4f; --terra-text:#8a5a3c; --gold:#C9A572; --goldline:rgba(201,165,114,.45);
+  --night:#1A130D; --brown-deep:#241711; --flame:#F4B860; --hairline:rgba(44,37,32,.13);
+  --sh:0 1px 2px rgba(74,52,32,.05),0 6px 16px rgba(74,52,32,.08);
+  --uline:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9C32 3 80 3 117 8' stroke='%23C9A572' stroke-width='3.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',Georgia,serif;font-size:16.5px;line-height:1.6}
+.mono{font-family:'Sometype Mono',monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4.5vw,52px)}
+
+header.page{padding:60px 0 40px;border-bottom:1px solid var(--hairline);background:linear-gradient(180deg,var(--cream-deep),var(--cream))}
+.kick{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra-text)}
+h1{font-size:clamp(28px,4.6vw,42px);font-weight:800;line-height:1.12;margin:12px 0 12px;max-width:22ch}
+h1 em{font-style:italic;color:var(--terra)}
+.lede{font-size:17px;color:var(--ink-soft);max-width:64ch;margin:0}
+
+section.dirsec{padding:56px 0 12px}
+.dir-head{margin-bottom:22px}
+.dir-head h2{font-size:clamp(23px,3.2vw,30px);font-weight:800;margin:6px 0 6px}
+.dir-head h2 em{font-style:italic;color:var(--terra)}
+.dir-head .src{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-soft)}
+.dir-head .note{color:var(--ink-soft);font-size:15px;max-width:66ch;margin:10px 0 0}
+.dir-head .note b{color:var(--terra-text)}
+
+.frames{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;margin-top:20px}
+.frame-block{display:flex;flex-direction:column;gap:8px}
+.frame-block.desk{flex:1 1 560px;min-width:min(560px,100%)}
+.frame-block.phone{flex:0 0 auto;margin:0 auto}
+.frame-label{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.frame{container:scr / inline-size;border:1px solid var(--hairline);border-radius:20px;overflow:hidden;box-shadow:var(--sh);background:var(--cream)}
+.frame.d{height:640px}
+.frame.p{width:min(390px,88vw);height:700px}
+.scr{height:100%;overflow-y:auto;overflow-x:hidden;position:relative;background:var(--cream);font-size:16px;scrollbar-width:thin}
+
+/* takeaway strip under each pair */
+.takes{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+.take{flex:1 1 240px;background:var(--cream-deep);border:1px solid var(--hairline);border-radius:14px;padding:13px 16px;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.take b{color:var(--terra-text)}
+.take.risk b{color:#933f2c}
+
+/* ---------- shared mockup primitives ---------- */
+.archp{display:block;width:72px;height:90px;border-radius:36px 36px 5px 5px;overflow:hidden;background:var(--cream-deep);box-shadow:inset 0 0 0 1.6px var(--gold),0 2px 6px rgba(74,52,32,.18);flex:0 0 auto}
+.archp img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.wordmk{font-weight:700;font-size:16px;letter-spacing:.2px;color:var(--ink);white-space:nowrap}
+.wordmk em{font-style:italic;color:var(--terra)}
+.btnx{font-family:'Besley',serif;font-weight:600;font-size:14.5px;border-radius:11px;padding:11px 18px;border:1px solid rgba(46,33,21,.35);background:var(--cream-deep);color:var(--ink);display:inline-flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;cursor:default}
+.btnx.primary{background:var(--terra-btn);border-color:var(--terra-btn);color:var(--cream)}
+.klabel{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-text)}
+.swash{position:relative;display:inline}
+.swash::after{content:"";position:absolute;left:0;right:0;bottom:-.1em;height:.28em;background:var(--uline) no-repeat center/100% 100%}
+.quiet-ital{font-style:italic;color:var(--ink-soft)}
+.tabbar{position:sticky;bottom:0;left:0;right:0;display:flex;border-top:1px solid var(--hairline);background:rgba(243,236,221,.97);backdrop-filter:blur(4px)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 12px;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);position:relative}
+.tab.on{color:var(--terra-text);font-weight:700}
+.tab .dotc{position:absolute;top:6px;right:calc(50% - 20px);background:var(--terra-btn);color:var(--cream);border-radius:999px;font-size:9px;padding:1px 5px}
+.tab svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
+.idq2{font-style:italic;font-size:14px;line-height:1.55;border-left:2px solid var(--goldline);padding-left:12px;color:var(--ink)}
+
+/* ══════════ A · QUIET CONCIERGE ══════════ */
+.mA{display:flex;flex-direction:column;min-height:100%}
+.mA .body{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:34px 30px 28px;gap:6px}
+.mA .wordmk{font-size:14px;margin-bottom:18px}
+.mA .nm{font-weight:800;font-size:19px;margin-top:10px}
+.mA .dt{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:var(--ink-soft)}
+.mA .status{font-style:italic;color:var(--ink-soft);font-size:15px;margin-top:14px}
+.mA .one{background:var(--cream-deep);border:1px solid var(--goldline);border-radius:20px;padding:24px 26px;max-width:430px;margin-top:18px;box-shadow:var(--sh);text-align:left}
+.mA .one .sent{font-size:16.5px;line-height:1.5;margin:8px 0 12px}
+.mA .one .sent b{color:var(--terra-text)}
+.mA .one .acts{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.mA .notyet{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.mA .quietrow{margin-top:26px;font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text);display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.mA .tabbar{display:none}
+@container scr (max-width:520px){
+  .mA .quietrow{display:none}
+  .mA .tabbar{display:flex}
+  .mA .body{padding:26px 20px 20px}
+}
+
+/* ══════════ B · SHARPENED DESK ══════════ */
+.mB{display:grid;grid-template-columns:212px 1fr;min-height:100%}
+.mB .side{background:var(--cream-deep);border-right:1px solid var(--hairline);padding:20px 14px;display:flex;flex-direction:column;gap:14px}
+.mB .side .wordmk{font-size:14px;padding:0 6px}
+.mB .idb{background:var(--cream);border:1px solid var(--goldline);border-radius:15px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px}
+.mB .idb .archp{width:56px;height:70px;border-radius:28px 28px 4px 4px}
+.mB .idb .nm{font-weight:700;font-size:13px;line-height:1.25}
+.mB .idb .dt{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:var(--ink-soft)}
+.mB .nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.mB .shl{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);padding:8px 8px 4px;opacity:.75}
+.mB .ni{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:10px;font-size:13.5px;color:var(--ink)}
+.mB .ni.on{background:var(--cream);box-shadow:inset 0 0 0 1px var(--goldline);color:var(--terra-text);font-weight:700}
+.mB .ni .cnt{margin-left:auto;font-family:'Sometype Mono',monospace;font-size:10px;color:var(--terra-text);background:rgba(168,124,95,.14);border-radius:999px;padding:1px 7px}
+.mB .plan{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.05em;color:var(--ink-soft);border-top:1px solid var(--hairline);padding:10px 8px 2px;line-height:1.6}
+.mB .plan b{color:var(--terra-text)}
+.mB .main{padding:28px 30px 36px}
+.mB .verdict{font-size:22px;font-weight:800;line-height:1.25;margin:6px 0 4px}
+.mB .verdict .waitn{color:var(--terra-text)}
+.mB .sub{color:var(--ink-soft);font-size:13.5px;margin:4px 0 18px;max-width:56ch}
+.mB .conveyor{background:var(--cream-deep);border:1px solid var(--goldline);border-radius:18px;padding:20px 22px;box-shadow:var(--sh)}
+.mB .cv-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.mB .dots{font-family:'Sometype Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.3em}
+.mB .cv-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.mB .cv-note{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-top:12px}
+.mB .meter{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:16px;padding:16px 20px;margin-top:16px}
+.mB .meter .mr{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mB .meter .mt{font-size:14.5px}
+.mB .meter .mt b{color:var(--terra-text)}
+.mB .meter .mv{font-family:'Sometype Mono',monospace;font-size:10px;color:var(--ink-soft)}
+.mB .bar{height:7px;border-radius:999px;background:var(--well);margin-top:10px;overflow:hidden}
+.mB .bar i{display:block;height:100%;width:72%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--terra))}
+.mB .meter .mh{font-size:12px;color:var(--ink-soft);font-style:italic;margin-top:8px}
+.mB .shelf2{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.mB .mini{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:13px;padding:12px 13px}
+.mB .mini .mk{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text)}
+.mB .mini .mvl{font-size:13.5px;font-weight:700;margin-top:3px}
+.mB .mini .ms{font-size:11px;color:var(--ink-soft);margin-top:2px}
+.mB .vigil{margin-top:16px;background:linear-gradient(135deg,var(--night),var(--brown-deep));color:#EFE6D6;border:1px solid rgba(244,184,96,.28);border-radius:16px;padding:15px 20px;font-size:14px;position:relative}
+.mB .vigil b{color:var(--flame)}
+.mB .topbar{display:none}
+.mB .tabbar{display:none}
+@container scr (max-width:520px){
+  .mB{display:flex;flex-direction:column}
+  .mB .side{display:none}
+  .mB .topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--hairline);background:var(--cream-deep);position:sticky;top:0;z-index:5}
+  .mB .topbar .archp{width:34px;height:42px;border-radius:17px 17px 3px 3px}
+  .mB .topbar .tn{font-weight:700;font-size:14px;line-height:1.2}
+  .mB .topbar .td{font-family:'Sometype Mono',monospace;font-size:8px;letter-spacing:.08em;color:var(--ink-soft)}
+  .mB .main{padding:20px 18px 26px}
+  .mB .shelf2{grid-template-columns:repeat(2,1fr)}
+  .mB .tabbar{display:flex}
+}
+
+/* ══════════ C · HEARTH ══════════ */
+.mC{display:flex;flex-direction:column;align-items:center;min-height:100%;padding:30px 26px 26px;text-align:center}
+.mC .wordmk{font-size:14px;margin-bottom:22px}
+.mC .hearth{background:linear-gradient(150deg,var(--night),var(--brown-deep));border:1px solid rgba(244,184,96,.3);border-radius:26px;padding:34px 38px 30px;color:#EFE6D6;max-width:480px;width:100%;box-shadow:0 26px 70px -30px rgba(20,14,8,.5);position:relative}
+.mC .hearth::after{content:"";position:absolute;right:26px;top:22px;width:9px;height:15px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(ellipse at 50% 70%,var(--flame) 0%,rgba(244,184,96,.5) 55%,transparent 75%);opacity:.85}
+.mC .hearth .archp{width:86px;height:106px;border-radius:43px 43px 6px 6px;margin:0 auto}
+.mC .hnm{font-weight:800;font-size:20px;margin-top:14px;color:#F6EFE2}
+.mC .hdt{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--gold);margin-top:4px}
+.mC .hline{width:54px;height:1px;background:var(--goldline);margin:18px auto}
+.mC .hstat{font-size:26px;font-weight:800;line-height:1.2;color:#F6EFE2}
+.mC .hstat em{font-style:italic;color:var(--flame)}
+.mC .hcounts{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:12px}
+.mC .hwait{font-size:15px;color:#EFE6D6;margin-top:14px}
+.mC .hwait b{color:var(--flame)}
+.mC .verbs{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;justify-content:center}
+.mC .deeper{margin-top:24px;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.mC .deeper span{color:var(--terra-text)}
+@container scr (max-width:520px){
+  .mC{padding:24px 18px 20px}
+  .mC .hearth{padding:26px 24px 24px}
+  .mC .verbs{flex-direction:column;width:100%;max-width:480px}
+  .mC .verbs .btnx{justify-content:center}
+}
+
+/* ══════════ D · ONE PAGE ══════════ */
+.mD{min-height:100%;display:flex;flex-direction:column}
+.mD .sticky{position:sticky;top:0;z-index:6;background:rgba(250,245,236,.97);backdrop-filter:blur(4px);border-bottom:1px solid var(--hairline);padding:12px 22px;display:flex;align-items:center;gap:12px}
+.mD .sticky .archp{width:32px;height:40px;border-radius:16px 16px 3px 3px}
+.mD .sticky .sn{font-weight:700;font-size:14px;line-height:1.2}
+.mD .sticky .ss{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:var(--ink-soft);text-transform:uppercase}
+.mD .sticky .pill{margin-left:auto;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--terra-text);background:rgba(168,124,95,.14);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.mD .room{padding:26px 26px 6px}
+.mD .rl{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mD .rl b{color:var(--terra-text);font-weight:700}
+.mD .rl::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--goldline),transparent)}
+.mD .card{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:16px;padding:17px 19px}
+.mD .card.goldb{border-color:var(--goldline)}
+.mD .who{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:7px}
+.mD .acts{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.mD .mem{font-size:14px;line-height:1.55;font-style:italic;color:var(--ink)}
+.mD .mem .by{display:block;font-style:normal;font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+.mD .memrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mD .pics{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px}
+.mD .pol{flex:0 0 auto;background:#fff;padding:6px 6px 16px;border-radius:3px;box-shadow:var(--sh);transform:rotate(-1.2deg)}
+.mD .pol:nth-child(2n){transform:rotate(1.4deg)}
+.mD .pol img{width:104px;height:84px;object-fit:cover;border-radius:2px;display:block}
+.mD .story{font-size:14.5px;line-height:1.6;color:var(--ink)}
+.mD .story .fade{color:var(--ink-soft)}
+.mD .vband{background:linear-gradient(135deg,var(--night),var(--brown-deep));color:#EFE6D6;border:1px solid rgba(244,184,96,.28);border-radius:16px;padding:15px 19px;font-size:14px}
+.mD .vband b{color:var(--flame)}
+.mD .permafoot{margin-top:8px;padding:22px 26px 26px;text-align:center;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);line-height:2}
+.mD .permafoot b{color:var(--terra-text)}
+@container scr (max-width:520px){
+  .mD .room{padding:20px 16px 4px}
+  .mD .memrow{grid-template-columns:1fr}
+}
+
+/* comparison table */
+.cmp{margin-top:26px;border:1px solid var(--goldline);border-radius:18px;overflow:hidden;box-shadow:var(--sh)}
+.cmp-scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{padding:13px 16px;border-bottom:1px solid var(--hairline);text-align:left;vertical-align:top;line-height:1.5}
+thead th{background:#3f2c1a;color:#EFE6D6;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+thead th em{color:var(--flame);font-style:italic;text-transform:none;letter-spacing:0;font-family:'Besley',serif;font-size:13px}
+tbody th{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text);background:var(--cream-deep);white-space:nowrap}
+tbody tr:nth-child(even) td{background:var(--cream-deep)}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:none}
+td b{color:var(--terra-text)}
+
+footer{margin-top:64px;padding:32px 0 42px;border-top:1px solid var(--hairline);font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-align:center}
+footer em{color:var(--terra);font-style:italic;font-family:'Besley',serif;text-transform:none;letter-spacing:0}
+</style>
+</head>
+<body>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kick">I Miss You Memorial Studio · Design Comparison · August 18, 2026</div>
+    <h1>Four directions for the Study, <em>side by side</em></h1>
+    <p class="lede">Each direction rendered in our brand system — Besley, cream, terracotta, the arch portrait — dressed with the same page (Eleanor Margaret Hayes, 3 memories waiting) so the comparison is fair. Desktop and phone for each. The phone frames scroll; direction D's desktop frame scrolls too, on purpose.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ═══════════════ A ═══════════════ -->
+<section class="dirsec">
+  <div class="dir-head">
+    <div class="kick">Direction A · Headspace × One Medical</div>
+    <h2>The Quiet <em>Concierge</em></h2>
+    <div class="src">One recommended act per visit · everything else recedes · four bottom tabs on phone</div>
+    <p class="note">The home offers <b>exactly one thing tonight</b>, chosen for her. Declining is a first-class action — "not tonight" carries no penalty. All other rooms are whispers at the bottom.</p>
+  </div>
+  <div class="frames">
+    <div class="frame-block desk">
+      <div class="frame-label">Desktop</div>
+      <div class="frame d"><div class="scr"><div class="mA">
+        <div class="body">
+          <div class="wordmk">I <em>Miss</em> You Memorial</div>
+          <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes"/></span>
+          <div class="nm">Eleanor Margaret Hayes</div>
+          <div class="dt">MAR 12, 1948 &ndash; OCT 22, 2024</div>
+          <div class="status">Her page is tended.</div>
+          <div class="one">
+            <div class="klabel">Tonight &middot; one thing</div>
+            <p class="sent">A memory from <b>Miriam Okafor</b> is waiting to be read.</p>
+            <p class="idq2">"She kept a chair on the porch that was really for whoever needed it&hellip;"</p>
+            <div class="acts">
+              <span class="btnx primary">Read it</span>
+              <span class="notyet">not tonight</span>
+            </div>
+          </div>
+          <div class="quietrow"><span>the pictures</span><span>her story</span><span>the vigil</span><span>that day</span></div>
+        </div>
+        <div class="tabbar">
+          <div class="tab on"><svg viewBox="0 0 24 24"><path d="M4 12L12 5l8 7M6 10v9h12v-9"/></svg>Home</div>
+          <div class="tab"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 8l8 6 8-6"/></svg>Waiting<span class="dotc">3</span></div>
+          <div class="tab"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>Pictures</div>
+          <div class="tab"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.5-9C.8 8.6 2.9 5 6.5 5c2 0 3.6 1.2 5.5 3.2C13.9 6.2 15.5 5 17.5 5 21.1 5 23.2 8.6 21.5 12 19 16.4 12 21 12 21z"/></svg>Her page</div>
+        </div>
+      </div></div></div>
+    </div>
+    <div class="frame-block phone">
+      <div class="frame-label">Phone</div>
+      <div class="frame p"><div class="scr"><div class="mA">
+        <div class="body">
+          <div class="wordmk">I <em>Miss</em> You Memorial</div>
+          <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes"/></span>
+          <div class="nm">Eleanor Margaret Hayes</div>
+          <div class="dt">MAR 12, 1948 &ndash; OCT 22, 2024</div>
+          <div class="status">Her page is tended.</div>
+          <div class="one">
+            <div class="klabel">Tonight &middot; one thing</div>
+            <p class="sent">A memory from <b>Miriam Okafor</b> is waiting to be read.</p>
+            <p class="idq2">"She kept a chair on the porch that was really for whoever needed it&hellip;"</p>
+            <div class="acts">
+              <span class="btnx primary">Read it</span>
+              <span class="notyet">not tonight</span>
+            </div>
+          </div>
+          <div class="quietrow"><span>the pictures</span><span>her story</span><span>the vigil</span></div>
+        </div>
+        <div class="tabbar">
+          <div class="tab on"><svg viewBox="0 0 24 24"><path d="M4 12L12 5l8 7M6 10v9h12v-9"/></svg>Home</div>
+          <div class="tab"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 8l8 6 8-6"/></svg>Waiting<span class="dotc">3</span></div>
+          <div class="tab"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>Pictures</div>
+          <div class="tab"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.5-9C.8 8.6 2.9 5 6.5 5c2 0 3.6 1.2 5.5 3.2C13.9 6.2 15.5 5 17.5 5 21.1 5 23.2 8.6 21.5 12 19 16.4 12 21 12 21z"/></svg>Her page</div>
+        </div>
+      </div></div></div>
+    </div>
+  </div>
+  <div class="takes">
+    <div class="take"><b>Notice:</b> one card, one verb, one graceful exit. Hick's law at its logical end.</div>
+    <div class="take"><b>Gentlest posture</b> of the four — built for overwhelmed, older visitors on phones.</div>
+    <div class="take risk"><b>Risk:</b> active families may feel the concierge is hiding their desk from them.</div>
+  </div>
+</section>
+
+<!-- ═══════════════ B ═══════════════ -->
+<section class="dirsec">
+  <div class="dir-head">
+    <div class="kick">Direction B · GoFundMe × Shopify × YouTube Studio</div>
+    <h2>The Sharpened <em>Desk</em></h2>
+    <div class="src">Our current desk, fixed by the research · status verdict · auto-advancing conveyor · care meter · quiet shelf</div>
+    <p class="note">Evolution, not revolution. A <b>one-line verdict</b> answers "am I okay?" above the fold; the waiting queue becomes a <b>conveyor</b> (decide, and the next memory rises in place); secondary rooms shrink to a quiet shelf so only one thing is ever loud. The "nearly whole" meter is endowed progress, framed as care.</p>
+  </div>
+  <div class="frames">
+    <div class="frame-block desk">
+      <div class="frame-label">Desktop</div>
+      <div class="frame d"><div class="scr"><div class="mB">
+        <aside class="side">
+          <div class="wordmk">I <em>Miss</em> You Memorial</div>
+          <div class="idb">
+            <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></span>
+            <div class="nm">Eleanor Margaret Hayes</div>
+            <div class="dt">MAR 12, 1948 &ndash; OCT 22, 2024</div>
+          </div>
+          <nav class="nav">
+            <div class="shl">The desk</div>
+            <div class="ni on">Overview</div>
+            <div class="ni">Waiting for you<span class="cnt">3</span></div>
+            <div class="ni">The pictures</div>
+            <div class="shl">The household</div>
+            <div class="ni">Billing</div>
+            <div class="ni">Account</div>
+          </nav>
+          <div class="plan">Free plan &middot; her page stays online, <b>always</b></div>
+        </aside>
+        <div class="main">
+          <div class="klabel">Good evening, Autumn</div>
+          <div class="verdict"><span class="swash">Her page is tended.</span> <span class="waitn">3 memories wait for you.</span></div>
+          <p class="sub">Nothing here is urgent tonight. Decide when you're ready — the desk keeps everything safe.</p>
+          <div class="conveyor">
+            <div class="cv-top">
+              <span class="klabel">Memory 1 of 3 &middot; Miriam Okafor &middot; Neighbour</span>
+              <span class="dots">&#9679;&#9675;&#9675;</span>
+            </div>
+            <p class="idq2">"She kept a chair on the porch that was really for whoever needed it. I sat in it the week my husband died, and she never once asked me to talk. She just brought out two cups."</p>
+            <div class="cv-acts">
+              <span class="btnx primary">Share on her page</span>
+              <span class="btnx">Keep for family</span>
+            </div>
+            <div class="cv-note">When you decide, the next memory rises here &middot; no page changes</div>
+          </div>
+          <div class="meter">
+            <div class="mr"><span class="mt">Her page is <b>nearly whole</b>.</span><span class="mv">THE WALL &middot; THE PICTURES &middot; HER STORY &#10003;</span></div>
+            <div class="bar"><i></i></div>
+            <div class="mh">What remains is an invitation, not a debt — her voice, when the family is ready.</div>
+          </div>
+          <div class="shelf2">
+            <div class="mini"><div class="mk">Pictures</div><div class="mvl">28 kept</div><div class="ms">the first is her cover</div></div>
+            <div class="mini"><div class="mk">Her story</div><div class="mvl">Written</div><div class="ms">add to it, quietly</div></div>
+            <div class="mini"><div class="mk">That day</div><div class="mvl">Oct 22</div><div class="ms">two years, gently</div></div>
+            <div class="mini"><div class="mk">Trusted people</div><div class="mvl">2 caretakers</div><div class="ms">share without waiting</div></div>
+          </div>
+          <div class="vigil"><b>341 flowers</b> laid &middot; 127 candles lit for Eleanor &middot; see how her page is tended &rarr;</div>
+        </div>
+      </div></div></div>
+    </div>
+    <div class="frame-block phone">
+      <div class="frame-label">Phone</div>
+      <div class="frame p"><div class="scr"><div class="mB">
+        <div class="topbar">
+          <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></span>
+          <div><div class="tn">Eleanor Margaret Hayes</div><div class="td">MAR 12, 1948 &ndash; OCT 22, 2024</div></div>
+        </div>
+        <div class="main">
+          <div class="klabel">Good evening, Autumn</div>
+          <div class="verdict"><span class="swash">Her page is tended.</span> <span class="waitn">3 memories wait.</span></div>
+          <div class="conveyor" style="margin-top:14px">
+            <div class="cv-top">
+              <span class="klabel">Memory 1 of 3 &middot; Miriam</span>
+              <span class="dots">&#9679;&#9675;&#9675;</span>
+            </div>
+            <p class="idq2">"She kept a chair on the porch that was really for whoever needed it&hellip;"</p>
+            <div class="cv-acts">
+              <span class="btnx primary">Share on her page</span>
+              <span class="btnx">Keep for family</span>
+            </div>
+          </div>
+          <div class="meter">
+            <div class="mr"><span class="mt">Her page is <b>nearly whole</b>.</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="shelf2">
+            <div class="mini"><div class="mk">Pictures</div><div class="mvl">28 kept</div></div>
+            <div class="mini"><div class="mk">Her story</div><div class="mvl">Written</div></div>
+            <div class="mini"><div class="mk">That day</div><div class="mvl">Oct 22</div></div>
+            <div class="mini"><div class="mk">Trusted</div><div class="mvl">2 people</div></div>
+          </div>
+          <div class="vigil"><b>341 flowers</b> &middot; 127 candles lit for Eleanor</div>
+        </div>
+        <div class="tabbar">
+          <div class="tab on"><svg viewBox="0 0 24 24"><path d="M4 12L12 5l8 7M6 10v9h12v-9"/></svg>Desk</div>
+          <div class="tab"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 8l8 6 8-6"/></svg>Waiting<span class="dotc">3</span></div>
+          <div class="tab"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>Pictures</div>
+          <div class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>Household</div>
+        </div>
+      </div></div></div>
+    </div>
+  </div>
+  <div class="takes">
+    <div class="take"><b>Notice:</b> the verdict line, the conveyor dots (● ○ ○), and how small the shelf cards have become — hierarchy at last.</div>
+    <div class="take"><b>Highest value, lowest risk</b> — keeps our desk's soul and muscle memory; fixes all four research gaps.</div>
+    <div class="take risk"><b>Risk:</b> least dramatic — a better-lit version of the room you already have.</div>
+  </div>
+</section>
+
+<!-- ═══════════════ C ═══════════════ -->
+<section class="dirsec">
+  <div class="dir-head">
+    <div class="kick">Direction C · Monzo × Whoop × Mercury</div>
+    <h2>The <em>Hearth</em> — one warm number</h2>
+    <div class="src">A single tended-state hero · three verbs beneath · everything else on demand</div>
+    <p class="note">The whole page compressed into <b>one state a grieving person can absorb in a breath</b> — "tended" — inside a warm dark hearth (our premium brown-and-gold surface), with truthful counts in flame. Three verbs beneath. Depth exists, but only when asked for.</p>
+  </div>
+  <div class="frames">
+    <div class="frame-block desk">
+      <div class="frame-label">Desktop</div>
+      <div class="frame d"><div class="scr"><div class="mC">
+        <div class="wordmk">I <em>Miss</em> You Memorial</div>
+        <div class="hearth">
+          <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes"/></span>
+          <div class="hnm">Eleanor Margaret Hayes</div>
+          <div class="hdt">MAR 12, 1948 &ndash; OCT 22, 2024</div>
+          <div class="hline"></div>
+          <div class="hstat">Her page is <em>tended</em>.</div>
+          <div class="hcounts">341 flowers &middot; 127 candles &middot; 14 memories</div>
+          <div class="hwait"><b>3 memories</b> wait for you, whenever you're ready.</div>
+        </div>
+        <div class="verbs">
+          <span class="btnx primary">Read what waits</span>
+          <span class="btnx">Add a memory</span>
+          <span class="btnx">Visit her page</span>
+        </div>
+        <div class="deeper"><span>the pictures &rarr;</span><span>her story &rarr;</span><span>that day &rarr;</span><span>the household &rarr;</span></div>
+      </div></div></div>
+    </div>
+    <div class="frame-block phone">
+      <div class="frame-label">Phone</div>
+      <div class="frame p"><div class="scr"><div class="mC">
+        <div class="wordmk">I <em>Miss</em> You Memorial</div>
+        <div class="hearth">
+          <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes"/></span>
+          <div class="hnm">Eleanor Margaret Hayes</div>
+          <div class="hdt">MAR 12, 1948 &ndash; OCT 22, 2024</div>
+          <div class="hline"></div>
+          <div class="hstat">Her page is <em>tended</em>.</div>
+          <div class="hcounts">341 flowers &middot; 127 candles &middot; 14 memories</div>
+          <div class="hwait"><b>3 memories</b> wait for you.</div>
+        </div>
+        <div class="verbs">
+          <span class="btnx primary">Read what waits</span>
+          <span class="btnx">Add a memory</span>
+          <span class="btnx">Visit her page</span>
+        </div>
+        <div class="deeper"><span>the pictures &rarr;</span><span>her story &rarr;</span></div>
+      </div></div></div>
+    </div>
+  </div>
+  <div class="takes">
+    <div class="take"><b>Notice:</b> the strongest "am I okay?" answer of the four — and the only one using our premium dark-brown surface as the hero.</div>
+    <div class="take"><b>Radically calm</b>; survives the phone completely unchanged. The vocabulary is the design: tended · waiting · resting.</div>
+    <div class="take risk"><b>Risk:</b> a computed state must never feel like the app grading their grief — every word needs extreme care.</div>
+  </div>
+</section>
+
+<!-- ═══════════════ D ═══════════════ -->
+<section class="dirsec">
+  <div class="dir-head">
+    <div class="kick">Direction D · Plausible × Apple's restraint</div>
+    <h2>One <em>Page</em>, no doors</h2>
+    <div class="src">Zero navigation · labeled rooms on one calm scroll · sticky name-and-status anchor</div>
+    <p class="note">The sidebar is deleted. Everything is <b>one scrolling page with labeled rooms</b> — nothing to learn, nowhere to get lost. The sticky strip keeps her name and what waits always in reach. <b>These frames scroll — try them.</b></p>
+  </div>
+  <div class="frames">
+    <div class="frame-block desk">
+      <div class="frame-label">Desktop · scrolls</div>
+      <div class="frame d"><div class="scr"><div class="mD">
+        <div class="sticky">
+          <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></span>
+          <div><div class="sn">Eleanor Margaret Hayes</div><div class="ss">Her page is tended</div></div>
+          <span class="pill">3 wait &darr;</span>
+        </div>
+        <div class="room">
+          <div class="rl"><b>What waits</b> &middot; 3</div>
+          <div class="card goldb">
+            <div class="who">Memory &middot; Miriam Okafor &middot; Neighbour</div>
+            <p class="idq2">"She kept a chair on the porch that was really for whoever needed it. I sat in it the week my husband died, and she never once asked me to talk."</p>
+            <div class="acts"><span class="btnx primary">Share on her page</span><span class="btnx">Keep for family</span></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>What people remember</b> &middot; 14</div>
+          <div class="memrow">
+            <div class="card"><div class="mem">"Every Sunday, lemon cake. No occasion needed."<span class="by">Daniel &middot; her son</span></div></div>
+            <div class="card"><div class="mem">"She taught me to read tide charts before I could ride a bike."<span class="by">Ruth &middot; granddaughter</span></div></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>The pictures</b> &middot; 28</div>
+          <div class="pics">
+            <div class="pol"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1948.jpg" alt="Eleanor, 1948"/></div>
+            <div class="pol"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1959.jpg" alt="Eleanor, 1959"/></div>
+            <div class="pol"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1970.jpg" alt="Eleanor, 1970"/></div>
+            <div class="pol"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1984.jpg" alt="Eleanor, 1984"/></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>Her story</b></div>
+          <div class="card"><p class="story">Eleanor Margaret Hayes was born in March of 1948, in the year the pier was rebuilt, and she never once lived more than a mile from the sea. <span class="fade">She kept a garden that fed half the street, wrote letters on paper because "a screen can't hold your hand," and&hellip;</span></p>
+          <div class="acts"><span class="btnx">Add to it, quietly</span></div></div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>The vigil</b></div>
+          <div class="vband"><b>341 flowers</b> have been laid &middot; 127 candles lit for Eleanor &middot; see her page &rarr;</div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>That day, gently</b></div>
+          <div class="card"><p class="story">October 22 will be two years from today. There is time to decide, gently, whether her page should mark it.</p></div>
+        </div>
+        <div class="permafoot">It stays online, <b>always</b> &middot; free, forever &middot; the household: billing &middot; account</div>
+      </div></div></div>
+    </div>
+    <div class="frame-block phone">
+      <div class="frame-label">Phone · scrolls</div>
+      <div class="frame p"><div class="scr"><div class="mD">
+        <div class="sticky">
+          <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor"/></span>
+          <div><div class="sn">Eleanor M. Hayes</div><div class="ss">Her page is tended</div></div>
+          <span class="pill">3 wait &darr;</span>
+        </div>
+        <div class="room">
+          <div class="rl"><b>What waits</b> &middot; 3</div>
+          <div class="card goldb">
+            <div class="who">Memory &middot; Miriam Okafor</div>
+            <p class="idq2">"She kept a chair on the porch that was really for whoever needed it&hellip;"</p>
+            <div class="acts"><span class="btnx primary">Share on her page</span><span class="btnx">Keep for family</span></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>What people remember</b> &middot; 14</div>
+          <div class="memrow">
+            <div class="card"><div class="mem">"Every Sunday, lemon cake. No occasion needed."<span class="by">Daniel &middot; her son</span></div></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>The pictures</b> &middot; 28</div>
+          <div class="pics">
+            <div class="pol"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1948.jpg" alt="Eleanor, 1948"/></div>
+            <div class="pol"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1959.jpg" alt="Eleanor, 1959"/></div>
+            <div class="pol"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-1970.jpg" alt="Eleanor, 1970"/></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>Her story</b></div>
+          <div class="card"><p class="story">Born in March of 1948, she never once lived more than a mile from the sea. <span class="fade">She kept a garden that fed half the street&hellip;</span></p>
+          <div class="acts"><span class="btnx">Add to it, quietly</span></div></div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>The vigil</b></div>
+          <div class="vband"><b>341 flowers</b> &middot; 127 candles lit for Eleanor</div>
+        </div>
+        <div class="room">
+          <div class="rl"><b>That day, gently</b></div>
+          <div class="card"><p class="story">October 22 will be two years from today. There is time to decide, gently.</p></div>
+        </div>
+        <div class="permafoot">It stays online, <b>always</b> &middot; billing &middot; account</div>
+      </div></div></div>
+    </div>
+  </div>
+  <div class="takes">
+    <div class="take"><b>Notice:</b> the sticky anchor (name + "3 wait ↓") and the labeled rooms — NN/g's layer-cake scanning made literal.</div>
+    <div class="take"><b>Zero learning curve</b> — the structure a 70-year-old widow never has to think about. Responsive for free.</div>
+    <div class="take risk"><b>Risk:</b> very full pages make the scroll long; household chores must stay discreet but findable.</div>
+  </div>
+</section>
+
+<!-- ═══════════════ COMPARISON ═══════════════ -->
+<section class="dirsec">
+  <div class="dir-head">
+    <div class="kick">The decision</div>
+    <h2>Side by side, in one table</h2>
+  </div>
+  <div class="cmp"><div class="cmp-scroll">
+    <table>
+      <thead><tr><th></th><th>A · <em>Concierge</em></th><th>B · <em>Sharpened Desk</em></th><th>C · <em>Hearth</em></th><th>D · <em>One Page</em></th></tr></thead>
+      <tbody>
+        <tr><th>First glance answers</th><td>"What should I do tonight?"</td><td>"Am I okay, and what waits?"</td><td>"Is her page okay?"</td><td>"Everything, in rooms"</td></tr>
+        <tr><th>The one loud thing</th><td>Tonight's single card</td><td>The conveyor</td><td>The hearth state</td><td>The sticky "3 wait" anchor</td></tr>
+        <tr><th>Moderation feel</th><td>One at a time, opt-in</td><td><b>Auto-advancing conveyor</b></td><td>Behind "Read what waits"</td><td>Inline, first room</td></tr>
+        <tr><th>Mobile nav</th><td>4 bottom tabs</td><td>4 bottom tabs</td><td>None needed</td><td>None — just scroll</td></tr>
+        <tr><th>Change from today</th><td>Large</td><td><b>Small — evolution</b></td><td>Large</td><td>Medium</td></tr>
+        <tr><th>Best for</th><td>Overwhelmed, new grief</td><td>Active families, many memories</td><td>Occasional check-ins</td><td>Older users, simplicity</td></tr>
+        <tr><th>Watch out for</th><td>Hiding the desk</td><td>Feeling familiar</td><td>Grading grief</td><td>Long scrolls</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+</section>
+
+</div>
+
+<footer>
+  Same page, same data, four postures &middot; pick one, or point at pieces<br/><br/>
+  <em>I Miss You Memorial Studio</em>
+</footer>
+
+</body>
+</html>
