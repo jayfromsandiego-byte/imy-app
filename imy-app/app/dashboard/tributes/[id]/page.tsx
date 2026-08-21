@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
-import { saveTribute, restTribute, retryPaidFilm, setYearLetterDate } from "@/app/dashboard/actions";
+import { saveTribute, restTribute, retryPaidFilm, setYearLetterDate, inviteKeeper, removeKeeper, transferTribute } from "@/app/dashboard/actions";
 import { pronounSet } from "@/lib/renderTribute";
 import MediaManager from "@/components/MediaManager";
 import PlacementsManager from "@/components/PlacementsManager";
@@ -19,7 +19,23 @@ export default async function EditTribute({ params }: { params: { id: string } }
   if (!user) redirect(`/signin?next=${encodeURIComponent(`/dashboard/tributes/${params.id}`)}`);
   const db = supabaseAdmin();
   const { data: t } = await db.from("tributes").select("*,year_letter_md").eq("id", params.id).maybeSingle();
-  if (!t || (t.owner_id !== user.id && t.owner_email !== user.email)) {
+  // Shared keeping (August 14): the owner and every keeper may tend the page together.
+  const myEmail = (user.email || "").toLowerCase();
+  let keeperRows: any[] = [];
+  if (t) {
+    try {
+      const { data: kr } = await db
+        .from("tribute_keepers")
+        .select("id,email,status,created_at")
+        .eq("tribute_id", t.id)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: true });
+      keeperRows = kr || [];
+    } catch {}
+  }
+  const isOwner = Boolean(t && (t.owner_id === user.id || t.owner_email === user.email));
+  const isKeeperHere = Boolean(myEmail && keeperRows.some((k: any) => (k.email || "").toLowerCase() === myEmail));
+  if (!t || (!isOwner && !isKeeperHere)) {
     return (
       <section className="panel-head stagger">
         <p className="panel-sub">
@@ -346,7 +362,78 @@ export default async function EditTribute({ params }: { params: { id: string } }
         )}
       </section>
 
+      {/* ---------- Shared keeping (August 14) ---------- */}
+      <section className="panel-block">
+        <h2 className="panel-title" style={{ fontSize: 24 }}>Shared keeping</h2>
+        <p className="panel-sub" style={{ marginBottom: 16 }}>
+          A page is lighter when more than one pair of hands tends it. Keepers can add
+          photographs, welcome memories, and care for {pn.pos} page with you.
+        </p>
+        {!isOwner ? (
+          <p className="panel-sub mono" style={{ fontSize: 12, marginBottom: 14 }}>
+            You hold a key to this page. It is owned by {t.owner_email || "the family"}.
+          </p>
+        ) : null}
+        {keeperRows.length ? (
+          <div style={{ display: "grid", gap: 8, marginBottom: 16 }}>
+            {keeperRows.map((k: any) => {
+              const isMe = myEmail && (k.email || "").toLowerCase() === myEmail;
+              return (
+                <div key={k.id} style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", padding: "9px 12px", border: "1px solid var(--line)", borderRadius: 10, background: "#fff" }}>
+                  <span style={{ fontSize: 14 }}>{k.email}{isMe ? " · you" : ""}</span>
+                  <span className="mono" style={{ fontSize: 11, color: "var(--ink-soft)" }}>
+                    {k.status === "joined" ? "keeping with you" : "invited · a key is waiting"}
+                  </span>
+                  {isOwner || isMe ? (
+                    <form action={removeKeeper} style={{ marginLeft: "auto" }}>
+                      <input type="hidden" name="tributeId" value={t.id} />
+                      <input type="hidden" name="keeperId" value={k.id} />
+                      <button type="submit" className="btn quiet" style={{ padding: "6px 12px", fontSize: 12 }}>
+                        {isMe ? "Hand in my key" : "Take the key back"}
+                      </button>
+                    </form>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="panel-sub" style={{ marginBottom: 16 }}>No one else holds a key yet.</p>
+        )}
+        {isOwner ? (
+          <>
+            <form action={inviteKeeper} style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+              <input type="hidden" name="tributeId" value={t.id} />
+              <input className="field-input" type="email" name="email" required placeholder="their@email.com" aria-label="The keeper's email address" style={{ maxWidth: 260 }} />
+              <button type="submit" className="btn primary">Give them a key</button>
+            </form>
+            <p className="mono" style={{ fontSize: 11.5, color: "var(--ink-soft)", marginTop: 10 }}>
+              They sign in with that address and the page appears on their desk. No password to make, nothing to set up.
+            </p>
+            <details style={{ marginTop: 24 }}>
+              <summary className="panel-sub" style={{ cursor: "pointer" }}>Pass this page on</summary>
+              <div className="s-card full" style={{ marginTop: 12 }}>
+                <p className="sentence">
+                  One day a page may belong in someone else&rsquo;s hands — a sister, a son, the one who
+                  tends things now. Ownership moves whole: every photograph, memory, and word stays
+                  exactly where it is. You keep a key as a keeper, unless you later hand it in.
+                </p>
+                <form action={transferTribute} className="card-foot" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                  <input type="hidden" name="tributeId" value={t.id} />
+                  <input className="field-input" type="email" name="email" required placeholder="their@email.com" aria-label="The new owner's email address" style={{ maxWidth: 260 }} />
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                    <input type="checkbox" name="understood" required /> I understand the page will be theirs
+                  </label>
+                  <button type="submit" className="btn quiet">Pass it on</button>
+                </form>
+              </div>
+            </details>
+          </>
+        ) : null}
+      </section>
+
       {/* ---------- Rest this page (July 12) ---------- */}
+      {isOwner ? (
       <section className="panel-block">
         <details>
           <summary className="panel-sub" style={{ cursor: "pointer" }}>Rest this page</summary>
@@ -363,6 +450,7 @@ export default async function EditTribute({ params }: { params: { id: string } }
           </div>
         </details>
       </section>
+      ) : null}
     </div>
   );
 }

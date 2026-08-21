@@ -94,10 +94,12 @@ export default function SignInPage() {
   } as const;
 
   return (
-    <div style={{ minHeight: "100vh", background: C.cream, color: C.ink, fontFamily: "'Besley',Georgia,serif", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
-      <div style={{ width: "100%", maxWidth: 420, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 18, padding: "38px 32px", textAlign: "center" }}>
-        <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 6 }}>I <em style={{ color: C.terra }}>Miss</em> You Memorial</div>
+    <div style={{ minHeight: "100vh", background: "radial-gradient(125% 90% at 50% -8%, #FFFDF7 0%, #F3ECDD 58%)", color: C.ink, fontFamily: "'Besley',Georgia,serif", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <link rel="stylesheet" href="/fonts/brand.css" />
+      <div style={{ width: "100%", maxWidth: 420, background: "#FFFDF9", border: `1px solid ${C.line}`, borderRadius: 18, padding: "40px 32px 34px", textAlign: "center", boxShadow: "0 30px 60px -34px rgba(44,37,32,.4)" }}>
+        {/* The Night Stone above the wordmark — the stacked lockup, so the door looks like ours. */}
+        <img src="/brand/imy-mark.svg" alt="" style={{ height: 42, width: "auto", display: "block", margin: "0 auto 12px" }} />
+        <div style={{ fontSize: 21, fontWeight: 600, marginBottom: 6 }}>I <em style={{ color: C.terra }}>Miss</em> You Memorial</div>
 
         {sent === "link" ? (
           <div>
@@ -113,7 +115,8 @@ export default function SignInPage() {
           </div>
         ) : (
           <div>
-            <h1 style={{ fontWeight: 600, fontSize: "1.6rem", margin: "12px 0 6px" }}>Welcome</h1>
+            <div style={{ fontFamily: "'Sometype Mono',monospace", fontSize: 10.5, letterSpacing: ".22em", textTransform: "uppercase" as const, color: C.terra, margin: "14px 0 4px" }}>The door is open</div>
+            <h1 style={{ fontWeight: 600, fontSize: "1.7rem", margin: "0 0 6px" }}>Welcome <em style={{ color: C.terra }}>home</em>.</h1>
             <p style={{ color: C.inkSoft, fontSize: 13.5, margin: "0 0 18px" }}>Returning or new, the same doors work. Signing in for the first time creates your account.</p>
             <button type="button" onClick={signInWithGoogle} disabled={loading}
               style={{ width: "100%", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", gap: 10,

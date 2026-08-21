@@ -4,16 +4,44 @@ import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseServer";
 
-async function ownsTribute(db: any, tributeId: string, user: any) {
+// Shared keeping (August 14): a page can be tended by more than one pair of hands.
+// soleOwner() is the strict check — reserved for what only the owner may do:
+// resting the page, the Year Letter, inviting keepers, and passing the page on.
+async function soleOwner(db: any, tributeId: string, user: any) {
   const { data } = await db.from("tributes").select("owner_id,owner_email").eq("id", tributeId).maybeSingle();
   if (!data) return false;
   return data.owner_id === user.id || data.owner_email === user.email;
 }
 
+async function isKeeper(db: any, tributeId: string, user: any) {
+  if (!user?.email) return false;
+  try {
+    const { data } = await db
+      .from("tribute_keepers")
+      .select("id")
+      .eq("tribute_id", tributeId)
+      .ilike("email", user.email)
+      .is("deleted_at", null)
+      .maybeSingle();
+    return Boolean(data);
+  } catch {
+    return false;
+  }
+}
+
+// The everyday check: the owner or any keeper may tend the page together.
+async function ownsTribute(db: any, tributeId: string, user: any) {
+  if (await soleOwner(db, tributeId, user)) return true;
+  return isKeeper(db, tributeId, user);
+}
+
 async function ownsPlusTribute(db: any, tributeId: string, user: any) {
   const { data } = await db.from("tributes").select("owner_id,owner_email,tier").eq("id", tributeId).is("deleted_at", null).maybeSingle();
-  if (!data || (data.owner_id !== user.id && data.owner_email !== user.email)) return false;
-  return data.tier === "plus" || data.tier === "heirloom";
+  if (!data) return false;
+  const isPlus = data.tier === "plus" || data.tier === "heirloom";
+  if (!isPlus) return false;
+  if (data.owner_id === user.id || data.owner_email === user.email) return true;
+  return isKeeper(db, tributeId, user);
 }
 
 export async function saveTribute(formData: FormData) {
@@ -455,7 +483,7 @@ export async function restTribute(formData: FormData) {
   if (!user) return;
   const id = String(formData.get("id") || "");
   const db = supabaseAdmin();
-  if (!(await ownsTribute(db, id, user))) return;
+  if (!(await soleOwner(db, id, user))) return;
   await db.from("tributes").update({ deleted_at: new Date().toISOString() }).eq("id", id);
   revalidatePath("/dashboard");
   redirect("/dashboard");
@@ -467,7 +495,7 @@ export async function wakeTribute(formData: FormData) {
   if (!user) return;
   const id = String(formData.get("id") || "");
   const db = supabaseAdmin();
-  if (!(await ownsTribute(db, id, user))) return;
+  if (!(await soleOwner(db, id, user))) return;
   await db.from("tributes").update({ deleted_at: null }).eq("id", id);
   revalidatePath("/dashboard");
 }
@@ -484,7 +512,106 @@ export async function setYearLetterDate(formData: FormData) {
   if (m) md = m[1];
   if (raw && !m) return;
   const db = supabaseAdmin();
-  if (!(await ownsTribute(db, id, user))) return;
+  if (!(await soleOwner(db, id, user))) return;
   await db.from("tributes").update({ year_letter_md: md }).eq("id", id);
   revalidatePath(`/dashboard/tributes/${id}`);
+}
+
+/* ------------------------------------------------------------------ */
+/* Shared keeping (August 14) · more hands for one page.               */
+/* Keepers can tend the page together; only the owner can hand out     */
+/* keys, take them back, or pass the page on whole.                    */
+/* ------------------------------------------------------------------ */
+
+const cleanEmail = (raw: unknown) => {
+  const e = String(raw || "").trim().toLowerCase().slice(0, 200);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) ? e : "";
+};
+
+/** Give someone a key: they can add, welcome, and tend alongside you. */
+export async function inviteKeeper(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const email = cleanEmail(formData.get("email"));
+  if (!tributeId || !email) return;
+  const db = supabaseAdmin();
+  if (!(await soleOwner(db, tributeId, user))) return;
+  if (email === (user.email || "").toLowerCase()) return; // the owner already holds every key
+  // One row per pair of hands: revive a returned key rather than cutting a second.
+  const { data: existing } = await db
+    .from("tribute_keepers")
+    .select("id,deleted_at")
+    .eq("tribute_id", tributeId)
+    .ilike("email", email)
+    .maybeSingle();
+  if (existing?.id) {
+    if (existing.deleted_at)
+      await db.from("tribute_keepers").update({ deleted_at: null, status: "invited", invited_by: user.email || null }).eq("id", existing.id);
+  } else {
+    await db.from("tribute_keepers").insert({ tribute_id: tributeId, email, status: "invited", invited_by: user.email || null });
+  }
+  try {
+    const { data: t } = await db.from("tributes").select("loved_one_name").eq("id", tributeId).maybeSingle();
+    const { sendKeeperInviteEmail } = await import("@/lib/email");
+    await sendKeeperInviteEmail(email, t?.loved_one_name || "someone dear", user.email || "");
+  } catch {}
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+}
+
+/** Take a key back — or, as a keeper, quietly hand yours in. */
+export async function removeKeeper(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const keeperId = String(formData.get("keeperId") || "");
+  if (!tributeId || !keeperId) return;
+  const db = supabaseAdmin();
+  const { data: row } = await db.from("tribute_keepers").select("id,email").eq("id", keeperId).eq("tribute_id", tributeId).maybeSingle();
+  if (!row) return;
+  const self = (user.email || "").toLowerCase() === (row.email || "").toLowerCase();
+  if (!self && !(await soleOwner(db, tributeId, user))) return;
+  await db.from("tribute_keepers").update({ deleted_at: new Date().toISOString() }).eq("id", keeperId);
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+  if (self) {
+    revalidatePath("/dashboard");
+    redirect("/dashboard");
+  }
+}
+
+/** Pass the page on, whole. Ownership moves to them; you stay on as a keeper
+ *  unless you later hand your key in. Nothing on the page changes. */
+export async function transferTribute(formData: FormData) {
+  const user = await getUser();
+  if (!user) return;
+  const tributeId = String(formData.get("tributeId") || "");
+  const email = cleanEmail(formData.get("email"));
+  const understood = String(formData.get("understood") || "") === "on";
+  if (!tributeId || !email || !understood) return;
+  const db = supabaseAdmin();
+  if (!(await soleOwner(db, tributeId, user))) return;
+  if (email === (user.email || "").toLowerCase()) return;
+  // The page changes hands: their email becomes the key. They claim it the
+  // moment they sign in (the desk already matches owner_email on arrival).
+  await db.from("tributes").update({ owner_email: email, owner_id: null }).eq("id", tributeId);
+  // Their old key, if they held one, is folded into ownership.
+  try {
+    await db.from("tribute_keepers").update({ deleted_at: new Date().toISOString() }).eq("tribute_id", tributeId).ilike("email", email);
+  } catch {}
+  // The previous owner keeps a key, so no one is locked out by an act of giving.
+  const prevEmail = (user.email || "").toLowerCase();
+  if (prevEmail) {
+    try {
+      const { data: mine } = await db.from("tribute_keepers").select("id").eq("tribute_id", tributeId).ilike("email", prevEmail).maybeSingle();
+      if (mine?.id) await db.from("tribute_keepers").update({ deleted_at: null, status: "joined" }).eq("id", mine.id);
+      else await db.from("tribute_keepers").insert({ tribute_id: tributeId, email: prevEmail, status: "joined", invited_by: prevEmail });
+    } catch {}
+  }
+  try {
+    const { data: t } = await db.from("tributes").select("loved_one_name").eq("id", tributeId).maybeSingle();
+    const { sendTransferEmail } = await import("@/lib/email");
+    await sendTransferEmail(email, t?.loved_one_name || "someone dear", user.email || "");
+  } catch {}
+  revalidatePath(`/dashboard/tributes/${tributeId}`);
+  revalidatePath("/dashboard");
 }
