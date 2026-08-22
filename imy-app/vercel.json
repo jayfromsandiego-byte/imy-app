@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/preview/unified.html",
+      "permanent": false
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron/trial-reminders",

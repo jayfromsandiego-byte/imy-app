@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>I Miss You Memorial</title>
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#FDFBF7}
+  #host{position:fixed;inset:0}
+  #host iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#FDFBF7}
+  #imyToast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(16px);opacity:0;pointer-events:none;
+    background:#2C2520;color:#FAF5EC;font:500 14.5px/1.45 Georgia,'Times New Roman',serif;letter-spacing:.01em;
+    padding:12px 20px;border-radius:12px;box-shadow:0 10px 30px rgba(44,37,32,.28);max-width:min(92vw,560px);text-align:center;
+    transition:opacity .35s ease,transform .35s ease;z-index:99}
+  #imyToast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  #imyToast b{color:#F4B860;font-weight:600}
+</style>
+</head>
+<body>
+<div id="host"></div>
+<div id="imyToast" role="status" aria-live="polite"></div>
+
+<!-- ═══ embedded pages (base64, utf-8) ═══ -->
+<script type="text/plain" id="pg-landing">{{PG_LANDING}}</script>
+<script type="text/plain" id="pg-tribute">{{PG_TRIBUTE}}</script>
+<script type="text/plain" id="pg-studio">{{PG_STUDIO}}</script>
+<script type="text/plain" id="pg-dashboard">{{PG_DASHBOARD}}</script>
+<script type="text/plain" id="pg-signin">{{PG_SIGNIN}}</script>
+<script type="text/plain" id="pg-checkout">{{PG_CHECKOUT}}</script>
+
+<script>
+/* ═════════════════ I Miss You Memorial · unified app shell ═════════════════ */
+(function(){
+'use strict';
+
+/* ── pages ── */
+function decodePage(id){
+  var b64=document.getElementById(id).textContent.trim();
+  var bin=atob(b64), bytes=new Uint8Array(bin.length);
+  for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+var SRC={};
+['landing','tribute','studio','dashboard','signin','checkout'].forEach(function(k){SRC[k]=decodePage('pg-'+k)});
+
+/* ── state ── */
+var MEMKEY='imy_prototype_v1';
+var state=null, lsOK=true;
+function blank(){return {account:null, memorials:[], activeId:null, draft:null, seq:1}}
+function load(){
+  try{ var raw=localStorage.getItem(MEMKEY); state=raw?JSON.parse(raw):blank(); }
+  catch(e){ lsOK=false; state=blank(); }
+  if(!state||typeof state!=='object')state=blank();
+  state.memorials=state.memorials||[];
+}
+function stripMedia(obj){
+  return JSON.parse(JSON.stringify(obj,function(k,v){
+    if(typeof v==='string'&&v.indexOf('data:')===0&&v.length>60000)return '';
+    return v;
+  }));
+}
+var warnedQuota=false;
+function save(){
+  if(!lsOK)return;
+  try{ localStorage.setItem(MEMKEY,JSON.stringify(state)); }
+  catch(e){
+    try{ localStorage.setItem(MEMKEY,JSON.stringify(stripMedia(state))); }catch(e2){ lsOK=false; }
+    if(!warnedQuota){warnedQuota=true; toast('Large photos are kept for this visit — the full save arrives with the real app.');}
+  }
+}
+load();
+
+/* ── helpers ── */
+function plusUnlocked(){ return state.memorials.some(function(m){return m.plan==='plus'}) }
+function canCreate(){ return state.memorials.length===0 || plusUnlocked() }
+function priceFor(targetId){
+  var otherPlus=state.memorials.some(function(m){return m.plan==='plus'&&m.id!==targetId});
+  return otherPlus?{amount:157.60,base:197,discount:20}:{amount:197,base:197,discount:0};
+}
+var SLUG_ABC='abcdefghijkmnpqrstuvwxyz';
+function randSlug(){
+  var s='';
+  for(var i=0;i<10;i++)s+=SLUG_ABC[Math.floor(Math.random()*SLUG_ABC.length)];
+  if(s==='eleanor'||state.memorials.some(function(m){return m.slug===s}))return randSlug();
+  return s;
+}
+function findBySlug(slug){
+  for(var i=0;i<state.memorials.length;i++){
+    var m=state.memorials[i];
+    if(m.customSlug===slug||m.slug===slug)return m;
+  }
+  return null;
+}
+function byId(id){ return state.memorials.filter(function(m){return m.id===id})[0]||null }
+function activeMem(){ return byId(state.activeId)||state.memorials[state.memorials.length-1]||null }
+function firstNameOf(s){ return String(s||'').trim().split(/\s+/)[0]||'' }
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function fmtDate(m,d,y){
+  if(!y)return '····';
+  if(m)return (MONTHS[m-1]+(d?' '+d:'')+', '+y).toUpperCase();
+  return String(y);
+}
+function svgAvatar(initials,dark){
+  var bg=dark?'%232C2520':'%23EDE3D2', fg=dark?'%23F4B860':'%23A87C5F';
+  return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" fill="'+bg+'"/><text x="80" y="97" font-family="Georgia,serif" font-size="52" fill="'+fg+'" text-anchor="middle">'+encodeURIComponent(initials||'✿')+'</text></svg>';
+}
+function coverFallback(){
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f2c1a"/><stop offset=".55" stop-color="#6b4a2f"/><stop offset="1" stop-color="#A87C5F"/></linearGradient></defs><rect width="1600" height="900" fill="url(#g)"/></svg>');
+}
+function initialsOf(name){
+  var p=String(name||'').trim().split(/\s+/);
+  return ((p[0]||'')[0]||'').toUpperCase()+((p.length>1?p[p.length-1][0]:'')||'').toUpperCase();
+}
+
+/* ── pronoun packs ── */
+function pron(p){
+  if(p==='she')return {s:'she',o:'her',pa:'her',C:'Her',poss:'hers',was:'was'};
+  if(p==='he') return {s:'he', o:'him',pa:'his',C:'His',poss:'his', was:'was'};
+  return {s:'they',o:'them',pa:'their',C:'Their',poss:'theirs',was:'were'};
+}
+
+/* ── the composer · a studio draft becomes the page's own data ── */
+function yearsStr(by,dy){
+  if(by&&dy)return by+'–'+dy;
+  if(by)return 'b. '+by;
+  if(dy)return 'd. '+dy;
+  return '';
+}
+function relToTreeEntry(rel){ /* "My mother" → who the ACCOUNT is, relative to the person */
+  var map={'My mother':'child','My father':'child','My grandmother':'grandchild','My grandfather':'grandchild',
+    'My wife':'partner','My husband':'partner','My partner':'partner','My sister':'sibling','My brother':'sibling',
+    'My daughter':'parent','My son':'parent','My friend':'chosen'};
+  return map[rel]||'chosen';
+}
+function relChipKey(rel){
+  if(/mother|father|grand|wife|husband|partner|sister|brother|daughter|son/i.test(rel||''))return 'family';
+  return 'friends';
+}
+function composeOverride(draft, opts){
+  opts=opts||{};
+  var d=draft||{}, plan=opts.plan||'free', mode=opts.mode||'view';
+  var P=pron(d.pron||'they');
+  var name=(d.name||'').trim()||'A life remembered';
+  var first=firstNameOf(name)||'them';
+  var slug=opts.slug||'';
+  var url='https://imissyoumemorial.com/'+(slug||'…');
+
+  var datesLine=fmtDate(+d.bm,d.bd,d.by)+' — '+fmtDate(+d.dm,d.dd,d.dy);
+  if((d.home||'').trim())datesLine+=' · '+d.home.trim().toUpperCase();
+
+  var flex=[1.2,1,1.3,1,1.1,1.4];
+  var photosAll=(d.photos||[]).filter(function(p){return p&&p.src});
+  var photoCap=plan==='plus'?photosAll.length:Math.min(photosAll.length,12);
+  var PHOTOS=photosAll.slice(0,photoCap).map(function(p,i){
+    var when=p.wy?((p.wm?MONTHS[p.wm-1]+' ':'')+p.wy):'';
+    return {src:p.src,cap:p.cap||'',when:when,f:flex[i%flex.length]};
+  });
+
+  var acct=opts.account||{};
+  var authorFirst=firstNameOf(acct.name)||'Family';
+  function relLabelForAuthor(rel,P){
+    var m={'My mother':P.pa+' child','My father':P.pa+' child','My grandmother':P.pa+' grandchild','My grandfather':P.pa+' grandchild','My wife':P.pa+' wife','My husband':P.pa+' husband','My partner':P.pa+' partner','My sister':P.pa+' sister','My brother':P.pa+' brother','My daughter':P.pa+' parent','My son':P.pa+' parent','My friend':P.pa+' friend'};
+    return m[rel]||(P.pa+' family');
+  }
+  var authorRole=relLabelForAuthor(d.rel,P);
+
+  var MEMS=[], TODAY=[];
+  var fm=d.mem||{};
+  if((fm.story||'').trim()||(fm.title||'').trim()){
+    MEMS.push({av:svgAvatar((authorFirst[0]||'F').toUpperCase()),n:authorFirst,r:authorRole+' · today',
+      rel:relChipKey(d.rel),ph:fm.photo||'',t:fm.title||'A memory of '+first,
+      b:'“'+(fm.story||'').trim().replace(/^["“]|["”]$/g,'')+'”',h:0,c:[]});
+    if(fm.photo)TODAY.push({img:fm.photo,k:'remembered by '+authorFirst+' · '+authorRole,t:fm.title||'A memory of '+first,s:(fm.story||'').trim(),who:authorFirst+' · '+authorRole});
+  }
+  PHOTOS.forEach(function(p,i){
+    if(TODAY.length>=6)return;
+    TODAY.push({img:p.src,k:(p.when?('around '+p.when):'from '+P.pa+' photographs'),t:p.cap||('From '+P.pa+' album'),
+      s:(p.when?'Around '+p.when:'From '+P.pa+' photographs')+' · kept on '+P.pa+' page',who:'from '+P.pa+' photographs'});
+  });
+
+  var CHIPS=[['everyone','Everyone']];
+  if(MEMS.some(function(m){return m.rel==='family'}))CHIPS.push(['family','Family']);
+  if(MEMS.some(function(m){return m.rel==='friends'}))CHIPS.push(['friends','Friends']);
+
+  var CH=(d.chapters||[]).filter(function(c){return c&&(c.ms||[]).length>0}).map(function(c){
+    var ms=(c.ms||[]).map(function(m){return {y:String(m.y||''),l:m.l||'',img:m.img||coverFallback(),cap:m.l||''}});
+    return {era:(c.from&&c.to)?(c.from+' to '+c.to):(c.from||c.to||''),t:c.t||'A chapter',cover:(ms[0]&&ms[0].img)||coverFallback(),ms:ms};
+  });
+
+  var TAPES=(d.tapes||[]).filter(function(t){return t&&(t.t||'').trim()}).map(function(t){
+    var when=t.wy?((t.wm?MONTHS[t.wm-1]+' ':'')+t.wy):'';
+    return {cover:t.cover||svgAvatar('▸',true),t:t.t,when:when,dur:t.dur||''};
+  });
+
+  /* the tree */
+  var PEOPLE={}, ROOT='p0';
+  PEOPLE[ROOT]={n:name,y:yearsStr(d.by,d.dy),av:d.portrait||undefined,i:initialsOf(name),her:true,
+    note:'This page is '+P.poss+'.'};
+  var fam=(d.family||[]).filter(function(f){return f&&(f.name||'').trim()});
+  var pid=1, parents=[], children=[];
+  function add(p){ var id='p'+(pid++); PEOPLE[id]=p; return id; }
+  fam.forEach(function(f){ f._id=null; });
+  /* parents first, then partner, then the rest — order builds the graph correctly */
+  var order={mother:0,father:0,partner:1,sibling:2,child:2,grandchild:3,chosen:2,parent:0};
+  fam.slice().sort(function(a,b){return (order[a.rel]||2)-(order[b.rel]||2)}).forEach(function(f){
+    var base={n:f.name.trim(),y:yearsStr(f.by,f.dy),i:initialsOf(f.name)};
+    var id;
+    if(f.rel==='mother'||f.rel==='father'||f.rel==='parent'){
+      id=add(base); parents.push(id);
+      PEOPLE[ROOT].pa=PEOPLE[ROOT].pa||[]; PEOPLE[ROOT].pa.push(id);
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' '+(f.rel==='parent'?'parent':f.rel)+'.';
+    }else if(f.rel==='partner'){
+      id=add(base); PEOPLE[ROOT].sp=id; base.sp=ROOT; base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' partner.';
+    }else if(f.rel==='sibling'){
+      if((PEOPLE[ROOT].pa||[]).length){ base.pa=PEOPLE[ROOT].pa.slice(); }
+      else { base.chosen=ROOT; base.relLabel=P.pa+' sibling'; }
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' sibling.'; id=add(base);
+    }else if(f.rel==='child'){
+      base.pa=[ROOT]; if(PEOPLE[ROOT].sp)base.pa.push(PEOPLE[ROOT].sp);
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' child.'; id=add(base); children.push({id:id,name:base.n});
+    }else if(f.rel==='grandchild'){
+      var via=f.via&&children.filter(function(c){return c.name===f.via})[0];
+      if(via){ base.pa=[via.id]; }
+      else if(children.length===1){ base.pa=[children[0].id]; }
+      else { base.chosen=ROOT; base.relLabel=P.pa+' grandchild'; }
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' grandchild.'; id=add(base);
+    }else{ /* chosen family & friends */
+      base.chosen=ROOT; base.relLabel='chosen family';
+      base.note='Chosen family.'; id=add(base);
+    }
+    f._id=id;
+  });
+  if(parents.length===2){ PEOPLE[parents[0]].sp=parents[1]; PEOPLE[parents[1]].sp=parents[0]; }
+  /* the person who is building the page joins the tree through their stated relation */
+  if(acct.name&&d.rel){
+    var mine=relToTreeEntry(d.rel);
+    var exists=fam.some(function(f){return f.name.trim().toLowerCase()===acct.name.trim().toLowerCase()});
+    if(!exists){
+      var me={n:acct.name.trim(),y:'',i:initialsOf(acct.name)};
+      if(mine==='child'){ me.pa=[ROOT]; if(PEOPLE[ROOT].sp)me.pa.push(PEOPLE[ROOT].sp); }
+      else if(mine==='partner'&&!PEOPLE[ROOT].sp){ var mid='p'+(pid++); PEOPLE[mid]=me; PEOPLE[ROOT].sp=mid; me.sp=ROOT; me.note='Keeper of this page.'; me._done=true; }
+      else if(mine==='parent'){ PEOPLE[ROOT].pa=PEOPLE[ROOT].pa||[]; var idp='p'+(pid++); PEOPLE[idp]=me; PEOPLE[ROOT].pa.push(idp); me._done=true; }
+      else if(mine==='grandchild'){ me.chosen=ROOT; me.relLabel=P.pa+' grandchild'; }
+      else if(mine==='sibling'){ if((PEOPLE[ROOT].pa||[]).length)me.pa=PEOPLE[ROOT].pa.slice(); else{me.chosen=ROOT;me.relLabel=P.pa+' sibling';} }
+      else { me.chosen=ROOT; me.relLabel='chosen family'; }
+      me.note=me.note||'Keeper of this page.';
+      if(!me._done){ PEOPLE['p'+(pid++)]=me; }
+    }
+  }
+
+  var svc=null; var s=d.svc||{};
+  if(s.y&&(s.where||'').trim()){
+    svc={when:(s.m?MONTHS[s.m-1]+' ':'')+(s.d?s.d+', ':'')+s.y+(s.time?' · '+s.time:''),
+      whereName:s.where||'',whereAddr:s.addr||'',note:s.note||''};
+  }
+
+  var counts=opts.counts||{visits:1,flowers:0,candles:0};
+
+  return {
+    person:{name:name,first:first,last:name.split(/\s+/).slice(-1)[0]||'',pron:d.pron||'they',
+      datesLine:datesLine,quote:(d.quote||'').trim(),portrait:d.portrait||'',
+      coverbg:d.coverbg||coverFallback(),home:(d.home||'').trim()},
+    plan:plan, mode:mode, slugUrl:url.replace('https://',''),
+    counts:counts, svc:svc,
+    gates:{photosTotal:photosAll.length, memsTotal:MEMS.length},
+    TODAY:TODAY, MEMS:MEMS, CHIPS:CHIPS, PHOTOS:PHOTOS, CH:CH, TAPES:TAPES,
+    PEOPLE:PEOPLE, ROOT:ROOT,
+    treeOwnLabel:'this page is '+P.poss,
+    SHURL:'https://'+url.replace('https://',''),
+    SHTXT:'Remembering '+name+' · leave a memory, a photo, a kind word · https://'+url.replace('https://','')
+  };
+}
+
+function spliceOverride(src, override){
+  if(!override)return src;
+  var json=JSON.stringify(override).replace(/</g,'\\u003c');
+  return src.replace('<!--IMY_OVERRIDE_SLOT-->','<script>window.IMY_OVERRIDE='+json+';<\/script>');
+}
+
+/* ── mounting ── */
+var host=document.getElementById('host');
+var frame=null, currentView='', pendingInit=null;
+function mount(view, srcdoc, initPayload){
+  currentView=view; pendingInit=initPayload||{};
+  if(frame){ try{host.removeChild(frame)}catch(e){} }
+  frame=document.createElement('iframe');
+  frame.setAttribute('title','I Miss You Memorial · '+view);
+  frame.setAttribute('allow','clipboard-write');
+  host.appendChild(frame);
+  frame.addEventListener('load',function(){ sendInit(); });
+  frame.srcdoc=srcdoc;
+}
+function sendInit(){
+  if(!frame)return;
+  try{ frame.contentWindow.postMessage({type:'imy-init',data:pendingInit},'*'); }catch(e){}
+}
+function cmd(action,data){
+  if(!frame)return;
+  try{ frame.contentWindow.postMessage({type:'imy-cmd',action:action,data:data||{}},'*'); }catch(e){}
+}
+
+/* ── toast ── */
+var toastEl=document.getElementById('imyToast'), toastT=null;
+function toast(html){
+  toastEl.innerHTML=html;
+  toastEl.classList.add('on');
+  clearTimeout(toastT);
+  toastT=setTimeout(function(){toastEl.classList.remove('on')},3400);
+}
+
+/* ── routing ── */
+function go(hash){ if(('#'+location.hash.slice(1))===hash){render()} location.hash=hash; }
+function parseRoute(){
+  var h=location.hash.replace(/^#\/?/,'');
+  var q={}, path=h;
+  var qi=h.indexOf('?');
+  if(qi>-1){ path=h.slice(0,qi); h.slice(qi+1).split('&').forEach(function(kv){var p=kv.split('=');q[decodeURIComponent(p[0])]=decodeURIComponent(p[1]||'')}); }
+  var seg=path.split('/').filter(Boolean);
+  return {seg:seg,q:q,path:path};
+}
+function startFlow(planIntent){
+  if(!state.account){ go('#/signin?next=start'+(planIntent?'&plan='+planIntent:'')); return; }
+  if(canCreate()){ state.draft=state.draft||null; go('#/studio?m=new'+(planIntent?'&plan='+planIntent:'')); return; }
+  go('#/dashboard');
+  setTimeout(function(){ toast('A free account keeps <b>one</b> memorial. Plus unlocks more — each new Plus memorial is 20% off.'); },600);
+}
+/* dev seed · a filled account for review (undocumented) */
+function seedTile(a,b,label){
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+a+'"/><stop offset="1" stop-color="'+b+'"/></linearGradient></defs><rect width="900" height="640" fill="url(#g)"/><text x="450" y="330" font-family="Georgia,serif" font-size="40" fill="rgba(255,255,255,.85)" text-anchor="middle">'+label+'</text></svg>');
+}
+function seed(plus){
+  var t1=seedTile('#A87C5F','#3f2c1a','the garden'),t2=seedTile('#6b7a5a','#2c3a26','the shore'),
+      t3=seedTile('#C9A572','#7a5236','the kitchen'),t4=seedTile('#8a94a6','#3a4150','room 12');
+  var draft={name:'Margaret Ellen Woods',rel:'My mother',pron:'she',bm:'4',bd:'18',by:'1946',dm:'11',dd:'2',dy:'2025',
+    home:'Mendocino, CA',quote:'Leave the porch light on for whoever is still out.',portrait:'',coverbg:t1,
+    mem:{title:'The porch light',story:'She left it on whenever one of us was out late. I still look for it, driving home.',photo:t2},
+    chapters:[
+      {t:'The shore years',from:'1946',to:'1968',ms:[{y:'1946',l:'Born in Mendocino',img:t2},{y:'1964',l:'First job at the harbor café',img:t3}]},
+      {t:'The classroom',from:'1970',to:'2008',ms:[{y:'1970',l:'Room 12, Mendocino Elementary',img:t4},{y:'1997',l:'A thousand students and counting',img:t1}]}
+    ],
+    photos:[{src:t1,cap:'The June rows',wm:'6',wy:'1993'},{src:t2,cap:'Low tide, as always',wm:'',wy:'2004'},{src:t3,cap:'Sunday bread',wm:'',wy:'1988'},{src:t4,cap:'The last first day',wm:'9',wy:'2008'}],
+    tapes:[{t:'Her seventieth · the toast',wm:'4',wy:'2016',dur:'1:42',cover:t3}],
+    family:[{name:'Ellen Woods',rel:'mother',by:'1921',dy:'1998'},{name:'Arthur Woods',rel:'father',by:'1918',dy:'1989'},
+      {name:'James Woods',rel:'partner',by:'1943',dy:'2011'},{name:'Susan Woods',rel:'child',by:'1972',dy:''},
+      {name:'Daniel Woods',rel:'child',by:'1975',dy:''},{name:'June Carter',rel:'grandchild',by:'2001',dy:'',via:'Susan Woods'},
+      {name:'Ruth Alvarez',rel:'chosen',by:'1949',dy:''}],
+    svc:{m:'9',d:'12',y:'2026',time:'11:00 AM',where:'Mendocino Community Chapel',addr:'44831 Main Street, Mendocino, CA',note:'Wear her favorite color · lunch in the garden after'},
+    _plan:plus?'plus':'free',_i:0};
+  state.account={name:'Willie Krysta',email:'willie@krystainnovisionarena.com',method:'email'};
+  var id='m'+(state.seq++);
+  var mem={id:id,slug:randSlug(),customSlug:plus?'margaret':'',plan:plus?'plus':'free',data:draft,createdAt:Date.now(),counts:{visits:12,flowers:3,candles:1}};
+  state.memorials.push(mem);state.activeId=id;save();
+  go('#/dashboard');
+}
+function render(){
+  var r=parseRoute();
+  var v=r.seg[0]||'';
+  if(v==='seed'){ seed(false); return; }
+  if(v==='seedplus'){ seed(true); return; }
+  if(v===''){ mount('landing',SRC.landing,{anchor:r.q.anchor||''}); return; }
+  if(v==='signin'){
+    if(state.account){ afterSignin(r.q); return; }
+    mount('signin',SRC.signin,{next:r.q.next||'',plan:r.q.plan||''});
+    return;
+  }
+  if(v==='studio'){
+    if(!state.account){ go('#/signin?next=studio'); return; }
+    var mid=r.q.m||'new';
+    var mem=mid==='new'?null:byId(mid);
+    if(mid!=='new'&&!mem){ go('#/dashboard'); return; }
+    if(mid==='new'&&!canCreate()){ startFlow(); return; }
+    var draft=mem?mem.data:(state.draft||null);
+    var price=priceFor(mem?mem.id:null);
+    mount('studio',SRC.studio,{mode:mem?'edit':'new',m:mid,draft:draft,account:state.account,
+      plan:mem?mem.plan:(r.q.plan==='plus'?'plus-intent':'free'),published:!!mem,
+      slug:mem?(mem.customSlug||mem.slug):'',price:price,counts:mem?mem.counts:null});
+    return;
+  }
+  if(v==='site'){
+    var slug=r.seg[1]||'';
+    if(slug==='eleanor'){ mount('tribute',SRC.tribute,{}); return; }
+    var m=findBySlug(slug);
+    if(!m){ toast('That page isn’t here yet.'); go('#/'); return; }
+    var ov=composeOverride(m.data,{plan:m.plan,mode:'view',slug:m.customSlug||m.slug,account:state.account||{},counts:m.counts});
+    mount('tribute',spliceOverride(SRC.tribute,ov),{});
+    return;
+  }
+  if(v==='dashboard'){
+    if(!state.account){ go('#/signin?next=dashboard'); return; }
+    var act=activeMem();
+    mount('dashboard',SRC.dashboard,{
+      account:state.account,
+      memorials:state.memorials.map(function(m){return {id:m.id,plan:m.plan,slug:m.customSlug||m.slug,data:m.data,counts:m.counts,active:act&&act.id===m.id}}),
+      activeId:act?act.id:null,
+      canCreate:canCreate(), plusUnlocked:plusUnlocked(),
+      price:priceFor(null), hasDraft:!!state.draft
+    });
+    return;
+  }
+  if(v==='checkout'){
+    var cm=byId(r.q.m||'');
+    if(!cm){ go('#/dashboard'); return; }
+    var pr=priceFor(cm.id);
+    var base=(firstNameOf(cm.data.name)||'their').toLowerCase().replace(/[^a-z]/g,'');
+    mount('checkout',SRC.checkout,{
+      m:cm.id, price:pr, name:cm.data.name||'', first:firstNameOf(cm.data.name)||'',
+      pron:cm.data.pron||'they',
+      currentSlug:cm.customSlug||cm.slug, suggestSlug:base?base+((cm.data.dy||'').slice(2)||''):'',
+      taken:state.memorials.map(function(x){return x.customSlug||x.slug}).concat(['eleanor'])
+    });
+    return;
+  }
+  mount('landing',SRC.landing,{});
+}
+function afterSignin(q){
+  var next=q.next||'';
+  if(next==='start'){ startFlow(q.plan==='plus'?'plus':''); return; }
+  if(next==='studio'){ startFlow(''); return; }
+  if(next==='dashboard'||state.memorials.length){ go('#/dashboard'); return; }
+  startFlow('');
+}
+
+/* ── messages from pages ── */
+window.addEventListener('message',function(e){
+  var m=e.data;
+  if(!m||m.type!=='imy')return;
+  if(!frame||e.source!==frame.contentWindow)return;   /* only direct children */
+  var a=m.action, d=m.data||{};
+  if(a==='ready'){ sendInit(); return; }
+  if(a==='nav'){
+    if(d.go==='landing'){ if(currentView==='landing'&&d.anchor){cmd('anchor',{anchor:d.anchor});}else{go('#/'+(d.anchor?'?anchor='+d.anchor:''));} return; }
+    if(d.go==='start'){ startFlow(d.plan==='plus'?'plus':''); return; }
+    if(d.go==='signin'){ state.account?go('#/dashboard'):go('#/signin'); return; }
+    if(d.go==='dashboard'){ go('#/dashboard'); return; }
+    if(d.go==='site'){ go('#/site/'+(d.slug||'eleanor')); return; }
+    if(d.go==='studio'){ go('#/studio?m='+(d.m||'new')); return; }
+    if(d.go==='checkout'){ go('#/checkout?m='+d.m); return; }
+    return;
+  }
+  if(a==='signin'){
+    state.account={name:(d.name||'').trim(),email:(d.email||'').trim(),method:d.method||'email'};
+    save();
+    toast('Signed in as <b>'+esc(firstNameOf(state.account.name)||state.account.email)+'</b>');
+    afterSignin(parseRoute().q);
+    return;
+  }
+  if(a==='signout'){ state.account=null; save(); toast('Signed out. Everything stays, safe.'); go('#/'); return; }
+  if(a==='draft'){
+    var r=parseRoute();
+    if(r.q.m&&r.q.m!=='new'){ var mm=byId(r.q.m); if(mm){ mm.data=d.draft; } }
+    else state.draft=d.draft;
+    save();
+    return;
+  }
+  if(a==='compose'){
+    var ov=composeOverride(d.draft,{plan:d.plan||'free',mode:'edit',slug:d.slug||'',account:state.account||{},counts:d.counts});
+    cmd('preview',{src:spliceOverride(SRC.tribute,ov)});
+    return;
+  }
+  if(a==='publish'){
+    var r2=parseRoute();
+    var target=null;
+    if(r2.q.m&&r2.q.m!=='new')target=byId(r2.q.m);
+    if(target){
+      target.data=d.draft; save();
+      if(d.plan==='plus'&&target.plan!=='plus'){ go('#/checkout?m='+target.id); return; }
+      toast('Saved. '+esc(firstNameOf(d.draft.name)||'The page')+'’s page is up to date.');
+      go('#/dashboard'); return;
+    }
+    var id='m'+(state.seq++);
+    var mem={id:id,slug:randSlug(),customSlug:'',plan:'free',data:d.draft,createdAt:Date.now(),counts:{visits:1,flowers:0,candles:0}};
+    state.memorials.push(mem); state.activeId=id; state.draft=null; save();
+    if(d.plan==='plus'){ go('#/checkout?m='+id); return; }
+    toast('Published — <b>imissyoumemorial.com/'+mem.slug+'</b>');
+    go('#/site/'+mem.slug);
+    return;
+  }
+  if(a==='pay'){
+    var pm=byId(d.m); if(!pm)return;
+    pm.plan='plus';
+    if(d.slug){
+      var want=String(d.slug).toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40);
+      var clash=want==='eleanor'||state.memorials.some(function(x){return x.id!==pm.id&&(x.customSlug===want||x.slug===want)});
+      if(want&&!clash)pm.customSlug=want;
+    }
+    state.activeId=pm.id; save();
+    toast('Plus is yours, for life — <b>imissyoumemorial.com/'+(pm.customSlug||pm.slug)+'</b>');
+    go('#/site/'+(pm.customSlug||pm.slug));
+    return;
+  }
+  if(a==='setActive'){ state.activeId=d.m; save(); render(); return; }
+  if(a==='createNew'){ startFlow(d.plan==='plus'?'plus':''); return; }
+  if(a==='toast'){ toast(esc(d.msg||'')); return; }
+});
+
+window.addEventListener('hashchange',render);
+render();
+})();
+</script>
+</body>
+</html>

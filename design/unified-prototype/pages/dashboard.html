@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Study · Dashboard · I Miss You Memorial (static preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Sometype+Mono:wght@400;500;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+html, body { margin: 0; padding: 0; }
+
+/* provenance strip — not part of the app; identifies this as a static preview */
+.preview-strip {
+  font-family: 'Sometype Mono', monospace; font-size: 10.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: #5c5249; background: #ECE1CC;
+  border-bottom: 1px solid rgba(44,37,32,.14); padding: 6px 16px; text-align: center;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   app/dashboard/study.css — verbatim from branch preview/landing-redesign-aug18
+   (identical to main as of Aug 18, 2026)
+   ════════════════════════════════════════════════════════════════════ */
+
+.study {
+  --cream: #FAF5EC;
+  --cream-deep: #F3ECDD;
+  --well: #ECE1CC;
+  --ink: #2C2520;
+  --ink-soft: #5c5249;
+  --terra: #A87C5F;
+  --terra-btn: #946a4f;
+  --terra-btn-hover: #7a5236;
+  --terra-text: #8a5a3c;
+  --gold: #C9A572;
+  --goldline: rgba(201, 165, 114, .42);
+  --taupe: #D9C7A8;
+  --flame: #F4B860;
+  --night: #1A130D;
+  --brown: #3f2c1a;
+  --brown-deep: #241711;
+  --line: rgba(44, 37, 32, .12);
+  --hairline: rgba(44, 37, 32, .12);
+  --shadow: 0 26px 70px -30px rgba(20, 14, 8, .5);
+  --sh-rest: 0 1px 2px rgba(74, 52, 32, .05);
+  --sh-float: 0 1px 2px rgba(74, 52, 32, .06), 0 4px 10px rgba(74, 52, 32, .07), 0 14px 32px rgba(74, 52, 32, .09);
+  --sh-lift: 0 1px 2px rgba(74, 52, 32, .05), 0 6px 16px rgba(74, 52, 32, .08);
+  --text-scale: 1;
+  --sp1: 8px;
+  --sp2: 16px;
+  --sp3: 24px;
+  --sp4: 32px;
+  --sp6: 48px;
+  --uline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9C32 3 80 3 117 8' stroke='%23C9A572' stroke-width='3.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+
+  font-family: 'Besley', Georgia, serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: calc(17px * var(--text-scale));
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+html.study-hc .study {
+  --cream: #FFFDF8;
+  --cream-deep: #F3ECDD;
+  --well: #E7DBC0;
+  --ink: #160F0A;
+  --ink-soft: #3a332c;
+  --line: rgba(22, 15, 10, .3);
+  --hairline: rgba(22, 15, 10, .3);
+  --goldline: rgba(150, 110, 60, .7);
+  --terra-text: #6e3f24;
+}
+
+.study * { box-sizing: border-box; }
+.study .mono { font-family: 'Sometype Mono', monospace; }
+.study .hand { font-family: 'Caveat', cursive; }
+.study em { font-style: italic; color: var(--terra-text); }
+.study a { color: var(--terra-text); }
+.study img, .study svg { display: block; max-width: 100%; }
+.study button { font-family: inherit; }
+.study p { line-height: 1.55; }
+.study a:focus-visible, .study button:focus-visible, .study input:focus-visible,
+.study select:focus-visible, .study textarea:focus-visible, .study [tabindex]:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ---------- gold swash underline ---------- */
+.study .uline { position: relative; display: inline-block; }
+.study .uline::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -.12em; height: .3em;
+  background: var(--uline) no-repeat center/100% 100%;
+  transform: scaleX(0); transform-origin: left center;
+}
+.study .uline.drawn::after { animation: study-udraw 1s cubic-bezier(.45,0,.2,1) .25s forwards; }
+@keyframes study-udraw { to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .study .uline.drawn::after { animation: none; transform: scaleX(1); } }
+body.study-motion-paused .study .uline.drawn::after { animation: none; transform: scaleX(1); }
+
+.study .sprig { color: var(--gold); opacity: .62; pointer-events: none; }
+.study .sprig.title-sprig { width: 28px; height: 28px; flex: 0 0 auto; opacity: .75; }
+.study .sprig.corner-sprig { position: absolute; width: 50px; height: 50px; opacity: .4; }
+.study .sprig.corner-sprig.tr { top: 8px; right: 10px; transform: scaleX(-1); }
+.study .sprig.corner-sprig.br { bottom: 8px; right: 10px; }
+
+.study .leaf-divider { display: flex; align-items: center; gap: 10px; margin: 4px 0 var(--sp3); color: var(--gold); opacity: .55; }
+.study .leaf-divider .stem-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--goldline) 20%, var(--goldline) 80%, transparent); }
+.study .leaf-divider svg { width: 24px; height: 15px; flex: 0 0 auto; }
+
+/* ---------- shell / sidebar ---------- */
+.study .shell { display: grid; grid-template-columns: 256px 1fr; min-height: 100vh; }
+.study .sidebar {
+  background: var(--cream-deep);
+  border-right: 1px solid var(--hairline);
+  padding: var(--sp3) var(--sp2) var(--sp3);
+  display: flex; flex-direction: column; gap: 12px;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-gutter: stable;
+  padding-bottom: 88px;
+}
+.study .wordmark { font-family: 'Besley', serif; font-weight: 700; font-size: 17px; padding: 0 8px; letter-spacing: .2px; white-space: nowrap; text-decoration: none; color: var(--ink); display: block; }
+.study .wordmark em { font-style: italic; color: var(--terra); }
+
+/* identity block */
+.study .identity-block {
+  background: var(--cream); border: 1px solid var(--goldline); border-radius: 18px;
+  padding: 14px 12px 12px; display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 6px; box-shadow: var(--sh-rest);
+}
+.study .arch-portrait {
+  flex: 0 0 auto; width: 72px; height: 90px; border-radius: 36px 36px 5px 5px;
+  overflow: hidden; position: relative; background: var(--cream-deep);
+  box-shadow: inset 0 0 0 1.6px var(--gold), 0 2px 6px rgba(74,52,32,.18);
+}
+.study .arch-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.study .arch-portrait .initial {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 22px; color: var(--terra-text); background: var(--cream-deep);
+}
+.study .identity-block .name { font-size: 16px; line-height: 1.22; font-weight: 700; }
+.study .identity-block .dates { font-family: 'Sometype Mono', monospace; font-size: 9.5px; letter-spacing: .08em; line-height: 1.5; color: var(--ink-soft); white-space: normal; }
+.study .pages-btn {
+  margin-top: 5px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: 'Sometype Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  padding: 10px 12px; border-radius: 999px; background: var(--cream-deep);
+  border: 1px solid rgba(46,33,21,.35); color: var(--ink); cursor: pointer; min-height: 42px;
+  transition: background .15s ease;
+}
+.study .pages-btn:hover { background: #ECE1CC; }
+
+.study .see-page-link {
+  display: inline-flex; align-items: center; gap: 6px; font-family: 'Sometype Mono', monospace;
+  font-size: 10.5px; letter-spacing: .4px; text-transform: uppercase; color: var(--terra-text);
+  text-decoration: none; margin: 0 8px; min-height: 32px;
+}
+.study .see-page-link:hover { text-decoration: underline; }
+
+/* nav shelf */
+.study nav.shelf { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.study .shelf-label {
+  font-family: 'Sometype Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-soft); padding: 10px 10px 6px; opacity: .75;
+}
+.study .nav-item {
+  display: flex; align-items: center; gap: 11px; padding: 10px 10px; border-radius: 12px;
+  border: none; background: transparent; color: var(--ink); font-size: 15px; font-weight: 500;
+  text-align: left; cursor: pointer; min-height: 44px; width: 100%;
+  transition: background .15s ease, color .15s ease; position: relative; text-decoration: none;
+}
+.study .nav-item:hover { background: rgba(168,124,95,.09); }
+.study .nav-item.active { background: var(--cream); box-shadow: inset 0 0 0 1px var(--goldline), var(--sh-rest); color: var(--terra-text); font-weight: 700; }
+.study .nav-item .ic { flex: 0 0 auto; width: 19px; height: 19px; color: var(--terra-text); opacity: .85; }
+.study .nav-item .label { flex: 1; min-width: 0; }
+.study .nav-item .count {
+  font-family: 'Sometype Mono', monospace; font-size: 11px; color: var(--terra-text);
+  background: rgba(168,124,95,.14); border-radius: 999px; padding: 2px 8px; flex: 0 0 auto;
+}
+
+.study .sidebar-foot { border-top: 1px solid var(--hairline); padding-top: var(--sp2); display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 401; background: var(--cream-deep); padding-bottom: 4px; }
+.study .plan-strip { font-family: 'Sometype Mono', monospace; font-size: 10.5px; color: var(--ink-soft); padding: 4px 10px 0; line-height: 1.6; }
+.study .plan-strip b { color: var(--terra-text); font-weight: 600; }
+
+/* ---------- main ---------- */
+.study main { padding: var(--sp4) var(--sp4) 72px; max-width: 1010px; margin: 0 auto; width: 100%; position: relative; }
+.study .panel-head { margin-bottom: var(--sp3); position: relative; }
+.study .panel-kicker { font-family: 'Sometype Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--terra-text); margin-bottom: 6px; }
+.study .panel-title-row { display: flex; align-items: center; gap: 10px; }
+.study .panel-title { font-size: 26px; font-weight: 700; line-height: 1.2; margin: 0; }
+.study .panel-sub { color: var(--ink-soft); font-size: 15px; margin-top: 6px; max-width: 65ch; line-height: 1.55; }
+
+.study .stagger { animation: study-fadeup .5s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes study-fadeup { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .study .stagger { animation: none; opacity: 1; transform: none; } }
+body.study-motion-paused .study .stagger { animation: none; opacity: 1; transform: none; }
+
+/* ---------- buttons ---------- */
+.study .btn {
+  font-family: 'Besley', serif; font-weight: 600; font-size: 15px; border-radius: 12px; padding: 13px 22px;
+  cursor: pointer; border: 1px solid rgba(46,33,21,.35); background: var(--cream-deep); color: var(--ink);
+  display: inline-flex; align-items: center; gap: 8px; min-height: var(--sp6); transition: .18s ease;
+  white-space: nowrap; text-decoration: none;
+}
+.study .btn:hover { background: #ece2cd; transform: translateY(-1px); box-shadow: var(--sh-rest); }
+@media (prefers-reduced-motion: reduce) { .study .btn:hover { transform: none; } }
+body.study-motion-paused .study .btn:hover { transform: none; }
+.study .btn.primary { background: var(--terra-btn); border-color: var(--terra-btn); color: var(--cream); }
+.study .btn.primary:hover { background: var(--terra-btn-hover); border-color: var(--terra-btn-hover); }
+.study .btn.quiet { border-color: rgba(46,33,21,.35); color: var(--ink); background: var(--cream-deep); }
+.study .btn.quiet:hover { background: #ece2cd; }
+.study .btn.small { padding: 10px 16px; font-size: 14.5px; min-height: 44px; border-radius: 10px; }
+.study .btn.pill { border-radius: 999px; }
+.study .btn[disabled] { opacity: .45; cursor: default; }
+
+/* ---------- sentence cards (Overview) ---------- */
+.study .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp3); }
+.study .s-card {
+  background: var(--cream-deep); border: 1px solid var(--hairline); border-radius: 20px; padding: var(--sp3);
+  display: flex; flex-direction: column; gap: 12px; min-height: 140px; position: relative; overflow: hidden;
+  box-shadow: var(--sh-rest); transition: box-shadow .2s ease, transform .2s ease;
+}
+.study .s-card::before { content: ""; position: absolute; inset: 0; border-radius: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.5); pointer-events: none; }
+.study .s-card.liftable:hover { box-shadow: var(--sh-float); transform: translateY(-2px); }
+@media (prefers-reduced-motion: reduce) { .study .s-card.liftable:hover { transform: none; } }
+body.study-motion-paused .study .s-card.liftable:hover { transform: none; }
+.study .s-card.full { grid-column: 1 / -1; }
+.study .s-card .sentence { font-size: 16px; line-height: 1.5; position: relative; z-index: 1; margin: 0; }
+.study .s-card .sentence b { font-weight: 700; color: var(--terra-text); }
+.study .s-card .sentence .mono-inline { font-family: 'Sometype Mono', monospace; font-size: 14px; color: var(--terra-text); }
+.study .s-card .card-foot { margin-top: auto; display: flex; justify-content: flex-start; position: relative; z-index: 1; gap: 8px; flex-wrap: wrap; }
+
+.study .inline-decide { background: var(--cream); border: 1px solid var(--goldline); border-radius: 14px; padding: 14px 16px; margin-top: 2px; position: relative; z-index: 1; }
+.study .inline-decide .idq { font-style: italic; font-size: 14.5px; line-height: 1.55; border-left: 2px solid var(--goldline); padding-left: 12px; margin-bottom: 10px; }
+.study .inline-decide .id-who { font-family: 'Sometype Mono', monospace; font-size: 10.5px; color: var(--ink-soft); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+.study .inline-decide .id-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.study .inline-decide .id-rest { margin-top: 10px; font-size: 12.5px; color: var(--ink-soft); }
+
+.study .vigil-card { background: linear-gradient(135deg, var(--night), var(--brown-deep)); color: #EFE6D6; border: 1px solid rgba(244,184,96,.28); padding: 20px 24px; }
+.study .vigil-card .sentence { color: #EFE6D6; }
+.study .vigil-card .sentence b { color: var(--flame); }
+.study .vigil-card .btn.quiet { color: var(--flame); border-color: rgba(244,184,96,.4); background: rgba(244,184,96,.08); }
+.study .vigil-card .btn.quiet:hover { background: rgba(244,184,96,.16); }
+.study .vigil-card::before {
+  content: ""; position: absolute; right: 24px; top: 18px; width: 10px; height: 16px;
+  background: radial-gradient(ellipse at 50% 70%, var(--flame) 0%, rgba(244,184,96,.5) 55%, transparent 75%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; filter: blur(.3px);
+  animation: study-flicker 2.6s ease-in-out infinite; transform-origin: 50% 90%; opacity: .85;
+}
+@keyframes study-flicker {
+  0%,100% { transform: scaleY(1) scaleX(1) rotate(0deg); opacity: .8; }
+  18% { transform: scaleY(1.08) scaleX(.94) rotate(-2deg); opacity: .9; }
+  34% { transform: scaleY(.93) scaleX(1.05) rotate(1.5deg); opacity: .75; }
+  52% { transform: scaleY(1.05) scaleX(.97) rotate(-1deg); opacity: .95; }
+  68% { transform: scaleY(.96) scaleX(1.02) rotate(2deg); opacity: .8; }
+  84% { transform: scaleY(1.03) scaleX(.98) rotate(-1.5deg); opacity: .88; }
+}
+@media (prefers-reduced-motion: reduce) { .study .vigil-card::before { animation: none; } }
+body.study-motion-paused .study .vigil-card::before { animation: none; }
+
+/* ---------- accessibility pill row ---------- */
+.study .a11y-corner {
+  position: fixed; left: 14px; bottom: 14px; z-index: 400; display: flex; gap: 6px;
+  background: rgba(250,245,236,.95); border: 1px solid var(--hairline); border-radius: 999px; padding: 5px;
+  box-shadow: var(--sh-lift);
+}
+html.study-hc .study .a11y-corner,
+html.study-hc .a11y-corner { background: rgba(255,253,248,.97); }
+.study .a11y-btn {
+  font-family: 'Sometype Mono', monospace; font-size: 11px; font-weight: 700; border: none; background: transparent;
+  color: var(--ink); border-radius: 999px; padding: 9px 12px; cursor: pointer; min-height: 40px; min-width: 40px;
+}
+.study .a11y-btn.active { background: var(--terra-btn); color: var(--cream); }
+.study .var-tag {
+  position: fixed; right: 14px; bottom: 14px; font-family: 'Sometype Mono', monospace; font-size: 11px;
+  color: var(--ink-soft); background: rgba(250,245,236,.92); border: 1px solid var(--hairline); border-radius: 999px;
+  padding: 5px 12px; z-index: 400; pointer-events: none;
+}
+
+/* ---------- mobile topbar + collapsing sidebar (exact 840px breakpoint per spec) ---------- */
+.study .mobile-topbar { display: none; }
+@media (max-width: 840px) {
+  .study .shell { display: block; }
+  .study .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 82%; max-width: 300px;
+    transform: translateX(-100%); transition: transform .25s ease; z-index: 300;
+  }
+  .study .sidebar.open { transform: translateX(0); box-shadow: 20px 0 60px rgba(0,0,0,.25); }
+  body.study-motion-paused .study .sidebar { transition: none; }
+  .study .mobile-topbar {
+    display: flex; align-items: center; justify-content: space-between; padding: 14px 18px;
+    border-bottom: 1px solid var(--hairline); background: var(--cream-deep); position: sticky; top: 0; z-index: 100;
+  }
+  .study .mobile-topbar .wordmark { font-size: 16px; padding: 0; }
+  .study .menu-btn { width: 48px; height: 48px; border-radius: 10px; border: 1px solid rgba(46,33,21,.35); background: var(--cream); font-size: 18px; cursor: pointer; }
+  .study .sidebar-scrim { display: none; position: fixed; inset: 0; background: rgba(20,14,8,.35); z-index: 290; }
+  .study .sidebar-scrim.open { display: block; }
+  .study main { padding: var(--sp3) var(--sp2) 64px; }
+}
+@media (max-width: 600px) {
+  .study .card-grid { grid-template-columns: 1fr; }
+  .study .panel-title { font-size: 22px; }
+}
+@media (max-width: 390px) {
+  .study main { padding: var(--sp2) 14px 60px; }
+  .study .panel-title { font-size: 20px; }
+  .study .s-card { padding: 18px; }
+  .study .var-tag { font-size: 10px; padding: 4px 9px; right: 8px; bottom: 8px; }
+  .study .a11y-corner { left: 8px; bottom: 8px; }
+}
+
+/* ══════════ REDESIGN LAYER · Batch 3 (global system) · July 14 2026 · preview ══════════ */
+.study{--cream:#FDFBF7;--line:rgba(44,37,32,.14);--hairline:rgba(44,37,32,.14)}
+.study .mono,.study .identity-block .dates,.study .pages-btn,.study .see-page-link,.study .shelf-label,.study .nav-item .count,.study .plan-strip,.study .panel-kicker,.study .s-card .sentence .mono-inline,.study .inline-decide .id-who,.study .a11y-btn,.study .var-tag{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
+.study .hand{font-family:'Besley',serif!important;font-style:italic;letter-spacing:0}
+.study a:focus-visible,.study button:focus-visible,.study input:focus-visible,.study select:focus-visible,.study textarea:focus-visible{outline:2px solid var(--terra-btn-hover);outline-offset:2px;border-radius:4px}
+.study button,.study .btn{min-height:44px}
+</style>
+<style>
+.ha-img-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#f4f4f5;border:1px dashed #d4d4d8;border-radius:8px;color:#71717a;font-size:12px;font-family:system-ui,sans-serif;min-height:80px;padding:16px;box-sizing:border-box;animation:ha-img-pulse 1.5s ease-in-out infinite}
+.ha-img-placeholder.ha-failed{animation:none;opacity:.7}
+@keyframes ha-img-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@media(prefers-color-scheme:dark){.ha-img-placeholder{background:#27272a;border-color:#3f3f46;color:#a1a1aa}}
+</style>
+</head>
+<body>
+
+<div class="preview-strip">Static preview · /dashboard · branch preview/landing-redesign-aug18 · identical to main · sample counts</div>
+
+<div class="study">
+
+  <!-- Mobile topbar (visible under 840px) -->
+  <div class="mobile-topbar">
+    <button class="menu-btn" aria-label="Open navigation" onclick="document.getElementById('study-sidebar').classList.add('open');document.getElementById('study-scrim').classList.add('open')">&#9776;</button>
+    <span class="wordmark">I <em>Miss</em> You Memorial</span>
+    <span style="width:48px"></span>
+  </div>
+  <div class="sidebar-scrim" id="study-scrim" onclick="document.getElementById('study-sidebar').classList.remove('open');this.classList.remove('open')"></div>
+
+  <div class="shell">
+    <aside class="sidebar" id="study-sidebar">
+      <a href="#" style="text-decoration:none" onclick="return false">
+        <span class="wordmark">I <em>Miss</em> You Memorial</span>
+      </a>
+
+      <div class="identity-block">
+        <span class="arch-portrait">
+          <img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes" loading="lazy" />
+        </span>
+        <div class="name">Eleanor Margaret Hayes</div>
+        <div class="dates mono">MAR 12, 1948 &ndash; OCT 22, 2024</div>
+      </div>
+
+      <a class="see-page-link mono" href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">See her page &rarr;</a>
+
+      <nav class="shelf" aria-label="Dashboard sections">
+        <div class="shelf-label mono">The desk</div>
+        <a href="#" class="nav-item active" onclick="return false">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12L12 5l8 7M6 10v9h12v-9"/></svg>
+          <span class="label">Overview</span>
+        </a>
+        <a href="#" class="nav-item" onclick="return false">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 8l8 6 8-6"/></svg>
+          <span class="label">Waiting for you</span>
+          <span class="count mono">3</span>
+        </a>
+        <a href="#" class="nav-item" onclick="return false">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>
+          <span class="label">The pictures</span>
+        </a>
+        <div class="shelf-label mono">The household</div>
+        <a href="#" class="nav-item" onclick="return false">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
+          <span class="label">Billing</span>
+        </a>
+        <a href="#" class="nav-item" onclick="return false">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 000-3l1.9-1.5-2-3.4-2.3.6a7.4 7.4 0 00-2.6-1.5L14 2h-4l-.4 2.7a7.4 7.4 0 00-2.6 1.5l-2.3-.6-2 3.4L4.6 10.5a7.6 7.6 0 000 3L2.7 15l2 3.4 2.3-.6c.75.66 1.63 1.17 2.6 1.5L10 22h4l.4-2.7a7.4 7.4 0 002.6-1.5l2.3.6 2-3.4z"/></svg>
+          <span class="label">Account</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="plan-strip mono">Free plan &middot; her page stays online, <b>always</b></div>
+        <button type="button" class="nav-item" style="justify-content:flex-start">
+          <span class="label">Sign out</span>
+        </button>
+      </div>
+    </aside>
+
+    <main>
+      <section class="panel-head stagger">
+        <div class="panel-kicker mono"><span id="greeting">Good evening</span>, Autumn</div>
+        <div class="panel-title-row">
+          <svg class="sprig title-sprig" viewBox="0 0 32 32"><path d="M16 29c0-8 0-15 0-22" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <h1 class="panel-title"><span class="uline drawn">Everything about Eleanor Margaret Hayes's page, in one room.</span></h1>
+        </div>
+        <p class="panel-sub">A quiet place to see what's waiting, what's been shared, and what still needs a decision. Nothing here is urgent tonight.</p>
+
+        <div class="card-grid" style="margin-top:24px">
+
+          <!-- Waiting count card, first pending memory decidable inline -->
+          <div class="s-card liftable full stagger" style="animation-delay:.02s">
+            <p class="sentence"><b>3 things are waiting for you</b> &mdash; 3 memories left for Eleanor Margaret Hayes this week.</p>
+            <div class="inline-decide">
+              <div class="id-who mono">Memory &middot; Miriam Okafor &middot; Neighbour</div>
+              <p class="idq">"She kept a chair on the porch that was really for whoever needed it. I sat in it the week my husband died, and she never once asked me to talk. She just brought out two cups."</p>
+              <div class="id-actions">
+                <button type="button" class="btn primary small">Share on her page</button>
+                <button type="button" class="btn quiet small">Keep for family</button>
+              </div>
+              <p class="id-rest">or <a href="#" onclick="return false">read the remaining 2, one at a time</a></p>
+            </div>
+            <div class="card-foot">
+              <a href="#" class="btn quiet" onclick="return false">Open the whole queue</a>
+            </div>
+          </div>
+
+          <!-- What people remember -->
+          <div class="s-card liftable stagger" style="animation-delay:.06s">
+            <p class="sentence">People have been writing to Eleanor Margaret Hayes's page. <b>14 memories have</b> been shared so far.</p>
+            <div class="card-foot"><a href="#" class="btn quiet" onclick="return false">See what people remember</a></div>
+          </div>
+
+          <!-- Pictures -->
+          <div class="s-card liftable stagger" style="animation-delay:.1s">
+            <p class="sentence">Eleanor Margaret Hayes's page holds <b>28 pictures</b> kept so far.</p>
+            <div class="card-foot"><a href="#" class="btn quiet" onclick="return false">Open the pictures</a></div>
+          </div>
+
+          <!-- Story -->
+          <div class="s-card liftable stagger" style="animation-delay:.14s;position:relative">
+            <svg class="sprig corner-sprig tr" viewBox="0 0 60 60" aria-hidden="true"><path d="M4 56C10 40 14 24 26 8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <p class="sentence">Eleanor Margaret Hayes's story is written, and ready for you to add to, quietly, whenever you like.</p>
+            <div class="card-foot"><a href="#" class="btn quiet" onclick="return false">Visit her story</a></div>
+          </div>
+
+          <!-- Trusted people -->
+          <div class="s-card liftable stagger" style="animation-delay:.18s">
+            <p class="sentence">Family and friends can be invited to help tend Eleanor Margaret Hayes's page. <b>Trusted people</b> can share memories without waiting on you.</p>
+            <div class="card-foot"><a href="#" class="btn quiet" onclick="return false">See who's caretaking</a></div>
+          </div>
+
+          <!-- Anniversary -->
+          <div class="s-card liftable stagger" style="animation-delay:.22s">
+            <p class="sentence">October 22 will be <b>2 years</b> from today. There is time to decide, gently, whether Eleanor Margaret Hayes's page should mark it.</p>
+            <div class="card-foot"><a href="#" class="btn quiet" onclick="return false">Think about that day</a></div>
+          </div>
+
+          <!-- Vigil band -->
+          <div class="s-card full vigil-card stagger" style="animation-delay:.26s">
+            <p class="sentence"><b>341 flowers have been laid</b> &middot; 127 candles lit for Eleanor Margaret Hayes.</p>
+            <div class="card-foot">
+              <a href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer" class="btn quiet">See how her page is tended</a>
+            </div>
+          </div>
+
+          <!-- Plus, quietly — free pages only -->
+          <div class="s-card full stagger" style="animation-delay:.3s">
+            <p class="sentence">This page is free, forever &mdash; that promise holds. <b>Plus keeps more</b>: her voice, living pictures, every photograph, the whole wall, an exact-name address. $197 once, or $29 a month.</p>
+            <div class="card-foot"><a href="#" class="btn quiet" onclick="return false">Keep everything</a></div>
+          </div>
+
+        </div>
+
+        <div class="leaf-divider" aria-hidden="true">
+          <span class="stem-line"></span>
+          <svg viewBox="0 0 26 16"><path d="M13 8c-4-3-8-3-11 0 3 3 7 3 11 0z" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M13 8c4-3 8-3 11 0-3 3-7 3-11 0z" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+          <span class="stem-line"></span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- A11y bar (A- / A / A+ · high contrast · pause motion) -->
+  <div class="a11y-corner" aria-label="Accessibility controls">
+    <button type="button" class="a11y-btn" data-scale="0.92" aria-label="Smaller text" aria-pressed="false">A-</button>
+    <button type="button" class="a11y-btn active" data-scale="1" aria-label="Default text size" aria-pressed="true">A</button>
+    <button type="button" class="a11y-btn" data-scale="1.16" aria-label="Larger text" aria-pressed="false">A+</button>
+    <button type="button" class="a11y-btn" id="hc-btn" aria-label="Toggle high contrast" aria-pressed="false">HC</button>
+    <button type="button" class="a11y-btn" id="motion-btn" aria-label="Pause motion" aria-pressed="false">&#9208;</button>
+  </div>
+
+  <div class="var-tag mono">I MISS YOU MEMORIAL &middot; autumn@finisomegalandmark.com</div>
+
+</div>
+
+<script>
+// greeting() — same logic as app/dashboard/page.tsx
+(function(){
+  var h = new Date().getHours();
+  document.getElementById('greeting').textContent = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+})();
+
+// A11yBar — same behavior as _components/A11yBar.tsx (classes on <html>/<body>, persisted)
+(function(){
+  var SCALE_KEY='study.textScale', HC_KEY='study.highContrast', MOTION_KEY='study.motionPaused';
+  var root=document.documentElement, body=document.body;
+  var scaleBtns=[].slice.call(document.querySelectorAll('.a11y-btn[data-scale]'));
+  var hcBtn=document.getElementById('hc-btn'), mBtn=document.getElementById('motion-btn');
+  function setScale(v){
+    root.style.setProperty('--text-scale', v);
+    scaleBtns.forEach(function(b){ var on=b.dataset.scale===v; b.classList.toggle('active',on); b.setAttribute('aria-pressed',on); });
+    try{localStorage.setItem(SCALE_KEY,v)}catch(e){}
+  }
+  function setHc(on){
+    root.classList.toggle('study-hc',on); hcBtn.classList.toggle('active',on); hcBtn.setAttribute('aria-pressed',on);
+    try{localStorage.setItem(HC_KEY,on?'1':'0')}catch(e){}
+  }
+  function setMotion(on){
+    body.classList.toggle('study-motion-paused',on); mBtn.classList.toggle('active',on); mBtn.setAttribute('aria-pressed',on);
+    try{localStorage.setItem(MOTION_KEY,on?'1':'0')}catch(e){}
+  }
+  scaleBtns.forEach(function(b){ b.addEventListener('click',function(){ setScale(b.dataset.scale); }); });
+  hcBtn.addEventListener('click',function(){ setHc(!root.classList.contains('study-hc')); });
+  mBtn.addEventListener('click',function(){ setMotion(!body.classList.contains('study-motion-paused')); });
+  try{
+    var s=localStorage.getItem(SCALE_KEY); if(s) setScale(s);
+    if(localStorage.getItem(HC_KEY)==='1') setHc(true);
+    if(localStorage.getItem(MOTION_KEY)==='1') setMotion(true);
+  }catch(e){}
+})();
+</script>
+
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && window.parent !== window) {
+    window.parent.postMessage({ type: 'close-fullscreen' }, '*');
+  }
+});
+</script>
+<!-- broken-img-handler -->
+<script>
+(function(){
+  if(window.__brokenImgHandler)return;
+  window.__brokenImgHandler=true;
+  var MAX=5,DELAYS=[2000,4000,8000,16000,32000];
+  var TOKEN=/^__(?:IMG|EMBED)_[a-zA-Z0-9_-]+__/;
+  var SENTINEL=new RegExp('^/api/published/[^/]+/(?:assets|embeds)/[^/?#]*-missing(?:[?#]|$)');
+  var NOISE=/^[\s\u2018\u2019\u201c\u201d]+|[\s\u2018\u2019\u201c\u201d]+$/g;
+  function canSrcEverResolve(src){
+    var bare=src.replace(NOISE,'');
+    return !TOKEN.test(bare)&&!SENTINEL.test(bare);
+  }
+  document.addEventListener('error',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    var liveSrc=img.getAttribute('src');
+    var src=img.dataset.haOriginalSrc||liveSrc;
+    if(!src)return;
+    if(img.dataset.haOriginalSrc&&liveSrc&&liveSrc!==img.dataset.haOriginalSrc&&liveSrc.indexOf('_r=')<0){src=liveSrc;img.dataset.haOriginalSrc=src;img.dataset.haRetryCount='0'}
+    else if(!img.dataset.haOriginalSrc){img.dataset.haOriginalSrc=src}
+    var attempt=canSrcEverResolve(src)?parseInt(img.dataset.haRetryCount||'0',10):MAX;
+    if(img.dataset.haPhId){var old=document.getElementById(img.dataset.haPhId);if(old)old.remove()}
+    var ph=document.createElement('div');
+    ph.className='ha-img-placeholder'+(attempt>=MAX?' ha-failed':'');
+    ph.id='ha-ph-'+Math.random().toString(36).slice(2,9);
+    var w=img.getAttribute('width');var h=img.getAttribute('height');
+    if(w)ph.style.width=w+(isNaN(Number(w))?'':'px');
+    else if(img.style.width)ph.style.width=img.style.width;
+    else if(img.width>1)ph.style.width=img.width+'px';
+    if(h)ph.style.height=h+(isNaN(Number(h))?'':'px');
+    else if(img.style.height)ph.style.height=img.style.height;
+    else if(img.height>1)ph.style.height=img.height+'px';
+    ph.textContent=attempt>=MAX?'Image unavailable':'Loading image\u2026';
+    img.dataset.haPhId=ph.id;
+    if(img.dataset.haOrigDisplay==null)img.dataset.haOrigDisplay=img.style.display||'';
+    img.style.display='none';
+    img.insertAdjacentElement('afterend',ph);
+    if(attempt<MAX){
+      img.dataset.haRetryCount=String(attempt+1);
+      setTimeout(function(){
+        if(!img.isConnected)return;
+        if(img.dataset.haOriginalSrc!==src)return;
+        if(img.complete&&img.naturalWidth>0)return;
+        var curSrc=img.getAttribute('src');
+        if(curSrc&&curSrc.indexOf(src)!==0)return;
+        var fresh=src+(src.indexOf('?')>=0?'&':'?')+'_r='+(attempt+1)+'_'+Date.now();
+        img.src=fresh;
+      },DELAYS[attempt]);
+    }
+  },true);
+  document.addEventListener('load',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    if(img.dataset.haPhId){
+      var ph=document.getElementById(img.dataset.haPhId);
+      if(ph)ph.remove();
+      delete img.dataset.haPhId;
+      img.style.display=img.dataset.haOrigDisplay||'';
+      delete img.dataset.haOrigDisplay;
+      delete img.dataset.haOriginalSrc;
+      delete img.dataset.haRetryCount;
+    }
+  },true);
+})();
+</script>
+</body>
+</html>
