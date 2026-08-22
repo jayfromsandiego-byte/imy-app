@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>The Studio Letter · watch their page take shape · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --ink:#2C2520; --ink-soft:#5F574E;
+  --terra:#A87C5F; --terra-deep:#8A5A3C; --gold:#C9A572; --night:#1A130D;
+  --line:rgba(44,37,32,.14); --card:#FFFDF8;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Besley',serif;background:var(--cream);color:var(--ink);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow:hidden}
+em{font-style:italic;color:var(--terra)}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;color:var(--ink)}
+img,video{display:block}
+
+/* ═══════════ layout ═══════════ */
+.app{display:flex;height:100dvh;width:100%}
+.studio{flex:1.25;min-width:0;background:var(--cream-deep);position:relative;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.letter{flex:1;min-width:0;max-width:520px;background:var(--cream);display:flex;flex-direction:column;position:relative}
+
+.sbar{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid var(--line);background:var(--cream)}
+.sbar .mark{width:24px;height:28px;flex:0 0 auto}
+.sbar .wm{font-size:15px;font-weight:600}
+.sbar .wm .miss{font-style:italic;color:var(--terra);font-weight:400}
+.sbar .tag{margin-left:auto;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep)}
+.sbar .live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--terra);margin-right:6px;animation:breathe 2.6s ease-in-out infinite;vertical-align:1px}
+@keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+
+.canvas{flex:1;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;padding:24px 24px 90px}
+@media (prefers-reduced-motion:reduce){.canvas{scroll-behavior:auto}}
+.page{max-width:700px;margin:0 auto;background:var(--cream);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(44,37,32,.10)}
+
+/* regions + highlight */
+.region{position:relative;transition:box-shadow .45s ease, background .45s ease}
+.region .rtag{position:absolute;top:10px;left:12px;z-index:6;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;background:var(--terra);color:var(--cream);padding:5px 11px;border-radius:100px;opacity:0;transform:translateY(-4px);transition:opacity .4s ease,transform .4s ease;pointer-events:none;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+.region.lit{box-shadow:inset 0 0 0 2px var(--gold), 0 0 0 4px rgba(201,165,114,.22);background:rgba(201,165,114,.05)}
+.region.lit .rtag{opacity:1;transform:translateY(0)}
+.region:hover{cursor:pointer}
+.region:hover::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(201,165,114,.5);border-radius:inherit;pointer-events:none;z-index:5}
+
+/* ── cover ── */
+.cover{position:relative;height:200px;overflow:hidden;background:linear-gradient(160deg,#EAE0CC,var(--cream-deep) 55%,#EFE6D4)}
+.cover .cbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.cover .cgrade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,12,8,.16),transparent 42%,rgba(16,12,8,.06))}
+.cover .cempty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(138,90,60,.55)}
+.cseam{position:relative;height:0}
+.cface{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);z-index:4;width:124px;height:124px;border:4px solid #fff;box-shadow:0 22px 46px -16px rgba(16,12,8,.5);overflow:hidden;background:#fff}
+.cface img{width:100%;height:100%;object-fit:cover;object-position:center 24%}
+.cface .fempty{width:100%;height:100%;background:var(--cream-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--terra)}
+.cface .fempty .fl{font-size:20px}
+.cface .fempty .ft{font-family:'Work Sans',sans-serif;font-weight:600;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep)}
+.cbed{background:var(--cream);text-align:center;padding:78px 18px 24px;border-bottom:1px solid var(--line)}
+.cbed h1{font-size:clamp(24px,2.8vw,34px);font-weight:800;line-height:1.08;overflow-wrap:break-word}
+.cbed h1 em{font-style:italic;color:var(--terra)}
+.cbed .dates{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-top:8px}
+.cbed .qt{font-style:italic;font-size:15.5px;line-height:1.6;color:var(--ink-soft);max-width:440px;margin:12px auto 0}
+.cbed .mvisits{display:flex;align-items:baseline;justify-content:center;gap:6px;margin-top:13px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.cbed .mvisits span{color:var(--terra);font-size:12px}
+.cbed .mvisits b{font-family:'Besley',serif;font-size:15px;font-weight:800;color:var(--ink);letter-spacing:0}
+
+/* ── ribbon ── */
+.ribbon{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:rgba(250,245,236,.97);border-bottom:1px solid var(--line);scrollbar-width:none}
+.ribbon::-webkit-scrollbar{display:none}
+.ribbon .tab{flex:0 0 auto;font-weight:700;font-size:13px;padding:9px 16px;border-radius:11px;border:1.5px solid rgba(138,90,60,.45);background:#fff;color:var(--ink);box-shadow:0 2px 0 rgba(138,90,60,.28)}
+.ribbon .tab.on{background:var(--night);color:var(--cream);border-color:var(--night);box-shadow:none}
+
+/* rooms */
+.room{padding:24px 22px;border-bottom:1px solid var(--line)}
+.kick{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep)}
+.rh{font-size:clamp(19px,2vw,24px);font-weight:800;line-height:1.15;margin:2px 0 4px}
+.rsub{font-size:13.5px;color:var(--ink-soft);font-style:italic;margin-bottom:14px}
+.placeholder{border:1.5px dashed rgba(138,90,60,.4);border-radius:12px;padding:16px;text-align:center;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:rgba(138,90,60,.55);background:#fff}
+
+/* moments stage */
+.stagecard{position:relative;border-radius:15px;overflow:hidden;background:#1c1712;min-height:150px;display:flex;align-items:flex-end}
+.stagecard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.92}
+.stagecard .scap{position:relative;z-index:2;width:100%;padding:44px 15px 12px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.85));color:#FBF3E4;text-align:left}
+.stagecard .tk{font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold)}
+.stagecard .tt{font-weight:800;font-size:16.5px;line-height:1.25;margin-top:2px}
+.mdots{display:flex;justify-content:center;align-items:center;gap:5px;margin-top:12px}
+.mdots i{width:7px;height:7px;border-radius:100px;background:rgba(138,90,60,.3)}
+.mdots i.on{width:20px;background:var(--terra)}
+
+.qcall{position:relative;background:#fff;border:1.5px solid rgba(138,90,60,.35);border-radius:18px;padding:22px 22px 16px;text-align:center;box-shadow:0 16px 34px -20px rgba(44,37,32,.35);margin-top:18px}
+.qcall .qmark{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:var(--terra);color:#FBF6ED;font-size:20px;line-height:36px;font-family:'Besley',serif}
+.qcall .qtext{font-style:italic;font-size:15px;line-height:1.6;color:var(--ink)}
+.qcall .qwho{margin-top:8px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep)}
+
+.chips2{display:flex;gap:8px;flex-wrap:wrap}
+.chip2{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-weight:700;font-size:14px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:100px;padding:8px 16px;color:var(--ink);animation:bloomin .5s ease}
+@keyframes bloomin{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* who she really was */
+.storytext{font-size:15px;line-height:1.75;color:var(--ink)}
+.storytext .caret{display:inline-block;width:2px;height:1em;background:var(--terra);vertical-align:-2px;margin-left:1px;animation:blink 1.1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.dimtext{font-style:italic;color:var(--ink-soft)}
+
+/* ── chapters · her life in chapters, each with a cover ── */
+.chwrap{display:grid;gap:12px;margin-top:14px}
+.chcard{display:flex;gap:14px;background:#fff;border:1.5px solid rgba(44,37,32,.16);border-radius:14px;overflow:hidden;box-shadow:0 8px 20px -14px rgba(44,37,32,.4);animation:bloomin .5s ease}
+.chcard .chcover{width:96px;min-height:86px;flex:none;background:var(--cream-deep);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;color:rgba(138,90,60,.5);font-size:18px}
+.chcard .chcover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.chcard .chbody{padding:12px 14px 12px 0;flex:1;min-width:0}
+.chcard .yr{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep)}
+.chcard .cht{font-weight:800;font-size:15.5px;line-height:1.25;margin-top:2px}
+.chcard .chn{font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+.chcard .chphotos{display:flex;gap:4px;margin-top:8px}
+.chcard .chphotos img{width:30px;height:30px;border-radius:6px;object-fit:cover;border:1px solid var(--line)}
+
+/* ── tapes ── */
+.tapegrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tape{position:relative;border-radius:12px;overflow:hidden;background:#1c1712;aspect-ratio:16/10;display:flex;align-items:flex-end;animation:bloomin .5s ease}
+.tape video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
+.tape .tcap{position:relative;z-index:2;width:100%;padding:30px 12px 9px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.85));color:#FBF3E4}
+.tape .tname{font-weight:800;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tape .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:rgba(250,245,236,.92);color:var(--night);display:flex;align-items:center;justify-content:center;font-size:15px;z-index:2;padding-left:3px}
+
+/* family tree */
+.treebox{background:#fff;border:1.5px solid rgba(44,37,32,.14);border-radius:14px;padding:20px 12px;overflow-x:auto}
+.trow{display:flex;justify-content:center;gap:12px;position:relative;flex-wrap:wrap}
+.trow + .trow{margin-top:26px}
+.trow + .trow::before{content:"";position:absolute;left:50%;top:-26px;height:26px;width:1.5px;background:rgba(138,90,60,.5);transform:translateX(-50%)}
+.tcard{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid rgba(44,37,32,.2);border-radius:8px;padding:8px 12px 8px 8px;min-height:58px;box-shadow:0 6px 16px -10px rgba(44,37,32,.35);text-align:left;animation:bloomin .5s ease}
+.tcard .tp{width:44px;height:44px;flex:none;border-radius:6px;background:var(--cream-deep);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--terra-deep);overflow:hidden}
+.tcard .tp img{width:100%;height:100%;object-fit:cover}
+.tcard .tn{font-weight:800;font-size:13.5px;line-height:1.15}
+.tcard .ty{font-family:'Work Sans',sans-serif;font-weight:600;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+.tcard .tr{font-size:11.5px;font-style:italic;color:var(--terra-deep)}
+.tcard.me{border-color:var(--terra);box-shadow:0 10px 22px -12px rgba(138,90,60,.55)}
+.treeopen{display:none;margin-top:14px;align-items:center;gap:10px;background:var(--cream);border:1.5px dashed rgba(138,90,60,.45);border-radius:12px;padding:10px 14px}
+.treeopen .to1{font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.treeopen .to2{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;color:var(--ink);word-break:break-all}
+
+/* photos */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pgrid .cell{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#fff;border:1px solid var(--line);animation:bloomin .5s ease}
+.pgrid .cell img{width:100%;height:100%;object-fit:cover}
+.pgrid .cell.ghost{border:1.5px dashed rgba(138,90,60,.35);background:var(--cream);display:flex;align-items:center;justify-content:center;color:rgba(138,90,60,.4);font-size:16px}
+
+/* service */
+.svcc{background:#fff;border:1.5px solid rgba(138,90,60,.35);border-radius:18px;padding:22px;text-align:center;box-shadow:0 16px 34px -20px rgba(44,37,32,.35)}
+.svcc .kick{margin-bottom:8px}
+.svcc .when{font-size:17px;font-weight:800}
+.svcc .where{margin-top:5px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep)}
+.svcc .snote{margin-top:10px;font-size:13.5px;font-style:italic;color:var(--ink-soft)}
+
+.fabrow{display:flex;justify-content:flex-end;padding:0 22px 18px}
+.fab2{display:inline-flex;align-items:center;gap:10px;background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:13px 20px;font-size:14px;font-weight:800;box-shadow:0 18px 38px -14px rgba(26,19,13,.65)}
+.fab2 span{font-family:'Work Sans',sans-serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:400}
+
+.pfoot{padding:18px 22px 24px;text-align:center}
+.pfoot .addr{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.08em;color:var(--terra-deep);word-break:break-all}
+.pfoot .made{margin-top:8px;font-size:12px;font-style:italic;color:var(--ink-soft)}
+
+/* ═══════════ the letter ═══════════ */
+.lhead{padding:15px 26px 12px;border-bottom:1px solid var(--line)}
+.lhead .chapter{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-deep)}
+.garland{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.gd{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(138,90,60,.4);background:transparent;transition:all .4s ease}
+.gd.done{background:var(--terra);border-color:var(--terra);box-shadow:0 0 0 2.5px rgba(168,124,95,.18)}
+.gd.now{border-color:var(--gold);background:var(--gold);box-shadow:0 0 0 2.5px rgba(201,165,114,.3)}
+.lbody{flex:1;overflow-y:auto;padding:32px 30px 140px;position:relative}
+.step{display:none;animation:fadein .5s ease}
+.step.on{display:block}
+@keyframes fadein{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+.step h1{font-size:clamp(24px,2.4vw,30px);font-weight:800;line-height:1.22;letter-spacing:-.01em}
+.step .sub{margin-top:10px;font-size:15px;line-height:1.6;color:var(--ink-soft);font-style:italic}
+.whisper{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);background:#fff;border:1.5px solid rgba(138,90,60,.3);padding:6px 12px;border-radius:100px}
+.whisper .eye{width:10px;height:10px;border-radius:50%;background:var(--gold);animation:breathe 2.6s ease-in-out infinite}
+.fields{margin-top:26px;display:grid;gap:14px}
+.fld input[type=text],.fld input[type=email],.fld textarea,.fld select{width:100%;font-size:19px;padding:15px 16px;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;background:#fff;transition:border-color .3s;box-shadow:0 2px 0 rgba(138,90,60,.18)}
+.fld textarea{min-height:130px;line-height:1.6;resize:vertical}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--terra-deep);box-shadow:0 0 0 3px rgba(168,124,95,.18)}
+.fld label{display:block;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep);margin-bottom:7px}
+.d3{display:grid;grid-template-columns:1.3fr .8fr 1fr;gap:8px}
+.d3 select,.d3 input{width:100%;font-size:17px;padding:13px 12px;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;background:#fff;box-shadow:0 2px 0 rgba(138,90,60,.18)}
+.d3 select:focus,.d3 input:focus{outline:none;border-color:var(--terra-deep);box-shadow:0 0 0 3px rgba(168,124,95,.18)}
+.quietadd{background:none;border:none;font-size:14.5px;font-style:italic;color:var(--terra-deep);text-decoration:underline;text-underline-offset:3px;padding:4px 0;text-align:left}
+.chiprow{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+.chip{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-weight:700;font-size:16px;padding:11px 19px;border-radius:100px;border:1.5px solid rgba(138,90,60,.4);background:#fff;transition:all .2s;min-height:46px;box-shadow:0 2px 0 rgba(138,90,60,.18)}
+.chip.on{background:var(--night);color:var(--cream);border-color:var(--night);box-shadow:none}
+.bigopts{display:grid;gap:12px;margin-top:24px}
+.bigopt{display:flex;align-items:center;gap:14px;text-align:left;background:#fff;border:1.5px solid rgba(138,90,60,.35);border-radius:14px;padding:17px 18px;transition:all .2s;min-height:60px;box-shadow:0 2px 0 rgba(138,90,60,.18)}
+.bigopt .bo1{font-size:18px;font-weight:800}
+.bigopt .bo2{font-family:'Work Sans',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--terra-deep);margin-top:3px}
+.bigopt.on{border-color:var(--terra-deep);background:rgba(168,124,95,.07);box-shadow:0 0 0 3px rgba(168,124,95,.15)}
+.bigopt .ring{width:22px;height:22px;border-radius:50%;border:2px solid rgba(138,90,60,.4);flex:0 0 auto;position:relative}
+.bigopt.on .ring{border-color:var(--terra-deep)}
+.bigopt.on .ring::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--terra-deep)}
+.drop2{margin-top:26px;border:2px dashed rgba(138,90,60,.45);border-radius:16px;background:#fff;padding:32px 20px;text-align:center;transition:all .25s;cursor:pointer}
+.drop2.hover{background:var(--cream-deep);border-color:var(--gold)}
+.drop2 .dbig{font-size:17px;font-weight:800}
+.drop2 .dsm{font-size:13.5px;font-style:italic;color:var(--ink-soft);margin-top:6px}
+.drop2 .thumb{width:96px;height:96px;margin:0 auto 12px;border:4px solid #fff;box-shadow:0 14px 30px -12px rgba(16,12,8,.45);overflow:hidden;background:var(--cream-deep)}
+.drop2 .thumb img{width:100%;height:100%;object-fit:cover}
+.addlist{margin-top:8px;display:grid;gap:8px}
+.addedrow{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid rgba(138,90,60,.3);border-radius:10px;padding:10px 14px;font-size:15px}
+.addedrow .yr2{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;color:var(--terra-deep);letter-spacing:.1em;flex:0 0 auto}
+.addedrow .rm{margin-left:auto;background:none;border:none;color:var(--ink-soft);font-size:16px;padding:4px;flex:none}
+.addedrow .covermini{width:34px;height:34px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex:none}
+.tworow{display:grid;grid-template-columns:1fr auto;gap:10px}
+.tworow-3{display:grid;grid-template-columns:2fr .9fr;gap:10px}
+.inp2{font-size:17px;padding:14px 16px;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;background:#fff;box-shadow:0 2px 0 rgba(138,90,60,.18);width:100%}
+.inp2:focus{outline:none;border-color:var(--terra-deep);box-shadow:0 0 0 3px rgba(168,124,95,.18)}
+.addbtn{border:1.5px solid rgba(138,90,60,.45);background:#fff;color:var(--terra-deep);font-size:15px;border-radius:12px;padding:0 18px;min-height:52px;font-weight:800;box-shadow:0 2px 0 rgba(138,90,60,.28)}
+.addbtn.wide{width:100%;min-height:54px;background:var(--cream-deep)}
+/* chapter builder thumbnails · tap one to crown it the cover */
+.thumbrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.thumbrow .th{position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;border:2px solid transparent;cursor:pointer;padding:0;background:var(--cream-deep)}
+.thumbrow .th img{width:100%;height:100%;object-fit:cover}
+.thumbrow .th.cover{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,165,114,.35)}
+.thumbrow .th.cover::after{content:"cover";position:absolute;left:0;right:0;bottom:0;background:var(--gold);color:var(--night);font-family:'Work Sans',sans-serif;font-weight:600;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 0;text-align:center}
+.coverhint{font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep);margin-top:6px}
+/* ── chapter editor · a chapter holds its moments, like the letter ── */
+.chapcard{background:#fff;border:1.5px solid rgba(138,90,60,.35);border-radius:16px;padding:16px;display:grid;gap:12px;box-shadow:0 2px 0 rgba(138,90,60,.18);position:relative}
+.chapcard .chx{position:absolute;top:12px;right:12px;background:none;border:1px solid rgba(138,90,60,.35);border-radius:6px;width:24px;height:24px;line-height:1;font-size:12px;color:var(--ink-soft)}
+.chapcard .chnamein{width:100%;font-size:19px;font-style:italic;padding:13px 15px;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;background:#fff}
+.chapcard .chnamein:focus{outline:none;border-color:var(--terra-deep);box-shadow:0 0 0 3px rgba(168,124,95,.18)}
+.momblock{background:var(--cream-deep);border-radius:12px;padding:12px 12px 12px;position:relative;display:grid;gap:9px}
+.momblock .mx{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--ink-soft);font-size:14px;padding:2px 4px}
+.mgrid{display:grid;grid-template-columns:86px 1fr;gap:8px;padding-right:22px}
+.mgrid input{font-size:16px;padding:11px 12px;border:1.5px solid rgba(138,90,60,.35);border-radius:10px;background:#fff;width:100%}
+.mgrid input:focus{outline:none;border-color:var(--terra-deep);box-shadow:0 0 0 3px rgba(168,124,95,.18)}
+.mlbl{font-family:'Work Sans',sans-serif;font-weight:600;font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-bottom:4px;display:block}
+.mphotobtn{justify-self:start;background:none;border:1.5px solid rgba(138,90,60,.55);border-radius:6px;padding:6px 10px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.addmoment{justify-self:start;background:none;border:1.5px solid rgba(138,90,60,.5);border-radius:100px;padding:11px 18px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.addchapter{width:100%;background:none;border:1.5px dashed rgba(138,90,60,.5);border-radius:14px;padding:14px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep);margin-top:2px}
+/* preview · chapters hold their moments */
+.chsec{margin-top:16px}
+.chsec .chead{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.chsec .cnum{font-family:'Work Sans',sans-serif;font-weight:600;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep);white-space:nowrap}
+.chsec .cname{font-weight:800;font-size:16.5px;line-height:1.2}
+.chsec .chmoms{display:grid;gap:10px;padding-left:12px;border-left:1.5px solid rgba(138,90,60,.35)}
+
+/* share link box */
+.linkbox{margin-top:24px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:14px;padding:16px;display:grid;gap:10px;box-shadow:0 2px 0 rgba(138,90,60,.18)}
+.linkbox .lk{font-family:'Work Sans',sans-serif;font-weight:600;font-size:13px;color:var(--ink);word-break:break-all;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+.copybtn{background:var(--night);color:var(--cream);border:none;border-radius:100px;font-size:15px;font-weight:800;min-height:48px}
+
+.lfoot{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,var(--cream) 30%);padding:18px 30px 22px;display:flex;flex-direction:column;gap:9px}
+.cont{width:100%;background:var(--night);color:var(--cream);border:none;border-radius:100px;font-size:18px;font-weight:800;min-height:58px;letter-spacing:.01em;transition:transform .15s ease, box-shadow .2s;box-shadow:0 18px 38px -14px rgba(26,19,13,.55)}
+.cont:hover{transform:translateY(-1px)}
+.cont:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.skiprow{display:flex;justify-content:space-between;align-items:center}
+.backb{background:none;border:none;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);padding:6px 2px}
+.skipb{background:none;border:none;font-size:14.5px;font-style:italic;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px;padding:6px 2px}
+.saved{position:absolute;top:72px;right:22px;z-index:20;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);background:var(--cream);padding:3px 8px;border-radius:100px;opacity:0;transition:opacity .5s;pointer-events:none}
+.saved.show{opacity:.9}
+
+.sealbox{margin-top:26px;background:#fff;border:1.5px solid rgba(138,90,60,.35);border-radius:18px;padding:26px 22px;text-align:center;box-shadow:0 16px 34px -20px rgba(44,37,32,.35)}
+.sealbox .k2{font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra-deep);margin-bottom:10px}
+.sealbox .addr2{font-family:'Work Sans',sans-serif;font-weight:600;font-size:14px;letter-spacing:.04em;color:var(--ink);word-break:break-all}
+.sealbox .note{margin-top:12px;font-size:14px;font-style:italic;color:var(--ink-soft);line-height:1.6}
+
+/* ═══════════ mobile · the page is the canvas, the letter is a bottom sheet ═══════════
+   the Shopify/Canva pattern: the thing you are building stays visible;
+   editing lives in a compact sheet pinned to the thumb zone. */
+.mhint{display:none}
+.pbar{display:none}
+@media (max-width:900px){
+  body{overflow:hidden}
+  .app{flex-direction:column;height:100dvh}
+  .studio{flex:1;min-height:0;border-right:none}
+  .sbar{padding:7px 12px}
+  .sbar .wm{font-size:12.5px}
+  .sbar .tag{font-size:8.5px}
+  .canvas{padding:10px 8px 54dvh} /* room to lift any region above the sheet */
+  .page{border-radius:14px}
+
+  /* the letter · a sheet over the page, hugging its content */
+  .letter{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:none;max-height:52dvh;display:flex;flex-direction:column;background:var(--cream);border-top:2px solid var(--gold);border-radius:20px 20px 0 0;box-shadow:0 -18px 44px rgba(44,37,32,.28)}
+
+  /* progress · pinned at the top of the sheet, big enough to trust */
+  .lhead{flex:none;display:flex;align-items:center;gap:12px;padding:12px 16px 10px;border-bottom:1px solid var(--line)}
+  .lhead .chapter{font-size:10px;letter-spacing:.13em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%;flex:none}
+  .garland{display:none}
+  .pbar{display:flex;align-items:center;gap:9px;flex:1;min-width:0;margin-left:auto}
+  .pbar .track{flex:1;height:7px;border-radius:100px;background:rgba(138,90,60,.18);overflow:hidden}
+  .pbar .track i{display:block;height:100%;width:0;background:var(--terra);border-radius:100px;transition:width .45s ease}
+  .pbar .cnt{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.08em;color:var(--terra-deep);white-space:nowrap}
+
+  /* the question · tight, no dead air */
+  .lbody{flex:1;min-height:0;overflow-y:auto;padding:12px 16px 6px}
+  .step h1{font-size:18.5px;line-height:1.3}
+  .step .sub{font-size:12.5px;margin-top:5px;line-height:1.5}
+  .whisper{display:none}
+  .fields{margin-top:12px;gap:9px}
+  .fld label{font-size:8.5px;margin-bottom:4px}
+  .fld input[type=text],.fld input[type=email],.fld select{font-size:16px;padding:11px 12px}
+  .fld textarea{font-size:16px;padding:11px 12px;min-height:88px}
+  .d3 select,.d3 input{font-size:15px;padding:10px 8px}
+  .inp2{font-size:16px;padding:11px 12px}
+  .chiprow{margin-top:12px;gap:7px}
+  .chip{font-size:14px;padding:8px 14px;min-height:44px}
+  .bigopts{margin-top:12px;gap:8px}
+  .bigopt{padding:11px 14px;min-height:48px}
+  .bigopt .bo1{font-size:15.5px}
+  .drop2{margin-top:12px;padding:18px 14px}
+  .drop2 .dbig{font-size:15px}
+  .thumbrow .th{width:52px;height:52px}
+  .addbtn{min-height:44px;font-size:14px}
+  .addbtn.wide{min-height:46px}
+  .addedrow{padding:8px 12px;font-size:14px}
+  .linkbox{margin-top:12px;padding:12px}
+  .copybtn{min-height:44px}
+  .sealbox{margin-top:12px;padding:18px 16px}
+
+  /* one thin action bar · back ‹ continue › skip · the thumb zone */
+  .lfoot{position:static;flex:none;padding:8px 12px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;background:var(--cream)}
+  .cont{grid-column:2;min-height:48px;font-size:15.5px;box-shadow:0 10px 24px -12px rgba(26,19,13,.5)}
+  .skiprow{display:contents}
+  .backb{grid-column:1;font-size:9px;padding:10px 6px}
+  .skipb{grid-column:3;font-size:12.5px;padding:10px 6px}
+  .saved{top:auto;bottom:calc(64px + env(safe-area-inset-bottom));right:14px;font-size:8.5px;z-index:60}
+
+  .cover{height:120px}
+  .cface{width:88px;height:88px;border-width:3px}
+  .cbed{padding:54px 14px 18px}
+  .cbed h1{font-size:21px}
+  .cbed .qt{font-size:13.5px}
+  .room{padding:16px 14px}
+  .rh{font-size:18px}
+  .tapegrid{grid-template-columns:1fr 1fr}
+  .chcard .chcover{width:78px}
+}
+@media (prefers-reduced-motion:reduce){
+  .chip2,.tlrow,.tcard,.pgrid .cell,.step,.chcard,.tape{animation:none}
+  .sbar .live,.whisper .eye{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ════════ STUDIO ════════ -->
+  <aside class="studio" aria-label="Their page, taking shape as you write">
+    <div class="sbar">
+      <svg class="mark" viewBox="0 0 48 56" aria-hidden="true"><path d="M4 32 C4 15 12 4 24 4 C36 4 44 15 44 32 L44 46 C44 50 41 52 37 52 L11 52 C7 52 4 50 4 46 Z" fill="#3f2c1a"/><g fill="#FAF5EC"><ellipse cx="24" cy="20.5" rx="3.4" ry="5.6" transform="rotate(-4 24 20.5)"/><ellipse cx="30.2" cy="25" rx="3.2" ry="5.3" transform="rotate(68 30.2 25)"/><ellipse cx="27.8" cy="32.3" rx="3.3" ry="5.4" transform="rotate(140 27.8 32.3)"/><ellipse cx="20.2" cy="32.3" rx="3.2" ry="5.5" transform="rotate(215 20.2 32.3)"/><ellipse cx="17.8" cy="25" rx="3.4" ry="5.2" transform="rotate(287 17.8 25)"/></g><circle cx="24" cy="26.5" r="2.6" fill="#C9A572"/></svg>
+      <div class="wm">I <span class="miss">Miss</span> You Memorial</div>
+      <div class="tag"><span class="live"></span>their page · taking shape</div>
+    </div>
+    <div class="mhint">watching it build · it moves to what you are shaping</div>
+    <div class="canvas" id="canvas">
+      <div class="page" id="page">
+
+        <!-- cover -->
+        <div class="region" id="rg-cover" data-step="0">
+          <span class="rtag" id="tag-cover">their name · at the top of the page</span>
+          <div class="cover">
+            <img class="cbg" id="pvCbg" alt="" style="display:none"/>
+            <div class="cempty" id="pvCempty">photographs you add will bloom here</div>
+            <div class="cgrade"></div>
+          </div>
+          <div class="cseam">
+            <div class="cface">
+              <img id="pvFace" alt="" style="display:none"/>
+              <div class="fempty" id="pvFaceEmpty"><div class="fl">✿</div><div class="ft">their photo</div></div>
+            </div>
+          </div>
+          <div class="cbed">
+            <h1 id="pvName">Their <em>Name</em></h1>
+            <div class="dates" id="pvDates">···· — ····</div>
+            <div class="qt" id="pvQt" style="display:none"></div>
+            <div class="mvisits"><span>♥</span> <b>1</b> person is here with them · you</div>
+          </div>
+        </div>
+
+        <!-- ribbon -->
+        <div class="ribbon" id="pvRibbon">
+          <button class="tab on">Memories</button>
+          <button class="tab"><span class="pnc">Their</span> life</button>
+          <button class="tab">Photos</button>
+          <button class="tab">Tapes</button>
+          <button class="tab">Family tree</button>
+          <button class="tab">Service</button>
+        </div>
+
+        <!-- MEMORIES -->
+        <div class="region room" id="rg-mem" data-step="11">
+          <span class="rtag">the small things · kept with the memories</span>
+          <div class="kick">Memories</div>
+          <h3 class="rh">Moments of <span class="pnposs">theirs</span></h3>
+          <div class="rsub">the wall fills as family and friends leave what they carry</div>
+          <div class="stagecard" id="pvStage" style="display:none">
+            <img id="pvStageImg" alt="" style="display:none"/>
+            <div class="scap"><div class="tk" id="pvStageK"></div><div class="tt" id="pvStageT"></div></div>
+          </div>
+          <div class="mdots" id="pvMdots" style="display:none"></div>
+          <div class="placeholder" id="pvStageEmpty">moments from their life gather here</div>
+          <div class="qcall" id="pvSongCard" style="display:none">
+            <div class="qmark">♪</div>
+            <p class="qtext" id="pvSong"></p>
+            <div class="qwho">the song that brings <span class="pno">them</span> back</div>
+          </div>
+          <div id="pvLovesWrap" style="margin-top:18px;display:none">
+            <div class="kick" style="margin-bottom:8px">What <span class="pns">they</span> loved</div>
+            <div class="chips2" id="pvLoves"></div>
+          </div>
+        </div>
+
+        <!-- HER LIFE · story + chapters -->
+        <div class="region room" id="rg-life" data-step="10">
+          <span class="rtag">their story · in your words</span>
+          <div class="kick"><span class="pnc">Their</span> life</div>
+          <h3 class="rh">Who <span class="pns">they</span> really <span class="pnwas">were</span></h3>
+          <div class="rsub">told by the people who loved <span class="pno">them</span></div>
+          <div class="storytext" id="pvStory"><span class="dimtext">Their story will rest here — a few sentences, in your own words.</span></div>
+          <div id="pvChaptersWrap" style="display:none;margin-top:20px">
+            <div class="kick" style="margin-bottom:2px">In chapters</div>
+            <h3 class="rh" style="font-size:17px"><span class="pnc">Their</span> life, chapter by chapter</h3>
+            <div class="chwrap" id="pvChapters"></div>
+          </div>
+        </div>
+
+        <!-- FAMILY TREE -->
+        <div class="region room" id="rg-tree" data-step="6">
+          <span class="rtag">their people · the tree grows from here</span>
+          <div class="kick">Free · part of every tribute</div>
+          <h3 class="rh"><span class="pnc">Their</span> family tree</h3>
+          <div class="rsub">anyone in the family can add to it, always</div>
+          <div class="treebox" id="pvTree">
+            <div class="placeholder" style="border:none;background:transparent">their people will gather here</div>
+          </div>
+          <div class="treeopen" id="pvTreeOpen">
+            <div style="flex:1"><div class="to1">the tree is open · branches connect</div><div class="to2" id="pvTreeLink"></div></div>
+            <div style="font-size:18px;color:var(--terra)">⚭</div>
+          </div>
+        </div>
+
+        <!-- PHOTOS -->
+        <div class="region room" id="rg-pho" data-step="14">
+          <span class="rtag">their photographs · the album fills</span>
+          <div class="kick"><span class="pnc">Their</span> album</div>
+          <h3 class="rh">Photographs</h3>
+          <div class="rsub">add what you have close · there is room for more later</div>
+          <div class="pgrid" id="pvPhotos">
+            <div class="cell ghost">✿</div><div class="cell ghost">✿</div><div class="cell ghost">✿</div>
+          </div>
+        </div>
+
+        <!-- TAPES -->
+        <div class="region room" id="rg-tape" data-step="15">
+          <span class="rtag">their tapes · a voice, kept moving</span>
+          <div class="kick">Tapes · part of Plus</div>
+          <h3 class="rh">The tape shelf</h3>
+          <div class="rsub">home videos, voicemails with a face, the way <span class="pns">they</span> laughed</div>
+          <div class="tapegrid" id="pvTapes" style="display:none"></div>
+          <div class="placeholder" id="pvTapesEmpty">videos rest here · kept safe either way</div>
+        </div>
+
+        <!-- SERVICE -->
+        <div class="region room" id="rg-svc" data-step="16" style="border-bottom:none">
+          <span class="rtag">the service · so no one misses it</span>
+          <div class="kick">Service</div>
+          <h3 class="rh">Join us to remember</h3>
+          <div class="rsub">service and remembrance details</div>
+          <div class="svcc" id="pvSvc" style="display:none">
+            <div class="kick">Celebration of life</div>
+            <div class="when" id="pvSvcWhen"></div>
+            <div class="where" id="pvSvcWhere"></div>
+            <div class="snote" id="pvSvcNote" style="display:none"></div>
+          </div>
+          <div class="placeholder" id="pvSvcEmpty">when plans are made, they rest here</div>
+        </div>
+
+        <div class="fabrow"><button class="fab2" type="button">＋ Leave a memory <span>a photo · a message · their voice</span></button></div>
+
+        <!-- footer -->
+        <div class="region pfoot" id="rg-foot" data-step="17">
+          <span class="rtag">their address · a permanent home</span>
+          <div class="addr" id="pvAddr">imissyoumemorial.com/…</div>
+          <div class="made">Made with love · I <em>Miss</em> You Memorial</div>
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+  <!-- ════════ THE LETTER ════════ -->
+  <main class="letter" aria-label="The letter · a few gentle questions">
+    <div class="lhead">
+      <div class="chapter" id="chapterLbl">who they were</div>
+      <div class="garland" id="garland"></div>
+      <div class="pbar" aria-hidden="true"><div class="track"><i id="pFill"></i></div><span class="cnt" id="pCnt"></span></div>
+    </div>
+    <div class="saved" id="savedChip">✓ saved · nothing is lost</div>
+    <div class="lbody" id="lbody"></div>
+    <div class="lfoot">
+      <button class="cont" id="contBtn">Continue</button>
+      <div class="skiprow">
+        <button class="backb" id="backBtn" style="visibility:hidden">← back</button>
+        <button class="skipb" id="skipBtn" style="visibility:hidden">skip</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ═══════════════ the answers ═══════════════ */
+var A={name:'',aka:'',rel:'',pron:'they',
+  bm:'',bd:'',by:'',dm:'',dd:'',dy:'',home:'',photo:'',
+  partner:null,children:[],parents:[],treeShared:false,
+  story:'',quote:'',song:'',chapters:[],loves:[],gallery:[],tapes:[],svc:null};
+
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var PRON={
+  she:{s:'she', o:'her', c:'Her', was:'was', poss:'hers', story:'her story'},
+  he:{s:'he', o:'him', c:'His', was:'was', poss:'his', story:'his story'},
+  they:{s:'they', o:'them', c:'Their', was:'were', poss:'theirs', story:'their story'}
+};
+function firstName(){return (A.name||'').trim().split(/\s+/)[0]||'them'}
+function fmtDate(m,d,y){
+  if(!y)return '····';
+  if(m){return (MONTHS[m-1]+(d?' '+d:'')+', '+y).toUpperCase()}
+  return y;
+}
+
+/* ═══════════════ the steps ═══════════════ */
+var STEPS=[
+ /* 0 */ {id:'name',ch:'who they were',rg:'rg-cover',tag:'their name · at the top of the page',
+  q:function(){return 'What was their <em>name?</em>'},
+  sub:'As it will appear at the top of their page. Take your time.',
+  render:function(el){
+    el.innerHTML='<div class="fields">'+
+    '<div class="fld"><label>Their full name</label><input type="text" id="inName" autocomplete="off" placeholder="Eleanor Margaret Hayes" value="'+esc(A.name)+'"/></div>'+
+    '<button class="quietadd" id="akaToggle">'+(A.aka?'they went by “'+esc(A.aka)+'”':'+ did they go by another name?')+'</button>'+
+    '<div class="fld" id="akaFld" style="display:'+(A.aka?'block':'none')+'"><label>The name the people who loved them used</label><input type="text" id="inAka" placeholder="Ellie" value="'+esc(A.aka)+'"/></div>'+
+    '</div>';
+    bind('inName',function(v){A.name=v;paintCover();paintTree();paintAddr()});
+    bind('inAka',function(v){A.aka=v;paintCover()});
+    document.getElementById('akaToggle').onclick=function(){var f=document.getElementById('akaFld');f.style.display='block';f.querySelector('input').focus()};
+  },
+  valid:function(){return A.name.trim().length>1}},
+
+ /* 1 */ {id:'rel',ch:'who they were',rg:'rg-cover',tag:'who they were to you · the first branch of the tree',
+  q:function(){return 'Who '+(A.name?'was '+firstName():'were they')+' <em>to you?</em>'},
+  sub:'This also plants the first branch of the family tree.',
+  render:function(el){
+    var rels=['My mother','My father','My grandmother','My grandfather','My wife','My husband','My partner','My sister','My brother','My daughter','My son','My friend'];
+    el.innerHTML='<div class="chiprow">'+rels.map(function(r){return '<button class="chip'+(A.rel===r?' on':'')+'" data-v="'+r+'">'+r+'</button>'}).join('')+'</div>';
+    el.querySelectorAll('.chip').forEach(function(c){c.onclick=function(){
+      el.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on');A.rel=c.dataset.v;
+      var g={mother:'she',grandmother:'she',wife:'she',sister:'she',daughter:'she',father:'he',grandfather:'he',husband:'he',brother:'he',son:'he'};
+      var k=c.dataset.v.replace('My ','');if(g[k])A.pron=g[k];
+      paintCover();paintPron();paintTree();markSaved();refreshCont();
+    }});
+  },
+  valid:function(){return !!A.rel}},
+
+ /* 2 */ {id:'pron',ch:'who they were',rg:'rg-cover',tag:'small words · her story, his story, their story',
+  q:function(){return 'How should '+(A.name?firstName()+'’s':'their')+' page <em>speak of them?</em>'},
+  sub:'Small words matter. Watch the page change as you choose.',
+  render:function(el){
+    var opts=[{v:'she',t:'Her story',s:'she · her'},{v:'he',t:'His story',s:'he · him'},{v:'they',t:'Their story',s:'they · them'}];
+    el.innerHTML='<div class="bigopts">'+opts.map(function(o){return '<button class="bigopt'+(A.pron===o.v?' on':'')+'" data-v="'+o.v+'"><span class="ring"></span><span><span class="bo1">'+o.t+'</span><div class="bo2">'+o.s+'</div></span></button>'}).join('')+'</div>';
+    el.querySelectorAll('.bigopt').forEach(function(b){b.onclick=function(){
+      el.querySelectorAll('.bigopt').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');A.pron=b.dataset.v;paintPron();markSaved();refreshCont();
+    }});
+  },
+  skip:'their story is right · continue',
+  valid:function(){return true}},
+
+ /* 3 */ {id:'dates',ch:'who they were',rg:'rg-cover',tag:'the dates · that held their life',
+  q:function(){return 'The dates that <em>held '+(A.name?firstName()+'’s':'their')+' life.</em>'},
+  sub:'The years alone are enough · add month and day if you know them, and the page will carry them in full.',
+  render:function(el){
+    function d3(idPrefix,m,d,y,phY){
+      return '<div class="d3">'+
+      '<select id="'+idPrefix+'m"><option value="">Month</option>'+MONTHS.map(function(mo,i){return '<option value="'+(i+1)+'"'+(m==i+1?' selected':'')+'>'+mo+'</option>'}).join('')+'</select>'+
+      '<input id="'+idPrefix+'d" inputmode="numeric" maxlength="2" placeholder="Day" value="'+esc(d)+'"/>'+
+      '<input id="'+idPrefix+'y" inputmode="numeric" maxlength="4" placeholder="'+phY+'" value="'+esc(y)+'"/></div>';
+    }
+    el.innerHTML='<div class="fields">'+
+    '<div class="fld"><label>Born</label>'+d3('inB',A.bm,A.bd,A.by,'1948')+'</div>'+
+    '<div class="fld"><label>Passed</label>'+d3('inD',A.dm,A.dd,A.dy,'2024')+'</div></div>';
+    ['inBm','inBd','inBy','inDm','inDd','inDy'].forEach(function(id){
+      var elx=document.getElementById(id);
+      elx.addEventListener(elx.tagName==='SELECT'?'change':'input',function(){
+        A.bm=document.getElementById('inBm').value;A.bd=document.getElementById('inBd').value;A.by=document.getElementById('inBy').value;
+        A.dm=document.getElementById('inDm').value;A.dd=document.getElementById('inDd').value;A.dy=document.getElementById('inDy').value;
+        paintCover();paintTree();markSaved();refreshCont();
+      });
+    });
+  },
+  valid:function(){return /^\d{4}$/.test(A.by)&&/^\d{4}$/.test(A.dy)}},
+
+ /* 4 */ {id:'home',ch:'who they were',rg:'rg-cover',tag:'home · beside the dates',
+  q:function(){return 'Where did '+(A.name?firstName():'they')+' call <em>home?</em>'},
+  sub:'The place you picture them.',
+  render:function(el){
+    el.innerHTML='<div class="fields"><div class="fld"><label>City, state</label><input type="text" id="inHome" placeholder="Half Moon Bay, CA" value="'+esc(A.home)+'"/></div></div>';
+    bind('inHome',function(v){A.home=v;paintCover()});
+  },
+  skip:'skip this',valid:function(){return true}},
+
+ /* 5 */ {id:'photo',ch:'their portrait',rg:'rg-cover',tag:'their portrait · in the white frame',
+  q:function(){return 'A photograph of <em>'+(A.name?firstName():'them')+'.</em>'},
+  sub:'It rests in the white frame at the top of the page, above their name. Choose one where they look like themselves.',
+  render:function(el){
+    el.innerHTML='<div class="drop2" id="drop"><input type="file" id="inPhoto" accept="image/*" style="display:none"/>'+
+    (A.photo?'<div class="thumb"><img src="'+A.photo+'" alt=""/></div><div class="dbig">It’s on the page.</div><div class="dsm">tap to choose a different one</div>'
+    :'<div class="dbig">Choose a photograph</div><div class="dsm">tap here · from your phone or computer</div>')+'</div>';
+    var d=document.getElementById('drop'),f=document.getElementById('inPhoto');
+    d.onclick=function(){f.click()};
+    d.ondragover=function(e){e.preventDefault();d.classList.add('hover')};
+    d.ondragleave=function(){d.classList.remove('hover')};
+    d.ondrop=function(e){e.preventDefault();d.classList.remove('hover');if(e.dataTransfer.files[0])readPhoto(e.dataTransfer.files[0])};
+    f.onchange=function(){if(f.files[0])readPhoto(f.files[0])};
+    function readPhoto(file){var r=new FileReader();r.onload=function(){A.photo=r.result;paintCover();paintTree();markSaved();refreshCont();STEPS[cur].render(el)};r.readAsDataURL(file)}
+  },
+  skip:'I’ll add one later',valid:function(){return true}},
+
+ /* 6 */ {id:'partner',ch:'their people',rg:'rg-tree',tag:'their partner · beside them on the tree',
+  q:function(){return 'Did '+(A.name?firstName():'they')+' share life <em>with someone?</em>'},
+  sub:'A husband, a wife, a partner. They stand beside them on the tree.',
+  render:function(el){
+    el.innerHTML='<div class="fields">'+
+    '<div class="fld"><label>Their name</label><input type="text" id="inPtn" placeholder="Walter Hayes" value="'+esc(A.partner?A.partner.name:'')+'"/></div>'+
+    '<div class="fld"><label>Years, if you know them (optional)</label><input type="text" id="inPtnY" placeholder="1943 — 2011" value="'+esc(A.partner?A.partner.years:'')+'"/></div></div>';
+    bind('inPtn',function(v){A.partner=v.trim()?{name:v,years:(document.getElementById('inPtnY').value||'')}:null;paintTree()});
+    bind('inPtnY',function(v){if(A.partner)A.partner.years=v;paintTree()});
+  },
+  skip:'no · continue',valid:function(){return true}},
+
+ /* 7 */ {id:'children',ch:'their people',rg:'rg-tree',tag:'the children · the tree grows downward',
+  q:function(){return (A.name?firstName()+'’s':'Their')+' <em>children.</em>'},
+  sub:'Add them one at a time. Each appears on the tree as you go.',
+  render:function(el){
+    el.innerHTML='<div class="fields"><div class="tworow">'+
+    '<input type="text" class="inp2" id="inKid" placeholder="Their child’s name"/>'+
+    '<button class="addbtn" id="addKid">Add</button></div>'+
+    '<div class="addlist" id="kidList"></div></div>';
+    function paintList(){document.getElementById('kidList').innerHTML=A.children.map(function(k,i){return '<div class="addedrow"><span style="color:var(--terra)">✿</span> '+esc(k)+' <button class="rm" data-i="'+i+'" aria-label="Remove">✕</button></div>'}).join('');
+      document.querySelectorAll('#kidList .rm').forEach(function(b){b.onclick=function(){A.children.splice(+b.dataset.i,1);paintList();paintTree()}})}
+    paintList();
+    var inp=document.getElementById('inKid');
+    function add(){if(inp.value.trim()){A.children.push(inp.value.trim());inp.value='';paintList();paintTree();markSaved()}inp.focus()}
+    document.getElementById('addKid').onclick=add;
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();add()}});
+  },
+  skip:'skip for now',valid:function(){return true}},
+
+ /* 8 */ {id:'parents',ch:'their people',rg:'rg-tree',tag:'their parents · the roots above',
+  q:function(){return (A.name?firstName()+'’s':'Their')+' <em>parents,</em> if you’d like them remembered.'},
+  sub:'The roots of the tree. Skip freely — anyone in the family can add them later.',
+  render:function(el){
+    el.innerHTML='<div class="fields">'+
+    '<div class="fld"><label>Parent</label><input type="text" id="inP1" placeholder="Margaret Ellis" value="'+esc(A.parents[0]||'')+'"/></div>'+
+    '<div class="fld"><label>Parent</label><input type="text" id="inP2" placeholder="Thomas Ellis" value="'+esc(A.parents[1]||'')+'"/></div></div>';
+    bind('inP1',function(v){A.parents[0]=v;paintTree()});
+    bind('inP2',function(v){A.parents[1]=v;paintTree()});
+  },
+  skip:'not right now · skip',valid:function(){return true}},
+
+ /* 9 */ {id:'treelink',ch:'their people',rg:'rg-tree',tag:'one tree · the whole family can grow it',
+  q:function(){return 'One tree, grown <em>together.</em>'},
+  sub:'This link lives on your dashboard too. Text it to a cousin, a sibling, an aunt — whatever they add joins this same tree. No account needed to add a branch.',
+  render:function(el){
+    el.innerHTML='<div class="linkbox">'+
+    '<div class="lk" id="shareLk">'+esc(addrText())+'/tree/join</div>'+
+    '<button class="copybtn" id="copyLk">'+(A.treeShared?'Copied ✓ · send it to family':'Copy the link')+'</button>'+
+    '</div>'+
+    '<div class="coverhint" style="margin-top:12px">every branch they add · connects to this one tree</div>';
+    document.getElementById('copyLk').onclick=function(){
+      var t=document.getElementById('shareLk').textContent;
+      try{navigator.clipboard.writeText(t)}catch(e){}
+      A.treeShared=true;this.textContent='Copied ✓ · send it to family';
+      paintTree();markSaved();
+    };
+  },
+  skip:'later · from the dashboard',valid:function(){return true}},
+
+ /* 10 */ {id:'story',ch:'their story',rg:'rg-life',tag:'their story · word by word',
+  q:function(){return 'Tell us a little of <em>'+PRON[A.pron].story+'.</em>'},
+  sub:'In your own words. A few sentences are enough — watch them settle onto the page as you write.',
+  render:function(el){
+    el.innerHTML='<div class="fields"><div class="fld"><textarea id="inStory" placeholder="She grew up two blocks from the ocean, the eldest of four…">'+esc(A.story)+'</textarea></div></div>';
+    bind('inStory',function(v){A.story=v;paintStory(true)});
+  },
+  valid:function(){return A.story.trim().length>10}},
+
+ /* 11 */ {id:'small',ch:'their story',rg:'rg-cover',tag:'their words · beneath their name',
+  q:function(){return 'The small things that were <em>'+PRON[A.pron].poss+'.</em>'},
+  sub:'Something they always said rests right beneath their name. A song joins the memories. Both are optional.',
+  render:function(el){
+    el.innerHTML='<div class="fields">'+
+    '<div class="fld"><label>Something they always said</label><input type="text" id="inQuote" placeholder="“Put the kettle on, sit in the garden, and notice something lovely.”" value="'+esc(A.quote)+'"/></div>'+
+    '<div class="fld"><label>A song that brings them back</label><input type="text" id="inSong" placeholder="Moon River · Andy Williams" value="'+esc(A.song)+'"/></div></div>';
+    bind('inQuote',function(v){A.quote=v;paintSmall()});
+    bind('inSong',function(v){A.song=v;paintSmall()});
+    document.getElementById('inQuote').addEventListener('focus',function(){focusRegion('rg-cover','their words · beneath their name')});
+    document.getElementById('inSong').addEventListener('focus',function(){focusRegion('rg-mem','their song · kept with the memories')});
+  },
+  skip:'nothing right now · skip',valid:function(){return true}},
+
+ /* 12 */ {id:'loves',ch:'what they loved',rg:'rg-mem',tag:'what they loved · kept with the memories',
+  q:function(){return 'What did '+(A.name?firstName():'they')+' really <em>love?</em>'},
+  sub:'Tap what fits, or add your own.',
+  render:function(el){
+    var opts=['The garden','Cooking & Sunday dinners','Music','Faith','The outdoors','Fishing','Cars & driving','Golf','The Dodgers','Crossword puzzles'];
+    el.innerHTML='<div class="chiprow" id="loveChips">'+opts.map(function(o){return '<button class="chip'+(A.loves.indexOf(o)>-1?' on':'')+'" data-v="'+o+'">'+o+'</button>'}).join('')+'</div>'+
+    '<div class="tworow" style="margin-top:14px"><input type="text" class="inp2" id="inLove" placeholder="Something else they loved"/><button class="addbtn" id="addLove">Add</button></div>';
+    el.querySelectorAll('#loveChips .chip').forEach(function(c){c.onclick=function(){
+      var v=c.dataset.v,i=A.loves.indexOf(v);
+      if(i>-1){A.loves.splice(i,1);c.classList.remove('on')}else{A.loves.push(v);c.classList.add('on')}
+      paintLoves();markSaved();
+    }});
+    var li=document.getElementById('inLove');
+    function add(){if(li.value.trim()){A.loves.push(li.value.trim());li.value='';paintLoves();markSaved()}li.focus()}
+    document.getElementById('addLove').onclick=add;
+    li.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();add()}});
+  },
+  skip:'skip for now',valid:function(){return true}},
+
+ /* 13 */ {id:'chapters',ch:'their life, in chapters',rg:'rg-life',tag:'their chapters · each holding its moments',
+  q:function(){return (A.name?firstName()+'’s':'Their')+' life, <em>in chapters.</em>'},
+  sub:'Name a chapter, then lay its moments inside — a year, what happened, a photograph for each. Watch the page arrange itself.',
+  render:function(el){
+    if(!A.chapters.length)A.chapters.push({name:'',moments:[{yr:'',title:'',photos:[],cover:0}]});
+    el.innerHTML='<div class="fields" id="chapEd"></div>';
+    var ed=document.getElementById('chapEd');
+    function momBlock(ci,mi,m){
+      return '<div class="momblock" data-c="'+ci+'" data-m="'+mi+'">'+
+      '<button type="button" class="mx" data-c="'+ci+'" data-m="'+mi+'" aria-label="Remove this moment">✕</button>'+
+      '<div class="mgrid">'+
+      '<div><span class="mlbl">Year</span><input type="text" class="m-yr" inputmode="numeric" maxlength="4" placeholder="1968" value="'+esc(m.yr)+'"/></div>'+
+      '<div><span class="mlbl">What happened</span><input type="text" class="m-tt" placeholder="Married the love of her life" value="'+esc(m.title)+'"/></div>'+
+      '</div>'+
+      '<button type="button" class="mphotobtn" data-c="'+ci+'" data-m="'+mi+'">+ a photograph for this moment</button>'+
+      '<input type="file" class="m-file" accept="image/*" multiple style="display:none"/>'+
+      (m.photos.length?'<div class="thumbrow">'+m.photos.map(function(p,pi){return '<button type="button" class="th'+(pi===m.cover?' cover':'')+'" data-p="'+pi+'"><img src="'+p+'" alt=""/></button>'}).join('')+'</div><div class="coverhint">tap a photograph · it leads this moment</div>':'')+
+      '</div>';
+    }
+    function redraw(){
+      ed.innerHTML=A.chapters.map(function(c,ci){
+        return '<div class="chapcard" data-c="'+ci+'">'+
+        '<button type="button" class="chx" data-c="'+ci+'" aria-label="Remove this chapter">✕</button>'+
+        '<div><span class="mlbl">A chapter of their life</span>'+
+        '<input type="text" class="chnamein" placeholder="Her early years · the family years · the garden" value="'+esc(c.name)+'"/></div>'+
+        c.moments.map(function(m,mi){return momBlock(ci,mi,m)}).join('')+
+        '<button type="button" class="addmoment" data-c="'+ci+'">+ add a moment to this chapter</button>'+
+        '</div>';
+      }).join('')+'<button type="button" class="addchapter" id="addChap">+ another chapter of their life</button>';
+      wire();
+    }
+    function wire(){
+      ed.querySelectorAll('.chapcard').forEach(function(card){
+        var ci=+card.dataset.c;
+        card.querySelector('.chnamein').addEventListener('input',function(){A.chapters[ci].name=this.value;paintChapters();markSaved()});
+      });
+      ed.querySelectorAll('.momblock').forEach(function(blk){
+        var ci=+blk.dataset.c,mi=+blk.dataset.m,m=A.chapters[ci].moments[mi];
+        blk.querySelector('.m-yr').addEventListener('input',function(){m.yr=this.value;paintChapters();markSaved()});
+        blk.querySelector('.m-tt').addEventListener('input',function(){m.title=this.value;paintChapters();markSaved()});
+        var fp=blk.querySelector('.m-file');
+        blk.querySelector('.mphotobtn').onclick=function(){fp.click()};
+        fp.onchange=function(){
+          var files=Array.prototype.slice.call(fp.files,0,6),left=files.length;
+          if(!left)return;
+          files.forEach(function(file){var r=new FileReader();r.onload=function(){m.photos.push(r.result);left--;if(!left){redraw();paintChapters();markSaved()}};r.readAsDataURL(file)});
+        };
+        blk.querySelectorAll('.th').forEach(function(t){t.onclick=function(){m.cover=+t.dataset.p;redraw();paintChapters()}});
+        blk.querySelector('.mx').onclick=function(){A.chapters[ci].moments.splice(mi,1);if(!A.chapters[ci].moments.length)A.chapters[ci].moments.push({yr:'',title:'',photos:[],cover:0});redraw();paintChapters();markSaved()};
+      });
+      ed.querySelectorAll('.addmoment').forEach(function(b){b.onclick=function(){
+        A.chapters[+b.dataset.c].moments.push({yr:'',title:'',photos:[],cover:0});redraw();paintChapters();
+        var last=ed.querySelectorAll('.chapcard')[+b.dataset.c].querySelectorAll('.m-yr');
+        if(last.length)last[last.length-1].focus();
+      }});
+      ed.querySelectorAll('.chx').forEach(function(b){b.onclick=function(){
+        A.chapters.splice(+b.dataset.c,1);if(!A.chapters.length)A.chapters.push({name:'',moments:[{yr:'',title:'',photos:[],cover:0}]});redraw();paintChapters();markSaved();
+      }});
+      document.getElementById('addChap').onclick=function(){
+        A.chapters.push({name:'',moments:[{yr:'',title:'',photos:[],cover:0}]});redraw();paintChapters();
+        var names=ed.querySelectorAll('.chnamein');names[names.length-1].focus();
+      };
+    }
+    redraw();
+  },
+  skip:'skip for now',valid:function(){return true}},
+
+ /* 14 */ {id:'gallery',ch:'their page',rg:'rg-pho',tag:'photographs · the album fills as you add',
+  q:function(){return 'Photos, so the page <em>feels like '+(A.name?firstName():'them')+'.</em>'},
+  sub:'Add what you have close. The first one becomes the top of their page.',
+  render:function(el){
+    el.innerHTML='<div class="drop2" id="gdrop"><input type="file" id="inGal" accept="image/*" multiple style="display:none"/>'+
+    '<div class="dbig">'+(A.gallery.length?A.gallery.length+' photograph'+(A.gallery.length>1?'s':'')+' on the page':'Choose photographs')+'</div>'+
+    '<div class="dsm">tap here · choose as many as you like</div></div>';
+    var d=document.getElementById('gdrop'),f=document.getElementById('inGal');
+    d.onclick=function(){f.click()};
+    d.ondragover=function(e){e.preventDefault();d.classList.add('hover')};
+    d.ondragleave=function(){d.classList.remove('hover')};
+    d.ondrop=function(e){e.preventDefault();d.classList.remove('hover');handle(e.dataTransfer.files)};
+    f.onchange=function(){handle(f.files)};
+    function handle(files){Array.prototype.slice.call(files,0,12).forEach(function(file){
+      var r=new FileReader();r.onload=function(){A.gallery.push(r.result);paintGallery();paintCover();markSaved();STEPS[cur].render(el)};r.readAsDataURL(file)})}
+  },
+  skip:'I’ll add them later',valid:function(){return true}},
+
+ /* 15 */ {id:'tapes',ch:'their page',rg:'rg-tape',tag:'their tapes · a voice, kept moving',
+  q:function(){return 'Videos, so <em>'+(A.name?firstName():'they')+'</em> can still move and laugh.'},
+  sub:'Home videos, a toast at a wedding, a voicemail with a face. Part of Plus · kept safe either way.',
+  render:function(el){
+    el.innerHTML='<div class="drop2" id="vdrop"><input type="file" id="inVid" accept="video/*" multiple style="display:none"/>'+
+    '<div class="dbig">'+(A.tapes.length?A.tapes.length+' tape'+(A.tapes.length>1?'s':'')+' on the shelf':'Choose videos')+'</div>'+
+    '<div class="dsm">tap here · phone videos are perfect</div></div>'+
+    '<div class="addlist" id="vList"></div>';
+    function paintList(){document.getElementById('vList').innerHTML=A.tapes.map(function(t,i){return '<div class="addedrow"><span style="color:var(--terra)">▸</span> '+esc(t.name)+' <button class="rm" data-i="'+i+'" aria-label="Remove">✕</button></div>'}).join('');
+      document.querySelectorAll('#vList .rm').forEach(function(b){b.onclick=function(){A.tapes.splice(+b.dataset.i,1);paintList();paintTapes()}})}
+    paintList();
+    var d=document.getElementById('vdrop'),f=document.getElementById('inVid');
+    d.onclick=function(){f.click()};
+    f.onchange=function(){Array.prototype.slice.call(f.files,0,6).forEach(function(file){
+      A.tapes.push({url:URL.createObjectURL(file),name:file.name.replace(/\.[^.]+$/,'')});
+    });paintList();paintTapes();markSaved();STEPS[cur].render(el)};
+  },
+  skip:'not right now · skip',valid:function(){return true}},
+
+ /* 16 */ {id:'service',ch:'their page',rg:'rg-svc',tag:'the service · so no one misses it',
+  q:function(){return 'Is there a <em>service planned?</em>'},
+  sub:'If plans are still forming, skip this. It can be added anytime.',
+  render:function(el){
+    var s=A.svc||{};
+    el.innerHTML='<div class="fields">'+
+    '<div class="fld"><label>When</label><input type="text" id="inSvcW" placeholder="Saturday, September 12 · 11 am" value="'+esc(s.when||'')+'"/></div>'+
+    '<div class="fld"><label>Where</label><input type="text" id="inSvcP" placeholder="Our Lady of the Pillar, Half Moon Bay" value="'+esc(s.where||'')+'"/></div>'+
+    '<div class="fld"><label>Anything guests should know (optional)</label><input type="text" id="inSvcN" placeholder="Wear her favorite color · reception in the garden after" value="'+esc(s.note||'')+'"/></div></div>';
+    bind('inSvcW',function(v){A.svc=A.svc||{};A.svc.when=v;paintSvc()});
+    bind('inSvcP',function(v){A.svc=A.svc||{};A.svc.where=v;paintSvc()});
+    bind('inSvcN',function(v){A.svc=A.svc||{};A.svc.note=v;paintSvc()});
+  },
+  skip:'not yet · skip',valid:function(){return true}},
+
+ /* 17 */ {id:'final',ch:'their page',rg:'rg-foot',tag:'their address · a permanent home',
+  q:function(){return 'Everything is <em>ready.</em>'},
+  sub:'One quiet look at the page beside you. Their page is made, and nothing you gave is lost.',
+  render:function(el){
+    el.innerHTML='<div class="sealbox"><div class="k2">where the page lives</div>'+
+    '<div class="addr2">'+esc(addrText())+'</div>'+
+    '<div class="note">Every tribute stays online. We never charge a family to keep a memory alive.</div></div>';
+  },
+  cont:'Keep their page',valid:function(){return true}}
+];
+
+/* ═══════════════ helpers ═══════════════ */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+var saveT=null;
+function markSaved(){var c=document.getElementById('savedChip');c.classList.add('show');clearTimeout(saveT);saveT=setTimeout(function(){c.classList.remove('show')},1800)}
+function bind(id,fn){var el=document.getElementById(id);if(!el)return;el.addEventListener('input',function(){fn(el.value);markSaved();refreshCont()})}
+
+/* ═══════════════ painting the page ═══════════════ */
+function splitName(n){
+  var parts=n.trim().split(/\s+/);
+  if(parts.length<2)return esc(n.trim());
+  var last=parts.pop();
+  return esc(parts.join(' '))+' <em>'+esc(last)+'</em>';
+}
+function paintCover(){
+  var h1=document.getElementById('pvName');
+  if(A.name.trim()){h1.innerHTML=splitName(A.name)+(A.aka.trim()?' <span style="font-weight:400;font-style:italic;font-size:.55em;color:var(--ink-soft)">· “'+esc(A.aka.trim())+'”</span>':'')}
+  else{h1.innerHTML='Their <em>Name</em>'}
+  var d=fmtDate(+A.bm,A.bd,A.by)+' — '+fmtDate(+A.dm,A.dd,A.dy);
+  if(A.home.trim())d+=' · '+A.home.trim().toUpperCase();
+  document.getElementById('pvDates').textContent=d;
+  var qt=document.getElementById('pvQt');
+  if(A.quote.trim()){qt.style.display='block';qt.textContent='“'+A.quote.trim().replace(/^[“"]|[”"]$/g,'')+'”'}else{qt.style.display='none'}
+  var face=document.getElementById('pvFace'),fe=document.getElementById('pvFaceEmpty');
+  if(A.photo){face.src=A.photo;face.style.display='block';fe.style.display='none'}
+  else{face.style.display='none';fe.style.display='flex'}
+  var bg=document.getElementById('pvCbg'),ce=document.getElementById('pvCempty');
+  if(A.gallery.length){bg.src=A.gallery[0];bg.style.display='block';bg.style.filter='';ce.style.display='none'}
+  else if(A.photo){bg.src=A.photo;bg.style.display='block';bg.style.filter='blur(14px) brightness(1.05)';ce.style.display='none'}
+  else{bg.style.display='none';ce.style.display='flex'}
+}
+function paintPron(){
+  var p=PRON[A.pron];
+  document.querySelectorAll('.pnc').forEach(function(e){e.textContent=p.c});
+  document.querySelectorAll('.pns').forEach(function(e){e.textContent=p.s});
+  document.querySelectorAll('.pno').forEach(function(e){e.textContent=p.o});
+  document.querySelectorAll('.pnwas').forEach(function(e){e.textContent=p.was});
+  document.querySelectorAll('.pnposs').forEach(function(e){e.textContent=p.poss});
+}
+function paintStory(typing){
+  var el=document.getElementById('pvStory');
+  if(A.story.trim()){el.innerHTML=esc(A.story)+(typing?'<span class="caret"></span>':'')}
+  else{el.innerHTML='<span class="dimtext">Their story will rest here — a few sentences, in your own words.</span>'}
+}
+function paintSmall(){
+  paintCover();
+  var sc=document.getElementById('pvSongCard');
+  if(A.song.trim()){sc.style.display='block';document.getElementById('pvSong').textContent=A.song.trim()}else sc.style.display='none';
+  paintPron();
+}
+function paintLoves(){
+  var w=document.getElementById('pvLovesWrap'),el=document.getElementById('pvLoves');
+  if(!A.loves.length){w.style.display='none';return}
+  w.style.display='block';
+  el.innerHTML=A.loves.map(function(l){return '<span class="chip2">'+esc(l)+'</span>'}).join('');
+  paintPron();
+}
+var NUMS=['one','two','three','four','five','six','seven','eight','nine','ten'];
+function realChapters(){
+  /* only what has substance reaches the page */
+  return A.chapters.map(function(c){
+    return {name:(c.name||'').trim(),moments:c.moments.filter(function(m){return (m.title||'').trim()||(m.yr||'').trim()||m.photos.length})};
+  }).filter(function(c){return c.name||c.moments.length});
+}
+function paintChapters(){
+  var w=document.getElementById('pvChaptersWrap'),el=document.getElementById('pvChapters');
+  var stage=document.getElementById('pvStage'),se=document.getElementById('pvStageEmpty'),dots=document.getElementById('pvMdots');
+  var chs=realChapters();
+  if(!chs.length){
+    w.style.display='none';el.innerHTML='';
+    stage.style.display='none';dots.style.display='none';se.style.display='block';
+    return;
+  }
+  w.style.display='block';
+  el.innerHTML=chs.map(function(c,i){
+    var moms=c.moments.slice().sort(function(a,b){return (+a.yr||0)-(+b.yr||0)});
+    return '<div class="chsec">'+
+    '<div class="chead"><span class="cnum">Chapter '+(NUMS[i]||i+1)+'</span>'+(c.name?'<span class="cname">'+esc(c.name)+'</span>':'')+'</div>'+
+    '<div class="chmoms">'+
+    (moms.length?moms.map(function(m){
+      var cov=m.photos.length?'<img src="'+m.photos[Math.min(m.cover,m.photos.length-1)]+'" alt=""/>':'✿';
+      var strip=m.photos.length>1?'<div class="chphotos">'+m.photos.slice(0,4).map(function(p){return '<img src="'+p+'" alt=""/>'}).join('')+'</div>':'';
+      return '<div class="chcard"><div class="chcover">'+cov+'</div><div class="chbody">'+
+      (m.yr?'<div class="yr">'+esc(m.yr)+'</div>':'')+
+      '<div class="cht">'+esc(m.title||'…')+'</div>'+
+      (m.photos.length?'<div class="chn">'+m.photos.length+' photograph'+(m.photos.length>1?'s':'')+'</div>':'')+strip+'</div></div>';
+    }).join(''):'<div class="placeholder">its moments will gather here</div>')+
+    '</div></div>';
+  }).join('');
+  /* the newest told moment takes the stage in Memories */
+  var allMoms=[];chs.forEach(function(c){c.moments.forEach(function(m){if((m.title||'').trim())allMoms.push(m)})});
+  if(allMoms.length){
+    var m0=allMoms[allMoms.length-1];
+    stage.style.display='flex';se.style.display='none';
+    var img=document.getElementById('pvStageImg');
+    if(m0.photos.length){img.src=m0.photos[Math.min(m0.cover,m0.photos.length-1)];img.style.display='block'}
+    else if(A.gallery.length){img.src=A.gallery[0];img.style.display='block'}
+    else{img.style.display='none'}
+    document.getElementById('pvStageK').textContent=m0.yr||'';
+    document.getElementById('pvStageT').textContent=m0.title;
+    dots.style.display='flex';
+    dots.innerHTML=allMoms.map(function(_,i){return '<i class="'+(i===allMoms.length-1?'on':'')+'"></i>'}).join('');
+  }else{stage.style.display='none';dots.style.display='none';se.style.display='block'}
+  paintPron();
+}
+function paintTapes(){
+  var g=document.getElementById('pvTapes'),e=document.getElementById('pvTapesEmpty');
+  if(!A.tapes.length){g.style.display='none';e.style.display='block';return}
+  g.style.display='grid';e.style.display='none';
+  g.innerHTML=A.tapes.map(function(t){return '<div class="tape"><video src="'+t.url+'" muted playsinline preload="metadata"></video><div class="play">▶</div><div class="tcap"><div class="tname">'+esc(t.name)+'</div></div></div>'}).join('');
+}
+function initials(n){return n.trim().split(/\s+/).slice(0,2).map(function(w){return w[0]||''}).join('').toUpperCase()}
+function tcard(name,years,rel,me,photo){
+  return '<div class="tcard'+(me?' me':'')+'"><div class="tp">'+(photo?'<img src="'+photo+'" alt=""/>':esc(initials(name||'?')))+'</div>'+
+  '<div><div class="tn">'+esc(name)+'</div>'+(years?'<div class="ty">'+esc(years)+'</div>':'')+(rel?'<div class="tr">'+esc(rel)+'</div>':'')+'</div></div>';
+}
+function paintTree(){
+  var el=document.getElementById('pvTree');
+  var hasAny=A.name.trim()||A.partner||A.children.length||A.parents.filter(Boolean).length;
+  if(!hasAny){el.innerHTML='<div class="placeholder" style="border:none;background:transparent">their people will gather here</div>'}
+  else{
+    var html='';
+    var ps=A.parents.filter(function(p){return p&&p.trim()});
+    if(ps.length){html+='<div class="trow">'+ps.map(function(p){return tcard(p,'','parent')}).join('')+'</div>'}
+    var center=tcard(A.name.trim()||'Them',(A.by||'····')+' — '+(A.dy||'····'),'',true,A.photo)+(A.partner?tcard(A.partner.name,A.partner.years||'','partner'):'');
+    html+='<div class="trow">'+center+'</div>';
+    if(A.children.length){html+='<div class="trow">'+A.children.map(function(k){return tcard(k,'','child')}).join('')+'</div>'}
+    el.innerHTML=html;
+  }
+  var op=document.getElementById('pvTreeOpen');
+  if(A.treeShared){op.style.display='flex';document.getElementById('pvTreeLink').textContent=addrText()+'/tree/join'}
+  else{op.style.display='none'}
+}
+function paintGallery(){
+  var el=document.getElementById('pvPhotos');
+  var cells=A.gallery.map(function(g){return '<div class="cell"><img src="'+g+'" alt=""/></div>'});
+  if(!cells.length){el.innerHTML='<div class="cell ghost">✿</div><div class="cell ghost">✿</div><div class="cell ghost">✿</div>';return}
+  var rem=cells.length%3;if(rem)for(var i=0;i<3-rem;i++)cells.push('<div class="cell ghost">✿</div>');
+  el.innerHTML=cells.join('');
+}
+function paintSvc(){
+  var s=A.svc||{};var has=(s.when||'').trim()||(s.where||'').trim()||(s.note||'').trim();
+  document.getElementById('pvSvc').style.display=has?'block':'none';
+  document.getElementById('pvSvcEmpty').style.display=has?'none':'block';
+  document.getElementById('pvSvcWhen').textContent=(s.when||'').trim()||'To be announced';
+  document.getElementById('pvSvcWhere').textContent=(s.where||'').trim();
+  var n=document.getElementById('pvSvcNote');
+  if((s.note||'').trim()){n.style.display='block';n.textContent=s.note.trim()}else{n.style.display='none'}
+}
+function addrText(){
+  var slug=(A.name.trim()||'their-name').toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-');
+  return 'imissyoumemorial.com/'+slug;
+}
+function paintAddr(){document.getElementById('pvAddr').textContent=addrText()}
+
+/* ═══════════════ the walk ═══════════════ */
+var cur=0;
+var lbody=document.getElementById('lbody');
+
+function buildGarland(){
+  var g=document.getElementById('garland');
+  g.innerHTML=STEPS.map(function(_,i){return '<span class="gd" data-i="'+i+'"></span>'}).join('');
+}
+function paintGarland(){
+  document.querySelectorAll('.gd').forEach(function(d,i){
+    d.classList.toggle('done',i<cur);d.classList.toggle('now',i===cur);
+  });
+  var f=document.getElementById('pFill'),c=document.getElementById('pCnt');
+  if(f){f.style.width=Math.round(((cur+1)/STEPS.length)*100)+'%'}
+  if(c){c.textContent=(cur+1)+' of '+STEPS.length}
+}
+function focusRegion(rgId,tag){
+  document.querySelectorAll('.region').forEach(function(r){r.classList.remove('lit')});
+  var rg=document.getElementById(rgId);if(!rg)return;
+  rg.classList.add('lit');
+  var t=rg.querySelector('.rtag');if(t&&tag)t.textContent=tag;
+  setTimeout(function(){
+    var canvas=document.getElementById('canvas');
+    /* on mobile the letter sheet covers the bottom of the canvas · center in what remains */
+    var sheet=window.innerWidth<=900?(document.querySelector('.letter').offsetHeight||0):0;
+    var vis=Math.max(120,canvas.clientHeight-sheet);
+    var crect=canvas.getBoundingClientRect(),rrect=rg.getBoundingClientRect();
+    var top=canvas.scrollTop+(rrect.top-crect.top)-(vis/2)+(Math.min(rg.offsetHeight,vis*.8)/2);
+    canvas.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+  },160);
+}
+function refreshCont(){
+  var s=STEPS[cur];
+  var b=document.getElementById('contBtn');
+  b.disabled=!s.valid();
+  b.textContent=s.cont||(cur===STEPS.length-1?'Keep their page':'Continue');
+}
+function goto(i){
+  if(i<0)i=0;if(i>=STEPS.length)i=STEPS.length-1;
+  cur=i;var s=STEPS[cur];
+  lbody.innerHTML='';
+  var el=document.createElement('div');el.className='step on';
+  el.innerHTML='<h1>'+s.q()+'</h1>'+(s.sub?'<div class="sub">'+s.sub+'</div>':'')+
+  '<div class="whisper"><span class="eye"></span>watch the page · it moves as you write</div><div class="body"></div>';
+  lbody.appendChild(el);
+  s.render(el.querySelector('.body'));
+  document.getElementById('chapterLbl').textContent=s.ch;
+  document.getElementById('backBtn').style.visibility=cur>0?'visible':'hidden';
+  var sk=document.getElementById('skipBtn');
+  if(s.skip){sk.style.visibility='visible';sk.textContent=s.skip}else{sk.style.visibility='hidden'}
+  paintGarland();refreshCont();
+  focusRegion(s.rg,s.tag);
+  var f=el.querySelector('input[type=text],textarea');
+  if(f&&window.innerWidth>900)setTimeout(function(){f.focus()},350);
+  if(window.innerWidth<=900)document.getElementById('lbody').scrollTop=0;
+}
+document.getElementById('contBtn').onclick=function(){
+  if(cur<STEPS.length-1)goto(cur+1);
+  else{this.textContent='Their page is kept ✓';markSaved()}
+};
+document.getElementById('backBtn').onclick=function(){goto(cur-1)};
+document.getElementById('skipBtn').onclick=function(){if(cur<STEPS.length-1)goto(cur+1)};
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='BUTTON'&&e.target.tagName!=='SELECT'){
+    var b=document.getElementById('contBtn');
+    var cl=e.target.classList;
+    if(cl.contains('m-yr')||cl.contains('m-tt')||cl.contains('chnamein'))return;
+    if(!b.disabled&&!e.defaultPrevented&&['inKid','inLove'].indexOf(e.target.id)<0){e.preventDefault();b.click()}
+  }
+});
+document.querySelectorAll('.region').forEach(function(rg){
+  rg.addEventListener('click',function(){
+    var i=+rg.dataset.step;if(!isNaN(i))goto(i);
+  });
+});
+
+buildGarland();
+paintPron();
+goto(0);
+</script>
+</body>
+</html>
