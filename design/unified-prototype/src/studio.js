@@ -190,12 +190,14 @@ var STEPS=[
 
 /* 6 · photographs of them */
 {id:'portrait',ch:'their portrait',room:'',tag:'',
- q:function(){return (A.name?esc(F())+'’s':'Their')+' <em>photograph.</em>'},
- sub:'The portrait rests in the arch on the cover. A wide photograph behind it makes the whole cover theirs.',
+ q:function(){return 'The <em>photographs of the cover.</em>'},
+ sub:'Two make it whole: the portrait in the arch, and a background photograph behind the name.',
  render:function(el){
    el.innerHTML='<div class="fields">'+
-   '<div class="drop2" id="dPort"><input type="file" id="fPort" accept="image/*" style="display:none"/>'+(A.portrait?'<div class="thumbrow"><span class="th cover"><img src="'+A.portrait+'" alt=""/></span></div><div class="dsm">the portrait · tap to change</div>':'<div class="dbig">Choose the portrait</div><div class="dsm">a face you love · it fills the arch</div>')+'</div>'+
-   '<div class="drop2" id="dBg"><input type="file" id="fBg" accept="image/*" style="display:none"/>'+(A.coverbg?'<div class="thumbrow"><span class="th cover"><img src="'+A.coverbg+'" alt=""/></span></div><div class="dsm">the backdrop · tap to change</div>':'<div class="dbig">A backdrop, behind the name</div><div class="dsm">optional · a place they loved works beautifully</div>')+'</div></div>';
+   '<div class="fld"><label>The portrait · in the arch</label>'+
+   '<div class="drop2" id="dPort"><input type="file" id="fPort" accept="image/*" style="display:none"/>'+(A.portrait?'<div class="thumbrow"><span class="th cover"><img src="'+A.portrait+'" alt=""/></span></div><div class="dsm">tap to change it</div>':'<div class="dbig">Choose the portrait</div><div class="dsm">a face you love · it fills the arch</div>')+'</div></div>'+
+   '<div class="fld"><label>The background · behind their name</label>'+
+   '<div class="drop2" id="dBg"><input type="file" id="fBg" accept="image/*" style="display:none"/>'+(A.coverbg?'<div class="thumbrow"><span class="th cover"><img src="'+A.coverbg+'" alt=""/></span></div><div class="dsm">tap to change it</div>':'<div class="dbig">Choose the background</div><div class="dsm">a place they loved works beautifully · the page keeps a warm fallback until then</div>')+'</div></div></div>';
    function wire(dropId,fileId,key){
      var d=document.getElementById(dropId),f=document.getElementById(fileId);
      d.onclick=function(){f.click()};
@@ -375,28 +377,51 @@ var STEPS=[
    '<div style="margin-top:8px"><span class="mlbl">How they are related to '+esc(F())+'</span><select id="famRel" class="dsel">'+RELS.map(function(r){return '<option value="'+r[0]+'">'+r[1]+'</option>'}).join('')+'</select></div>'+
    '<div id="famVia" style="display:none;margin-top:8px"><span class="mlbl">Through which child?</span><select id="famViaSel" class="dsel"><option value="">Just place them</option>'+kids.map(function(k){return '<option>'+esc(k.name)+'</option>'}).join('')+'</select></div>'+
    '<div class="mgrid" style="margin-top:8px"><div><span class="mlbl">Born — if known</span>'+selYear('famBy','',1890,THIS_YEAR)+'</div><div><span class="mlbl">Passed — blank if still with us</span>'+selYear('famDy','',1890,THIS_YEAR)+'</div></div>'+
+   '<div style="margin-top:8px"><span class="mlbl">Their face — for their card on the tree</span><button type="button" class="mphotobtn" id="famPhotoBtn" style="margin-top:0">'+(this._pendPhoto?'✓ chosen · tap to change':'+ a photograph, if you have one')+'</button><input type="file" id="famPhoto" accept="image/*" style="display:none"/>'+(this._pendPhoto?'<div class="thumbrow"><span class="th mini"><img src="'+this._pendPhoto+'" alt=""/></span></div>':'')+'</div>'+
    '<button type="button" class="addmoment" id="famAdd" style="margin-top:10px">＋ Add to the tree</button>'+
    '</div>';
    var list=document.getElementById('famList');
    function relLabel(rel){var m={mother:'mother',father:'father',partner:'partner',sibling:'sibling',child:'child',grandchild:'grandchild',chosen:'chosen family'};return m[rel]||rel}
+   var self=this;
    function paint(){
      list.innerHTML=A.family.map(function(f,i){
-       return '<div class="addedrow"><span style="color:var(--terra)">✿</span> <b>'+esc(f.name)+'</b>&nbsp;· '+relLabel(f.rel)+(f.by||f.dy?' · '+(f.by&&f.dy?f.by+'–'+f.dy:(f.by?'b. '+f.by:'d. '+f.dy)):'')+' <button type="button" class="rm" data-i="'+i+'" aria-label="Remove">✕</button></div>';
+       return '<div class="addedrow">'+(f.photo?'<span class="th mini" style="width:28px;height:28px"><img src="'+f.photo+'" alt=""/></span>':'<span style="color:var(--terra)">✿</span>')+' <b>'+esc(f.name)+'</b>&nbsp;· '+relLabel(f.rel)+(f.by||f.dy?' · '+(f.by&&f.dy?f.by+'–'+f.dy:(f.by?'b. '+f.by:'d. '+f.dy)):'')+' <button type="button" class="rm" data-i="'+i+'" aria-label="Remove">✕</button></div>';
      }).join('')||'<div class="lnote">you are already on the tree'+(A.rel?' — as '+myRoleLabel():'')+'</div>';
-     list.querySelectorAll('.rm').forEach(function(b){b.onclick=function(){A.family.splice(+b.dataset.i,1);STEPS[11].render(el);changed('full')}});
+     list.querySelectorAll('.rm').forEach(function(b){b.onclick=function(){A.family.splice(+b.dataset.i,1);self._pendPhoto='';STEPS[11].render(el);changed('full')}});
    }
    paint();
    var relSel=document.getElementById('famRel');
    relSel.addEventListener('change',function(){
      document.getElementById('famVia').style.display=(relSel.value==='grandchild'&&kids.length)?'block':'none';
    });
-   document.getElementById('famAdd').onclick=function(){
-     var nm=document.getElementById('famName').value.trim();
-     if(!nm)return;
-     A.family.push({name:nm,rel:relSel.value,by:document.getElementById('famBy').value,dy:document.getElementById('famDy').value,via:document.getElementById('famViaSel')?document.getElementById('famViaSel').value:''});
-     STEPS[11].render(el);changed('full');
-     setTimeout(function(){var f2=document.getElementById('famName');if(f2)f2.focus()},60);
+   var fpIn=document.getElementById('famPhoto');
+   if(fpIn)fpIn.onchange=function(){
+     if(!fpIn.files[0])return;
+     ingest(fpIn.files[0],600,function(url){ self._pendPhoto=url; STEPS[11].render(el); });
    };
+   /* the add + photo buttons ride one delegated listener (bound once) */
+   if(!window.__famWire){
+     window.__famWire=true;
+     document.addEventListener('click',function(e){
+       var t=e.target.closest?e.target.closest('#famPhotoBtn,#famAdd'):null;
+       if(!t)return;
+       e.preventDefault();
+       if(t.id==='famPhotoBtn'){ var fi=document.getElementById('famPhoto'); if(fi)fi.click(); return; }
+       var nmEl=document.getElementById('famName');
+       var nm=nmEl?nmEl.value.trim():'';
+       if(!nm)return;
+       var relEl=document.getElementById('famRel');
+       var viaEl=document.getElementById('famViaSel');
+       var st=STEPS[11];
+       A.family.push({name:nm,rel:relEl?relEl.value:'chosen',by:(document.getElementById('famBy')||{}).value||'',dy:(document.getElementById('famDy')||{}).value||'',
+         via:viaEl?viaEl.value:'',photo:st._pendPhoto||''});
+       st._pendPhoto='';
+       var body=nmEl.closest('.body')||nmEl.closest('.step');
+       if(body)st.render(body.classList.contains('body')?body:body.querySelector('.body'));
+       changed('full');
+       setTimeout(function(){var f2=document.getElementById('famName');if(f2)f2.focus()},60);
+     },true);
+   }
  },
  skip:'the tree can grow later',valid:function(){return true}},
 

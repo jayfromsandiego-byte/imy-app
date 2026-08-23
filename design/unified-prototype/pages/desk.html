@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The Sharpened Desk · clickable prototype · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Sometype+Mono:wght@400;500;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --well:#ECE1CC; --ink:#2C2520; --ink-soft:#5c5249;
+  --terra:#A87C5F; --terra-btn:#946a4f; --terra-btn-hover:#7a5236; --terra-text:#8a5a3c;
+  --gold:#C9A572; --goldline:rgba(201,165,114,.45); --flame:#F4B860;
+  --night:#1A130D; --brown:#3f2c1a; --brown-deep:#241711;
+  --hairline:rgba(44,37,32,.13); --text-scale:1;
+  --sh-rest:0 1px 2px rgba(74,52,32,.05);
+  --sh-float:0 1px 2px rgba(74,52,32,.06),0 4px 10px rgba(74,52,32,.07),0 14px 32px rgba(74,52,32,.09);
+  --uline:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9C32 3 80 3 117 8' stroke='%23C9A572' stroke-width='3.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+html.hc{--cream:#FFFDF8;--cream-deep:#F3ECDD;--ink:#160F0A;--ink-soft:#3a332c;--hairline:rgba(22,15,10,.3);--goldline:rgba(150,110,60,.7);--terra-text:#6e3f24}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',Georgia,serif;font-size:calc(16.5px * var(--text-scale));line-height:1.55;min-height:100vh}
+.mono{font-family:'Sometype Mono',monospace}
+button{font-family:inherit}
+img,svg{display:block;max-width:100%}
+a{color:var(--terra-text)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+
+.proto-strip{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);background:var(--well);border-bottom:1px solid var(--hairline);padding:6px 14px;text-align:center}
+
+/* shell */
+.shell{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 30px)}
+.sidebar{background:var(--cream-deep);border-right:1px solid var(--hairline);padding:22px 14px 90px;display:flex;flex-direction:column;gap:13px;position:sticky;top:0;height:calc(100vh - 30px);overflow-y:auto;scrollbar-width:thin}
+.wordmk{font-weight:700;font-size:16.5px;letter-spacing:.2px;color:var(--ink);padding:0 8px;white-space:nowrap;text-decoration:none;display:block}
+.wordmk em{font-style:italic;color:var(--terra)}
+.idb{background:var(--cream);border:1px solid var(--goldline);border-radius:17px;padding:13px 11px 11px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;box-shadow:var(--sh-rest);cursor:pointer;transition:.15s ease;position:relative}
+.idb:hover{box-shadow:var(--sh-float)}
+.idb .editpen{position:absolute;top:8px;right:9px;font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-text);border:1px solid var(--goldline);border-radius:999px;padding:2px 7px;background:var(--cream-deep)}
+.archp{width:70px;height:88px;border-radius:35px 35px 5px 5px;overflow:hidden;background:var(--cream-deep);box-shadow:inset 0 0 0 1.6px var(--gold),0 2px 6px rgba(74,52,32,.18);flex:0 0 auto}
+.archp img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.idb .nm{font-weight:700;font-size:15px;line-height:1.22}
+.idb .dt{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.09em;color:var(--ink-soft)}
+.idb .pn{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.09em;color:var(--terra-text);text-transform:uppercase}
+.seepage{display:inline-flex;gap:6px;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--terra-text);text-decoration:none;margin:0 8px}
+.seepage:hover{text-decoration:underline}
+nav.shelf{display:flex;flex-direction:column;gap:2px;flex:1}
+.shl{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);padding:9px 9px 5px;opacity:.75}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 9px;border-radius:11px;border:none;background:transparent;color:var(--ink);font-size:14.5px;font-weight:500;text-align:left;cursor:pointer;min-height:42px;width:100%;transition:background .15s ease}
+.ni:hover{background:rgba(168,124,95,.09)}
+.ni.on{background:var(--cream);box-shadow:inset 0 0 0 1px var(--goldline),var(--sh-rest);color:var(--terra-text);font-weight:700}
+.ni .ic{flex:0 0 auto;width:18px;height:18px;color:var(--terra-text);opacity:.85;stroke:currentColor;fill:none;stroke-width:1.4}
+.ni .lbl{flex:1}
+.ni .cnt{font-family:'Sometype Mono',monospace;font-size:10.5px;color:var(--terra-text);background:rgba(168,124,95,.14);border-radius:999px;padding:2px 8px}
+.ni .cnt.zero{display:none}
+.side-foot{border-top:1px solid var(--hairline);padding-top:13px;display:flex;flex-direction:column;gap:8px}
+.plan-strip{font-family:'Sometype Mono',monospace;font-size:9.5px;color:var(--ink-soft);padding:3px 9px 0;line-height:1.6}
+.plan-strip b{color:var(--terra-text)}
+
+/* main + views */
+main{padding:30px 34px 90px;max-width:960px;margin:0 auto;width:100%;position:relative}
+.view{display:none}
+.view.on{display:block;animation:fadeup .45s cubic-bezier(.2,.7,.3,1) both}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.view.on{animation:none}}
+.kick{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-text);margin-bottom:6px}
+.verdict{font-size:24px;font-weight:800;line-height:1.25;margin:2px 0 18px}
+.verdict .sw{position:relative;display:inline}
+.verdict .sw::after{content:"";position:absolute;left:0;right:0;bottom:-.08em;height:.26em;background:var(--uline) no-repeat center/100% 100%}
+h2.vt{font-size:22px;font-weight:800;margin:2px 0 6px}
+.subline{color:var(--ink-soft);font-size:14.5px;margin:4px 0 18px;max-width:60ch}
+.back{background:none;border:none;cursor:pointer;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text);padding:0;margin-bottom:14px;display:inline-flex;gap:6px}
+.back:hover{text-decoration:underline}
+
+/* buttons */
+.btn{font-family:'Besley',serif;font-weight:600;font-size:14.5px;border-radius:11px;padding:12px 20px;cursor:pointer;border:1px solid rgba(46,33,21,.35);background:var(--cream-deep);color:var(--ink);display:inline-flex;align-items:center;gap:8px;min-height:44px;transition:.18s ease;white-space:nowrap;text-decoration:none}
+.btn:hover{background:#ece2cd;transform:translateY(-1px);box-shadow:var(--sh-rest)}
+.btn.primary{background:var(--terra-btn);border-color:var(--terra-btn);color:var(--cream)}
+.btn.primary:hover{background:var(--terra-btn-hover)}
+.btn.small{padding:9px 15px;font-size:13.5px;min-height:40px;border-radius:9px}
+.btn.danger{color:#933f2c;border-color:rgba(147,63,44,.4)}
+.btn.dsolid{background:#933f2c;border-color:#933f2c;color:#FAF5EC}
+.btn.dsolid:hover{background:#7c3323;border-color:#7c3323}
+body.mpause .btn:hover{transform:none}
+
+/* conveyor */
+.conveyor{background:var(--cream-deep);border:1px solid var(--goldline);border-radius:19px;padding:22px 24px;box-shadow:var(--sh-float);position:relative;overflow:hidden}
+.cv-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.cv-who{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.dots{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.32em}
+.cv-body{transition:opacity .3s ease,transform .3s ease}
+.cv-body.out{opacity:0;transform:translateY(-14px)}
+.cv-body.in{opacity:0;transform:translateY(14px);transition:none}
+body.mpause .cv-body{transition:none}
+.idq{font-style:italic;font-size:15px;line-height:1.6;border-left:2px solid var(--goldline);padding-left:13px;margin:4px 0 14px;color:var(--ink)}
+.voicetag{display:inline-flex;align-items:center;gap:7px;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-text);background:rgba(168,124,95,.12);border:1px solid var(--goldline);border-radius:999px;padding:5px 11px;margin-bottom:10px;cursor:pointer}
+.cv-acts{display:flex;gap:10px;flex-wrap:wrap}
+.cv-note{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:13px}
+.clear-desk{text-align:center;padding:24px 12px 16px}
+.clear-desk .l1{font-size:19px;font-weight:700}
+.clear-desk .l2{margin-top:10px}
+
+/* checklist */
+.meter{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:16px;padding:17px 21px;margin-top:16px;box-shadow:var(--sh-rest)}
+.meter .mr{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.meter .mt{font-size:15px;font-weight:700}
+.meter .mv{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft)}
+.bar{height:7px;border-radius:999px;background:var(--well);margin-top:11px;overflow:hidden}
+.bar i{display:block;height:100%;width:75%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--terra))}
+.meter .mh{font-size:13px;color:var(--ink-soft);margin-top:9px}
+.meter .mh a{cursor:pointer}
+
+/* shelf minis */
+.shelf2{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:16px}
+.mini{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:14px;padding:13px 14px;cursor:pointer;text-align:left;transition:.16s ease;box-shadow:var(--sh-rest)}
+.mini:hover{border-color:var(--goldline);transform:translateY(-2px);box-shadow:var(--sh-float)}
+body.mpause .mini:hover{transform:none}
+.mini .mk{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text)}
+.mini .mvl{font-size:14.5px;font-weight:700;margin-top:4px}
+.mini .ms{font-size:11.5px;color:var(--ink-soft);margin-top:2px;line-height:1.4}
+
+/* vigil */
+.vigil{margin-top:16px;background:linear-gradient(135deg,var(--night),var(--brown-deep));color:#EFE6D6;border:1px solid rgba(244,184,96,.28);border-radius:17px;padding:17px 22px;font-size:14.5px;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.vigil b{color:var(--flame)}
+.vigil a{color:var(--flame);font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(244,184,96,.4);border-radius:999px;padding:8px 14px;background:rgba(244,184,96,.08)}
+.vigil::before{content:"";position:absolute;right:20px;top:14px;width:9px;height:15px;background:radial-gradient(ellipse at 50% 70%,var(--flame) 0%,rgba(244,184,96,.5) 55%,transparent 75%);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:flick 2.6s ease-in-out infinite;transform-origin:50% 90%;opacity:.85}
+@keyframes flick{0%,100%{transform:scaleY(1)}30%{transform:scaleY(1.08) rotate(-2deg)}60%{transform:scaleY(.94) rotate(1.5deg)}}
+body.mpause .vigil::before{animation:none}
+@media(prefers-reduced-motion:reduce){.vigil::before{animation:none}}
+
+/* tabs */
+.tabsrow{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 18px}
+.tabbtn{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(46,33,21,.3);background:var(--cream-deep);color:var(--ink);border-radius:999px;padding:9px 16px;cursor:pointer;min-height:38px}
+.tabbtn.on{background:var(--terra-btn);border-color:var(--terra-btn);color:var(--cream);font-weight:700}
+.tabbtn .n{opacity:.85}
+
+/* letters / rows */
+.letter{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:18px;padding:20px 22px;box-shadow:var(--sh-rest);margin-bottom:14px}
+.letter .lt{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}
+.letter .lf{font-weight:700;font-size:15.5px}
+.letter .lk{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text)}
+.letter .lwhen{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft)}
+.cv-acts .btn{min-height:44px}
+.logrow{display:flex;gap:14px;padding:11px 4px;border-bottom:1px solid var(--hairline);font-size:13.5px;align-items:baseline}
+.logrow:last-child{border-bottom:none}
+.logrow .lw{font-family:'Sometype Mono',monospace;font-size:10px;color:var(--ink-soft);flex:0 0 150px;letter-spacing:.03em}
+.logrow .la{color:var(--ink)}
+.logrow .la b{color:var(--terra-text)}
+
+/* pictures */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px;padding-top:6px}
+.pol{position:relative;background:#fff;padding:8px 8px 34px;border-radius:3px;box-shadow:var(--sh-rest);transform:rotate(var(--r,0deg));transition:transform .25s ease,box-shadow .25s ease;cursor:pointer;border:none;text-align:center}
+.pol:hover{transform:rotate(0) translateY(-4px);box-shadow:var(--sh-float);z-index:2}
+body.mpause .pol:hover{transform:rotate(var(--r,0deg))}
+.pol .fr{aspect-ratio:4/3.4;border-radius:2px;overflow:hidden}
+.pol .fr img{width:100%;height:100%;object-fit:cover}
+.pol .cap{position:absolute;bottom:16px;left:4px;right:4px;text-align:center;font-family:'Caveat',cursive;font-size:15px;color:#4a3f34;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pol .place{position:absolute;bottom:3px;left:4px;right:4px;text-align:center;font-family:'Sometype Mono',monospace;font-size:7.5px;letter-spacing:.06em;text-transform:uppercase;color:#8b7d6c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pol .pin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e26a5a,#8a2a1e);box-shadow:0 3px 5px rgba(0,0,0,.35)}
+.pol .covertag{position:absolute;top:12px;left:12px;background:rgba(168,124,95,.95);color:#fff;font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;z-index:3}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:700;display:none}
+.modal.open{display:block}
+.mveil{position:absolute;inset:0;background:rgba(26,19,13,.45)}
+.mpanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);max-height:88vh;overflow-y:auto;background:var(--cream);border:1px solid var(--goldline);border-radius:22px;box-shadow:var(--sh-float);padding:26px 28px}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.mhead h3{font-size:18px;font-weight:800;margin:0}
+.mclose{width:42px;height:42px;border-radius:10px;border:1px solid rgba(46,33,21,.35);background:var(--cream-deep);color:var(--ink);font-size:16px;cursor:pointer}
+.fld{margin-bottom:14px}
+.fld label{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px}
+.fld input,.fld select,.fld textarea{width:100%;font-family:'Besley',serif;font-size:15px;padding:11px 13px;border:1px solid rgba(46,33,21,.3);border-radius:11px;background:var(--cream);color:var(--ink);min-height:44px}
+.fld textarea{min-height:90px;resize:vertical;line-height:1.6}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.minfo{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--hairline);font-size:13.5px;align-items:baseline}
+.minfo .k{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);flex:0 0 110px}
+.mfoot{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.mimg{border-radius:12px;overflow:hidden;border:1px solid var(--hairline);margin-bottom:14px;max-height:240px}
+.mimg img{width:100%;height:100%;max-height:240px;object-fit:cover}
+
+/* generic cards */
+.qcard{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:18px;padding:22px 24px;box-shadow:var(--sh-rest);margin-bottom:14px}
+.qcard .sen{font-size:15.5px;line-height:1.6;margin:0}
+.qcard .sen b{color:var(--terra-text)}
+.qcard ul{margin:10px 0 0;padding-left:20px;font-size:14.5px;line-height:1.7;color:var(--ink-soft)}
+.qcard .foot{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.plusdark{background:linear-gradient(135deg,var(--brown),var(--brown-deep));color:#EFE6D6;border:1px solid rgba(201,165,114,.35)}
+.plusdark .sen{color:#EFE6D6}
+.plusdark .sen b{color:var(--gold)}
+.plusdark ul{color:#d9cbb6}
+/* plan cards (current vs upgrade) */
+.plangrid{display:grid;grid-template-columns:1fr 1.15fr;gap:14px;align-items:stretch}
+.plancard{border:1px solid var(--hairline);border-radius:18px;padding:20px 22px;background:var(--cream-deep);display:flex;flex-direction:column}
+.plancard .pc-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.plancard .pc-name{font-weight:800;font-size:17px}
+.curchip{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--hairline);border-radius:999px;padding:3px 9px}
+.plancard .pc-price{font-size:26px;font-weight:800;margin:8px 0 4px}
+.plancard .pc-once{font-size:13px;font-weight:400;color:var(--ink-soft)}
+.plancard ul{margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:var(--ink-soft)}
+.plancard.plus{background:linear-gradient(150deg,var(--brown),var(--brown-deep));color:#EFE6D6;border:1px solid rgba(201,165,114,.4);box-shadow:var(--sh-float)}
+.plancard.plus .pc-once{color:#d9cbb6}
+.plancard.plus ul{color:#d9cbb6}
+.plancard.plus .pc-name{color:#F6EFE2}
+.upbtn{background:var(--flame);border-color:var(--flame);color:#241711;font-weight:700;justify-content:center;margin-top:16px}
+.upbtn:hover{background:#f0ad4a;border-color:#f0ad4a}
+.conciergeline{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:14px 2px 0}
+@media(max-width:700px){.plangrid{grid-template-columns:1fr}}
+.permaline{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-align:center;margin-top:22px;line-height:2}
+.permaline b{color:var(--terra-text)}
+
+/* story */
+.storyroom{background:var(--cream-deep);border:1px solid var(--hairline);border-radius:19px;padding:24px 26px;box-shadow:var(--sh-rest)}
+.storyroom p{font-size:15.5px;line-height:1.7;margin:0 0 14px}
+.storyroom p.newline{animation:fadeup .6s ease both;border-left:2px solid var(--goldline);padding-left:12px}
+.addroom{margin-top:16px;background:var(--cream);border:1px solid var(--goldline);border-radius:16px;padding:18px 20px}
+.addroom .row{display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap}
+.chaprow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 4px;border-bottom:1px solid var(--hairline)}
+.chaprow:last-child{border-bottom:none}
+.chaprow .cn{font-weight:700;font-size:14.5px}
+.chaprow .cm{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);margin-top:2px}
+
+/* people rows */
+.prow{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--hairline);flex-wrap:wrap}
+.prow:last-of-type{border-bottom:none}
+.tinit{width:38px;height:38px;border-radius:50%;background:var(--well);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--terra-text);flex:0 0 auto}
+.prow .pn2{font-weight:700;font-size:14.5px}
+.prow .pe2{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.04em;color:var(--ink-soft)}
+.rolechip{margin-left:auto;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-text);background:rgba(168,124,95,.13);border:1px solid var(--goldline);border-radius:999px;padding:5px 11px}
+.prow select{font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;border:1px solid rgba(46,33,21,.3);border-radius:999px;background:var(--cream);color:var(--ink);padding:7px 10px;cursor:pointer}
+.inviterow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.inviterow input{flex:1;min-width:180px;font-family:'Besley',serif;font-size:14.5px;padding:11px 13px;border:1px solid rgba(46,33,21,.3);border-radius:11px;background:var(--cream);min-height:44px}
+.inviterow select{font-family:'Sometype Mono',monospace;font-size:10px;text-transform:uppercase;border:1px solid rgba(46,33,21,.3);border-radius:11px;background:var(--cream);padding:0 10px;cursor:pointer}
+.linkpill{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.linkpill .lp{font-family:'Sometype Mono',monospace;font-size:12px;background:var(--cream);border:1px solid var(--hairline);border-radius:999px;padding:11px 16px;color:var(--ink-soft);flex:1;min-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* role table + helper chips */
+.roletbl{display:grid;grid-template-columns:1.4fr repeat(4,1fr);border:1px solid var(--hairline);border-radius:12px;overflow:hidden;margin-top:16px;font-size:12.5px;background:var(--cream)}
+@media(max-width:560px){.roletbl{font-size:10.5px}.roletbl .rth,.roletbl .rc{padding:7px 6px}}
+.roletbl .rth{background:var(--well);font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-text);padding:9px 12px;font-weight:700;text-align:center}
+.roletbl .rth:first-child{text-align:left}
+.roletbl .rc{padding:9px 12px;border-top:1px solid var(--hairline);text-align:center;color:var(--terra-text);font-weight:700}
+.roletbl .rc.l{text-align:left;color:var(--ink-soft);font-weight:400}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.chiplbl{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);width:100%}
+.chip{font-family:'Besley',serif;font-size:13px;font-style:italic;border:1px solid var(--goldline);background:var(--cream);color:var(--terra-text);border-radius:999px;padding:8px 14px;cursor:pointer;min-height:38px}
+.chip:hover{background:var(--cream-deep)}
+.helper{margin-top:14px;background:var(--cream);border:1px dashed var(--goldline);border-radius:14px;padding:14px 16px}
+.helper .hlabel{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-text)}
+.helper .hintro{font-size:13px;color:var(--ink-soft);margin:6px 0 0}
+.hout{margin-top:12px;background:var(--cream-deep);border:1px solid var(--hairline);border-radius:11px;padding:12px 14px;font-size:13.5px;line-height:1.6}
+.hout .hq{display:block;background:none;border:none;color:var(--terra-text);font-family:'Besley',serif;font-style:italic;font-size:13.5px;cursor:pointer;padding:4px 0;text-align:left;min-height:34px}
+.hout .hq:hover{text-decoration:underline}
+.plustag{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#241711;background:var(--flame);border-radius:999px;padding:3px 9px;font-weight:700}
+.mkown{font-family:'Sometype Mono',monospace;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--hairline);background:transparent;color:var(--ink-soft);border-radius:999px;padding:6px 10px;cursor:pointer;min-height:30px;margin-left:auto}
+.mkown:hover{border-color:var(--goldline);color:var(--terra-text)}
+/* export checklist */
+.ckrow{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--hairline);font-size:15px;cursor:pointer}
+.ckrow.allrow{border-bottom:2px solid var(--goldline)}
+.ckrow input[type=checkbox]{width:20px;height:20px;accent-color:var(--terra-btn);cursor:pointer;flex:0 0 auto}
+.ckrow b{color:var(--terra-text)}
+/* danger zone */
+.dangerzone{border-color:rgba(147,63,44,.45)}
+/* v7: privacy segment, toggles, qr, suggestions, collapsible export, restore preview */
+.seg{display:flex;border:1px solid rgba(46,33,21,.3);border-radius:999px;overflow:hidden;width:fit-content;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.seg button{padding:10px 16px;color:var(--ink-soft);background:none;border:none;cursor:pointer;min-height:40px;font-family:inherit;letter-spacing:inherit;text-transform:inherit}
+.seg button.on{background:var(--terra-btn);color:var(--cream);font-weight:700}
+.statstrip{font-family:'Sometype Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);background:var(--cream-deep);border:1px solid var(--hairline);border-radius:999px;padding:9px 16px;display:inline-block;margin:0 0 18px}
+.statstrip b{color:var(--terra-text)}
+.togrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--hairline);font-size:14.5px;cursor:pointer}
+.togrow:last-of-type{border-bottom:none}
+.togrow b{color:var(--terra-text)}
+.tsw{width:44px;height:26px;border-radius:999px;background:rgba(44,37,32,.22);position:relative;flex:0 0 auto;transition:background .15s ease}
+.tsw::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .15s ease}
+.tsw.on{background:var(--terra)}
+.tsw.on::after{transform:translateX(18px)}
+body.mpause .tsw,body.mpause .tsw::after{transition:none}
+.qr-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px dashed var(--goldline)}
+.qr-row img{width:88px;height:88px;border-radius:8px;border:1px solid var(--hairline);background:#fff;padding:4px;flex:0 0 auto}
+.sugrow{display:flex;align-items:center;gap:12px;background:var(--cream);border:1px dashed var(--goldline);border-radius:13px;padding:12px 16px;font-size:14px;flex-wrap:wrap;margin-bottom:14px}
+.sugrow b{color:var(--terra-text)}
+.exphead{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;cursor:pointer;padding:0;font-family:'Besley',serif;font-size:16.5px;font-weight:800;color:var(--ink);min-height:44px;text-align:left}
+.exphead .chev{font-family:'Sometype Mono',monospace;font-size:12px;color:var(--terra-text);transition:transform .2s ease}
+.exphead[aria-expanded="true"] .chev{transform:rotate(180deg)}
+#exbody{display:none;margin-top:4px}
+#exbody.open{display:block}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid var(--hairline)}
+.ba .half{position:relative;aspect-ratio:4/3;overflow:hidden}
+.ba img{width:100%;height:100%;object-fit:cover;display:block}
+.ba .half.before img{filter:sepia(.7) blur(1.1px) contrast(.75) brightness(.85)}
+.ba .batag{position:absolute;bottom:6px;left:6px;font-family:'Sometype Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;background:rgba(26,19,13,.75);color:#EFE6D6;border-radius:999px;padding:2px 8px}
+/* pages switcher */
+.pages-btn{margin:0 2px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:10px 12px;border-radius:999px;background:var(--cream);border:1px solid rgba(46,33,21,.3);color:var(--ink);cursor:pointer;min-height:40px}
+.pages-btn:hover{background:var(--well)}
+.pgchev{font-size:11px;color:var(--terra-text)}
+.pgrow{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--cream-deep);border:1px solid var(--hairline);border-radius:15px;padding:12px 14px;margin-bottom:10px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.pgrow:hover{border-color:var(--goldline)}
+.pgrow.active{border-color:var(--terra);background:rgba(168,124,95,.09)}
+.pgrow .archp{width:40px;height:50px;border-radius:20px 20px 3px 3px}
+.pgrow .pgn{font-weight:700;font-size:14.5px}
+.pgrow .pgm{font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.06em;color:var(--ink-soft);margin-top:2px}
+.pgrow .rolechip{margin-left:auto}
+.pgrow .initial{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:var(--terra-text);background:var(--cream-deep)}
+.pwrow{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pwrow input{flex:1;min-width:180px;font-family:'Besley',serif;font-size:14.5px;padding:11px 13px;border:1px solid rgba(46,33,21,.3);border-radius:11px;background:var(--cream);color:var(--ink);min-height:44px}
+
+/* whisper toast */
+.whisper{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(20px);background:var(--brown-deep);color:#EFE6D6;border:1px solid rgba(201,165,114,.4);border-radius:999px;padding:11px 20px;font-size:13.5px;display:flex;gap:14px;align-items:center;opacity:0;pointer-events:none;transition:.3s ease;z-index:800;max-width:92vw}
+.whisper.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.whisper button{background:none;border:none;color:var(--gold);font-family:'Sometype Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:2px}
+body.mpause .whisper{transition:opacity .1s}
+
+/* a11y corner + var tag */
+.a11y{position:fixed;left:13px;bottom:13px;z-index:400;display:flex;gap:5px;background:rgba(250,245,236,.95);border:1px solid var(--hairline);border-radius:999px;padding:5px;box-shadow:var(--sh-float)}
+.a11y button{font-family:'Sometype Mono',monospace;font-size:10.5px;font-weight:700;border:none;background:transparent;color:var(--ink);border-radius:999px;padding:8px 11px;cursor:pointer;min-height:38px;min-width:38px}
+.a11y button.on{background:var(--terra-btn);color:var(--cream)}
+.vartag{position:fixed;right:13px;bottom:13px;font-family:'Sometype Mono',monospace;font-size:10px;color:var(--ink-soft);background:rgba(250,245,236,.92);border:1px solid var(--hairline);border-radius:999px;padding:5px 11px;z-index:400;pointer-events:none}
+
+/* mobile */
+.topbar{display:none}
+.mtabs{display:none}
+@media(max-width:840px){
+  .shell{display:block}
+  .sidebar{display:none}
+  .topbar{display:flex;align-items:center;gap:11px;padding:11px 16px;border-bottom:1px solid var(--hairline);background:var(--cream-deep);position:sticky;top:0;z-index:100;cursor:pointer}
+  .topbar .archp{width:34px;height:42px;border-radius:17px 17px 3px 3px}
+  .topbar .tn{font-weight:700;font-size:14px;line-height:1.15}
+  .topbar .td{font-family:'Sometype Mono',monospace;font-size:8px;letter-spacing:.08em;color:var(--ink-soft)}
+  .topbar .seep2{margin-left:auto;font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--terra-text);text-decoration:none;white-space:nowrap}
+  main{padding:22px 18px 130px}
+  .verdict{font-size:20px}
+  .shelf2{grid-template-columns:repeat(2,1fr)}
+  .logrow .lw{flex:0 0 108px}
+  .mtabs{display:flex;position:fixed;bottom:0;left:0;right:0;border-top:1px solid var(--hairline);background:rgba(243,236,221,.97);backdrop-filter:blur(5px);z-index:500;padding-bottom:env(safe-area-inset-bottom)}
+  .mtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 11px;font-family:'Sometype Mono',monospace;font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);background:none;border:none;cursor:pointer;position:relative;min-height:52px}
+  .mtab.on{color:var(--terra-text);font-weight:700}
+  .mtab svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.5}
+  .mtab .dotc{position:absolute;top:5px;right:calc(50% - 21px);background:var(--terra-btn);color:var(--cream);border-radius:999px;font-size:9px;padding:1px 5px}
+  .mtab .dotc.zero{display:none}
+  .a11y{bottom:66px}
+  .vartag{display:none}
+  .whisper{bottom:120px}
+}
+@media(max-width:520px){.gal{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}}
+</style>
+<style>
+.ha-img-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#f4f4f5;border:1px dashed #d4d4d8;border-radius:8px;color:#71717a;font-size:12px;font-family:system-ui,sans-serif;min-height:80px;padding:16px;box-sizing:border-box;animation:ha-img-pulse 1.5s ease-in-out infinite}
+.ha-img-placeholder.ha-failed{animation:none;opacity:.7}
+@keyframes ha-img-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@media(prefers-color-scheme:dark){.ha-img-placeholder{background:#27272a;border-color:#3f3f46;color:#a1a1aa}}
+</style>
+</head>
+<body>
+
+<div class="proto-strip">Clickable prototype · The Sharpened Desk · sample data · nothing is saved</div>
+
+<!-- mobile topbar (tap opens the pages drawer) -->
+<div class="topbar" id="topbar-edit">
+  <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes"/></span>
+  <div><div class="tn nm-txt">Eleanor Margaret Hayes</div><div class="td dt-txt">MAR 12, 1948 – OCT 22, 2024</div></div>
+  <a class="seep2" href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">The page →</a>
+</div>
+
+<div class="shell">
+  <aside class="sidebar">
+    <span class="wordmk">I <em>Miss</em> You Memorial</span>
+    <div class="idb" id="idb-edit" role="button" tabindex="0" aria-label="Edit details">
+      <span class="editpen">Edit</span>
+      <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes"/></span>
+      <div class="nm nm-txt">Eleanor Margaret Hayes</div>
+      <div class="dt dt-txt">MAR 12, 1948 – OCT 22, 2024</div>
+    </div>
+    <button class="pages-btn" id="pagesbtn" aria-haspopup="dialog">Your pages <span class="pgchev">▾</span></button>
+    <a class="seepage" href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">See the page →</a>
+    <nav class="shelf" aria-label="Dashboard sections">
+      <div class="shl">The desk</div>
+      <button class="ni" data-nav="overview"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12L12 5l8 7M6 10v9h12v-9"/></svg><span class="lbl">Overview</span></button>
+      <button class="ni" data-nav="approvals"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg><span class="lbl">Approvals</span><span class="cnt wcount">3</span></button>
+      <button class="ni" data-nav="pictures"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg><span class="lbl">The pictures</span></button>
+      <button class="ni" data-nav="story"><svg class="ic" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M9 8h6M9 12h6"/></svg><span class="lbl">The story</span></button>
+      <div class="shl">The household</div>
+      <button class="ni" data-nav="billing"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg><span class="lbl">Billing</span></button>
+      <button class="ni" data-nav="account"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.4-3.4 3.9-5 7-5s5.6 1.6 7 5"/></svg><span class="lbl">Account</span></button>
+    </nav>
+    <div class="side-foot">
+      <div class="plan-strip">Free plan · the page stays online, <b>always</b></div>
+    </div>
+  </aside>
+
+  <main>
+    <!-- ═══════ OVERVIEW ═══════ -->
+    <section class="view" id="v-overview">
+      <div class="kick"><span id="greet">Good evening</span>, Autumn</div>
+      <div class="verdict"><span class="sw" id="verdict-main">3 memories are waiting for your approval.</span></div>
+      <div class="statstrip">This week · <b>26 visits</b> · <b>9 flowers</b> · <b>2 new memories</b></div>
+
+      <div class="conveyor" id="conveyor" aria-live="polite"></div>
+
+      <div class="meter">
+        <div class="mr"><span class="mt">Page checklist</span><span class="mv">THE WALL ✓ · THE PICTURES ✓ · THE STORY ✓ · VOICE ✕</span></div>
+        <div class="bar"><i></i></div>
+        <div class="mh">No voice recordings on the page yet. They come with <a data-nav="billing" style="cursor:pointer">Plus</a>.</div>
+      </div>
+
+      <div class="shelf2">
+        <button class="mini" data-nav="pictures"><div class="mk">Pictures</div><div class="mvl">28 photos</div><div class="ms">rename, move, or delete them</div></button>
+        <button class="mini" data-whisper="The films live on the tape shelf · managing them comes with the real build"><div class="mk">Videos</div><div class="mvl">2 films</div><div class="ms">on the tape shelf</div></button>
+        <button class="mini" data-nav="story"><div class="mk">The story</div><div class="mvl">Obituary + timeline</div><div class="ms">edit what the page says</div></button>
+        <button class="mini" data-nav="thatday"><div class="mk">The anniversary</div><div class="mvl">Oct 22</div><div class="ms">choose what the page does</div></button>
+        <button class="mini" data-nav="account"><div class="mk">Share</div><div class="mvl">3 people</div><div class="ms">access, invites, the link</div></button>
+      </div>
+
+      <div class="vigil">
+        <span><b>341 flowers</b> have been laid on the page.</span>
+        <a href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">See the page</a>
+      </div>
+    </section>
+
+    <!-- ═══════ APPROVALS ═══════ -->
+    <section class="view" id="v-approvals">
+      <button class="back" data-nav="overview">← Overview</button>
+      <div class="kick">Approvals</div>
+      <h2 class="vt">Memories and changes</h2>
+      <div class="tabsrow" role="tablist">
+        <button class="tabbtn on" data-tab="waiting">Waiting <span class="n">(<span class="wcount">3</span>)</span></button>
+        <button class="tabbtn" data-tab="approved">On the page <span class="n" id="apn"></span></button>
+        <button class="tabbtn" data-tab="archive">Archive <span class="n" id="arn"></span></button>
+        <button class="tabbtn" data-tab="log">Log</button>
+      </div>
+      <div id="tab-waiting"></div>
+      <div id="tab-approved" style="display:none"></div>
+      <div id="tab-archive" style="display:none"></div>
+      <div id="tab-log" style="display:none"></div>
+    </section>
+
+    <!-- ═══════ PICTURES ═══════ -->
+    <section class="view" id="v-pictures">
+      <button class="back" data-nav="overview">← Overview</button>
+      <div class="kick">The pictures</div>
+      <h2 class="vt"><span id="photocount">12</span> photos on the page</h2>
+      <p class="subline">The first photo is the cover of the page. Click any photo to rename it, move it, or delete it. Deleted photos go to the archive.</p>
+      <div class="gal" id="gal"></div>
+    </section>
+
+    <!-- ═══════ STORY ═══════ -->
+    <section class="view" id="v-story">
+      <button class="back" data-nav="overview">← Overview</button>
+      <div class="kick">The story</div>
+      <h2 class="vt">The obituary</h2>
+      <p class="subline">This text shows on the page. Changes here update the page.</p>
+      <div class="storyroom" id="storybody">
+        <p>Eleanor Margaret Hayes was born in March of 1948, in the year the pier was rebuilt, and she never once lived more than a mile from the sea.</p>
+        <p>She kept a garden that fed half the street, wrote letters on paper because "a screen can't hold your hand," and kept a chair on the porch that was really for whoever needed it. Half Moon Bay knew her by the lemon cake she brought to every occasion, and to plenty of non-occasions besides.</p>
+      </div>
+      <div class="addroom">
+        <div class="fld" style="margin-bottom:0">
+          <label for="storyline">Add a paragraph</label>
+          <textarea id="storyline" placeholder="Write here"></textarea>
+        </div>
+        <div class="helper">
+          <div class="hlabel">The writing helper · preview, AI connects later</div>
+          <p class="hintro">It jogs memories, starts sentences, and tidies what you wrote. It suggests. You decide.</p>
+          <div class="chips">
+            <button class="chip" data-helper="jog">Jog my memory</button>
+            <button class="chip" data-helper="start">Start a sentence for me</button>
+            <button class="chip" data-helper="polish">Tidy what I wrote</button>
+          </div>
+          <div class="hout" id="hout" hidden></div>
+        </div>
+        <div class="row">
+          <button class="btn primary small" id="keepline">Add to the obituary</button>
+        </div>
+      </div>
+      <h2 class="vt" style="margin-top:30px">The timeline</h2>
+      <p class="subline">The chapters shown on the page. Photos can be moved between chapters from The pictures.</p>
+      <div class="sugrow" id="tl-sug"><span>4 new photos match <b>Half Moon Bay · 1967 to 1989</b></span><button class="btn small primary" id="tl-add">Add them</button><button class="btn small" id="tl-no">Not now</button></div>
+      <div class="qcard">
+        <div class="chaprow"><div><div class="cn">The beginning</div><div class="cm">1948 to 1966 · 4 photos</div></div><button class="btn small" data-chapedit>Edit</button></div>
+        <div class="chaprow"><div><div class="cn">Half Moon Bay</div><div class="cm">1967 to 1989 · 5 photos</div></div><button class="btn small" data-chapedit>Edit</button></div>
+        <div class="chaprow"><div><div class="cn">The garden years</div><div class="cm">1990 to 2024 · 3 photos</div></div><button class="btn small" data-chapedit>Edit</button></div>
+      </div>
+    </section>
+
+    <!-- ═══════ ANNIVERSARY ═══════ -->
+    <section class="view" id="v-thatday">
+      <button class="back" data-nav="overview">← Overview</button>
+      <div class="kick">The anniversary</div>
+      <h2 class="vt">October 22</h2>
+      <div class="qcard">
+        <p class="sen">October 22, 2026 is two years. Choose what the page does that day.</p>
+        <div class="foot">
+          <button class="btn small" data-whisper="Set · the page will mark October 22">Mark the day on the page</button>
+          <button class="btn small" data-whisper="Set · the page will not mark the day">Do nothing</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ BILLING ═══════ -->
+    <section class="view" id="v-billing">
+      <button class="back" data-nav="overview">← Overview</button>
+      <div class="kick">The household · billing</div>
+      <h2 class="vt">Your plan</h2>
+      <div class="plangrid">
+        <div class="plancard">
+          <div class="pc-head"><span class="pc-name">Free</span><span class="curchip">Current plan</span></div>
+          <div class="pc-price">$0</div>
+          <ul>
+            <li>The page, online forever</li>
+            <li>Up to 12 photographs and 10 memories</li>
+            <li>Visitors can add memories and send flowers</li>
+            <li>A shareable link</li>
+          </ul>
+        </div>
+        <div class="plancard plus">
+          <div class="pc-head"><span class="pc-name">Plus</span><span class="plustag">Most chosen</span></div>
+          <div class="pc-price">$197 <span class="pc-once">once</span></div>
+          <ul>
+            <li>Everything in Free</li>
+            <li>Unlimited photos, videos, and memories</li>
+            <li>Custom address · imissyoumemorial.com/eleanor</li>
+            <li>A memorial video from the photos</li>
+            <li>Voicemails and voice memories from visitors</li>
+            <li>AI assisted writing tool · credit removed</li>
+          </ul>
+          <button class="btn upbtn" data-whisper="This is a prototype · checkout opens Stripe in the real app">Upgrade to Plus</button>
+        </div>
+      </div>
+      <p class="conciergeline">Or let us build it for you · Concierge, from $499</p>
+      <h2 class="vt" style="margin-top:28px">Payment</h2>
+      <div class="qcard" id="paycard">
+        <p class="sen"><b>Payment method:</b> none on file. Payments are handled by Stripe.</p>
+        <div class="foot"><button class="btn small primary" id="addcard">Add a card</button></div>
+      </div>
+      <div class="qcard">
+        <p class="sen"><b>Billing history:</b> no charges. The free plan costs nothing.</p>
+      </div>
+      <div class="permaline">The Permanence Pledge · we never charge a family to keep a memory alive · <b>free stays free, forever</b></div>
+    </section>
+
+    <!-- ═══════ ACCOUNT ═══════ -->
+    <section class="view" id="v-account">
+      <button class="back" data-nav="overview">← Overview</button>
+      <div class="kick">The household · account</div>
+      <h2 class="vt">Share the page</h2>
+      <div class="qcard">
+        <div class="linkpill">
+          <span class="lp" id="sharelink">imissyoumemorial.com/sites/eleanor</span>
+          <button class="btn small primary" id="copylink">Copy link</button>
+        </div>
+        <div class="foot" style="align-items:center">
+          <button class="btn small" id="chgaddr">Change the address</button>
+          <span class="plustag">Plus</span>
+          <span style="font-size:12.5px;color:var(--ink-soft)">Plus members choose a custom address, like imissyoumemorial.com/eleanor</span>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--goldline)">
+          <div class="klabel" style="margin-bottom:10px">Who can see the page</div>
+          <div class="seg" id="privseg">
+            <button class="on" data-priv="Public" data-privdesc="Public · anyone can find and visit the page.">Public</button>
+            <button data-priv="Unlisted" data-privdesc="Unlisted · only people with the link can visit.">Unlisted</button>
+            <button data-priv="Password" data-privdesc="Password · visitors need the password you set.">Password</button>
+          </div>
+          <p id="privdesc" style="font-size:12.5px;color:var(--ink-soft);margin:9px 0 0">Public · anyone can find and visit the page.</p>
+          <div id="pwrow" class="pwrow" style="display:none">
+            <input id="pwinput" type="text" placeholder="Set the password" aria-label="Page password"/>
+            <button class="btn small primary" id="pwsave">Save password</button>
+          </div>
+        </div>
+        <div class="qr-row">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=176x176&color=2C2520&bgcolor=FFFFFF&data=https%3A%2F%2Fimissyoumemorial.com%2Fsites%2Feleanor" alt="QR code linking to the page"/>
+          <div style="flex:1;min-width:220px">
+            <p class="sen" style="margin:0 0 10px;font-size:13.5px">Visitors scan it and land on the page. For the program, the flowers card, the table at the service.</p>
+            <button class="btn small" data-whisper="Downloads the QR image in the real app">Download the QR</button>
+            <button class="btn small" data-whisper="Opens a printable card with the QR and the page address">Print a card</button>
+          </div>
+        </div>
+      </div>
+      <h2 class="vt" style="margin-top:26px">Who has access</h2>
+      <div class="qcard">
+        <div id="peoplerows">
+          <div class="prow"><span class="tinit">A</span><div><div class="pn2">Autumn (you)</div><div class="pe2">autumn@finisomegalandmark.com</div></div><span class="rolechip" id="you-role">Owner</span></div>
+          <div class="prow"><span class="tinit">D</span><div><div class="pn2">Daniel Hayes</div><div class="pe2">daniel.hayes@example.com</div></div>
+            <button class="mkown" data-makeowner="Daniel Hayes" data-email="daniel.hayes@example.com">Make owner</button>
+            <select aria-label="Role for Daniel" data-whisper-change="Role changed · Daniel is now"><option selected>Admin</option><option>Editor</option><option>Viewer</option></select></div>
+          <div class="prow"><span class="tinit">R</span><div><div class="pn2">Ruth Hayes-Lin</div><div class="pe2">ruth.hl@example.com</div></div>
+            <button class="mkown" data-makeowner="Ruth Hayes-Lin" data-email="ruth.hl@example.com">Make owner</button>
+            <select aria-label="Role for Ruth" data-whisper-change="Role changed · Ruth is now"><option>Admin</option><option selected>Editor</option><option>Viewer</option></select></div>
+        </div>
+        <div class="roletbl" aria-label="What each role can do">
+          <div class="rth">Can they</div><div class="rth">Owner</div><div class="rth">Admin</div><div class="rth">Editor</div><div class="rth">Viewer</div>
+          <div class="rc l">Approve, archive, restore</div><div class="rc">✓</div><div class="rc">✓</div><div class="rc">–</div><div class="rc">–</div>
+          <div class="rc l">Edit the story, photos, details</div><div class="rc">✓</div><div class="rc">✓</div><div class="rc">–</div><div class="rc">–</div>
+          <div class="rc l">Add photos and memories, no approval needed</div><div class="rc">✓</div><div class="rc">✓</div><div class="rc">✓</div><div class="rc">–</div>
+          <div class="rc l">See this dashboard</div><div class="rc">✓</div><div class="rc">✓</div><div class="rc">✓</div><div class="rc">✓</div>
+          <div class="rc l">Billing, ownership, delete forever</div><div class="rc">✓</div><div class="rc">–</div><div class="rc">–</div><div class="rc">–</div>
+        </div>
+        <div class="inviterow">
+          <input type="email" id="invite-email" placeholder="email@example.com" aria-label="Email to invite"/>
+          <select id="invite-role" aria-label="Role for invite"><option>Admin</option><option selected>Editor</option><option>Viewer</option></select>
+          <button class="btn small primary" id="invite-btn">Invite</button>
+        </div>
+      </div>
+      <h2 class="vt" style="margin-top:26px">Emails</h2>
+      <div class="qcard">
+        <div class="togrow" data-tog data-log="Memory waiting email"><span>A memory is waiting for approval · <b>approve or decline right from the email</b></span><span class="tsw on"></span></div>
+        <div class="togrow" data-tog data-log="Weekly summary email"><span>Weekly summary · what happened on the page</span><span class="tsw on"></span></div>
+        <div class="togrow" data-tog data-log="Anniversary reminder email"><span>Anniversary reminder · one week before October 22</span><span class="tsw"></span></div>
+      </div>
+      <h2 class="vt" style="margin-top:26px">Your account</h2>
+      <div class="qcard">
+        <p class="sen">Signed in as <b>autumn@finisomegalandmark.com</b></p>
+        <div class="foot">
+          <button class="btn small" data-whisper="In the real app this signs you out">Sign out</button>
+        </div>
+      </div>
+      <div class="qcard">
+        <button class="exphead" id="exptoggle" aria-expanded="false"><span>Export the page</span><span class="chev">▾</span></button>
+        <div id="exbody">
+          <p class="subline" style="margin:4px 0 8px">Download a copy of everything on the page. Choose items, or select all.</p>
+          <label class="ckrow allrow"><input type="checkbox" id="ex-all" checked/><span><b>All</b></span></label>
+          <label class="ckrow"><input type="checkbox" class="exitem" data-ex="photos" checked/><span>Photos · 28</span></label>
+          <label class="ckrow"><input type="checkbox" class="exitem" data-ex="videos" checked/><span>Videos · 2 films</span></label>
+          <label class="ckrow"><input type="checkbox" class="exitem" data-ex="memvideo" checked/><span>The memorial video</span></label>
+          <label class="ckrow"><input type="checkbox" class="exitem" data-ex="story" checked/><span>The obituary and timeline</span></label>
+          <label class="ckrow"><input type="checkbox" class="exitem" data-ex="memories" checked/><span>Memories · 14 on the page</span></label>
+          <label class="ckrow"><input type="checkbox" class="exitem" data-ex="details" checked/><span>Page details and settings</span></label>
+          <div class="foot" style="align-items:center">
+            <button class="btn primary small" id="do-export">Export</button>
+            <button class="btn small" data-whisper="Assembles a printable program from the page · the photo, the dates, the obituary · clean version with Plus">Create a service program</button>
+            <span style="font-size:12.5px;color:var(--ink-soft)">Photos and videos arrive as full files. Text arrives as a document.</span>
+          </div>
+        </div>
+      </div>
+      <h2 class="vt" style="margin-top:26px">Danger zone</h2>
+      <div class="qcard dangerzone">
+        <p class="sen">Deleting your account deletes every page you own and everything attached to them. This cannot be undone.</p>
+        <div class="foot"><button class="btn small danger" id="delacct">Delete account</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- mobile tab bar -->
+<div class="mtabs" role="navigation" aria-label="Dashboard tabs">
+  <button class="mtab" data-nav="overview"><svg viewBox="0 0 24 24"><path d="M4 12L12 5l8 7M6 10v9h12v-9"/></svg>Desk</button>
+  <button class="mtab" data-nav="approvals"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>Approvals<span class="dotc wcount">3</span></button>
+  <button class="mtab" data-nav="pictures"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>Pictures</button>
+  <button class="mtab" data-nav="billing"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>Household</button>
+</div>
+
+<!-- photo modal -->
+<div class="modal" id="photomodal" role="dialog" aria-modal="true" aria-label="Manage photo">
+  <div class="mveil" data-mclose></div>
+  <div class="mpanel">
+    <div class="mhead"><h3>Manage this photo</h3><button class="mclose" data-mclose aria-label="Close">×</button></div>
+    <div class="mimg" id="pm-imgwrap"><img id="pm-img" src="" alt=""/></div>
+    <div class="ba" id="pm-ba" hidden>
+      <div class="half before"><img id="pm-ba-before" src="" alt="Before restoration"/><span class="batag">Before</span></div>
+      <div class="half"><img id="pm-ba-after" src="" alt="After restoration"/><span class="batag">After</span></div>
+    </div>
+    <div class="fld"><label for="pm-title">Title</label><input id="pm-title" type="text"/></div>
+    <div class="minfo"><span class="k">On the page</span><span id="pm-place"></span></div>
+    <div class="minfo"><span class="k">Added by</span><span id="pm-by"></span></div>
+    <div class="minfo" style="border-bottom:none"><span class="k">See it live</span><a href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">Open the page →</a></div>
+    <div class="mfoot">
+      <button class="btn small primary" id="pm-save">Save title</button>
+      <button class="btn small" id="pm-cover">Set as cover</button>
+      <button class="btn small" id="pm-restore">Restore this photo</button><span class="plustag" style="align-self:center">Plus</span>
+      <button class="btn small" id="pm-keepold" hidden>Keep the old one</button>
+      <button class="btn small danger" id="pm-delete">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- edit person modal -->
+<div class="modal" id="personmodal" role="dialog" aria-modal="true" aria-label="Edit details">
+  <div class="mveil" data-mclose></div>
+  <div class="mpanel">
+    <div class="mhead"><h3>Details</h3><button class="mclose" data-mclose aria-label="Close">×</button></div>
+    <div class="fld"><label for="ep-name">Name</label><input id="ep-name" type="text" value="Eleanor Margaret Hayes"/></div>
+    <div class="frow">
+      <div class="fld"><label for="ep-born">Born</label><input id="ep-born" type="date" value="1948-03-12" max="2026-12-31"/></div>
+      <div class="fld"><label for="ep-died">Died</label><input id="ep-died" type="date" value="2024-10-22" max="2026-12-31"/></div>
+    </div>
+    <div class="fld"><label for="ep-pn">Pronouns · used on the public page only</label>
+      <select id="ep-pn"><option value="she · her" selected>she · her</option><option value="he · him">he · him</option><option value="they · them">they · them</option></select>
+    </div>
+    <div class="fld"><label>Profile photo</label><button class="btn small" data-whisper="Photo upload opens here in the real app">Change the photo</button></div>
+    <div class="mfoot">
+      <button class="btn primary small" id="ep-save">Save · the page updates</button>
+    </div>
+  </div>
+</div>
+
+<!-- confirm modal -->
+<div class="modal" id="confirmmodal" role="dialog" aria-modal="true" aria-label="Are you sure?">
+  <div class="mveil" data-mclose></div>
+  <div class="mpanel" style="width:min(440px,92vw)">
+    <div class="mhead"><h3>Are you sure?</h3><button class="mclose" data-mclose aria-label="Close">×</button></div>
+    <p style="font-size:15px;line-height:1.6;margin:0" id="cf-text"></p>
+    <div class="mfoot">
+      <button class="btn small dsolid" id="cf-yes">Yes</button>
+      <button class="btn small" data-mclose>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- delete account modal -->
+<div class="modal" id="delmodal" role="dialog" aria-modal="true" aria-label="Delete account">
+  <div class="mveil" data-mclose></div>
+  <div class="mpanel" style="width:min(460px,92vw)">
+    <div class="mhead"><h3>Delete your account</h3><button class="mclose" data-mclose aria-label="Close">×</button></div>
+    <p style="font-size:15px;line-height:1.6;margin:0 0 6px">Every page you own is deleted, with all photos, videos, memories, and settings. This cannot be undone.</p>
+    <div class="fld"><label for="del-input">Type your full email address to confirm</label><input id="del-input" type="email" placeholder="email@example.com"/></div>
+    <div class="mfoot">
+      <button class="btn small dsolid" id="del-go">Delete account</button>
+      <button class="btn small" data-mclose>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- pages drawer -->
+<div class="modal" id="pagesmodal" role="dialog" aria-modal="true" aria-label="Your pages">
+  <div class="mveil" data-mclose></div>
+  <div class="mpanel" style="width:min(480px,92vw)">
+    <div class="mhead"><h3>Your pages</h3><button class="mclose" data-mclose aria-label="Close">×</button></div>
+    <div class="pgrow active">
+      <span class="archp"><img src="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-hero.jpg" alt="Eleanor Margaret Hayes"/></span>
+      <div><div class="pgn">Eleanor Margaret Hayes</div><div class="pgm">MAR 12, 1948 – OCT 22, 2024 · FREE PLAN</div></div>
+      <span class="rolechip">This desk</span>
+    </div>
+    <button class="pgrow" data-whisper="In the real app this opens Walter's desk">
+      <span class="archp"><span class="initial">W</span></span>
+      <div><div class="pgn">Walter James Hayes</div><div class="pgm">JUN 2, 1945 – APR 8, 2011 · FREE PLAN</div></div>
+    </button>
+    <div class="mfoot" style="margin-top:8px;align-items:center;gap:12px">
+      <button class="btn small primary" data-whisper="Opens the onboarding letter · a new page starts free, Plus anytime">Begin anotthe page</button>
+      <button class="btn small" id="pg-editdetails">Edit details</button>
+    </div>
+  </div>
+</div>
+
+<!-- transfer ownership modal -->
+<div class="modal" id="transfermodal" role="dialog" aria-modal="true" aria-label="Transfer ownership">
+  <div class="mveil" data-mclose></div>
+  <div class="mpanel" style="width:min(460px,92vw)">
+    <div class="mhead"><h3>Transfer ownership</h3><button class="mclose" data-mclose aria-label="Close">×</button></div>
+    <p style="font-size:15px;line-height:1.6;margin:0 0 6px"><b id="tf-name"></b> will control everything, including billing. You become an Admin.</p>
+    <div class="fld"><label for="tf-input">Type <b id="tf-email-show" style="color:var(--terra-text);text-transform:none;letter-spacing:0"></b> to confirm</label><input id="tf-input" type="email" placeholder="email@example.com"/></div>
+    <div class="mfoot">
+      <button class="btn small dsolid" id="tf-go">Transfer ownership</button>
+      <button class="btn small" data-mclose>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- card modal -->
+<div class="modal" id="cardmodal" role="dialog" aria-modal="true" aria-label="Add a card">
+  <div class="mveil" data-mclose></div>
+  <div class="mpanel" style="width:min(460px,92vw)">
+    <div class="mhead"><h3>Add a card</h3><button class="mclose" data-mclose aria-label="Close">×</button></div>
+    <div class="fld"><label for="cc-num">Card number</label><input id="cc-num" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242"/></div>
+    <div class="frow">
+      <div class="fld"><label for="cc-exp">Expiry</label><input id="cc-exp" type="text" placeholder="MM/YY"/></div>
+      <div class="fld"><label for="cc-cvc">CVC</label><input id="cc-cvc" type="text" inputmode="numeric" placeholder="123"/></div>
+    </div>
+    <div class="fld"><label for="cc-name">Name on card</label><input id="cc-name" type="text" placeholder="Autumn"/></div>
+    <p style="font-size:12px;color:var(--ink-soft);margin:0">Prototype only. In the real app this is a secure Stripe form. Do not type a real card number here.</p>
+    <div class="mfoot"><button class="btn small primary" id="card-save">Save card</button></div>
+  </div>
+</div>
+
+<!-- whisper toast -->
+<div class="whisper" id="whisper" role="status"><span id="whisper-text"></span><button id="whisper-undo" style="display:none">Undo</button></div>
+
+<!-- a11y -->
+<div class="a11y" aria-label="Accessibility controls">
+  <button data-scale="0.92" aria-label="Smaller text">A-</button>
+  <button data-scale="1" class="on" aria-label="Default text">A</button>
+  <button data-scale="1.16" aria-label="Larger text">A+</button>
+  <button id="hcbtn" aria-label="High contrast" aria-pressed="false">HC</button>
+  <button id="mobtn" aria-label="Pause motion" aria-pressed="false">⏸</button>
+</div>
+<div class="vartag">I MISS YOU MEMORIAL · PROTOTYPE · autumn@finisomegalandmark.com</div>
+
+<script>
+/* ---------- helpers ---------- */
+function $(s,c){return (c||document).querySelector(s)}
+function $all(s,c){return [].slice.call((c||document).querySelectorAll(s))}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function now(){return new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}
+
+/* ---------- data ---------- */
+var TOTAL=3;
+var pending=[
+ {id:1,who:"Miriam Okafor",rel:"Neighbour",voice:false,body:"She kept a chair on the porch that was really for whoever needed it. I sat in it the week my husband died, and she never once asked me to talk. She just brought out two cups."},
+ {id:2,who:"Tom Delgado",rel:"Her student, 1979",voice:false,body:"She failed me in October and taught me to love books by June. Both were mercy, though I only understood the second one at the time."},
+ {id:3,who:"Ruth Hayes-Lin",rel:"Granddaughter",voice:true,body:"Grandma taught me to read tide charts before I could ride a bike. She said the sea keeps its promises if you learn to listen."}
+];
+var approved=[
+ {id:11,who:"Daniel Hayes",rel:"Her son",body:"Every Sunday, lemon cake. No occasion needed.",when:"Aug 12, 2:10 PM"},
+ {id:12,who:"Grace Park",rel:"Choir",body:"She sang the alto line like it was a secret she was letting you in on.",when:"Aug 9, 6:41 PM"}
+];
+var archive=[
+ {id:21,kind:"memory",who:"Anonymous",body:"Great website!!",note:"Declined Aug 10",restoreTo:"waiting"}
+];
+var log=[
+ {t:"Aug 12, 2:10 PM",a:"Approved · <b>Daniel Hayes</b>'s memory · by you"},
+ {t:"Aug 10, 9:02 AM",a:"Declined · an anonymous message · by you"},
+ {t:"Aug 9, 6:41 PM",a:"Approved · <b>Grace Park</b>'s memory · by you"},
+ {t:"Aug 2, 4:18 PM",a:"Photo added · <b>The porch chair</b> · by Miriam Okafor"}
+];
+var decidedCount=0;
+
+var PBASE="https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-";
+var photos=[
+ {id:"p0",url:PBASE+"hero.jpg",title:"The cover photo",place:"Cover",by:"You",cover:true},
+ {id:"p1",url:PBASE+"1948.jpg",title:"1948",place:"Timeline · The beginning",by:"You"},
+ {id:"p2",url:PBASE+"1954.jpg",title:"1954",place:"Timeline · The beginning",by:"You"},
+ {id:"p3",url:PBASE+"1959.jpg",title:"1959",place:"Timeline · The beginning",by:"You"},
+ {id:"p4",url:PBASE+"1966.jpg",title:"1966",place:"Timeline · The beginning",by:"You"},
+ {id:"p5",url:PBASE+"1970.jpg",title:"1970",place:"Timeline · Half Moon Bay",by:"You"},
+ {id:"p6",url:PBASE+"1976.jpg",title:"1976",place:"Timeline · Half Moon Bay",by:"You"},
+ {id:"p7",url:PBASE+"1984.jpg",title:"1984",place:"Timeline · Half Moon Bay",by:"You"},
+ {id:"p8",url:PBASE+"1989.jpg",title:"Sunday choir",place:"Timeline · Half Moon Bay",by:"Grace Park"},
+ {id:"p9",url:PBASE+"1993.jpg",title:"1993",place:"Timeline · The garden years",by:"You"},
+ {id:"p10",url:PBASE+"1996.jpg",title:"1996",place:"Timeline · The garden years",by:"You"},
+ {id:"p11",url:"https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/eleanor/walter-chair-2011.jpg",title:"The porch chair",place:"Board · Neighbours",by:"Miriam Okafor"}
+];
+
+/* ---------- greeting ---------- */
+(function(){var h=new Date().getHours();$("#greet").textContent=h<12?"Good morning":h<18?"Good afternoon":"Good evening"})();
+
+/* ---------- whisper ---------- */
+var wTimer=null,undoFn=null;
+function whisper(text,withUndo){
+  $("#whisper-text").textContent=text;
+  $("#whisper-undo").style.display=withUndo?"inline":"none";
+  $("#whisper").classList.add("show");
+  clearTimeout(wTimer);
+  wTimer=setTimeout(function(){$("#whisper").classList.remove("show");undoFn=null},7000);
+}
+$("#whisper-undo").addEventListener("click",function(){if(undoFn){undoFn();undoFn=null}$("#whisper").classList.remove("show")});
+
+/* ---------- sync ---------- */
+function syncAll(){
+  var n=pending.length;
+  $all(".wcount").forEach(function(el){el.textContent=n;el.classList.toggle("zero",n===0)});
+  var v=$("#verdict-main");
+  if(n===0){v.textContent="Nothing is waiting for approval.";}
+  else if(n===1){v.textContent="1 memory is waiting for your approval.";}
+  else{v.textContent=n+" memories are waiting for your approval.";}
+  $("#apn").textContent="("+approved.length+")";
+  $("#arn").textContent="("+archive.length+")";
+  renderConveyor();renderTabs();
+}
+
+/* ---------- conveyor ---------- */
+function dotsStr(){var s="";for(var i=0;i<TOTAL;i++){s+=(i<decidedCount)?"●":"○"}return s}
+function renderConveyor(){
+  var c=$("#conveyor");
+  if(pending.length){
+    var m=pending[0];
+    c.innerHTML='<div class="cv-top"><span class="cv-who">Memory '+(decidedCount+1)+' of '+TOTAL+' · '+esc(m.who)+' · '+esc(m.rel)+'</span><span class="dots">'+dotsStr()+'</span></div>'
+      +'<div class="cv-body" id="cvbody">'
+      +(m.voice?'<span class="voicetag" data-whisper="Has a voice recording · it plays in the real app">▸ Voice recording attached</span>':'')
+      +'<p class="idq">“'+esc(m.body)+'”</p>'
+      +'<div class="cv-acts"><button class="btn primary" data-decide="approve">Approve to page</button>'
+      +'<button class="btn" data-decide="decline">Decline</button></div></div>';
+  } else {
+    c.innerHTML='<div class="clear-desk"><div class="cv-top" style="justify-content:flex-end"><span class="dots">'+dotsStr()+'</span></div>'
+      +'<div class="l1">Nothing is waiting.</div>'
+      +'<div class="l2"><button class="btn small" data-nav="approvals">See the log and archive</button></div></div>';
+  }
+}
+function decide(action,memId){
+  var idx = memId!=null ? pending.findIndex(function(m){return m.id===memId}) : 0;
+  if(idx<0||!pending.length)return;
+  var m=pending[idx];
+  var finish=function(){
+    pending.splice(idx,1);decidedCount++;
+    var ts=now();
+    if(action==="approve"){
+      approved.unshift({id:m.id,who:m.who,rel:m.rel,body:m.body,when:ts});
+      log.unshift({t:ts,a:"Approved · <b>"+esc(m.who)+"</b>'s memory · by you"});
+      whisper("Added to the page",true);
+      undoFn=function(){approved=approved.filter(function(x){return x.id!==m.id});pending.unshift(m);decidedCount--;log.unshift({t:now(),a:"Undo · <b>"+esc(m.who)+"</b>'s memory back to waiting · by you"});syncAll();whisper("Undone · back in waiting",false)};
+    } else {
+      archive.unshift({id:m.id,kind:"memory",who:m.who,body:m.body,note:"Declined "+ts,restoreTo:"waiting",mem:m});
+      log.unshift({t:ts,a:"Declined · <b>"+esc(m.who)+"</b>'s memory · by you"});
+      whisper("Moved to the archive",true);
+      undoFn=function(){archive=archive.filter(function(x){return x.id!==m.id});pending.unshift(m);decidedCount--;log.unshift({t:now(),a:"Undo · <b>"+esc(m.who)+"</b>'s memory back to waiting · by you"});syncAll();whisper("Undone · back in waiting",false)};
+    }
+    syncAll();
+  };
+  var body=$("#cvbody");
+  var paused=document.body.classList.contains("mpause")||window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(memId==null&&body&&!paused){body.classList.add("out");setTimeout(finish,280)}else{finish()}
+}
+
+/* ---------- approvals tabs ---------- */
+var curTab="waiting";
+function renderTabs(){
+  /* waiting */
+  var h="";
+  pending.forEach(function(m){
+    h+='<div class="letter"><div class="lt"><div><div class="lk">Waiting</div><div class="lf">'+esc(m.who)+' · <span style="font-weight:400;color:var(--ink-soft)">'+esc(m.rel)+'</span></div></div></div>'
+      +(m.voice?'<span class="voicetag" data-whisper="Has a voice recording · it plays in the real app">▸ Voice recording attached</span>':'')
+      +'<p class="idq">“'+esc(m.body)+'”</p>'
+      +'<div class="cv-acts"><button class="btn primary small" data-ldecide="approve" data-mid="'+m.id+'">Approve to page</button>'
+      +'<button class="btn small" data-ldecide="decline" data-mid="'+m.id+'">Decline</button></div></div>';
+  });
+  if(!pending.length){h='<div class="qcard"><p class="sen">Nothing is waiting. New memories appear here first.</p></div>'}
+  $("#tab-waiting").innerHTML=h;
+  /* approved */
+  h="";
+  approved.forEach(function(m){
+    h+='<div class="letter"><div class="lt"><div><div class="lk">On the page</div><div class="lf">'+esc(m.who)+(m.rel?' · <span style="font-weight:400;color:var(--ink-soft)">'+esc(m.rel)+'</span>':'')+'</div></div><span class="lwhen">Approved '+esc(m.when)+'</span></div>'
+      +'<p class="idq">“'+esc(m.body)+'”</p>'
+      +'<div class="cv-acts"><button class="btn small primary" data-takedown="'+m.id+'">Archive memory</button></div></div>';
+  });
+  if(!approved.length){h='<div class="qcard"><p class="sen">No memories on the page yet.</p></div>'}
+  $("#tab-approved").innerHTML=h;
+  /* archive */
+  h="";
+  archive.forEach(function(x){
+    h+='<div class="letter"><div class="lt"><div><div class="lk">'+(x.kind==="photo"?"Photo · archived":"Memory · archived")+'</div><div class="lf">'+esc(x.who||x.title)+'</div></div><span class="lwhen">'+esc(x.note)+'</span></div>'
+      +(x.kind==="photo"?'<div style="width:110px;border-radius:8px;overflow:hidden;border:1px solid var(--hairline);margin-bottom:10px"><img src="'+x.url+'" alt="'+esc(x.title)+'"/></div>':'<p class="idq">“'+esc(x.body)+'”</p>')
+      +'<div class="cv-acts"><button class="btn small primary" data-restore="'+x.id+'">Restore</button>'
+      +'<button class="btn small danger" data-killforever="'+x.id+'">Delete forever</button></div></div>';
+  });
+  if(!archive.length){h='<div class="qcard"><p class="sen">The archive is empty. Declined memories, taken-down memories, and deleted photos end up here.</p></div>'}
+  $("#tab-archive").innerHTML=h;
+  /* log */
+  h='<div class="qcard">';
+  log.forEach(function(e){h+='<div class="logrow"><span class="lw">'+esc(e.t)+'</span><span class="la">'+e.a+'</span></div>'});
+  h+='</div>';
+  $("#tab-log").innerHTML=h;
+}
+function showTab(t){
+  curTab=t;
+  $all(".tabbtn").forEach(function(b){b.classList.toggle("on",b.dataset.tab===t)});
+  ["waiting","approved","archive","log"].forEach(function(k){$("#tab-"+k).style.display=(k===t)?"block":"none"});
+}
+
+/* take down / restore / delete forever */
+function takedown(id){
+  var i=approved.findIndex(function(m){return m.id===id});if(i<0)return;
+  var m=approved.splice(i,1)[0];var ts=now();
+  archive.unshift({id:m.id,kind:"memory",who:m.who,body:m.body,note:"Taken down "+ts,restoreTo:"approved",mem:m});
+  log.unshift({t:ts,a:"Taken down · <b>"+esc(m.who)+"</b>'s memory off the page · by you"});
+  syncAll();whisper("Memory archived",true);
+  undoFn=function(){archive=archive.filter(function(x){return x.id!==m.id});approved.unshift(m);log.unshift({t:now(),a:"Undo · <b>"+esc(m.who)+"</b>'s memory back on the page · by you"});syncAll();whisper("Undone · back on the page",false)};
+}
+function restoreItem(id){
+  var i=archive.findIndex(function(x){return x.id===id});if(i<0)return;
+  var x=archive.splice(i,1)[0];var ts=now();
+  if(x.kind==="photo"){
+    photos.push({id:x.pid,url:x.url,title:x.title,place:x.place,by:x.by});
+    log.unshift({t:ts,a:"Photo restored · <b>"+esc(x.title)+"</b> · by you"});
+    renderGal();
+  } else if(x.restoreTo==="approved"){
+    approved.unshift({id:x.id,who:x.who,body:x.body,rel:x.rel||"",when:ts});
+    log.unshift({t:ts,a:"Restored · <b>"+esc(x.who)+"</b>'s memory back on the page · by you"});
+  } else {
+    pending.push({id:x.id,who:x.who,rel:x.rel||"",voice:false,body:x.body});
+    if(decidedCount>0)decidedCount--;
+    log.unshift({t:ts,a:"Restored · <b>"+esc(x.who)+"</b>'s memory back to waiting · by you"});
+  }
+  syncAll();whisper("Restored",false);
+}
+function killForever(id){
+  var i=archive.findIndex(function(x){return x.id===id});if(i<0)return;
+  var x=archive.splice(i,1)[0];
+  log.unshift({t:now(),a:"Deleted forever · "+esc(x.who||x.title)+" · by you"});
+  syncAll();whisper("Deleted forever",false);
+}
+
+/* ---------- pictures ---------- */
+var curPhoto=null;
+function renderGal(){
+  var rots=[-1.6,1.4,-.9,1.8,-1.2,.8,-1.7,1.1,-.7,1.5,-1.3,.9];
+  var h="";
+  photos.forEach(function(p,i){
+    h+='<button class="pol" style="--r:'+rots[i%rots.length]+'deg" data-photo="'+p.id+'" aria-label="Manage photo: '+esc(p.title)+'"><span class="pin"></span>'
+      +(p.cover?'<span class="covertag">The cover</span>':'')
+      +'<div class="fr"><img src="'+p.url+'" alt="'+esc(p.title)+'"/></div>'
+      +'<div class="cap">'+esc(p.title)+'</div>'
+      +'<div class="place">'+esc(p.place)+'</div></button>';
+  });
+  $("#gal").innerHTML=h;
+  $("#photocount").textContent=photos.length;
+}
+function openPhoto(id){
+  curPhoto=photos.find(function(p){return p.id===id});if(!curPhoto)return;
+  var rb=$("#pm-restore");if(rb){rb.dataset.state="";rb.textContent="Restore this photo"}
+  $("#pm-ba").hidden=true;$("#pm-imgwrap").style.display="";$("#pm-keepold").hidden=true;
+  $("#pm-img").src=curPhoto.url;$("#pm-img").alt=curPhoto.title;
+  $("#pm-title").value=curPhoto.title;
+  $("#pm-place").textContent=curPhoto.place;
+  $("#pm-by").textContent=curPhoto.by;
+  $("#pm-cover").style.display=curPhoto.cover?"none":"inline-flex";
+  $("#photomodal").classList.add("open");
+}
+$("#pm-save").addEventListener("click",function(){
+  if(!curPhoto)return;
+  var v=$("#pm-title").value.trim();if(!v){whisper("Type a title first",false);return}
+  curPhoto.title=v;log.unshift({t:now(),a:"Photo renamed · <b>"+esc(v)+"</b> · by you"});
+  renderGal();renderTabs();$("#photomodal").classList.remove("open");
+  whisper("Saved · the page updates",false);
+});
+$("#pm-cover").addEventListener("click",function(){
+  if(!curPhoto)return;
+  photos.forEach(function(p){p.cover=false});curPhoto.cover=true;
+  photos=[curPhoto].concat(photos.filter(function(p){return p!==curPhoto}));
+  curPhoto.place="Cover";
+  log.unshift({t:now(),a:"Cover changed · <b>"+esc(curPhoto.title)+"</b> is the cover · by you"});
+  renderGal();renderTabs();$("#photomodal").classList.remove("open");
+  whisper("This photo is the cover now",false);
+});
+$("#pm-delete").addEventListener("click",function(){
+  if(!curPhoto)return;
+  var p=curPhoto;var ts=now();
+  photos=photos.filter(function(x){return x!==p});
+  archive.unshift({id:"a-"+p.id,kind:"photo",pid:p.id,url:p.url,title:p.title,place:p.place,by:p.by,note:"Deleted "+ts});
+  log.unshift({t:ts,a:"Photo deleted · <b>"+esc(p.title)+"</b> · by you"});
+  renderGal();syncAll();$("#photomodal").classList.remove("open");
+  whisper("Moved to the archive",true);
+  undoFn=function(){archive=archive.filter(function(x){return x.id!=="a-"+p.id});photos.push(p);log.unshift({t:now(),a:"Undo · <b>"+esc(p.title)+"</b> back on the page · by you"});renderGal();syncAll();whisper("Undone · back on the page",false)};
+});
+
+/* ---------- person modal ---------- */
+function openPerson(){$("#personmodal").classList.add("open")}
+function openPages(){$("#pagesmodal").classList.add("open")}
+$("#idb-edit").addEventListener("click",openPerson);
+$("#idb-edit").addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openPerson()}});
+$("#topbar-edit").addEventListener("click",openPages);
+$("#pagesbtn").addEventListener("click",openPages);
+$("#pg-editdetails").addEventListener("click",function(){$("#pagesmodal").classList.remove("open");openPerson()});
+$("#ep-save").addEventListener("click",function(){
+  var nm=$("#ep-name").value.trim()||"Eleanor Margaret Hayes";
+  var b=$("#ep-born").value,d=$("#ep-died").value;
+  if(!b||!d){whisper("Pick both dates",false);return}
+  if(d<b){whisper("The death date is before the birth date · check the dates",false);return}
+  function fmt(iso){return new Date(iso+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase()}
+  $all(".nm-txt").forEach(function(el){el.textContent=nm});
+  $all(".dt-txt").forEach(function(el){el.textContent=fmt(b)+" – "+fmt(d)});
+  log.unshift({t:now(),a:"Details edited · by you"});
+  renderTabs();
+  $("#personmodal").classList.remove("open");
+  whisper("Saved · the page updates",false);
+});
+
+/* ---------- story ---------- */
+$("#keepline").addEventListener("click",function(){
+  var ta=$("#storyline");var v=ta.value.trim();
+  if(!v){whisper("Write something first",false);return}
+  var p=document.createElement("p");p.className="newline";p.textContent=v;
+  $("#storybody").appendChild(p);ta.value="";
+  log.unshift({t:now(),a:"Obituary edited · a paragraph added · by you"});
+  renderTabs();
+  whisper("Added · the page updates",false);
+});
+
+/* ---------- account ---------- */
+$("#invite-btn").addEventListener("click",function(){
+  var em=$("#invite-email").value.trim();
+  if(!em||em.indexOf("@")<0){whisper("Type an email address first",false);return}
+  var role=$("#invite-role").value;
+  var d=document.createElement("div");d.className="prow";
+  d.innerHTML='<span class="tinit">'+esc(em.charAt(0).toUpperCase())+'</span><div><div class="pn2">'+esc(em)+'</div><div class="pe2">Invited · not accepted yet</div></div><span class="rolechip">'+esc(role)+'</span>';
+  $("#peoplerows").appendChild(d);
+  $("#invite-email").value="";
+  log.unshift({t:now(),a:"Invited · "+esc(em)+" as "+esc(role)+" · by you"});
+  renderTabs();
+  whisper("Invitation sent to "+em,false);
+});
+$("#copylink").addEventListener("click",function(){
+  var url="https://imissyoumemorial.com/sites/eleanor";
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){whisper("Link copied",false)},function(){whisper(url,false)})}
+  else{whisper(url,false)}
+});
+
+/* ---------- routing + delegation ---------- */
+function go(view){
+  $all(".view").forEach(function(v){v.classList.remove("on")});
+  var t=$("#v-"+view);if(t)t.classList.add("on");
+  $all(".ni").forEach(function(b){b.classList.toggle("on",b.dataset.nav===view)});
+  $all(".mtab").forEach(function(b){
+    var tv=b.dataset.nav;
+    b.classList.toggle("on",tv===view||(tv==="billing"&&view==="account"));
+  });
+  window.scrollTo({top:0,behavior:"auto"});
+}
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-nav]");if(el){go(el.dataset.nav);return}
+  el=e.target.closest("[data-decide]");if(el){decide(el.dataset.decide,null);return}
+  el=e.target.closest("[data-ldecide]");if(el){decide(el.dataset.ldecide,parseInt(el.dataset.mid,10));return}
+  el=e.target.closest("[data-takedown]");if(el){takedown(parseInt(el.dataset.takedown,10));return}
+  el=e.target.closest("[data-restore]");if(el){restoreItem(isNaN(+el.dataset.restore)?el.dataset.restore:+el.dataset.restore);return}
+  el=e.target.closest("[data-killforever]");if(el){var kid=isNaN(+el.dataset.killforever)?el.dataset.killforever:+el.dataset.killforever;askConfirm("Do you want to delete this forever? It cannot be restored.","Delete forever",function(){killForever(kid)});return}
+  el=e.target.closest("[data-makeowner]");if(el){openTransfer(el.closest(".prow"),el.dataset.makeowner,el.dataset.email);return}
+  el=e.target.closest("[data-starter]");if(el){var ta=$("#storyline");ta.value=(ta.value?ta.value.replace(/\s+$/,"")+" ":"")+el.dataset.starter;ta.focus();return}
+  el=e.target.closest("[data-helper]");if(el){helperAct(el.dataset.helper);return}
+  el=e.target.closest("#chgaddr");if(el){whisper("Choosing a custom address comes with Plus · $197 once",false);return}
+  el=e.target.closest("#privseg button");if(el){$all("#privseg button").forEach(function(b){b.classList.toggle("on",b===el)});$("#privdesc").textContent=el.dataset.privdesc;$("#pwrow").style.display=(el.dataset.priv==="Password")?"flex":"none";if(el.dataset.priv!=="Password"){log.unshift({t:now(),a:"Privacy set to "+el.dataset.priv+" · by you"});renderTabs();whisper("Saved · the page is now "+el.dataset.priv.toLowerCase(),false)}else{$("#pwinput").focus()}return}
+  el=e.target.closest("#pwsave");if(el){var pw=$("#pwinput").value.trim();if(!pw){whisper("Type a password first",false);return}log.unshift({t:now(),a:"Privacy set to Password · by you"});renderTabs();whisper("Password set · the page now asks for it",false);return}
+  el=e.target.closest("[data-tog]");if(el){var s=el.querySelector(".tsw");s.classList.toggle("on");log.unshift({t:now(),a:esc(el.dataset.log)+" turned "+(s.classList.contains("on")?"on":"off")+" · by you"});renderTabs();whisper("Saved",false);return}
+  el=e.target.closest("#exptoggle");if(el){var open=$("#exbody").classList.toggle("open");el.setAttribute("aria-expanded",open);return}
+  el=e.target.closest("#tl-add");if(el){var hm=$all(".chaprow").find(function(r){var n=r.querySelector(".cn");return n&&n.textContent.indexOf("Half Moon Bay")>=0});if(hm){var cmEl=hm.querySelector(".cm");if(cmEl)cmEl.textContent="1967 to 1989 · 9 photos"}var sr=$("#tl-sug");if(sr)sr.remove();log.unshift({t:now(),a:"4 photos added to <b>Half Moon Bay</b> · suggested by the desk · approved by you"});renderTabs();whisper("Added · 4 photos joined Half Moon Bay",false);return}
+  el=e.target.closest("#tl-no");if(el){var sr2=$("#tl-sug");if(sr2)sr2.remove();whisper("Dismissed",false);return}
+  el=e.target.closest("#pm-restore");if(el){
+    if(el.dataset.state==="preview"){
+      el.dataset.state="";el.textContent="Restore this photo";
+      $("#pm-ba").hidden=true;$("#pm-imgwrap").style.display="";$("#pm-keepold").hidden=true;
+      log.unshift({t:now(),a:"Photo restored · <b>"+esc(curPhoto?curPhoto.title:"")+"</b> · by you"});renderTabs();
+      $("#photomodal").classList.remove("open");
+      whisper("Restored photo saved · a Plus feature in the real app",false);
+    } else {
+      if(curPhoto){$("#pm-ba-before").src=curPhoto.url;$("#pm-ba-after").src=curPhoto.url}
+      $("#pm-imgwrap").style.display="none";$("#pm-ba").hidden=false;
+      el.dataset.state="preview";el.textContent="Keep the restored photo";
+      $("#pm-keepold").hidden=false;
+      whisper("Preview · compare, then keep the one you prefer",false);
+    }
+    return}
+  el=e.target.closest("#pm-keepold");if(el){
+    var rb2=$("#pm-restore");rb2.dataset.state="";rb2.textContent="Restore this photo";
+    $("#pm-ba").hidden=true;$("#pm-imgwrap").style.display="";el.hidden=true;
+    whisper("Kept the original · nothing changed",false);
+    return}
+  el=e.target.closest("[data-chapedit]");if(el){editChap(el.closest(".chaprow"));return}
+  el=e.target.closest("[data-chapsave]");if(el){saveChap(el.closest(".chaprow"));return}
+  el=e.target.closest("[data-chapcancel]");if(el){cancelChap(el.closest(".chaprow"));return}
+  el=e.target.closest("#addcard,#updcard");if(el){$("#cardmodal").classList.add("open");return}
+  el=e.target.closest("#rmcard");if(el){askConfirm("Remove this card?","Remove card",function(){resetPaycard()});return}
+  el=e.target.closest("[data-tab]");if(el){showTab(el.dataset.tab);return}
+  el=e.target.closest("[data-photo]");if(el){openPhoto(el.dataset.photo);return}
+  el=e.target.closest("[data-mclose]");if(el){el.closest(".modal").classList.remove("open");return}
+  el=e.target.closest("[data-whisper]");if(el){whisper(el.dataset.whisper,false);return}
+});
+document.addEventListener("change",function(e){
+  var el=e.target.closest("select[data-whisper-change]");
+  if(el){whisper(el.dataset.whisperChange+" "+el.value,false);log.unshift({t:now(),a:"Role changed · "+esc(el.value)+" · by you"});renderTabs()}
+});
+
+/* ---------- writing helper preview ---------- */
+var jogPairs=[
+ ["What did Eleanor's Saturday mornings look like?","Eleanor's Saturday mornings were "],
+ ["What was Eleanor famous for at the dinner table?","At the dinner table, Eleanor was famous for "],
+ ["What did Eleanor always carry?","Eleanor always carried "],
+ ["Which song was Eleanor's?","Eleanor's song was "],
+ ["What would Eleanor never let you leave without?","Eleanor never let you leave without "],
+ ["Where could you always find Eleanor?","You could always find Eleanor "]
+];
+var jogIx=0;
+var startLines=["Eleanor was the kind of person who ","No one left Eleanor's kitchen without ","Eleanor's favorite time of day was ","People came to Eleanor when "];
+var startIx=0;
+function helperOut(html){var o=$("#hout");o.hidden=false;o.innerHTML=html}
+function helperAct(kind){
+  if(kind==="jog"){
+    var qs=[];
+    for(var i=0;i<3;i++){qs.push(jogPairs[(jogIx+i)%jogPairs.length])}
+    jogIx=(jogIx+3)%jogPairs.length;
+    var h='<b style="font-size:12px">Tap a question and the helper starts the sentence in the box.</b>';
+    qs.forEach(function(p){h+='<button class="hq" data-starter="'+esc(p[1])+'">'+esc(p[0])+'</button>'});
+    helperOut(h);
+  } else if(kind==="start"){
+    var s=startLines[startIx%startLines.length];startIx++;
+    var ta=$("#storyline");ta.value=(ta.value?ta.value.replace(/\s+$/,"")+" ":"")+s;ta.focus();
+    helperOut('A start is in the box. Change any of it, or tap again for a different one.');
+  } else if(kind==="polish"){
+    var v=$("#storyline").value.trim();
+    if(!v){helperOut('Write a line in the box first. The helper will offer a tidier version here.');return}
+    helperOut('<b style="font-size:12px">Preview · with the AI connected, a tidied version of your words appears here. You keep it or ignore it.</b><br><br><i>You wrote:</i> "she loved makin lemon cake for everyone all the time"<br><i>The helper offers:</i> "She loved making lemon cake for everyone, every chance she got."');
+  }
+}
+
+/* ---------- confirm dialog ---------- */
+var confirmFn=null;
+function askConfirm(text,label,fn){$("#cf-text").textContent=text;$("#cf-yes").textContent=label;confirmFn=fn;$("#confirmmodal").classList.add("open")}
+$("#cf-yes").addEventListener("click",function(){var f=confirmFn;confirmFn=null;$("#confirmmodal").classList.remove("open");if(f)f()});
+
+/* ---------- transfer ownership (type-to-confirm) ---------- */
+var tfRow=null,tfWho="",tfEmail="";
+function openTransfer(row,who,email){
+  tfRow=row;tfWho=who;tfEmail=(email||"").toLowerCase();
+  $("#tf-name").textContent=who;
+  $("#tf-email-show").textContent=tfEmail;
+  $("#tf-input").value="";
+  $("#transfermodal").classList.add("open");
+  $("#tf-input").focus();
+}
+$("#tf-go").addEventListener("click",function(){
+  var v=$("#tf-input").value.trim().toLowerCase();
+  if(!v){whisper("Type their email address to confirm",false);return}
+  if(v!==tfEmail){whisper("That email does not match "+tfWho+"'s address",false);return}
+  $("#transfermodal").classList.remove("open");
+  makeOwner(tfRow,tfWho);
+});
+function makeOwner(row,who){
+  var sel=row.querySelector("select");if(sel)sel.remove();
+  var btn=row.querySelector("[data-makeowner]");if(btn)btn.remove();
+  var chip=document.createElement("span");chip.className="rolechip";chip.textContent="Owner";row.appendChild(chip);
+  var yr=$("#you-role");if(yr)yr.textContent="Admin";
+  log.unshift({t:now(),a:"Ownership transferred · <b>"+esc(who)+"</b> is the owner · by you"});
+  renderTabs();
+  whisper("Ownership transferred to "+who,false);
+}
+
+/* ---------- timeline chapter editing ---------- */
+function editChap(row){
+  if(!row||row.classList.contains("editing"))return;
+  row.classList.add("editing");
+  row.dataset.orig=row.innerHTML;
+  var cn=row.querySelector(".cn").textContent, cm=row.querySelector(".cm").textContent;
+  row.dataset.meta=cm;
+  row.innerHTML='<div style="flex:1;min-width:200px"><div class="fld" style="margin-bottom:6px"><label>Chapter name</label><input type="text" class="ci-n" value="'+esc(cn)+'"/></div><div class="cm">'+esc(cm)+' · set by the photo dates</div></div><div style="display:flex;gap:8px;align-items:flex-end"><button class="btn small primary" data-chapsave>Save</button><button class="btn small" data-chapcancel>Cancel</button></div>';
+}
+function saveChap(row){
+  var n=row.querySelector(".ci-n").value.trim()||"Untitled chapter";
+  var m=row.dataset.meta||"";
+  row.classList.remove("editing");
+  row.innerHTML='<div><div class="cn">'+esc(n)+'</div><div class="cm">'+esc(m)+'</div></div><button class="btn small" data-chapedit>Edit</button>';
+  log.unshift({t:now(),a:"Timeline edited · <b>"+esc(n)+"</b> · by you"});
+  renderTabs();
+  whisper("Saved · the page updates",false);
+}
+function cancelChap(row){row.classList.remove("editing");row.innerHTML=row.dataset.orig}
+
+/* ---------- payment card ---------- */
+function resetPaycard(){
+  $("#paycard").innerHTML='<p class="sen"><b>Payment method:</b> none on file. Payments are handled by Stripe.</p><div class="foot"><button class="btn small primary" id="addcard">Add a card</button></div>';
+  log.unshift({t:now(),a:"Card removed · by you"});renderTabs();whisper("Card removed",false);
+}
+$("#card-save").addEventListener("click",function(){
+  var num=$("#cc-num").value.replace(/\D/g,"");
+  var l4=num.length>=4?num.slice(-4):"4242";
+  var exp=$("#cc-exp").value.trim()||"09/29";
+  $("#paycard").innerHTML='<p class="sen"><b>Payment method:</b> Visa ···· '+esc(l4)+' · expires '+esc(exp)+'</p><div class="foot"><button class="btn small" id="updcard">Update card</button><button class="btn small danger" id="rmcard">Remove card</button></div>';
+  $("#cardmodal").classList.remove("open");
+  log.unshift({t:now(),a:"Card saved · Visa ···· "+esc(l4)+" · by you"});renderTabs();
+  whisper("Card saved",false);
+});
+
+/* ---------- export ---------- */
+function syncExAll(){
+  var items=$all(".exitem");
+  $("#ex-all").checked=items.every(function(c){return c.checked});
+}
+$("#ex-all").addEventListener("change",function(){
+  var on=this.checked;
+  $all(".exitem").forEach(function(c){c.checked=on});
+});
+$all(".exitem").forEach(function(c){c.addEventListener("change",syncExAll)});
+$("#do-export").addEventListener("click",function(){
+  var sel=$all(".exitem").filter(function(c){return c.checked});
+  if(!sel.length){whisper("Choose at least one item to export",false);return}
+  var parts=["I MISS YOU MEMORIAL · EXPORT","Eleanor Margaret Hayes · imissyoumemorial.com/sites/eleanor","Created "+new Date().toLocaleString("en-US"),""];
+  sel.forEach(function(c){
+    var k=c.dataset.ex;
+    if(k==="story"){
+      parts.push("== THE OBITUARY ==");
+      $all("#storybody p").forEach(function(p){parts.push(p.textContent);parts.push("")});
+      parts.push("== THE TIMELINE ==");
+      $all(".chaprow .cn").forEach(function(n,i){var m=$all(".chaprow .cm")[i];parts.push("· "+n.textContent+(m?" · "+m.textContent:""))});
+      parts.push("");
+    } else if(k==="memories"){
+      parts.push("== MEMORIES ON THE PAGE ==");
+      approved.forEach(function(m){parts.push('"'+m.body+'" · '+m.who+(m.rel?" · "+m.rel:""))});
+      parts.push("");
+    } else if(k==="photos"){
+      parts.push("== PHOTOS ("+photos.length+" in this prototype · full files in the real export) ==");
+      photos.forEach(function(p){parts.push("· "+p.title+" · "+p.place+" · added by "+p.by)});
+      parts.push("");
+    } else if(k==="videos"){
+      parts.push("== VIDEOS ==","· 2 films on the tape shelf · full files in the real export","");
+    } else if(k==="memvideo"){
+      parts.push("== THE MEMORIAL VIDEO ==","· full file in the real export","");
+    } else if(k==="details"){
+      parts.push("== PAGE DETAILS ==","Name: Eleanor Margaret Hayes","Born: March 12, 1948","Died: October 22, 2024","Plan: Free","Address: imissyoumemorial.com/sites/eleanor","");
+    }
+  });
+  var blob=new Blob([parts.join("\n")],{type:"text/plain"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="eleanor-export.txt";
+  document.body.appendChild(a);a.click();a.remove();
+  log.unshift({t:now(),a:"Export created · "+sel.length+" item types · by you"});
+  renderTabs();
+  whisper("Export downloaded · photos and videos arrive as full files in the real app",false);
+});
+
+/* ---------- delete account ---------- */
+document.addEventListener("click",function(e){
+  var el=e.target.closest("#delacct");if(el){
+    askConfirm("Are you sure you want to delete your account?","Yes, delete my account",function(){
+      $("#del-input").value="";$("#delmodal").classList.add("open");$("#del-input").focus();
+    });
+    return}
+});
+$("#del-go").addEventListener("click",function(){
+  var v=$("#del-input").value.trim().toLowerCase();
+  if(!v){whisper("Type your email address to confirm",false);return}
+  if(v!=="autumn@finisomegalandmark.com"){whisper("That email does not match your account",false);return}
+  $("#delmodal").classList.remove("open");
+  whisper("Account deleted · in the real app this removes everything and signs you out",false);
+});
+
+/* ---------- a11y bar ---------- */
+$all(".a11y [data-scale]").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.documentElement.style.setProperty("--text-scale",b.dataset.scale);
+    $all(".a11y [data-scale]").forEach(function(x){x.classList.toggle("on",x===b)});
+  });
+});
+$("#hcbtn").addEventListener("click",function(){var on=document.documentElement.classList.toggle("hc");this.classList.toggle("on",on);this.setAttribute("aria-pressed",on)});
+$("#mobtn").addEventListener("click",function(){var on=document.body.classList.toggle("mpause");this.classList.toggle("on",on);this.setAttribute("aria-pressed",on)});
+
+/* ---------- init ---------- */
+renderGal();syncAll();showTab("waiting");go("overview");
+var mo=new MutationObserver(function(){
+  var b=$("#cvbody");
+  if(b&&!b.classList.contains("seen")&&!document.body.classList.contains("mpause")&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    b.classList.add("seen","in");
+    requestAnimationFrame(function(){requestAnimationFrame(function(){
+      b.style.transition="opacity .32s ease, transform .32s ease";b.classList.remove("in");
+    })});
+  }
+});
+mo.observe($("#conveyor"),{childList:true});
+</script>
+
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && window.parent !== window) {
+    window.parent.postMessage({ type: 'close-fullscreen' }, '*');
+  }
+});
+</script>
+<!-- broken-img-handler -->
+<script>
+(function(){
+  if(window.__brokenImgHandler)return;
+  window.__brokenImgHandler=true;
+  var MAX=5,DELAYS=[2000,4000,8000,16000,32000];
+  var TOKEN=/^__(?:IMG|EMBED)_[a-zA-Z0-9_-]+__/;
+  var SENTINEL=new RegExp('^/api/published/[^/]+/(?:assets|embeds)/[^/?#]*-missing(?:[?#]|$)');
+  var NOISE=/^[\s\u2018\u2019\u201c\u201d]+|[\s\u2018\u2019\u201c\u201d]+$/g;
+  function canSrcEverResolve(src){
+    var bare=src.replace(NOISE,'');
+    return !TOKEN.test(bare)&&!SENTINEL.test(bare);
+  }
+  document.addEventListener('error',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    var liveSrc=img.getAttribute('src');
+    var src=img.dataset.haOriginalSrc||liveSrc;
+    if(!src)return;
+    if(img.dataset.haOriginalSrc&&liveSrc&&liveSrc!==img.dataset.haOriginalSrc&&liveSrc.indexOf('_r=')<0){src=liveSrc;img.dataset.haOriginalSrc=src;img.dataset.haRetryCount='0'}
+    else if(!img.dataset.haOriginalSrc){img.dataset.haOriginalSrc=src}
+    var attempt=canSrcEverResolve(src)?parseInt(img.dataset.haRetryCount||'0',10):MAX;
+    if(img.dataset.haPhId){var old=document.getElementById(img.dataset.haPhId);if(old)old.remove()}
+    var ph=document.createElement('div');
+    ph.className='ha-img-placeholder'+(attempt>=MAX?' ha-failed':'');
+    ph.id='ha-ph-'+Math.random().toString(36).slice(2,9);
+    var w=img.getAttribute('width');var h=img.getAttribute('height');
+    if(w)ph.style.width=w+(isNaN(Number(w))?'':'px');
+    else if(img.style.width)ph.style.width=img.style.width;
+    else if(img.width>1)ph.style.width=img.width+'px';
+    if(h)ph.style.height=h+(isNaN(Number(h))?'':'px');
+    else if(img.style.height)ph.style.height=img.style.height;
+    else if(img.height>1)ph.style.height=img.height+'px';
+    ph.textContent=attempt>=MAX?'Image unavailable':'Loading image\u2026';
+    img.dataset.haPhId=ph.id;
+    if(img.dataset.haOrigDisplay==null)img.dataset.haOrigDisplay=img.style.display||'';
+    img.style.display='none';
+    img.insertAdjacentElement('afterend',ph);
+    if(attempt<MAX){
+      img.dataset.haRetryCount=String(attempt+1);
+      setTimeout(function(){
+        if(!img.isConnected)return;
+        if(img.dataset.haOriginalSrc!==src)return;
+        if(img.complete&&img.naturalWidth>0)return;
+        var curSrc=img.getAttribute('src');
+        if(curSrc&&curSrc.indexOf(src)!==0)return;
+        var fresh=src+(src.indexOf('?')>=0?'&':'?')+'_r='+(attempt+1)+'_'+Date.now();
+        img.src=fresh;
+      },DELAYS[attempt]);
+    }
+  },true);
+  document.addEventListener('load',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    if(img.dataset.haPhId){
+      var ph=document.getElementById(img.dataset.haPhId);
+      if(ph)ph.remove();
+      delete img.dataset.haPhId;
+      img.style.display=img.dataset.haOrigDisplay||'';
+      delete img.dataset.haOrigDisplay;
+      delete img.dataset.haOriginalSrc;
+      delete img.dataset.haRetryCount;
+    }
+  },true);
+})();
+</script>
+</body>
+</html>

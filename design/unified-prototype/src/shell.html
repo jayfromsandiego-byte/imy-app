@@ -205,7 +205,7 @@ function composeOverride(draft, opts){
   /* parents first, then partner, then the rest — order builds the graph correctly */
   var order={mother:0,father:0,partner:1,sibling:2,child:2,grandchild:3,chosen:2,parent:0};
   fam.slice().sort(function(a,b){return (order[a.rel]||2)-(order[b.rel]||2)}).forEach(function(f){
-    var base={n:f.name.trim(),y:yearsStr(f.by,f.dy),i:initialsOf(f.name)};
+    var base={n:f.name.trim(),y:yearsStr(f.by,f.dy),i:initialsOf(f.name),av:f.photo||undefined};
     var id;
     if(f.rel==='mother'||f.rel==='father'||f.rel==='parent'){
       id=add(base); parents.push(id);
@@ -278,6 +278,68 @@ function spliceOverride(src, override){
   var json=JSON.stringify(override).replace(/</g,'\\u003c');
   return src.replace('<!--IMY_OVERRIDE_SLOT-->','<script>window.IMY_OVERRIDE='+json+';<\/script>');
 }
+function spliceDesk(src, data){
+  var json=JSON.stringify(data).replace(/</g,'\\u003c');
+  return src.replace('<!--IMY_DESK_SLOT-->','<script>window.IMY_DESK='+json+';<\/script>');
+}
+
+/* ── the desk composer · one memorial becomes the Sharpened Desk's data ── */
+var MON3=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function composeDesk(act){
+  var d=act.data||{}, P=pron(d.pron||'they');
+  var name=(d.name||'A page, unnamed');
+  var first=firstNameOf(name)||'them';
+  function ds(m,day,y){ if(!y)return ''; return (m?MON3[m-1]+' ':'')+(day?day+', ':'')+y; }
+  var a=ds(+d.bm,d.bd,d.by), b=ds(+d.dm,d.dd,d.dy);
+  var datesShort=((a&&b)?(a+' – '+b):(b?('– '+b):(a||''))).toUpperCase();
+  var slug=act.customSlug||act.slug;
+  var fm=d.mem||{};
+  var hasMem=!!((fm.story||'').trim()||(fm.title||'').trim());
+  var chapters=(d.chapters||[]).filter(function(c){return (c.ms||[]).length}).map(function(c){
+    return {t:c.t||'A chapter',era:(c.from&&c.to)?(c.from+' to '+c.to):(c.from||c.to||''),n:(c.ms||[]).length};
+  });
+  var photosAll=(d.photos||[]).filter(function(p){return p&&p.src});
+  var tapes=(d.tapes||[]).filter(function(t){return t&&(t.t||'').trim()});
+  var treeCount=(d.family||[]).filter(function(f){return f&&(f.name||'').trim()}).length+(d.rel?1:0)+1;
+  var ann=null;
+  if(d.dy&&d.dm){
+    var nowD=new Date(), y=nowD.getFullYear();
+    var next=new Date(y,+d.dm-1,+d.dd||1);
+    if(next<nowD)next=new Date(y+1,+d.dm-1,+d.dd||1);
+    var years=next.getFullYear()-(+d.dy);
+    var days=Math.round((next-nowD)/86400000);
+    ann={short:MONTHS[+d.dm-1]+' '+(+d.dd||1),
+      line:MONTHS[+d.dm-1]+' '+(+d.dd||1)+', '+next.getFullYear()+' is '+years+' year'+(years===1?'':'s')+' — '+days+' day'+(days===1?'':'s')+' from today. Choose what the page does when the day comes.'};
+  }
+  var authorFirst=firstNameOf((state.account||{}).name)||'Family';
+  var approved=hasMem?[{id:11,who:authorFirst,rel:'family',body:(fm.story||fm.title||'').trim(),when:'today'}]:[];
+  var log=[{t:'today',a:'Page published · <b>imissyoumemorial.com/'+esc(slug)+'</b> · by you'}];
+  if(hasMem)log.unshift({t:'today',a:'Memory added · <b>'+esc(fm.title||('A memory of '+first))+'</b> · by you'});
+  if(act.plan==='plus')log.unshift({t:'today',a:'Plus · kept for life · by you'});
+  var deskPhotos=photosAll.map(function(p,i){
+    return {id:'p'+i,url:p.src,title:p.cap||('Photograph '+(i+1)),place:i===0?'Cover of the album':'The album',by:'You',cover:i===0};
+  });
+  if(d.portrait)deskPhotos.unshift({id:'pport',url:d.portrait,title:'The portrait',place:'The cover arch',by:'You',cover:false});
+  return {
+    email:(state.account||{}).email||'', accountName:(state.account||{}).name||'', accountFirst:firstNameOf((state.account||{}).name)||'',
+    name:name, first:first, pron:d.pron||'they', pa:P.pa,
+    datesShort:datesShort, dates:{bm:d.bm,bd:d.bd,by:d.by,dm:d.dm,dd:d.dd,dy:d.dy},
+    portrait:d.portrait||'', initial:(first[0]||'✿').toUpperCase(),
+    slug:slug, plan:act.plan, activeId:act.id,
+    price:priceFor(act.id), canCreate:canCreate(), plusUnlocked:plusUnlocked(),
+    counts:act.counts||{visits:1,flowers:0,candles:0},
+    memsCount:hasMem?1:0, photosCount:photosAll.length, tapesCount:tapes.length,
+    chapters:chapters, treeCount:treeCount, hasSvc:!!(d.svc&&d.svc.y&&(d.svc.where||'').trim()), ann:ann,
+    memorials:state.memorials.map(function(m){
+      var md=m.data||{};
+      function ds2(mm,dd2,yy){ if(!yy)return ''; return (mm?MON3[mm-1]+' ':'')+(dd2?dd2+', ':'')+yy; }
+      var aa=ds2(+md.bm,md.bd,md.by), bb=ds2(+md.dm,md.dd,md.dy);
+      return {id:m.id,name:md.name||'A page, unnamed',dates:((aa&&bb)?(aa+' – '+bb):(bb||aa||'')).toUpperCase(),
+        plan:m.plan,active:m.id===act.id,initial:(firstNameOf(md.name)||'✿')[0].toUpperCase(),portrait:md.portrait||''};
+    }),
+    TOTAL:0, pending:[], approved:approved, archive:[], log:log, photos:deskPhotos
+  };
+}
 
 /* ── mounting ── */
 var host=document.getElementById('host');
@@ -344,7 +406,7 @@ function seed(plus){
     tapes:[{t:'Her seventieth · the toast',wm:'4',wy:'2016',dur:'1:42',cover:t3}],
     family:[{name:'Ellen Woods',rel:'mother',by:'1921',dy:'1998'},{name:'Arthur Woods',rel:'father',by:'1918',dy:'1989'},
       {name:'James Woods',rel:'partner',by:'1943',dy:'2011'},{name:'Susan Woods',rel:'child',by:'1972',dy:''},
-      {name:'Daniel Woods',rel:'child',by:'1975',dy:''},{name:'June Carter',rel:'grandchild',by:'2001',dy:'',via:'Susan Woods'},
+      {name:'Daniel Woods',rel:'child',by:'1975',dy:''},{name:'June Carter',rel:'grandchild',by:'2001',dy:'',via:'Susan Woods',photo:t4},
       {name:'Ruth Alvarez',rel:'chosen',by:'1949',dy:''}],
     svc:{m:'9',d:'12',y:'2026',time:'11:00 AM',where:'Mendocino Community Chapel',addr:'44831 Main Street, Mendocino, CA',note:'Wear her favorite color · lunch in the garden after'},
     _plan:plus?'plus':'free',_i:0};
@@ -390,13 +452,8 @@ function render(){
   if(v==='dashboard'){
     if(!state.account){ go('#/signin?next=dashboard'); return; }
     var act=activeMem();
-    mount('dashboard',SRC.dashboard,{
-      account:state.account,
-      memorials:state.memorials.map(function(m){return {id:m.id,plan:m.plan,slug:m.customSlug||m.slug,data:m.data,counts:m.counts,owner:m.owner||'',active:act&&act.id===m.id}}),
-      activeId:act?act.id:null,
-      canCreate:canCreate(), plusUnlocked:plusUnlocked(),
-      price:priceFor(null), hasDraft:!!state.draft
-    });
+    if(!act){ startFlow(''); return; }
+    mount('dashboard',spliceDesk(SRC.dashboard,composeDesk(act)),{});
     return;
   }
   if(v==='checkout'){
@@ -488,6 +545,20 @@ window.addEventListener('message',function(e){
     state.activeId=pm.id; save();
     toast('Plus is yours, for life — <b>imissyoumemorial.com/'+(pm.customSlug||pm.slug)+'</b>');
     go('#/site/'+(pm.customSlug||pm.slug));
+    return;
+  }
+  if(a==='updatePerson'){
+    var um=byId(d.m); if(!um)return;
+    var ud=um.data;
+    if((d.name||'').trim())ud.name=d.name.trim();
+    function fromIso(s){ var m2=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m2?{y:m2[1],m:String(+m2[2]),d:String(+m2[3])}:null; }
+    var bb=fromIso(d.born); if(bb){ud.by=bb.y;ud.bm=bb.m;ud.bd=bb.d;}
+    var dd2=fromIso(d.died); if(dd2){ud.dy=dd2.y;ud.dm=dd2.m;ud.dd=dd2.d;}
+    if(d.pron)ud.pron=d.pron;
+    if(d.portrait)ud.portrait=d.portrait;
+    save();
+    toast('Saved — '+esc(firstNameOf(ud.name)||'the page')+'’s page updates.');
+    render();
     return;
   }
   if(a==='deleteAccount'){
