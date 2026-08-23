@@ -53,6 +53,8 @@ trib=mustReplace(trib,"'<em>this page is hers</em>'",`'<em>'+(${OV}.treeOwnLabel
   if(i<0)failures.push('MISS: tribute first <script>');
   else trib=trib.slice(0,i)+'<!--IMY_OVERRIDE_SLOT-->\n'+trib.slice(i);
 }
+const squareCss='<style>.arch{border-radius:12px!important}</style>';
+trib=mustReplace(trib,'</head>',squareCss+'</head>','tribute square frames');
 trib=mustReplace(trib,'</body>',bridge+'\n<script>\n'+read(P('src','tribute-hydrate.js'))+'\n</script>\n</body>','tribute tail');
 
 /* ═══ LANDING ═══ */
@@ -63,7 +65,7 @@ let land=read(P('pages','landing.html'));
   if(i<0)failures.push('MISS: landing AI-writing li');
   else{
     const li=land.indexOf('</li>',i);
-    land=land.slice(0,li+5)+'<li><span class="ck">✓</span>AI photo restoration — damaged photographs, made whole</li>'+land.slice(li+5);
+    land=land.slice(0,li+5)+'<li><span class="ck">✓</span>AI photo restoration · damaged photographs made whole</li>'+land.slice(li+5);
   }
 }
 land=mustReplace(land,'</body>',bridge+'\n</body>','landing tail');
@@ -88,6 +90,8 @@ const dashCss=`<style>
 .mem-new{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 14px;border:1px dashed rgba(168,124,95,.5);border-radius:12px;font-size:14px;line-height:1.5}
 .mem-new.locked{border-style:solid;background:rgba(201,165,114,.09)}
 .mr-off{font-style:normal;font-family:'Work Sans',sans-serif;background:rgba(244,184,96,.35);border-radius:100px;padding:2px 8px;margin-left:6px;font-size:10px;letter-spacing:.06em}
+.arch-portrait,.arch-portrait img{border-radius:12px!important}
+@media (max-width:760px){.var-tag{display:none!important}}
 </style>`;
 dash=mustReplace(dash,'</head>',dashCss+'\n</head>','dash css');
 dash=mustReplace(dash,'</body>',bridge+'\n<script>\n'+read(P('src','dash.js'))+'\n</script>\n</body>','dash tail');
@@ -100,7 +104,7 @@ stu=stu.replace(/<title>[\s\S]*?<\/title>/,'<title>The Studio · I Miss You Memo
   const im=stu.indexOf('<main class="letter"');
   if(ic<0||im<0||im<ic)failures.push('MISS: studio canvas/letter anchors');
   else{
-    const newCanvas='<div id="canvas" class="canvas"><iframe id="pvFrame" title="Their page · a live preview"></iframe><div id="pvVeil">the page is warming…</div></div>\n</aside>\n';
+    const newCanvas='<div id="canvas" class="canvas"><iframe id="pvFrame" title="Their page · a live preview"></iframe><div id="pvVeil">opening the page…</div></div>\n</aside>\n';
     stu=stu.slice(0,ic)+newCanvas+stu.slice(im);
   }
 }
@@ -120,11 +124,43 @@ select.dsel:focus{border-color:var(--terra,#A87C5F)}
 .th.mini{width:44px;height:44px;border-radius:8px;overflow:hidden;display:inline-flex;flex:none}
 .th.mini img{width:100%;height:100%;object-fit:cover}
 .mhint button{background:none;border:0;padding:0;font:inherit;color:var(--terra-deep,#8a5a3c);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.garland{display:none!important}
+.pbar{display:flex;align-items:center;gap:9px;min-width:170px;margin-left:auto}
+.pbar .track{flex:1;height:7px;border-radius:100px;background:rgba(138,90,60,.18);overflow:hidden}
+.pbar .track i{display:block;height:100%;width:0;background:var(--terra,#A87C5F);border-radius:100px;transition:width .45s ease}
+.pbar .cnt{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.08em;color:var(--terra-deep,#8a5a3c);white-space:nowrap}
+.plans{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.plancard{display:flex;gap:12px;align-items:flex-start;text-align:left;background:#fff;border:1.5px solid var(--line,rgba(44,37,32,.16));border-radius:14px;padding:14px 16px;cursor:pointer;font-family:'Besley',serif;color:var(--ink,#2C2520);transition:border-color .2s,box-shadow .2s}
+.plancard.on{border-color:var(--terra,#A87C5F);box-shadow:0 6px 20px rgba(168,124,95,.18)}
+.plancard .prad{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid rgba(44,37,32,.3);margin-top:2px;position:relative}
+.plancard.on .prad{border-color:var(--terra,#A87C5F)}
+.plancard.on .prad::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--terra,#A87C5F)}
+.plancard .pbody{display:flex;flex-direction:column;gap:3px;min-width:0}
+.plancard .ptop{display:flex;align-items:baseline;gap:10px}
+.plancard .ptop b{font-size:17px;font-weight:700}
+.plancard .ptop i{font-style:normal;font-weight:700;font-size:14.5px;color:var(--terra-deep,#8a5a3c)}
+.plancard .pli{font-size:13px;line-height:1.5;color:var(--ink-soft,#5c5249)}
+#soFar{margin-top:26px;border-top:1px solid var(--line,rgba(44,37,32,.14));padding-top:14px}
+#soFar .sflab{font-family:'Work Sans',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--terra-deep,#8a5a3c);margin-bottom:8px}
+#soFar .sfrow{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;padding:6px 2px;font-family:'Besley',serif;font-size:14px;color:var(--ink,#2C2520);cursor:pointer;border-radius:8px}
+#soFar .sfrow:hover{background:rgba(168,124,95,.08)}
+#soFar .sfok{color:#4a6741;flex:none}
+#soFar .sfno{color:var(--terra,#A87C5F);flex:none}
+.letter.onboard .lbody{display:flex;flex-direction:column;justify-content:center}
+.restoreb{flex:none;width:28px;height:28px;border-radius:8px;border:1px solid var(--line,rgba(44,37,32,.16));background:#fff;color:rgba(44,37,32,.4);cursor:pointer;font-size:13px}
+.restoreb.on{background:rgba(244,184,96,.3);border-color:var(--gold,#C9A572);color:#7a5236}
+.storyta{width:100%;min-height:96px;font-family:'Besley',serif;font-size:14.5px;line-height:1.6;color:var(--ink,#2C2520);background:#fff;border:1px solid var(--line,rgba(44,37,32,.16));border-radius:10px;padding:11px 12px;outline:none;resize:vertical}
+.a11y-letter{position:fixed;left:14px;bottom:14px;z-index:70;display:flex;gap:5px;background:#fff;border:1px solid var(--line,rgba(44,37,32,.16));border-radius:100px;padding:5px;box-shadow:0 8px 24px rgba(44,37,32,.14)}
+.a11y-letter button{width:32px;height:32px;border-radius:50%;border:0;background:none;font-family:'Work Sans',sans-serif;font-weight:700;font-size:11px;color:var(--ink-soft,#5c5249);cursor:pointer}
+.a11y-letter button.on{background:var(--terra,#A87C5F);color:#fff}
 @media (max-width:900px){
   #pvFrame,#pvVeil{left:8px;top:8px;width:calc(100% - 16px);height:calc(100% - 52dvh - 14px)}
-  .jumprow{padding:10px 16px 0}
-  .phrow{grid-template-columns:38px 1fr 24px}
-  .phrow select.dsel{grid-column:2}
+  .jumprow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:9px 14px 9px;scrollbar-width:none;mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .jumprow::-webkit-scrollbar{display:none}
+  .jumprow .chip{flex:none}
+  .phrow{grid-template-columns:38px 1fr 24px 24px}
+  .phrow select.dsel{grid-column:2/5}
+  .a11y-letter{left:auto;right:12px;bottom:calc(52dvh + 12px)}
 }
 </style>`;
 stu=mustReplace(stu,'</head>',stuCss+'\n</head>','studio css');

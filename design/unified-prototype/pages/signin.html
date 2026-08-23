@@ -42,6 +42,7 @@
   .foot{margin-top:18px;text-align:center;font-family:'Work Sans',sans-serif;font-size:11.5px;color:var(--ink-soft)}
   .foot a{color:var(--terra-deep);text-decoration:none}
   .err{display:none;margin-top:10px;font-family:'Work Sans',sans-serif;font-size:12.5px;color:#8a3c2c}
+  .nopass{margin-top:10px;text-align:center;font-family:'Work Sans',sans-serif;font-size:11.5px;color:var(--ink-soft)}
   .err.on{display:block}
   @media (max-width:560px){ main{padding-top:2vh} .card{padding:26px 20px 24px} h1{font-size:26px} }
 </style>
@@ -55,14 +56,15 @@
     <div class="card">
       <div class="k">Before you begin</div>
       <h1>The page you make <em>stays yours.</em></h1>
-      <p class="sub">Sign in so everything you write is saved as you go — and waiting for you whenever you return.</p>
+      <p class="sub">Everything you write is saved to your account as you build.</p>
       <form id="f">
         <label for="inName">Your name</label>
         <input id="inName" type="text" autocomplete="name" placeholder="Susan Hayes"/>
         <label for="inEmail">Your email</label>
         <input id="inEmail" type="email" autocomplete="email" placeholder="susan@example.com"/>
-        <div class="err" id="err">A name and a working email — that’s all it takes.</div>
+        <div class="err" id="err">Enter your name and a valid email.</div>
         <button class="go" type="submit" id="goBtn">Continue</button>
+        <div class="nopass">No password needed. Your email is the key.</div>
       </form>
       <div class="div">or</div>
       <button class="gbtn" type="button" id="gBtn">
@@ -70,14 +72,14 @@
         Continue with Google
       </button>
       <div class="gnote" id="gNote">
-        <p class="gn">Google sign-in is simulated in this prototype — confirm the account it would use, and you’re through.</p>
+        <p class="gn">Google sign-in is simulated in this prototype. Confirm the account it would use.</p>
         <label for="gName">Name on the account</label>
         <input id="gName" type="text" placeholder="Susan Hayes"/>
         <label for="gEmail">Google email</label>
         <input id="gEmail" type="email" placeholder="susan@gmail.com"/>
         <button class="go" type="button" id="gGo" style="margin-top:14px">Continue as this account</button>
       </div>
-      <div class="foot">By continuing you agree to the <a href="/terms">terms</a> and <a href="/privacy">privacy promise</a>. Every tribute stays online — we never charge a family to keep a memory alive.</div>
+      <div class="foot">By continuing you agree to the <a href="/terms">terms</a> and <a href="/privacy">privacy promise</a>. Every tribute stays online. We never charge a family to keep a memory alive.</div>
     </div>
   </main>
 <script>

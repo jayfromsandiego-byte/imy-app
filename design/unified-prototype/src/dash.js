@@ -56,7 +56,7 @@ function boot(ctx){
   var t=$('.panel-title .uline');
   if(t)t.textContent=act?('Everything about '+(d.name||'the page')):'Let’s begin a page';
   var sub=$('.panel-sub');
-  if(sub&&!act)sub.textContent='A tribute page takes about ten quiet minutes. Everything you write is saved as you go.';
+  if(sub)sub.textContent=act?'What\u2019s waiting, what\u2019s been shared, and what needs a decision.':'A tribute page takes about ten minutes. Everything you write is saved as you go.';
 
   /* ── plan strip ── */
   var ps=$('.plan-strip');
@@ -76,7 +76,7 @@ function boot(ctx){
   function btn(label,attr,primary){ return '<a href="#" class="btn '+(primary?'primary':'quiet')+'" data-act="'+attr+'">'+label+'</a>'; }
 
   if(!act){
-    card('full','<b>Begin '+(mems.length?'another':'the first')+' memorial.</b> The studio walks with you — a few gentle questions, and the page takes shape beside your words.',btn('Open the studio','new',true));
+    card('full','<b>Begin '+(mems.length?'another':'the first')+' memorial.</b> A few questions in the studio, and the page takes shape beside your words.',btn('Open the studio','new',true));
   }else{
     var memsCount=(d.mem&&(d.mem.story||d.mem.title))?1:0;
     var phCount=(d.photos||[]).length;
@@ -84,35 +84,35 @@ function boot(ctx){
     var famCount=(d.family||[]).length+(d.rel?1:0)+1;
     var fl=(act.counts||{}).flowers||0, ca=(act.counts||{}).candles||0;
 
-    card('full','<b>The page is the editor.</b> Open '+esc(first||'their page')+'’s page in the studio and tap anything on it — the name, a chapter, a photograph — to change that part.',
+    card('full','<b>The page is the editor.</b> Open '+esc(first||'their page')+'’s page in the studio and tap anything on it to change that part: the name, a chapter, a photograph.',
       btn('Edit the page','edit',true)+btn('See '+pa+' page','view'));
 
     card('','<b>Nothing waits for review.</b> Every memory a visitor leaves comes to you first, before it appears on '+pa+' wall.',
-      btn('Share '+pa+' page','view'));
+      btn('Share '+pa+' page','view')+btn('Print the flyer','flyer'));
 
-    card('',(memsCount? '<b>'+memsCount+(memsCount===1?' memory rests':' memories rest')+'</b> on '+pa+' wall so far.':'The wall is ready. <b>Your first memory</b> opens it — and invites everyone else’s.'),
+    card('',(memsCount? '<b>'+memsCount+(memsCount===1?' memory rests':' memories rest')+'</b> on '+pa+' wall so far.':'The wall is ready. <b>Your first memory</b> opens it and invites everyone else’s.'),
       btn(memsCount?'See what people remember':'Leave the first memory',memsCount?'view':'edit'));
 
-    card('',(phCount? esc(first||'The page')+'’s album holds <b>'+phCount+' photograph'+(phCount===1?'':'s')+'</b>'+(act.plan!=='plus'&&phCount>12?' — 12 shine now, the rest wait, safe':'')+'.':'The album is empty — <b>photographs</b> make the page feel like '+(first?esc(first):'them')+'.'),
+    card('',(phCount? esc(first||'The page')+'’s album holds <b>'+phCount+' photograph'+(phCount===1?'':'s')+'</b>'+(act.plan!=='plus'&&phCount>12?'. 12 show now, the rest are saved':'')+'.'+(act.plan==='plus'?' Damaged ones can be marked for <b>AI restoration</b> in the studio.':''):'The album is empty. <b>Photographs</b> make the page feel like '+(first?esc(first):'them')+'.'),
       btn(phCount?'Open the pictures':'Add photographs','edit'));
 
-    card('',(chCount? esc(pa.charAt(0).toUpperCase()+pa.slice(1))+' story is written in <b>'+chCount+' chapter'+(chCount===1?'':'s')+'</b>.':'<b>'+esc(pa.charAt(0).toUpperCase()+pa.slice(1))+' story</b> is still unwritten — the chapters are waiting in the studio.'),
+    card('',(chCount? esc(pa.charAt(0).toUpperCase()+pa.slice(1))+' story is written in <b>'+chCount+' chapter'+(chCount===1?'':'s')+'</b>.':'<b>'+esc(pa.charAt(0).toUpperCase()+pa.slice(1))+' story</b> is unwritten. The chapters are in the studio.'),
       btn(chCount?'Visit '+pa+' story':'Write the chapters',chCount?'view':'edit'));
 
     card('','<b>'+famCount+(famCount===1?' person stands':' people stand')+'</b> on the family tree. Anyone in the family can add to it from the page.',
       btn('See the tree','view'));
 
     var ann=anniversary(d);
-    if(ann)card('',ann.line,btn('Think about that day','view'));
+    if(ann)card('',ann.line,btn('Plan for that day','view'));
 
-    card('full vigil-card',(fl||ca? '<b>'+fl+' flower'+(fl===1?'':'s')+(ca?' · '+ca+' candle'+(ca===1?'':'s'):'')+'</b> for '+esc(d.name||'them')+' so far.':'<b>The first flower waits to be laid.</b> Share '+pa+' page with the family & friends who should have it.'),
+    card('full vigil-card',(fl||ca? '<b>'+fl+' flower'+(fl===1?'':'s')+(ca?' · '+ca+' candle'+(ca===1?'':'s'):'')+'</b> for '+esc(d.name||'them')+' so far.':'<b>No flowers laid yet.</b> Share '+pa+' page so visitors can lay the first.'),
       btn('See how '+pa+' page is tended','view'));
 
     if(act.plan!=='plus'){
-      card('full','This page is free, forever — that promise holds. <b>Plus keeps more</b>: '+pa+' voice, living pictures, every photograph, a chosen address, AI photo restoration.',
+      card('full','This page is free, forever. <b>Plus keeps more</b>: '+pa+' voice, living pictures, every photograph, a chosen address, AI photo restoration.',
         btn('Keep everything · '+money(ctx.price&&priceForActive()||197)+' lifetime','upgrade',true));
     }else{
-      card('full','<b>Plus is yours, for life.</b> Every photograph, '+pa+' voice, the chosen address — nothing rests behind a limit, and the credit line is gone.','');
+      card('full','<b>Plus is yours, for life.</b> Every photograph, '+pa+' voice, the chosen address. No limits, and the credit line is gone.','');
     }
   }
 
@@ -131,11 +131,11 @@ function boot(ctx){
   var createBlock;
   if(ctx.canCreate&&mems.length){
     var pr=ctx.price||{amount:197,discount:0};
-    createBlock='<div class="mem-new">Begin another memorial — under the same roof.'+
+    createBlock='<div class="mem-new">Begin another memorial under this account.'+
       '<span class="mr-acts"><a href="#" class="btn quiet small" data-act="newfree">A free page</a>'+
       '<a href="#" class="btn primary small" data-act="newplus">A Plus page · '+money(pr.amount)+(pr.discount?' <i class="mr-off">20% off</i>':'')+'</a></span></div>';
   }else if(!ctx.canCreate){
-    createBlock='<div class="mem-new locked">A free account keeps <b>one</b> memorial. Plus unlocks more for the household — and every new Plus memorial after your first is <b>20% off</b>.'+
+    createBlock='<div class="mem-new locked">A free account keeps <b>one</b> memorial. Plus unlocks more. Every Plus memorial after your first is <b>20% off</b>.'+
       '<span class="mr-acts"><a href="#" class="btn primary small" data-act="upgrade">Unlock with Plus · $197</a></span></div>';
   }else{ createBlock=''; }
   if(mems.length||createBlock){
@@ -155,7 +155,7 @@ function boot(ctx){
     if(next<now)next=new Date(y+1,+d.dm-1,+d.dd||1);
     var years=next.getFullYear()-(+d.dy);
     var days=Math.round((next-now)/86400000);
-    return {line:MONTHS[+d.dm-1]+' '+(+d.dd||1)+' will be <b>'+years+' year'+(years===1?'':'s')+'</b> — '+days+' day'+(days===1?'':'s')+' from today. There is time to decide how to mark it, together.'};
+    return {line:MONTHS[+d.dm-1]+' '+(+d.dd||1)+' will be <b>'+years+' year'+(years===1?'':'s')+'</b> · '+days+' day'+(days===1?'':'s')+' from today.'};
   }
 
   /* ── actions ── */
@@ -166,6 +166,7 @@ function boot(ctx){
     var v=a.getAttribute('data-act');
     if(v==='edit'&&act){IMY.send('nav',{go:'studio',m:act.id});return}
     if(v==='view'&&act){IMY.send('nav',{go:'site',slug:act.slug});return}
+    if(v==='flyer'&&act){IMY.send('nav',{go:'site',slug:act.slug,flyer:1});return}
     if(v==='new'){IMY.send('createNew',{plan:''});return}
     if(v==='newfree'){IMY.send('createNew',{plan:''});return}
     if(v==='newplus'){IMY.send('createNew',{plan:'plus'});return}

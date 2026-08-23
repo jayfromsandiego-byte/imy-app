@@ -14,10 +14,10 @@
     return {s:'they',o:'them',pa:'their',C:'Their',poss:'theirs'};
   }
 
-  function avatarFromName(name){
-    var p=String(name||'').trim().split(/\s+/);
-    var ini=((p[0]||'')[0]||'✿').toUpperCase()+((p.length>1?p[p.length-1][0]:'')||'').toUpperCase();
-    return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" fill="%23EDE3D2"/><text x="80" y="97" font-family="Georgia,serif" font-size="52" fill="%23A87C5F" text-anchor="middle">'+encodeURIComponent(ini)+'</text></svg>';
+  function avatarFromName(name,pron,edit){
+    var pa=pron==='she'?'her':pron==='he'?'his':'their';
+    var line=edit?('add '+pa+' portrait'):(pa+' portrait rests here');
+    return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320"><rect width="320" height="320" fill="#EDE3D2"/><text x="160" y="150" font-family="Georgia,serif" font-size="64" fill="#A87C5F" text-anchor="middle">✿</text><text x="160" y="196" font-family="Verdana,sans-serif" font-size="13" letter-spacing="2.5" fill="#8a5a3c" text-anchor="middle">'+line.toUpperCase()+'</text></svg>');
   }
   function splitName(n){
     var parts=String(n||'').trim().split(/\s+/);
@@ -35,7 +35,7 @@
     txt($('.cstack .dates'),pe.datesLine||'');
     var qt=$('.cstack .qt');
     if(qt){ if(pe.quote){qt.style.display='';qt.textContent='“'+pe.quote.replace(/^[“"]|[”"]$/g,'')+'”';} else qt.style.display='none'; }
-    var face=$('.cface img'); if(face)face.src=pe.portrait||avatarFromName(pe.name);
+    var face=$('.cface img'); if(face)face.src=pe.portrait||avatarFromName(pe.name,pe.pron,ov.mode==='edit');
     var cbg=$('.cover .cbg'); if(cbg&&pe.coverbg)cbg.src=pe.coverbg;
 
     /* tabs + room labels */
@@ -90,6 +90,20 @@
     /* tape shelf empty + counts stay handled by page script */
   }
 
+  function applyStory(ov){
+    var old=document.getElementById('imyStory');
+    if(old)old.parentNode.removeChild(old);
+    if(!(ov.story||'').trim())return;
+    var life=$('#room-life'); if(!life)return;
+    var el=document.createElement('p');
+    el.id='imyStory';
+    el.style.cssText='max-width:640px;margin:6px auto 30px;text-align:center;font-size:17.5px;line-height:1.75;color:rgba(44,37,32,.82)';
+    el.textContent=ov.story.trim();
+    if(ov.mode==='edit'){el.setAttribute('data-imy-edit','story');el.setAttribute('data-imy-label','edit the story');}
+    var head=$('.lifehead',life);
+    if(head&&head.nextSibling)life.insertBefore(el,head.nextSibling);else life.appendChild(el);
+  }
+
   function emptyStates(ov){
     /* memories stage · hide when no photographed moments */
     if(!(ov.TODAY&&ov.TODAY.length)){
@@ -111,7 +125,7 @@
     if(pho&&ov.PHOTOS.length===0){
       var grid=$('#phGrid'); if(grid)grid.style.display='none';
       var door=$('#allPhDoor'); if(door)door.style.display='none';
-      note(pho,'Photographs of '+first+' will fill this album · add them from the studio');
+      note(pho,'Photographs of '+first+' are added in the studio');
     }else if(pho&&ov.gates&&ov.gates.photosTotal>ov.PHOTOS.length){
       note(pho,(ov.gates.photosTotal-ov.PHOTOS.length)+' more '+plural(ov.gates.photosTotal-ov.PHOTOS.length,'photograph waits','photographs wait')+', safe · Plus keeps them all');
     }
@@ -121,7 +135,7 @@
       ['chRail'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none'});
       var book=$('.book',life); if(book)book.style.display='none';
       var nav=$('.chnav',life); if(nav)nav.style.display='none';
-      note(life,first+'’s chapters will rest here · written in the studio, kept for good');
+      note(life,first+'’s chapters are written in the studio');
     }
     /* tapes */
     var tape=$('#room-tape');
@@ -147,13 +161,22 @@
 
   /* ── edit mode ── */
   function editMode(ov){
+    var P=pack(ov.person.pron);
     var css=document.createElement('style');
-    css.textContent='[data-imy-edit]{cursor:pointer!important;position:relative}'+
+    css.textContent='#topbar,#fab,#mBar,.endacts{display:none!important}'+
+      'body{padding-top:0!important}'+
+      '.imy-band{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#F3ECDD;border-bottom:1px solid rgba(44,37,32,.14);padding:8px 16px;font-family:\'Work Sans\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8a5a3c}'+
+      '.imy-band span:last-child{color:#5c5249;font-weight:600}'+
+      '[data-imy-edit]{cursor:pointer!important;position:relative}'+
       '[data-imy-edit]:hover{outline:2px dashed rgba(168,124,95,.85);outline-offset:3px;border-radius:4px}'+
       '.imy-editbadge{position:fixed;pointer-events:none;z-index:9999;background:#2C2520;color:#FAF5EC;font:600 11px/1 "Work Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:7px;opacity:0;transition:opacity .18s}'+
       '.imy-editbadge.on{opacity:.96}';
     document.head.appendChild(css);
     var badge=document.createElement('div'); badge.className='imy-editbadge'; document.body.appendChild(badge);
+    var band=document.createElement('div');
+    band.className='imy-band';
+    band.innerHTML='<span>'+(P.pa)+' page · live preview</span><span>tap anything to edit</span>';
+    document.body.insertBefore(band,document.body.firstChild);
 
     var map=[
       ['.cstack h1','name','the name'],
@@ -212,9 +235,11 @@
 
   if(OV){
     applyPerson(OV);
+    applyStory(OV);
     emptyStates(OV);
     planGate(OV);
     if(OV.mode==='edit')editMode(OV);
+    if(OV.openFlyer)setTimeout(function(){ if(window.shOpen)window.shOpen(); },700);
     try{parent.postMessage({type:'imy',action:'tribute-ready',data:{}},'*');}catch(e){}
   }
 })();
