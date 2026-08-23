@@ -1,4 +1,17 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "imissyoumemorial.com"
+        }
+      ],
+      "destination": "/preview/unified.html",
+      "permanent": false
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron/trial-reminders",
