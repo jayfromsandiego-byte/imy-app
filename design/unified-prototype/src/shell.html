@@ -20,6 +20,7 @@
 <body>
 <div id="host"></div>
 <div id="imyToast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <!-- ═══ embedded pages (base64, utf-8) ═══ -->
 <script type="text/plain" id="pg-landing">{{PG_LANDING}}</script>
@@ -507,7 +508,7 @@ window.addEventListener('message',function(e){
     afterSignin(parseRoute().q);
     return;
   }
-  if(a==='signout'){ state.account=null; save(); toast('Signed out. Everything stays, safe.'); go('#/'); return; }
+  if(a==='signout'){ state.account=null; save(); try{if(typeof sb!=='undefined'&&sb)sb.auth.signOut({scope:'local'});}catch(e){} toast('Signed out. Everything stays, safe.'); go('#/'); return; }
   if(a==='draft'){
     var r=parseRoute();
     if(r.q.m&&r.q.m!=='new'){ var mm=byId(r.q.m); if(mm){ mm.data=d.draft; } }
@@ -585,6 +586,73 @@ window.addEventListener('message',function(e){
 
 window.addEventListener('hashchange',render);
 render();
+
+/* ── real Google sign-in · through the same Supabase the app uses ── */
+var SB_URL='https://aozjmlbkfayaulqnxgxe.supabase.co';
+var SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvemptbGJrZmF5YXVscW54Z3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTI3MzksImV4cCI6MjA5ODE2ODczOX0.Gij7f8X0N1tvT-vAbSmRcDkdDKU-c-bbLPJJ9CrxQSo';
+var sb=null;
+try{
+  if(window.supabase&&/(^|\.)imissyoumemorial\.com$/.test(location.hostname)){
+    sb=window.supabase.createClient(SB_URL,SB_ANON,{auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true}});
+  }
+}catch(e){ sb=null; }
+function adoptGoogleUser(user){
+  if(!user)return;
+  var md=user.user_metadata||{};
+  state.account={name:(md.full_name||md.name||user.email||'').trim(),email:user.email||'',method:'google'};
+  save();
+}
+function cleanAuthParams(){
+  try{
+    var u=new URL(location.href);
+    ['code','state','error','error_code','error_description'].forEach(function(k){u.searchParams.delete(k)});
+    history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams.toString():'')+u.hash);
+  }catch(e){}
+}
+function consumeNextIntent(){
+  var q={};
+  try{ q=JSON.parse(localStorage.getItem('imy_oauth_next')||'{}'); localStorage.removeItem('imy_oauth_next'); }catch(e){}
+  afterSignin(q||{});
+}
+(function(){
+  var qs;
+  try{ qs=new URLSearchParams(location.search); }catch(e){ return; }
+  var authErr=qs.get('error_description')||qs.get('error');
+  if(authErr){
+    cleanAuthParams();
+    setTimeout(function(){ toast('Google sign-in didn’t finish — '+esc(String(authErr).slice(0,120))); },600);
+    return;
+  }
+  var code=qs.get('code');
+  if(sb&&code){
+    sb.auth.exchangeCodeForSession(code).then(function(res){
+      cleanAuthParams();
+      if(res.error){ toast('Google sign-in didn’t finish — '+esc(res.error.message)); return; }
+      adoptGoogleUser(res.data&&res.data.user||(res.data&&res.data.session&&res.data.session.user));
+      if(state.account){
+        toast('Signed in with Google as <b>'+esc(firstNameOf(state.account.name)||state.account.email)+'</b>');
+        consumeNextIntent();
+      }
+    });
+    return;
+  }
+  /* a quiet welcome back · a Google session from a past visit, adopted once */
+  if(sb&&!state.account){
+    sb.auth.getSession().then(function(res){
+      var sess=res.data&&res.data.session;
+      if(sess&&sess.user&&!state.account){ adoptGoogleUser(sess.user); render(); }
+    });
+  }
+})();
+window.addEventListener('message',function(e){
+  var m=e.data;
+  if(!m||m.type!=='imy'||!frame||e.source!==frame.contentWindow)return;
+  if(m.action!=='googleAuth')return;
+  if(!sb){ cmd('google-simulated',{}); return; }
+  try{ localStorage.setItem('imy_oauth_next',JSON.stringify(parseRoute().q||{})); }catch(err){}
+  sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}})
+    .then(function(res){ if(res&&res.error)toast('Google sign-in is resting — '+esc(res.error.message)); });
+});
 })();
 </script>
 </body>
