@@ -47,9 +47,8 @@
   .row2{display:grid;grid-template-columns:1fr 1fr 90px;gap:10px}
   .pay{width:100%;margin-top:22px;background:linear-gradient(135deg,#C9A572,#a9854f);color:#241711;border:0;border-radius:12px;padding:15px 16px;font-family:'Besley',serif;font-size:17px;font-weight:700;cursor:pointer;transition:filter .2s}
   .pay:hover{filter:brightness(1.06)}
-  .pay:disabled{background:#d8cbb6;color:rgba(36,23,17,.4);filter:none;cursor:default}
-  .simnote{margin-top:6px;font-family:'Work Sans',sans-serif;font-size:10.5px;line-height:1.55;color:#8a8073;text-align:center}
-  .trust{margin-top:13px;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Work Sans',sans-serif;font-size:11.5px;font-weight:600;color:#4a6741}
+  .pay:disabled{opacity:.5;cursor:default}
+  .simnote{margin-top:12px;font-family:'Work Sans',sans-serif;font-size:11px;line-height:1.55;color:#5c5249;text-align:center}
   @media (max-width:880px){ main{grid-template-columns:1fr;gap:26px} h1{font-size:28px} .price b{font-size:38px} }
 </style>
 </head>
@@ -65,19 +64,19 @@
       <div class="price"><b id="prAmt">$197</b><s id="prBase" style="display:none">$197</s><span class="plt">lifetime · no renewals, ever</span></div>
       <div class="disc" id="prDisc" style="display:none">20% family discount · your account already keeps a Plus memorial</div>
       <ul id="feat">
-        <li><span class="ck">✦</span><span>Living pictures and <b id="fVoice">their</b> voice · video and voice memories, playing in full</span></li>
+        <li><span class="ck">✦</span><span>Living pictures and <b id="fVoice">their</b> voice — video and voice memories, playing in full</span></li>
         <li><span class="ck">✦</span><span>Every photograph and video, from you and everyone who loved them</span></li>
-        <li><span class="ck">✦</span><span>The whole memory wall, open · no limits</span></li>
-        <li><span class="ck">✦</span><span>A chosen address · <b id="fAddr">imissyoumemorial.com/theirname</b></span></li>
+        <li><span class="ck">✦</span><span>The whole memory wall, open — nothing waits behind a limit</span></li>
+        <li><span class="ck">✦</span><span>A chosen address — <b id="fAddr">imissyoumemorial.com/theirname</b></span></li>
         <li><span class="ck">✦</span><span>An AI-written life story, shaped from what the family shares</span></li>
-        <li><span class="ck">✦</span><span>AI photo restoration · damaged photographs made whole</span></li>
+        <li><span class="ck">✦</span><span>AI photo restoration — damaged photographs, made whole</span></li>
         <li><span class="ck">✦</span><span>The “Made with love” credit line, quietly removed</span></li>
       </ul>
-      <p class="pledge">Every tribute stays online. If Plus ever lapses, the page stays and its features rest. Nothing is deleted.</p>
+      <p class="pledge">Every tribute stays online. If Plus ever lapses, the page stays and its features rest — nothing is ever deleted.</p>
     </section>
     <section class="card">
       <div class="k2">Their address</div>
-      <label for="slug">Choose it · yours to keep</label>
+      <label for="slug">Choose it — yours to keep</label>
       <div class="addr"><span>imissyoumemorial.com/</span><input id="slug" type="text" autocomplete="off" spellcheck="false" maxlength="40"/></div>
       <div class="avail" id="avail"></div>
       <div class="k2" style="margin-top:26px">Payment</div>
@@ -91,8 +90,7 @@
         <div><label for="cCvc">CVC</label><input id="cCvc" type="text" inputmode="numeric" maxlength="4" placeholder="424"/></div>
       </div>
       <button class="pay" id="payBtn" disabled>Pay $197 · once, for life</button>
-      <div class="trust"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#4a6741" stroke-width="2.4"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Secure checkout · Stripe</div>
-      <div class="simnote">Simulated in this prototype. Nothing is charged here.</div>
+      <div class="simnote">Checkout is simulated in this prototype — the production build runs on Stripe. Nothing is charged here.</div>
     </section>
   </main>
 <script>
@@ -109,15 +107,16 @@
     if(CTX.first){ $('hd').innerHTML='Everything of '+CTX.first.replace(/</g,'&lt;')+'’s, <em>kept.</em>'; }
     $('fVoice').textContent=PA[CTX.pron]||'their';
     var sg=(CTX.suggestSlug||'').replace(/[^a-z0-9-]/g,'');
-    $('fAddr').textContent='imissyoumemorial.com/'+(sg||'theirname');
-    $('slug').value=sg;
+    $('fAddr').textContent='imissyoumemorial.com/'+(sg||'theirfullname');
+    $('slug').placeholder=sg||'theirfullname';
+    $('slug').value='';
     check();
   }
   function slugVal(){ return $('slug').value.toLowerCase().replace(/[^a-z0-9-]/g,'') }
   function check(){
     var s=slugVal(); $('slug').value=s;
     var a=$('avail');
-    if(!s){ a.className='avail'; a.textContent='letters, numbers and dashes · you can also keep the random address'; return true; }
+    if(!s){ a.className='avail'; a.textContent='their full name, or anything you choose · leave empty to keep the random address'; return true; }
     var clash=CTX.taken.indexOf(s)>-1&&s!==CTX.currentSlug;
     if(clash){ a.className='avail no'; a.textContent='· already kept for another page — try a variation'; return false; }
     a.className='avail ok'; a.textContent='· theirs, the moment you pay'; return true;

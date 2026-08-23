@@ -65,7 +65,7 @@ function save(){
   try{ localStorage.setItem(MEMKEY,JSON.stringify(state)); }
   catch(e){
     try{ localStorage.setItem(MEMKEY,JSON.stringify(stripMedia(state))); }catch(e2){ lsOK=false; }
-    if(!warnedQuota){warnedQuota=true; toast('Large photos are kept for this visit. The full save arrives with the real app.');}
+    if(!warnedQuota){warnedQuota=true; toast('Large photos are kept for this visit — the full save arrives with the real app.');}
   }
 }
 load();
@@ -177,19 +177,12 @@ function composeOverride(draft, opts){
   PHOTOS.forEach(function(p,i){
     if(TODAY.length>=6)return;
     TODAY.push({img:p.src,k:(p.when?('around '+p.when):'from '+P.pa+' photographs'),t:p.cap||('From '+P.pa+' album'),
-      s:(p.when?'Around '+p.when:'From '+P.pa+' photographs'),who:'from '+P.pa+' photographs'});
+      s:(p.when?'Around '+p.when:'From '+P.pa+' photographs')+' · kept on '+P.pa+' page',who:'from '+P.pa+' photographs'});
   });
 
-  var guestRelLabel={family:P.pa+' family',friends:P.pa+' friend',neighbors:'a neighbour',students:P.pa+' student',others:'a friend of the family'};
-  (d.guest||[]).forEach(function(gm){
-    MEMS.push({av:svgAvatar(((gm.n||'F')[0]||'F').toUpperCase()),n:gm.n||'A visitor',
-      r:(guestRelLabel[gm.rel]||'a visitor')+' · '+(gm.when||'recently'),rel:gm.rel||'others',
-      t:gm.t||('A memory of '+first),b:'\u201c'+String(gm.b||'').replace(/^[\u201c"]|[\u201d"]$/g,'')+'\u201d',h:0,c:[]});
-  });
   var CHIPS=[['everyone','Everyone']];
-  [['family','Family'],['friends','Friends'],['neighbors','Neighbours'],['students',P.C+' students'],['others','Another way']].forEach(function(cd){
-    if(MEMS.some(function(m){return m.rel===cd[0]}))CHIPS.push(cd);
-  });
+  if(MEMS.some(function(m){return m.rel==='family'}))CHIPS.push(['family','Family']);
+  if(MEMS.some(function(m){return m.rel==='friends'}))CHIPS.push(['friends','Friends']);
 
   var CH=(d.chapters||[]).filter(function(c){return c&&(c.ms||[]).length>0}).map(function(c){
     var ms=(c.ms||[]).map(function(m){return {y:String(m.y||''),l:m.l||'',img:m.img||coverFallback(),cap:m.l||''}});
@@ -272,7 +265,6 @@ function composeOverride(draft, opts){
     plan:plan, mode:mode, slugUrl:url.replace('https://',''),
     counts:counts, svc:svc,
     gates:{photosTotal:photosAll.length, memsTotal:MEMS.length},
-    story:(d.story||'').trim(), openFlyer:!!opts.openFlyer,
     TODAY:TODAY, MEMS:MEMS, CHIPS:CHIPS, PHOTOS:PHOTOS, CH:CH, TAPES:TAPES,
     PEOPLE:PEOPLE, ROOT:ROOT,
     treeOwnLabel:'this page is '+P.poss,
@@ -332,7 +324,7 @@ function startFlow(planIntent){
   if(!state.account){ go('#/signin?next=start'+(planIntent?'&plan='+planIntent:'')); return; }
   if(canCreate()){ state.draft=state.draft||null; go('#/studio?m=new'+(planIntent?'&plan='+planIntent:'')); return; }
   go('#/dashboard');
-  setTimeout(function(){ toast('A free account keeps <b>one</b> memorial. Plus unlocks more. Each new Plus memorial is 20% off.'); },600);
+  setTimeout(function(){ toast('A free account keeps <b>one</b> memorial. Plus unlocks more — each new Plus memorial is 20% off.'); },600);
 }
 /* dev seed · a filled account for review (undocumented) */
 function seedTile(a,b,label){
@@ -355,13 +347,10 @@ function seed(plus){
       {name:'Daniel Woods',rel:'child',by:'1975',dy:''},{name:'June Carter',rel:'grandchild',by:'2001',dy:'',via:'Susan Woods'},
       {name:'Ruth Alvarez',rel:'chosen',by:'1949',dy:''}],
     svc:{m:'9',d:'12',y:'2026',time:'11:00 AM',where:'Mendocino Community Chapel',addr:'44831 Main Street, Mendocino, CA',note:'Wear her favorite color · lunch in the garden after'},
-    story:'Margaret was born in April 1946 in Mendocino, CA. Life came in chapters: the shore years, the classroom. Her family grew around her: two children, and everyone they brought home. If you knew her, you heard it: \u201cLeave the porch light on for whoever is still out.\u201d',
     _plan:plus?'plus':'free',_i:0};
   state.account={name:'Willie Krysta',email:'willie@krystainnovisionarena.com',method:'email'};
   var id='m'+(state.seq++);
-  var mem={id:id,slug:randSlug(),customSlug:plus?'margaret':'',plan:plus?'plus':'free',data:draft,createdAt:Date.now(),counts:{visits:12,flowers:3,candles:1},
-    queue:[{id:'q1',n:'Miriam Okafor',rel:'neighbors',relLabel:'Neighbour',t:'The chair on the porch',b:'She kept a chair on the porch that was really for whoever needed it. I sat in it the week my husband died, and she never once asked me to talk. She just brought out two cups.',when:'this week'},
-      {id:'q2',n:'Tom Reyes',rel:'students',relLabel:'Her student',t:'Room 12',b:'She kept a spare lunch in her desk drawer and never once said whose it was. Thirty years later I understood.',when:'this week'}]};
+  var mem={id:id,slug:randSlug(),customSlug:plus?'margaret':'',plan:plus?'plus':'free',data:draft,createdAt:Date.now(),counts:{visits:12,flowers:3,candles:1}};
   state.memorials.push(mem);state.activeId=id;save();
   go('#/dashboard');
 }
@@ -394,7 +383,7 @@ function render(){
     if(slug==='eleanor'){ mount('tribute',SRC.tribute,{}); return; }
     var m=findBySlug(slug);
     if(!m){ toast('That page isn’t here yet.'); go('#/'); return; }
-    var ov=composeOverride(m.data,{plan:m.plan,mode:'view',slug:m.customSlug||m.slug,account:state.account||{},counts:m.counts,openFlyer:r.q.flyer==='1'});
+    var ov=composeOverride(m.data,{plan:m.plan,mode:'view',slug:m.customSlug||m.slug,account:state.account||{},counts:m.counts});
     mount('tribute',spliceOverride(SRC.tribute,ov),{});
     return;
   }
@@ -403,7 +392,7 @@ function render(){
     var act=activeMem();
     mount('dashboard',SRC.dashboard,{
       account:state.account,
-      memorials:state.memorials.map(function(m){return {id:m.id,plan:m.plan,slug:m.customSlug||m.slug,data:m.data,counts:m.counts,archived:!!m.archived,queue:m.queue||[],active:act&&act.id===m.id}}),
+      memorials:state.memorials.map(function(m){return {id:m.id,plan:m.plan,slug:m.customSlug||m.slug,data:m.data,counts:m.counts,owner:m.owner||'',active:act&&act.id===m.id}}),
       activeId:act?act.id:null,
       canCreate:canCreate(), plusUnlocked:plusUnlocked(),
       price:priceFor(null), hasDraft:!!state.draft
@@ -414,11 +403,11 @@ function render(){
     var cm=byId(r.q.m||'');
     if(!cm){ go('#/dashboard'); return; }
     var pr=priceFor(cm.id);
-    var base=(firstNameOf(cm.data.name)||'their').toLowerCase().replace(/[^a-z]/g,'');
+    var fullSlug=String(cm.data.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,40);
     mount('checkout',SRC.checkout,{
       m:cm.id, price:pr, name:cm.data.name||'', first:firstNameOf(cm.data.name)||'',
       pron:cm.data.pron||'they',
-      currentSlug:cm.customSlug||cm.slug, suggestSlug:base?base+((cm.data.dy||'').slice(2)||''):'',
+      currentSlug:cm.customSlug||cm.slug, suggestSlug:fullSlug,
       taken:state.memorials.map(function(x){return x.customSlug||x.slug}).concat(['eleanor'])
     });
     return;
@@ -445,7 +434,7 @@ window.addEventListener('message',function(e){
     if(d.go==='start'){ startFlow(d.plan==='plus'?'plus':''); return; }
     if(d.go==='signin'){ state.account?go('#/dashboard'):go('#/signin'); return; }
     if(d.go==='dashboard'){ go('#/dashboard'); return; }
-    if(d.go==='site'){ go('#/site/'+(d.slug||'eleanor')+(d.flyer?'?flyer=1':'')); return; }
+    if(d.go==='site'){ go('#/site/'+(d.slug||'eleanor')); return; }
     if(d.go==='studio'){ go('#/studio?m='+(d.m||'new')); return; }
     if(d.go==='checkout'){ go('#/checkout?m='+d.m); return; }
     return;
@@ -457,7 +446,7 @@ window.addEventListener('message',function(e){
     afterSignin(parseRoute().q);
     return;
   }
-  if(a==='signout'){ state.account=null; save(); toast('Signed out.'); go('#/'); return; }
+  if(a==='signout'){ state.account=null; save(); toast('Signed out. Everything stays, safe.'); go('#/'); return; }
   if(a==='draft'){
     var r=parseRoute();
     if(r.q.m&&r.q.m!=='new'){ var mm=byId(r.q.m); if(mm){ mm.data=d.draft; } }
@@ -477,14 +466,14 @@ window.addEventListener('message',function(e){
     if(target){
       target.data=d.draft; save();
       if(d.plan==='plus'&&target.plan!=='plus'){ go('#/checkout?m='+target.id); return; }
-      toast('Saved · '+esc(firstNameOf(d.draft.name)||'the page')+'’s page is up to date.');
+      toast('Saved. '+esc(firstNameOf(d.draft.name)||'The page')+'’s page is up to date.');
       go('#/dashboard'); return;
     }
     var id='m'+(state.seq++);
     var mem={id:id,slug:randSlug(),customSlug:'',plan:'free',data:d.draft,createdAt:Date.now(),counts:{visits:1,flowers:0,candles:0}};
     state.memorials.push(mem); state.activeId=id; state.draft=null; save();
     if(d.plan==='plus'){ go('#/checkout?m='+id); return; }
-    toast('Published · <b>imissyoumemorial.com/'+mem.slug+'</b>');
+    toast('Published — <b>imissyoumemorial.com/'+mem.slug+'</b>');
     go('#/site/'+mem.slug);
     return;
   }
@@ -497,44 +486,23 @@ window.addEventListener('message',function(e){
       if(want&&!clash)pm.customSlug=want;
     }
     state.activeId=pm.id; save();
-    toast('Plus is yours · <b>imissyoumemorial.com/'+(pm.customSlug||pm.slug)+'</b>');
+    toast('Plus is yours, for life — <b>imissyoumemorial.com/'+(pm.customSlug||pm.slug)+'</b>');
     go('#/site/'+(pm.customSlug||pm.slug));
-    return;
-  }
-  if(a==='setActive'){ state.activeId=d.m; save(); render(); return; }
-  if(a==='guest-memory'){
-    var r3=parseRoute();
-    if(r3.seg[0]==='site'){
-      var gm=findBySlug(r3.seg[1]||'');
-      if(gm){ gm.queue=gm.queue||[]; gm.queue.push({id:'q'+(state.seq++),n:(d.name||'A visitor').slice(0,60),rel:d.rel||'others',relLabel:d.relLabel||'A visitor',t:(d.title||'').slice(0,120),b:(d.story||'').slice(0,2000),when:'today'}); save(); }
-    }
-    return;
-  }
-  if(a==='moderate'){
-    var mm2=byId(d.m); if(!mm2)return;
-    mm2.queue=mm2.queue||[];
-    var qi=-1;
-    mm2.queue.forEach(function(x,ix){ if(x.id===d.qid)qi=ix; });
-    if(qi<0)return;
-    var item=mm2.queue.splice(qi,1)[0];
-    if(d.decision==='share'){ mm2.data.guest=mm2.data.guest||[]; mm2.data.guest.push({n:item.n,rel:item.rel,t:item.t,b:item.b,when:item.when}); }
-    else { mm2.kept=mm2.kept||[]; mm2.kept.push(item); }
-    save();
-    return;
-  }
-  if(a==='archiveMem'){
-    var am=byId(d.m); if(!am)return;
-    am.archived=!!d.on; save();
-    toast(am.archived?'The page is resting. It stays online at its address.':'The page is awake.');
-    render();
     return;
   }
   if(a==='deleteAccount'){
     state=blank(); save();
-    toast('Your account was deleted. The pages themselves are never removed without the family’s written request.');
-    go('#/');
-    return;
+    toast('The account is deleted. In production, anything a family published rests — it is never lost.');
+    go('#/'); return;
   }
+  if(a==='transferOwner'){
+    var tm=byId(d.m); if(!tm)return;
+    tm.owner=String(d.email||'').trim(); save();
+    var who=firstNameOf(tm.data.name);
+    toast('<b>'+esc(tm.owner)+'</b> now holds '+(who?esc(who)+'’s page':'the page')+' — in production, the keys arrive by email.');
+    render(); return;
+  }
+  if(a==='setActive'){ state.activeId=d.m; save(); render(); return; }
   if(a==='createNew'){ startFlow(d.plan==='plus'?'plus':''); return; }
   if(a==='toast'){ toast(esc(d.msg||'')); return; }
 });

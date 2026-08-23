@@ -5,7 +5,7 @@
 'use strict';
 
 /* ── draft ── */
-var A={name:'',rel:'',pron:'they',bm:'',bd:'',by:'',dm:'',dd:'',dy:'',home:'',quote:'',story:'',
+var A={name:'',rel:'',pron:'they',bm:'',bd:'',by:'',dm:'',dd:'',dy:'',home:'',quote:'',
   portrait:'',coverbg:'',mem:{title:'',story:'',photo:''},chapters:[],photos:[],tapes:[],
   family:[],svc:{m:'',d:'',y:'',time:'',where:'',addr:'',note:''},_plan:'free',_i:0};
 var CTX={mode:'new',account:{name:'',email:''},price:{amount:197,discount:0},published:false,slug:'',m:'new'};
@@ -18,6 +18,14 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function firstName(){return (A.name||'').trim().split(/\s+/)[0]||''}
 function F(){return firstName()||'them'}
 function fmtDate(m,d,y){ if(!y)return '····'; if(m)return (MONTHS[m-1]+(d?' '+d:'')+', '+y).toUpperCase(); return String(y); }
+function myRoleLabel(){
+  var m={'My mother':'child','My father':'child','My grandmother':'grandchild','My grandfather':'grandchild',
+    'My wife':'wife','My husband':'husband','My partner':'partner','My sister':'sibling','My brother':'sibling',
+    'My daughter':'parent','My son':'parent','My friend':'chosen family'};
+  var r=m[A.rel];
+  if(!r)return 'family';
+  return r==='chosen family'?r:P().pa+' '+r;
+}
 
 /* ── select builders · dates are chosen, never typed ── */
 function selMonth(id,val,blank){return '<select id="'+id+'" class="dsel"><option value="">'+(blank||'Month')+'</option>'+MONTHS.map(function(m,i){return '<option value="'+(i+1)+'"'+(String(i+1)===String(val)?' selected':'')+'>'+m+'</option>'}).join('')+'</select>'}
@@ -101,21 +109,6 @@ function markSaved(){var c=document.getElementById('savedChip');c.classList.add(
 function changed(kind){ markSaved(); persist(); refreshCont(); if(kind==='fast')fastPerson(); else requestCompose(); }
 function bind(id,fn,kind){var el=document.getElementById(id);if(!el)return;el.addEventListener(el.tagName==='SELECT'?'change':'input',function(){fn(el.value);changed(kind||'fast')})}
 
-/* the story drafted from the chapters */
-/* 8b helpers · the story drafted from the chapters */
-function draftStory(){
-  var f=firstName()||'They', Pp=P();
-  var bits=[];
-  var born=A.by?(f+' was born'+(A.bm?' in '+MONTHS[+A.bm-1]:'')+' '+A.by+((A.home||'').trim()?' in '+A.home.trim():'')+'.'):((A.home||'').trim()?f+' called '+A.home.trim()+' home.':'');
-  if(born)bits.push(born);
-  var chs=A.chapters.filter(function(c){return (c.t||'').trim()});
-  if(chs.length)bits.push('Life came in chapters: '+chs.map(function(c){return c.t.trim().toLowerCase()}).join(', ')+'.');
-  var fam=A.family.filter(function(x){return x.rel==='child'}).length;
-  if(fam)bits.push(Pp.C+' family grew around '+Pp.o+': '+fam+(fam===1?' child':' children')+', and everyone they brought home.');
-  if((A.quote||'').trim())bits.push('If you knew '+Pp.o+', you heard it: \u201c'+A.quote.trim().replace(/^[\u201c"]|[\u201d"]$/g,'')+'\u201d');
-  return bits.join(' ');
-}
-
 /* ═══ the steps · each one maps to the page ═══ */
 var STEPS=[
 
@@ -132,7 +125,7 @@ var STEPS=[
 /* 1 · relation */
 {id:'rel',ch:'who they were',room:'',tag:'',
  q:function(){return 'Who '+(A.name?'was '+esc(F()):'were they')+' <em>to you?</em>'},
- sub:'This also places you on the family tree.',
+ sub:'This plants the first branch of the family tree — you, beside them.',
  render:function(el){
    var rels=['My mother','My father','My grandmother','My grandfather','My wife','My husband','My partner','My sister','My brother','My daughter','My son','My friend'];
    el.innerHTML='<div class="chiprow">'+rels.map(function(r){return '<button type="button" class="chip'+(A.rel===r?' on':'')+'" data-v="'+r+'">'+r+'</button>'}).join('')+'</div>';
@@ -149,10 +142,10 @@ var STEPS=[
 /* 2 · pronouns */
 {id:'pron',ch:'who they were',room:'',tag:'',
  q:function(){return 'How should '+(A.name?esc(F())+'’s':'the')+' page <em>speak of them?</em>'},
- sub:'The page speaks these words everywhere. Watch the tabs change.',
+ sub:'Small words, everywhere on the page — watch the tabs change as you choose.',
  render:function(el){
-   var opts=[{v:'she',t:'Her life',s:'she · her'},{v:'he',t:'His life',s:'he · him'},{v:'they',t:'Their life',s:'they · them'}];
-   el.innerHTML='<div class="bigopts">'+opts.map(function(o){return '<button type="button" class="bigopt'+(A.pron===o.v?' on':'')+'" data-v="'+o.v+'"><span class="ring"></span><span><span class="bo1">'+o.t+'</span><span class="bo2">'+o.s+'</span></span></button>'}).join('')+'</div>';
+   var opts=[{v:'she',t:'Her life'},{v:'he',t:'His life'},{v:'they',t:'Their life'}];
+   el.innerHTML='<div class="bigopts">'+opts.map(function(o){return '<button type="button" class="bigopt'+(A.pron===o.v?' on':'')+'" data-v="'+o.v+'"><span class="ring"></span><span><span class="bo1">'+o.t+'</span></span></button>'}).join('')+'</div>';
    el.querySelectorAll('.bigopt').forEach(function(b){b.onclick=function(){
      el.querySelectorAll('.bigopt').forEach(function(x){x.classList.remove('on')});
      b.classList.add('on');A.pron=b.dataset.v;changed('full');
@@ -164,7 +157,7 @@ var STEPS=[
 /* 3 · dates · chosen, never typed */
 {id:'dates',ch:'who they were',room:'',tag:'',
  q:function(){return 'The dates that <em>held '+(A.name?esc(F())+'’s':'their')+' life.</em>'},
- sub:'Years are enough. Add month and day if you know them.',
+ sub:'The years alone are enough — month and day join the page when you know them.',
  render:function(el){
    el.innerHTML='<div class="fields">'+
    '<div class="fld"><label>Born</label><div class="d3">'+selMonth('inBm',A.bm)+selDay('inBd',A.bd)+selYear('inBy',A.by,1890,THIS_YEAR)+'</div></div>'+
@@ -178,7 +171,7 @@ var STEPS=[
 /* 4 · home */
 {id:'home',ch:'who they were',room:'',tag:'',
  q:function(){return 'Where did '+(A.name?esc(F()):'they')+' call <em>home?</em>'},
- sub:'Shown beside the dates at the top of the page.',
+ sub:'It rests beside the dates at the top of the page.',
  render:function(el){
    el.innerHTML='<div class="fields"><div class="fld"><label>City, state</label><input type="text" id="inHome" placeholder="Half Moon Bay, CA" value="'+esc(A.home)+'"/></div></div>';
    bind('inHome',function(v){A.home=v});
@@ -188,7 +181,7 @@ var STEPS=[
 /* 5 · their words */
 {id:'quote',ch:'who they were',room:'',tag:'',
  q:function(){return 'Something '+(A.name?esc(F()):'they')+' <em>always said.</em>'},
- sub:'Shown in quotation marks beneath their name.',
+ sub:'It sits in quotation marks beneath the name — the first thing a visitor hears.',
  render:function(el){
    el.innerHTML='<div class="fields"><div class="fld"><label>In their words</label><input type="text" id="inQuote" placeholder="Put the kettle on, sit in the garden, and everything will look better." value="'+esc(A.quote)+'"/></div></div>';
    bind('inQuote',function(v){A.quote=v});
@@ -198,7 +191,7 @@ var STEPS=[
 /* 6 · photographs of them */
 {id:'portrait',ch:'their portrait',room:'',tag:'',
  q:function(){return (A.name?esc(F())+'’s':'Their')+' <em>photograph.</em>'},
- sub:'The portrait sits in the cover frame. A wide photo behind it becomes the backdrop.',
+ sub:'The portrait rests in the arch on the cover. A wide photograph behind it makes the whole cover theirs.',
  render:function(el){
    el.innerHTML='<div class="fields">'+
    '<div class="drop2" id="dPort"><input type="file" id="fPort" accept="image/*" style="display:none"/>'+(A.portrait?'<div class="thumbrow"><span class="th cover"><img src="'+A.portrait+'" alt=""/></span></div><div class="dsm">the portrait · tap to change</div>':'<div class="dbig">Choose the portrait</div><div class="dsm">a face you love · it fills the arch</div>')+'</div>'+
@@ -238,7 +231,7 @@ var STEPS=[
 /* 8 · chapters */
 {id:'chapters',ch:'their life, in chapters',room:'life',tag:'',
  q:function(){return (A.name?esc(F())+'’s':'Their')+' life, <em>in chapters.</em>'},
- sub:'Name a chapter, then add its moments: a year, what happened, a photograph.',
+ sub:'Name a chapter, then lay its moments inside — a year, what happened, a photograph. The page arranges itself.',
  render:function(el){
    if(!A.chapters.length)A.chapters.push({t:'',from:'',to:'',ms:[{y:'',l:'',img:''}]});
    el.innerHTML='<div class="fields" id="chapEd"></div>';
@@ -265,10 +258,7 @@ var STEPS=[
        c.ms.map(function(m,mi){return momBlock(ci,mi,m)}).join('')+
        '<button type="button" class="addmoment" data-c="'+ci+'">+ add a moment to this chapter</button>'+
        '</div>';
-     }).join('')+'<button type="button" class="addchapter" id="addChap">+ another chapter of '+esc(P().pa)+' life</button>'+
-     '<div class="chapcard" id="storyCard"><div><span class="mlbl">'+esc(P().C)+' story · opens the chapter room</span>'+
-     '<textarea id="inStory" class="storyta" placeholder="A few lines about who '+esc(P().s)+' really '+(A.pron==='they'?'were':'was')+'.">'+esc(A.story||'')+'</textarea></div>'+
-     '<button type="button" class="addmoment" id="draftStory">Draft it from what you\u2019ve written · yours to edit</button></div>';
+     }).join('')+'<button type="button" class="addchapter" id="addChap">+ another chapter of '+esc(P().pa)+' life</button>';
      wire();
    }
    function wire(){
@@ -297,10 +287,6 @@ var STEPS=[
      }});
      var ac=document.getElementById('addChap');
      if(ac)ac.onclick=function(){A.chapters.push({t:'',from:'',to:'',ms:[{y:'',l:'',img:''}]});redraw();};
-     var st=document.getElementById('inStory');
-     if(st)st.addEventListener('input',function(){A.story=st.value;changed('full')});
-     var ds=document.getElementById('draftStory');
-     if(ds)ds.onclick=function(){A.story=draftStory();document.getElementById('inStory').value=A.story;changed('full')};
    }
    redraw();
  },
@@ -309,32 +295,25 @@ var STEPS=[
 /* 9 · the album */
 {id:'photos',ch:'their album',room:'pho',tag:'',
  q:function(){return 'Photographs, so the page <em>feels like '+(A.name?esc(F()):'them')+'.</em>'},
- sub:'Captions and years appear under each photograph in the album.',
+ sub:'Add what you have close. A line under each one keeps its story.',
  render:function(el){
    var over=A.photos.length>12&&previewPlan()!=='plus';
    el.innerHTML='<div class="drop2" id="gdrop"><input type="file" id="inGal" accept="image/*" multiple style="display:none"/>'+
    '<div class="dbig">'+(A.photos.length?A.photos.length+' photograph'+(A.photos.length>1?'s':'')+' in the album':'Choose photographs')+'</div>'+
    '<div class="dsm">tap here · choose as many as you like</div></div>'+
    '<div class="addlist" id="phList"></div>'+
-   (over?'<div class="planline">The first 12 show now. The rest are saved. <b>Plus shows every photograph.</b></div>':'');
+   (over?'<div class="planline">The first 12 shine now — the rest wait, safe. <b>Plus keeps every photograph.</b></div>':'');
    var list=document.getElementById('phList');
    function paint(){
      list.innerHTML=A.photos.map(function(p,i){
        return '<div class="addedrow phrow"><span class="th mini"><img src="'+p.src+'" alt=""/></span>'+
        '<input type="text" class="inp-cap" data-i="'+i+'" placeholder="a line for it · “Dahlias, given away over the fence”" value="'+esc(p.cap)+'"/>'+
-       selYear('phY'+i,p.wy,1890,THIS_YEAR,'Year, if known')+
-       '<button type="button" class="restoreb'+(p.restore?' on':'')+'" data-i="'+i+'" title="Mark for AI restoration · part of Plus · runs in the live app">✦</button>'+
+       selYear('phY'+i,p.wy,1890,THIS_YEAR,'Year — if known')+
        '<button type="button" class="rm" data-i="'+i+'" aria-label="Remove">✕</button></div>';
      }).join('');
      list.querySelectorAll('.inp-cap').forEach(function(inp){inp.addEventListener('input',function(){A.photos[+inp.dataset.i].cap=inp.value;changed('full')})});
      A.photos.forEach(function(p,i){var s=document.getElementById('phY'+i);if(s)s.addEventListener('change',function(){p.wy=s.value;changed('full')})});
      list.querySelectorAll('.rm').forEach(function(b){b.onclick=function(){A.photos.splice(+b.dataset.i,1);STEPS[9].render(el);changed('full')}});
-     list.querySelectorAll('.restoreb').forEach(function(b){b.onclick=function(){
-       var ph=A.photos[+b.dataset.i];ph.restore=!ph.restore;b.classList.toggle('on',!!ph.restore);
-       var n=document.getElementById('restNote');
-       if(ph.restore&&!n){n=document.createElement('div');n.id='restNote';n.className='planline';n.innerHTML='Marked for <b>AI restoration</b>. Part of Plus. It runs when the live app arrives.';list.parentNode.appendChild(n);}
-       markSaved();persist();
-     }});
    }
    paint();
    var d=document.getElementById('gdrop'),f=document.getElementById('inGal');
@@ -354,17 +333,16 @@ var STEPS=[
 /* 10 · tapes */
 {id:'tapes',ch:'their tapes',room:'tape',tag:'',
  q:function(){return 'Videos, so <em>'+(A.name?esc(F()):'they')+'</em> can still move and laugh.'},
- sub:'Home videos, toasts, voicemails. Part of Plus. Saved either way.',
+ sub:'Home videos, a toast, a voicemail with a face. Part of Plus — kept safe either way.',
  render:function(el){
-   if(!A.tapes.length)A.tapes.push({t:'',wm:'',wy:'',dur:'',cover:'',kind:'video'});
+   if(!A.tapes.length)A.tapes.push({t:'',wm:'',wy:'',dur:'',cover:''});
    el.innerHTML='<div class="fields" id="tpEd"></div>';
    var ed=document.getElementById('tpEd');
    function redraw(){
      ed.innerHTML=A.tapes.map(function(t,i){
        return '<div class="chapcard" data-i="'+i+'">'+
        '<button type="button" class="chx" data-i="'+i+'" aria-label="Remove this tape">✕</button>'+
-       '<div class="chiprow" style="margin:0 0 8px"><button type="button" class="chip tkind'+((t.kind||'video')==='video'?' on':'')+'" data-k="video">Video</button><button type="button" class="chip tkind'+(t.kind==='voice'?' on':'')+'" data-k="voice">\u266a Voice</button></div>'+
-       '<div><span class="mlbl">What it holds</span><input type="text" class="tp-t" placeholder="'+(t.kind==='voice'?'The voicemail from her birthday':'Her seventieth · the toast')+'" value="'+esc(t.t)+'"/></div>'+
+       '<div><span class="mlbl">What it holds</span><input type="text" class="tp-t" placeholder="Her seventieth · the toast" value="'+esc(t.t)+'"/></div>'+
        '<div class="mgrid" style="margin-top:8px"><div><span class="mlbl">When — if known</span>'+selYear('tpY'+i,t.wy,1890,THIS_YEAR)+'</div>'+
        '<div><span class="mlbl">A still, for its cover</span><button type="button" class="mphotobtn" style="margin-top:0">'+(t.cover?'✓ tap to change':'+ choose a photograph')+'</button><input type="file" class="m-file" accept="image/*" style="display:none"/></div></div>'+
        '</div>';
@@ -372,14 +350,13 @@ var STEPS=[
      ed.querySelectorAll('.chapcard').forEach(function(card){
        var i=+card.dataset.i,t=A.tapes[i];
        card.querySelector('.tp-t').addEventListener('input',function(){t.t=this.value;changed('full')});
-       card.querySelectorAll('.tkind').forEach(function(kb){kb.onclick=function(){t.kind=kb.dataset.k;redraw();changed('full')}});
        card.querySelector('#tpY'+i).addEventListener('change',function(){t.wy=this.value;changed('full')});
        var fp=card.querySelector('.m-file');
        card.querySelector('.mphotobtn').onclick=function(){fp.click()};
        fp.onchange=function(){if(fp.files[0])ingest(fp.files[0],900,function(url){t.cover=url;redraw();changed('full')})};
        card.querySelector('.chx').onclick=function(){A.tapes.splice(i,1);redraw();changed('full')};
      });
-     document.getElementById('addTape').onclick=function(){A.tapes.push({t:'',wm:'',wy:'',dur:'',cover:'',kind:'video'});redraw();};
+     document.getElementById('addTape').onclick=function(){A.tapes.push({t:'',wm:'',wy:'',dur:'',cover:''});redraw();};
    }
    redraw();
  },
@@ -395,7 +372,7 @@ var STEPS=[
    el.innerHTML='<div class="addlist" id="famList"></div>'+
    '<div class="chapcard" id="famForm">'+
    '<div><span class="mlbl">Their name</span><input type="text" id="famName" placeholder="Thomas Hayes"/></div>'+
-   '<div style="margin-top:8px"><span class="mlbl">How they are related to '+esc(F())+'</span><select id="famRel" class="dsel"><option value="">Choose how they\u2019re related\u2026</option>'+RELS.map(function(r){return '<option value="'+r[0]+'">'+r[1]+'</option>'}).join('')+'</select></div>'+
+   '<div style="margin-top:8px"><span class="mlbl">How they are related to '+esc(F())+'</span><select id="famRel" class="dsel">'+RELS.map(function(r){return '<option value="'+r[0]+'">'+r[1]+'</option>'}).join('')+'</select></div>'+
    '<div id="famVia" style="display:none;margin-top:8px"><span class="mlbl">Through which child?</span><select id="famViaSel" class="dsel"><option value="">Just place them</option>'+kids.map(function(k){return '<option>'+esc(k.name)+'</option>'}).join('')+'</select></div>'+
    '<div class="mgrid" style="margin-top:8px"><div><span class="mlbl">Born — if known</span>'+selYear('famBy','',1890,THIS_YEAR)+'</div><div><span class="mlbl">Passed — blank if still with us</span>'+selYear('famDy','',1890,THIS_YEAR)+'</div></div>'+
    '<button type="button" class="addmoment" id="famAdd" style="margin-top:10px">＋ Add to the tree</button>'+
@@ -405,7 +382,7 @@ var STEPS=[
    function paint(){
      list.innerHTML=A.family.map(function(f,i){
        return '<div class="addedrow"><span style="color:var(--terra)">✿</span> <b>'+esc(f.name)+'</b>&nbsp;· '+relLabel(f.rel)+(f.by||f.dy?' · '+(f.by&&f.dy?f.by+'–'+f.dy:(f.by?'b. '+f.by:'d. '+f.dy)):'')+' <button type="button" class="rm" data-i="'+i+'" aria-label="Remove">✕</button></div>';
-     }).join('')||'<div class="lnote">you are already on the tree'+(A.rel?' — '+esc(A.rel.toLowerCase()).replace('my ','as '+P().pa+' ')+'':'')+'</div>';
+     }).join('')||'<div class="lnote">you are already on the tree'+(A.rel?' — as '+myRoleLabel():'')+'</div>';
      list.querySelectorAll('.rm').forEach(function(b){b.onclick=function(){A.family.splice(+b.dataset.i,1);STEPS[11].render(el);changed('full')}});
    }
    paint();
@@ -413,17 +390,9 @@ var STEPS=[
    relSel.addEventListener('change',function(){
      document.getElementById('famVia').style.display=(relSel.value==='grandchild'&&kids.length)?'block':'none';
    });
-   function famReady(){
-     var ok=document.getElementById('famName').value.trim().length>1&&relSel.value;
-     document.getElementById('famAdd').style.opacity=ok?'1':'.45';
-     return ok;
-   }
-   document.getElementById('famName').addEventListener('input',famReady);
-   relSel.addEventListener('change',famReady);
-   setTimeout(famReady,0);
    document.getElementById('famAdd').onclick=function(){
-     if(!famReady())return;
      var nm=document.getElementById('famName').value.trim();
+     if(!nm)return;
      A.family.push({name:nm,rel:relSel.value,by:document.getElementById('famBy').value,dy:document.getElementById('famDy').value,via:document.getElementById('famViaSel')?document.getElementById('famViaSel').value:''});
      STEPS[11].render(el);changed('full');
      setTimeout(function(){var f2=document.getElementById('famName');if(f2)f2.focus()},60);
@@ -434,7 +403,7 @@ var STEPS=[
 /* 12 · the service */
 {id:'service',ch:'the service',room:'',tag:'',
  q:function(){return 'Is there a <em>service planned?</em>'},
- sub:'Added to the shareable flyer. Skip it if plans are still forming.',
+ sub:'It joins the shareable flyer — the one the family sends, with the map of the day. Skip it if plans are still forming.',
  render:function(el){
    var s=A.svc;
    el.innerHTML='<div class="fields">'+
@@ -452,37 +421,28 @@ var STEPS=[
 /* 13 · address + plan */
 {id:'address',ch:'their address',room:'',tag:'',
  q:function(){return CTX.published?'Everything is <em>kept.</em>':'Everything is <em>ready.</em>'},
- sub:function(){return CTX.published?'Changes save as you make them. The page keeps its address.':'Review the page beside you, then choose how it lives.'},
+ sub:function(){return CTX.published?'Changes save as you make them. The page keeps its address.':'One quiet look at the page beside you, then choose how it lives.'},
  render:function(el){
    var pr=CTX.price||{amount:197,discount:0};
-   var priceLine=pr.discount?('$'+pr.amount.toFixed(2)+' <s style="opacity:.55">$'+pr.base+'</s>'):'$'+pr.base+' · lifetime';
-   var priceSub=pr.discount?('Lifetime · '+pr.discount+'% family discount applied'):'Once. No renewals, ever.';
+   var priceLine=pr.discount?('$'+pr.amount.toFixed(2)+' <s style="opacity:.55">$'+pr.base+'</s>'):'$'+pr.base;
+   var priceSub=pr.discount?('lifetime · '+pr.discount+'% family discount — your account already keeps a Plus memorial'):'lifetime · once, for good';
    var addrLine=CTX.published?('imissyoumemorial.com/'+esc(CTX.slug)):'imissyoumemorial.com/··········';
    var addrNote=CTX.published
-     ?(CTX.plan==='plus'?'chosen, and '+P().poss+' for good':'the page lives at a random address · Plus chooses its name')
-     :'a random address is minted when you publish · <b>Plus chooses its name</b>, like imissyoumemorial.com/'+esc((firstName()||'their-name').toLowerCase().replace(/[^a-z]/g,'')||'theirname');
+     ?(CTX.plan==='plus'?'chosen, and '+P().poss+' for good':'a random address keeps the page private-feeling · Plus chooses its name')
+     :'a completely random address is minted when you publish · <b>Plus chooses its name</b> — like imissyoumemorial.com/'+esc((firstName()||'their-name').toLowerCase().replace(/[^a-z]/g,'')||'theirname');
    var html='<div class="sealbox"><div class="k2">where the page lives</div>'+
      '<div class="addr2">'+addrLine+'</div>'+
      '<div class="note">'+addrNote+'</div></div>';
    if(!(CTX.published&&CTX.plan==='plus')){
-     html+='<div class="plans">'+
-     '<button type="button" class="plancard'+(A._plan!=='plus'?' on':'')+'" data-v="free">'+
-       '<span class="prad"></span><span class="pbody"><span class="ptop"><b>Free</b><i>$0</i></span>'+
-       '<span class="pli">The page, online forever</span>'+
-       '<span class="pli">12 photographs · the wall open to ten memories</span>'+
-       '<span class="pli">A random address</span></span></button>'+
-     '<button type="button" class="plancard'+(A._plan==='plus'?' on':'')+'" data-v="plus">'+
-       '<span class="prad"></span><span class="pbody"><span class="ptop"><b>Plus</b><i>'+priceLine+'</i></span>'+
-       '<span class="pli">'+priceSub+'</span>'+
-       '<span class="pli">Every photograph and video · '+esc(P().pa)+' voice</span>'+
-       '<span class="pli">A chosen address · AI photo restoration</span>'+
-       '<span class="pli">The credit line removed</span></span></button>'+
+     html+='<div class="bigopts" style="margin-top:14px">'+
+     '<button type="button" class="bigopt'+(A._plan!=='plus'?' on':'')+'" data-v="free"><span class="ring"></span><span><span class="bo1">Free · $0</span><span class="bo2">the page, online forever · 12 photographs · the wall open to ten memories · a random address</span></span></button>'+
+     '<button type="button" class="bigopt'+(A._plan==='plus'?' on':'')+'" data-v="plus"><span class="ring"></span><span><span class="bo1">Plus · '+priceLine+'</span><span class="bo2">'+priceSub+' — every photograph and video · '+esc(P().pa)+' voice · a chosen address · AI photo restoration · the credit line removed</span></span></button>'+
      '</div>'+
      '<div class="note" style="margin-top:12px;font-size:12.5px;opacity:.75">Every tribute stays online. We never charge a family to keep a memory alive.</div>';
    }
    el.innerHTML=html;
-   el.querySelectorAll('.plancard').forEach(function(b){b.onclick=function(){
-     el.querySelectorAll('.plancard').forEach(function(x){x.classList.remove('on')});
+   el.querySelectorAll('.bigopt').forEach(function(b){b.onclick=function(){
+     el.querySelectorAll('.bigopt').forEach(function(x){x.classList.remove('on')});
      b.classList.add('on');A._plan=b.dataset.v;changed('full');refreshCont();
    }});
  },
@@ -493,46 +453,25 @@ var STEPS=[
  valid:function(){return true}}
 ];
 
-function paintSoFar(){
-  var old=document.getElementById('soFar');
-  if(old)old.parentNode.removeChild(old);
-  if(!CTX.published)return;
-  var chs=A.chapters.filter(function(c){return (c.ms||[]).length&&(c.t||'').trim()}).length;
-  var rows=[
-    [(A.name&&A.by&&A.dy)?'✓':'✿','The cover'+((A.name&&A.by&&A.dy)?', complete':' is missing its dates'),0],
-    [(A.mem.story||A.mem.title)?'✓':'✿',(A.mem.story||A.mem.title)?'The first memory is on the wall':'No first memory yet',7],
-    [chs?'✓':'✿',chs?(chs+(chs===1?' chapter':' chapters')+' · '+A.photos.length+(A.photos.length===1?' photograph':' photographs')):'The chapters are unwritten',8],
-    (function(){var n=A.tapes.filter(function(t){return (t.t||'').trim()}).length;return [n?'✓':'✿',n?('The tape shelf holds '+n+(n===1?' tape':' tapes')):'The tape shelf is empty',10]})(),
-    [A.family.length?'✓':'✿',(A.family.length+ (A.rel?2:1))+' people on the tree',11],
-    [(A.svc.y&&A.svc.where)?'✓':'✿',(A.svc.y&&A.svc.where)?'Service details are on the flyer':'No service details yet',12]
-  ];
-  var d=document.createElement('div');d.id='soFar';
-  d.innerHTML='<div class="sflab">the page so far</div>'+rows.map(function(r){
-    return '<button type="button" class="sfrow" data-i="'+r[2]+'"><span class="'+(r[0]==='✓'?'sfok':'sfno')+'">'+r[0]+'</span>'+r[1]+'</button>';
-  }).join('');
-  lbody.appendChild(d);
-  d.querySelectorAll('.sfrow').forEach(function(b){b.onclick=function(){goto(+b.dataset.i)}});
-}
-var KIND2STEP={name:0,dates:3,quote:5,portrait:6,cover:6,memory:7,chapters:8,story:8,photos:9,tapes:10,tree:11,service:12,address:13};
+var KIND2STEP={name:0,dates:3,quote:5,portrait:6,cover:6,memory:7,chapters:8,photos:9,tapes:10,tree:11,service:12,address:13};
 var ROOM2STEP={mem:7,life:8,pho:9,tape:10,tree:11};
 function stepRoom(i){return STEPS[i]?STEPS[i].room:''}
-function chLabel(s){
-  var f=firstName();
-  if(!f)return s.ch;
-  return s.ch.replace(/^their\b/, f+'\u2019s').replace(/^the first memory$/,'the first memory');
-}
 
 /* ═══ the walk ═══ */
 var cur=0;
 var lbody=document.getElementById('lbody');
 function buildGarland(){
   var g=document.getElementById('garland');
-  if(g)g.style.display='none';
+  if(g)g.innerHTML=STEPS.map(function(_,i){return '<span class="gd" data-i="'+i+'"></span>'}).join('');
 }
 function paintGarland(){
+  document.querySelectorAll('.gd').forEach(function(d,i){
+    d.classList.toggle('done',i<cur);d.classList.toggle('now',i===cur);
+    d.onclick=function(){goto(i)};
+  });
   var f=document.getElementById('pFill'),c=document.getElementById('pCnt');
   if(f)f.style.width=Math.round(((cur+1)/STEPS.length)*100)+'%';
-  if(c)c.textContent='Step '+(cur+1)+' of '+STEPS.length;
+  if(c)c.textContent=(cur+1)+' of '+STEPS.length;
 }
 function paintJump(){
   var j=document.getElementById('jumpRow');
@@ -556,14 +495,15 @@ function goto(i){
   lbody.innerHTML='';
   var el=document.createElement('div');el.className='step on';
   var sub=typeof s.sub==='function'?s.sub():s.sub;
-  el.innerHTML='<h1>'+s.q()+'</h1>'+(sub?'<div class="sub">'+sub+'</div>':'')+'<div class="body"></div>';
+  el.innerHTML='<h1>'+s.q()+'</h1>'+(sub?'<div class="sub">'+sub+'</div>':'')+
+  '<div class="whisper"><span class="eye"></span>the page beside you is real · tap anything on it to edit that part</div><div class="body"></div>';
   lbody.appendChild(el);
   s.render(el.querySelector('.body'));
-  document.getElementById('chapterLbl').textContent=chLabel(s);
+  document.getElementById('chapterLbl').textContent=s.ch;
   document.getElementById('backBtn').style.visibility=cur>0?'visible':'hidden';
   var sk=document.getElementById('skipBtn');
   if(s.skip&&cur<STEPS.length-1){sk.style.visibility='visible';sk.textContent=s.skip}else{sk.style.visibility='hidden'}
-  paintGarland();paintJump();paintSoFar();refreshCont();
+  paintGarland();paintJump();refreshCont();
   /* the page follows the letter */
   pvRoom=s.room||'';
   if(s.room)pvCmd('room',{room:s.room});
@@ -614,25 +554,13 @@ function boot(ctx){
   var hint=document.querySelector('.mhint');
   if(hint){
     hint.innerHTML=CTX.published
-      ?'saves as you type · <button type="button" id="xDash">✓ done · back to the dashboard</button>'
-      :'saves as you write';
+      ?'every change saves to the live page · <button type="button" id="xDash">✓ done — back to the dashboard</button>'
+      :'it saves as you write · the page beside you is real — tap anything on it';
     var x=document.getElementById('xDash');
     if(x)x.onclick=function(){IMY.send('draft',{draft:A});IMY.send('nav',{go:'dashboard'})};
   }
   var tag=document.querySelector('.sbar .tag');
-  if(tag)tag.textContent=CTX.published?('editing '+(F()==='them'?'their':F()+'\u2019s')+' page'):'building their page';
-  if(!CTX.published)document.querySelector('.letter').classList.add('onboard');
-  /* comfort corner · text size for the letter */
-  (function(){
-    var lt=document.querySelector('.letter');
-    var w=document.createElement('div');w.className='a11y-letter';w.setAttribute('aria-label','Text size');
-    [['A-','0.92'],['A','1'],['A+','1.14']].forEach(function(pr,i){
-      var b=document.createElement('button');b.type='button';b.textContent=pr[0];if(i===1)b.className='on';
-      b.onclick=function(){lt.style.fontSize=pr[1]+'em';w.querySelectorAll('button').forEach(function(x){x.className=''});b.className='on';};
-      w.appendChild(b);
-    });
-    document.body.appendChild(w);
-  })();
+  if(tag&&CTX.published)tag.innerHTML='<span class="live"></span>'+esc(F()==='them'?'their page':F()+'’s page')+' · live, and listening';
   /* jump strip in edit mode */
   if(CTX.published){
     var lh=document.querySelector('.lhead');
