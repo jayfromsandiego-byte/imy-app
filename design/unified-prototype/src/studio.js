@@ -478,7 +478,7 @@ var STEPS=[
  valid:function(){return true}}
 ];
 
-var KIND2STEP={name:0,dates:3,quote:5,portrait:6,cover:6,memory:7,chapters:8,photos:9,tapes:10,tree:11,service:12,address:13};
+var KIND2STEP={name:0,rel:1,pron:2,dates:3,home:4,quote:5,portrait:6,cover:0,background:6,memory:7,chapters:8,photos:9,tapes:10,tree:11,family:11,service:12,address:13};
 var ROOM2STEP={mem:7,life:8,pho:9,tape:10,tree:11};
 function stepRoom(i){return STEPS[i]?STEPS[i].room:''}
 
@@ -598,6 +598,7 @@ function boot(ctx){
   requestCompose();
   var start=(typeof ctx.draft==='object'&&ctx.draft&&typeof ctx.draft._i==='number')?ctx.draft._i:0;
   if(CTX.published)start=0;
+  if(ctx.step&&KIND2STEP[ctx.step]!=null)start=KIND2STEP[ctx.step];
   goto(Math.min(start,STEPS.length-1));
 }
 IMY.send('ready',{});

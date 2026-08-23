@@ -49,8 +49,10 @@
   mini(0,D.photosCount+' photo'+(D.photosCount===1?'':'s'),null);
   mini(1,D.tapesCount+' film'+(D.tapesCount===1?'':'s'),'on the tape shelf');
   mini(2,D.chapters.length+' chapter'+(D.chapters.length===1?'':'s'),'edit what the page says');
-  mini(3,D.ann?D.ann.short:'—',D.ann?'choose what the page does':'add the dates in the studio');
+  mini(3,D.ann?D.ann.short:'—',D.ann?'choose what the page does':'set the dates in the live editor');
   mini(4,'the link','send the page anywhere');
+  /* the films mini opens the pictures panel, where the shelf now lives */
+  if(minis[1]){ minis[1].removeAttribute('data-whisper'); minis[1].setAttribute('data-nav','pictures'); }
   var vg=$('.vigil span');
   if(vg){
     var fl=D.counts.flowers||0, ca=D.counts.candles||0;
@@ -58,34 +60,66 @@
       :'<b>The first flower waits to be laid.</b> Share the page with the family & friends who should have it.';
   }
 
-  /* ── the studio is the editor · a quiet door on the overview ── */
+  /* ── the live editor · the page itself is where editing happens ── */
+  function editLive(step){ IMY.send('nav',{go:'studio',m:D.activeId,step:step||''}); }
   var conveyor=$('#conveyor');
   if(conveyor){
     var studioCard=document.createElement('div');
     studioCard.className='qcard';
     studioCard.style.marginTop='14px';
-    studioCard.innerHTML='<p class="sen"><b>The page is the editor.</b> Open it in the studio and tap anything on it — the name, a chapter, a photograph — to change that part.</p>'+
-      '<div class="foot"><button class="btn small primary" id="imyEdit">Edit the page</button><button class="btn small" id="imyView">See the page</button></div>';
+    studioCard.innerHTML='<p class="sen"><b>The live editor.</b> The page is the editor — open it and tap anything on it. The name, a chapter, a photograph: each opens its own question, and the page updates as you type.</p>'+
+      '<div class="foot"><button class="btn small primary" id="imyEdit">Open the live editor</button><button class="btn small" id="imyView">See the page</button></div>';
     conveyor.parentNode.insertBefore(studioCard,conveyor.nextSibling);
-    $('#imyEdit').addEventListener('click',function(){IMY.send('nav',{go:'studio',m:D.activeId})});
+    $('#imyEdit').addEventListener('click',function(){editLive('')});
     $('#imyView').addEventListener('click',function(){IMY.send('nav',{go:'site',slug:D.slug})});
   }
 
-  /* ── pictures ── */
+  /* ── pictures · photographs and the tape shelf together ── */
   var pc=$('#photocount'); if(pc)pc.textContent=D.photosCount;
+  var gal=$('#gal');
+  if(gal){
+    var films=document.createElement('div');
+    films.innerHTML='<h2 class="vt" style="margin-top:26px">The tape shelf</h2>'+
+      '<p class="subline">'+(D.tapesCount?('Films on the page. Full videos play with Plus.'):'Home videos, a toast, a voicemail with a face — they live here.')+'</p>'+
+      '<div class="qcard">'+
+      (D.tapes.length?D.tapes.map(function(t){
+        return '<div class="chaprow">'+(t.cover?'<span style="width:52px;height:38px;border-radius:6px;overflow:hidden;flex:none;margin-right:4px"><img src="'+t.cover+'" alt="" style="width:100%;height:100%;object-fit:cover"/></span>':'')+
+          '<div style="flex:1"><div class="cn">'+esc(t.t)+'</div><div class="cm">'+(t.when?esc(t.when)+' · ':'')+(D.plan==='plus'?'plays in full':'plays in full with Plus')+'</div></div>'+
+          '<button class="btn small" data-imy-live="tapes">Edit live</button></div>';
+      }).join(''):'<div class="chaprow"><div><div class="cn">No films yet</div><div class="cm">add the first from the live editor</div></div><button class="btn small" data-imy-live="tapes">Add a film</button></div>')+
+      '</div>';
+    gal.parentNode.appendChild(films);
+  }
 
-  /* ── the story · timeline from the real chapters ── */
-  var sb=$('#storybody');
-  if(sb)sb.innerHTML=D.chapters.length
-    ?'<p>'+esc(D.first)+'’s story is told in '+D.chapters.length+' chapter'+(D.chapters.length===1?'':'s')+' — written in the studio, kept on the page.</p>'
-    :'<p>The chapters of '+esc(D.first)+'’s life are still unwritten. The studio walks you through them, a year at a time.</p>';
-  var sug=$('#tl-sug'); if(sug)sug.remove();
-  var chapWrap=$$('.chaprow');
-  if(chapWrap.length){
-    var host=chapWrap[0].parentNode;
-    host.innerHTML=D.chapters.map(function(c){
-      return '<div class="chaprow"><div><div class="cn">'+esc(c.t)+'</div><div class="cm">'+esc(c.era)+' · '+c.n+' moment'+(c.n===1?'':'s')+'</div></div><button class="btn small" data-imy-studio>Edit in the studio</button></div>';
-    }).join('')||'<div class="chaprow"><div><div class="cn">No chapters yet</div><div class="cm">the studio is ready when you are</div></div><button class="btn small" data-imy-studio>Open the studio</button></div>';
+  /* ── the story · every part of the page, editable live ── */
+  var storyView=$('#v-story');
+  if(storyView){
+    var vt=$('#v-story h2.vt'); if(vt)vt.textContent='The page, part by part';
+    var sl=$('#v-story .subline'); if(sl)sl.textContent='Everything the page shows, in one place. Edit any part and the page updates as you type.';
+    /* the obituary editor and demo timeline step aside — the live editor holds those doors now */
+    var sb0=$('#storybody'); if(sb0)sb0.remove();
+    var ar0=$('#v-story .addroom'); if(ar0)ar0.remove();
+    var sug0=$('#tl-sug'); if(sug0)sug0.remove();
+    $$('#v-story .vt').forEach(function(h,i){ if(i>0)h.remove(); });
+    $$('#v-story .subline').forEach(function(h,i){ if(i>0)h.remove(); });
+    $$('#v-story .qcard').forEach(function(q){ q.remove(); });
+    var mark=function(ok){return ok?'✓':'·'};
+    var rows=[
+      {t:'The cover',m:(D.portraitSet?'portrait ✓':'portrait ·')+' · '+(D.bgSet?'background ✓':'background ·')+' · '+(D.hasQuote?'their words ✓':'their words ·'),step:'cover'},
+      {t:'The first memory',m:D.memsCount?'on the wall':'the wall opens with yours',step:'memory'},
+      {t:'Chapters',m:D.chapters.length?D.chapters.map(function(c){return c.t}).join(' · '):'still unwritten — a year at a time',step:'chapters'},
+      {t:'The family tree',m:D.treeCount+' '+(D.treeCount===1?'person stands':'people stand')+' on it · anyone in the family can add',step:'tree'},
+      {t:'Photographs',m:D.photosCount+' in the album',step:'photos'},
+      {t:'The tape shelf',m:D.tapesCount+' film'+(D.tapesCount===1?'':'s')+(D.plan==='plus'?'':' · plays in full with Plus'),step:'tapes'},
+      {t:'The service',m:D.hasSvc?'on the flyer, with the map of the day':'not set — it can be added anytime',step:'service'},
+      {t:'The address',m:'imissyoumemorial.com/'+D.slug,step:'address'}
+    ];
+    var card=document.createElement('div');
+    card.className='qcard';
+    card.innerHTML=rows.map(function(r){
+      return '<div class="chaprow"><div style="flex:1;min-width:0"><div class="cn">'+esc(r.t)+'</div><div class="cm">'+esc(r.m)+'</div></div><button class="btn small" data-imy-live="'+r.step+'">Edit live</button></div>';
+    }).join('');
+    storyView.appendChild(card);
   }
 
   /* ── the anniversary ── */
@@ -107,9 +141,21 @@
     up.addEventListener('click',function(){IMY.send('nav',{go:'checkout',m:D.activeId})});
   }
   document.addEventListener('click',function(e){
-    if(e.target.closest&&e.target.closest('[data-upgrade]')){e.preventDefault();IMY.send('nav',{go:'checkout',m:D.activeId});}
-    if(e.target.closest&&e.target.closest('[data-imy-studio]')){e.preventDefault();IMY.send('nav',{go:'studio',m:D.activeId});}
+    if(e.target.closest&&e.target.closest('[data-upgrade]')){e.preventDefault();IMY.send('nav',{go:'checkout',m:D.activeId});return;}
+    if(e.target.closest&&e.target.closest('[data-imy-studio]')){e.preventDefault();editLive('');return;}
+    var lv=e.target.closest&&e.target.closest('[data-imy-live]');
+    if(lv){e.preventDefault();editLive(lv.getAttribute('data-imy-live'));return;}
+    /* choosing the address: Plus chooses it at checkout */
+    var ca=e.target.closest&&e.target.closest('#chgaddr');
+    if(ca&&D.plan!=='plus'){e.stopImmediatePropagation();e.preventDefault();IMY.send('nav',{go:'checkout',m:D.activeId});return;}
   },true);
+  /* the wordmark walks home */
+  var wm=$('.sidebar .wordmk');
+  if(wm){
+    wm.style.cursor='pointer';
+    wm.insertAdjacentHTML('afterbegin','<img src="https://imissyoumemorial.com/brand/imy-mark.svg" alt="" style="width:19px;height:19px;vertical-align:-3.5px;margin-right:7px"/>');
+    wm.addEventListener('click',function(){IMY.send('nav',{go:'landing'})});
+  }
 
   /* ── your pages · the household ── */
   function rebuildPages(){
@@ -144,9 +190,29 @@
   }
   rebuildPages();
 
-  /* ── edit details · saves into the studio's draft ── */
-  var epPortrait='';
+  /* ── edit details · saves straight onto the page ── */
+  var epPortrait='', epBackground='';
   function iso(y,m,d){ if(!y)return ''; function p(n){n=String(n||'');return n.length===1?'0'+n:n} return y+'-'+p(m||1)+'-'+p(d||1); }
+  function pickImage(max,done){
+    var f=document.createElement('input');f.type='file';f.accept='image/*';f.style.display='none';
+    document.body.appendChild(f);
+    f.addEventListener('change',function(){
+      var file=f.files[0]; if(!file)return;
+      var r=new FileReader();
+      r.onload=function(){
+        var img=new Image();
+        img.onload=function(){
+          var scale=Math.min(1,max/Math.max(img.width,img.height));
+          var c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+          c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+          done(c.toDataURL('image/jpeg',.82));
+        };
+        img.src=r.result;
+      };
+      r.readAsDataURL(file);
+    });
+    f.click();
+  }
   var epn=$('#ep-name'), epb=$('#ep-born'), epd=$('#ep-died'), epp=$('#ep-pn');
   if(epn)epn.value=D.name;
   if(epb)epb.value=iso(D.dates.by,D.dates.bm,D.dates.bd);
@@ -154,30 +220,30 @@
   if(epp)epp.selectedIndex=D.pron==='she'?0:D.pron==='he'?1:2;
   var epBtn=$$('#personmodal .btn').filter(function(b){return /change the photo/i.test(b.textContent)})[0];
   if(epBtn){
-    var f=document.createElement('input');f.type='file';f.accept='image/*';f.style.display='none';
-    document.body.appendChild(f);
-    epBtn.addEventListener('click',function(){f.click()});
-    f.addEventListener('change',function(){
-      var file=f.files[0]; if(!file)return;
-      var r=new FileReader();
-      r.onload=function(){
-        var img=new Image();
-        img.onload=function(){
-          var scale=Math.min(1,900/Math.max(img.width,img.height));
-          var c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
-          c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-          epPortrait=c.toDataURL('image/jpeg',.82);
-          epBtn.textContent='✓ photo chosen · save to apply';
-        };
-        img.src=r.result;
-      };
-      r.readAsDataURL(file);
-    });
+    epBtn.addEventListener('click',function(){ pickImage(900,function(url){ epPortrait=url; epBtn.textContent='✓ photo chosen · save to apply'; }); });
+    /* the background joins the details · behind their name on the page */
+    var pfld=epBtn.closest('.fld');
+    if(pfld){
+      var bfld=document.createElement('div');
+      bfld.className='fld';
+      bfld.innerHTML='<label>Background photo · behind their name on the page</label><button class="btn small" type="button" id="ep-bg">'+(D.bgSet?'Change the background':'Choose a background')+'</button>';
+      pfld.parentNode.insertBefore(bfld,pfld.nextSibling);
+      $('#ep-bg').addEventListener('click',function(){ pickImage(1800,function(url){ epBackground=url; $('#ep-bg').textContent='✓ background chosen · save to apply'; }); });
+    }
+    /* the rest of the page edits live, on the page */
+    var mfoot=$('#personmodal .mfoot');
+    if(mfoot){
+      var liveBtn=document.createElement('button');
+      liveBtn.className='btn small'; liveBtn.type='button';
+      liveBtn.textContent='Everything else · edit live on the page';
+      liveBtn.addEventListener('click',function(){ $('#personmodal').classList.remove('open'); editLive(''); });
+      mfoot.appendChild(liveBtn);
+    }
   }
   var epSave=$('#ep-save');
   if(epSave)epSave.addEventListener('click',function(){
     IMY.send('updatePerson',{m:D.activeId,name:epn?epn.value.trim():'',born:epb?epb.value:'',died:epd?epd.value:'',
-      pron:epp?(['she','he','they'][epp.selectedIndex]||'they'):'they',portrait:epPortrait||''});
+      pron:epp?(['she','he','they'][epp.selectedIndex]||'they'):'they',portrait:epPortrait||'',background:epBackground||''});
   });
 
   /* ── the two-door verifications flow into the account ── */

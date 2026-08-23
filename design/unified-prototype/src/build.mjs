@@ -98,6 +98,13 @@ dash=mustReplace(dash,'<li>AI assisted writing tool · credit removed</li>','<li
 const dashCss=`<style>
 .pgrow .initial{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:18px;color:#A87C5F;background:#EDE3D2;font-family:'Besley',serif}
 .archp .initial{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:15px;color:#A87C5F;background:#EDE3D2;font-family:'Besley',serif}
+/* brand pass · the landing's type and accents, applied to the desk */
+.wordmk em{font-style:italic;color:#A87C5F}
+h2.vt{font-family:'Besley',Georgia,serif;font-weight:600;letter-spacing:-.005em}
+.kick,.shl,.klabel{letter-spacing:.2em}
+.btn.primary,.upbtn{background:#A87C5F;border-color:#A87C5F;color:#fff}
+.btn.primary:hover,.upbtn:hover{background:#8a5a3c;border-color:#8a5a3c;color:#fff}
+.chaprow .cn{font-family:'Besley',Georgia,serif;font-weight:600}
 </style>`;
 dash=mustReplace(dash,'</head>',dashCss+'\n</head>','desk css');
 dash=mustReplace(dash,'</body>',bridge+'\n<script>\n'+read(P('src','desk-hydrate.js'))+'\n</script>\n</body>','desk tail');

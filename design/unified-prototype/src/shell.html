@@ -329,6 +329,8 @@ function composeDesk(act){
     price:priceFor(act.id), canCreate:canCreate(), plusUnlocked:plusUnlocked(),
     counts:act.counts||{visits:1,flowers:0,candles:0},
     memsCount:hasMem?1:0, photosCount:photosAll.length, tapesCount:tapes.length,
+    tapes:tapes.map(function(t){return {t:t.t,when:t.wy?((t.wm?MONTHS[t.wm-1]+' ':'')+t.wy):'',cover:t.cover||''}}),
+    hasQuote:!!(d.quote||'').trim(), portraitSet:!!d.portrait, bgSet:!!d.coverbg,
     chapters:chapters, treeCount:treeCount, hasSvc:!!(d.svc&&d.svc.y&&(d.svc.where||'').trim()), ann:ann,
     memorials:state.memorials.map(function(m){
       var md=m.data||{};
@@ -437,7 +439,7 @@ function render(){
     var price=priceFor(mem?mem.id:null);
     mount('studio',SRC.studio,{mode:mem?'edit':'new',m:mid,draft:draft,account:state.account,
       plan:mem?mem.plan:(r.q.plan==='plus'?'plus-intent':'free'),published:!!mem,
-      slug:mem?(mem.customSlug||mem.slug):'',price:price,counts:mem?mem.counts:null});
+      slug:mem?(mem.customSlug||mem.slug):'',price:price,counts:mem?mem.counts:null,step:r.q.step||''});
     return;
   }
   if(v==='site'){
@@ -446,6 +448,7 @@ function render(){
     var m=findBySlug(slug);
     if(!m){ toast('That page isn’t here yet.'); go('#/'); return; }
     var ov=composeOverride(m.data,{plan:m.plan,mode:'view',slug:m.customSlug||m.slug,account:state.account||{},counts:m.counts});
+    if(state.account)ov.ownerEdit={m:m.id};
     mount('tribute',spliceOverride(SRC.tribute,ov),{});
     return;
   }
@@ -492,7 +495,7 @@ window.addEventListener('message',function(e){
     if(d.go==='signin'){ state.account?go('#/dashboard'):go('#/signin'); return; }
     if(d.go==='dashboard'){ go('#/dashboard'); return; }
     if(d.go==='site'){ go('#/site/'+(d.slug||'eleanor')); return; }
-    if(d.go==='studio'){ go('#/studio?m='+(d.m||'new')); return; }
+    if(d.go==='studio'){ go('#/studio?m='+(d.m||'new')+(d.step?'&step='+d.step:'')); return; }
     if(d.go==='checkout'){ go('#/checkout?m='+d.m); return; }
     return;
   }
@@ -556,6 +559,7 @@ window.addEventListener('message',function(e){
     var dd2=fromIso(d.died); if(dd2){ud.dy=dd2.y;ud.dm=dd2.m;ud.dd=dd2.d;}
     if(d.pron)ud.pron=d.pron;
     if(d.portrait)ud.portrait=d.portrait;
+    if(d.background)ud.coverbg=d.background;
     save();
     toast('Saved — '+esc(firstNameOf(ud.name)||'the page')+'’s page updates.');
     render();
