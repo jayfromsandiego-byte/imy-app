@@ -233,9 +233,25 @@
     if(m.action==='flyer'){ if(m.data.open&&window.shOpen)window.shOpen(); else if(!m.data.open&&window.shShut)window.shShut(); }
   });
 
+  /* guest memories flow to the family's queue (view mode) */
+  function queueHook(ov){
+    var form=document.getElementById('lmForm'); if(!form)return;
+    form.addEventListener('submit',function(){
+      var nm=(document.getElementById('lmName')||{}).value||'';
+      var relSel=document.getElementById('lmRel');
+      var relTxt=relSel&&relSel.selectedIndex>=0?relSel.options[relSel.selectedIndex].textContent:'';
+      var relKey=/family/i.test(relTxt)?'family':/friend/i.test(relTxt)?'friends':/neighbour|neighbor/i.test(relTxt)?'neighbors':/student/i.test(relTxt)?'students':'others';
+      var title=(document.getElementById('lmTitle')||{}).value||'';
+      var story=(document.getElementById('lmStory')||{}).value||'';
+      if(!(nm.trim()&&(story.trim()||title.trim())))return;
+      try{parent.postMessage({type:'imy',action:'guest-memory',data:{name:nm.trim(),rel:relKey,relLabel:relTxt,title:title.trim(),story:story.trim()}},'*');}catch(e){}
+    },true);
+  }
+
   if(OV){
     applyPerson(OV);
     applyStory(OV);
+    if(OV.mode!=='edit')queueHook(OV);
     emptyStates(OV);
     planGate(OV);
     if(OV.mode==='edit')editMode(OV);

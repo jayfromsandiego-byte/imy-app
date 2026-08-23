@@ -91,6 +91,12 @@ const dashCss=`<style>
 .mem-new.locked{border-style:solid;background:rgba(201,165,114,.09)}
 .mr-off{font-style:normal;font-family:'Work Sans',sans-serif;background:rgba(244,184,96,.35);border-radius:100px;padding:2px 8px;margin-left:6px;font-size:10px;letter-spacing:.06em}
 .arch-portrait,.arch-portrait img{border-radius:12px!important}
+.mr-rest{font-family:'Work Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:rgba(44,37,32,.08);color:#5c5249;border-radius:100px;padding:3px 8px;margin-left:7px;vertical-align:2px}
+.mr-verified{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:600;color:#4a6741;white-space:nowrap}
+.btn.danger{color:#8a3c2c;border-color:rgba(138,60,44,.4)}
+.btn.danger:hover{background:rgba(138,60,44,.08)}
+.acct-note{font-size:12px;line-height:1.6;color:#8a8073;margin:12px 0 0}
+.acct-confirm{margin-top:12px;padding:12px 14px;border:1px solid rgba(138,60,44,.4);background:rgba(138,60,44,.06);border-radius:12px;font-size:13.5px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 @media (max-width:760px){.var-tag{display:none!important}}
 </style>`;
 dash=mustReplace(dash,'</head>',dashCss+'\n</head>','dash css');

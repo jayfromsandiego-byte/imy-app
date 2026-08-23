@@ -180,9 +180,16 @@ function composeOverride(draft, opts){
       s:(p.when?'Around '+p.when:'From '+P.pa+' photographs'),who:'from '+P.pa+' photographs'});
   });
 
+  var guestRelLabel={family:P.pa+' family',friends:P.pa+' friend',neighbors:'a neighbour',students:P.pa+' student',others:'a friend of the family'};
+  (d.guest||[]).forEach(function(gm){
+    MEMS.push({av:svgAvatar(((gm.n||'F')[0]||'F').toUpperCase()),n:gm.n||'A visitor',
+      r:(guestRelLabel[gm.rel]||'a visitor')+' · '+(gm.when||'recently'),rel:gm.rel||'others',
+      t:gm.t||('A memory of '+first),b:'\u201c'+String(gm.b||'').replace(/^[\u201c"]|[\u201d"]$/g,'')+'\u201d',h:0,c:[]});
+  });
   var CHIPS=[['everyone','Everyone']];
-  if(MEMS.some(function(m){return m.rel==='family'}))CHIPS.push(['family','Family']);
-  if(MEMS.some(function(m){return m.rel==='friends'}))CHIPS.push(['friends','Friends']);
+  [['family','Family'],['friends','Friends'],['neighbors','Neighbours'],['students',P.C+' students'],['others','Another way']].forEach(function(cd){
+    if(MEMS.some(function(m){return m.rel===cd[0]}))CHIPS.push(cd);
+  });
 
   var CH=(d.chapters||[]).filter(function(c){return c&&(c.ms||[]).length>0}).map(function(c){
     var ms=(c.ms||[]).map(function(m){return {y:String(m.y||''),l:m.l||'',img:m.img||coverFallback(),cap:m.l||''}});
@@ -352,7 +359,9 @@ function seed(plus){
     _plan:plus?'plus':'free',_i:0};
   state.account={name:'Willie Krysta',email:'willie@krystainnovisionarena.com',method:'email'};
   var id='m'+(state.seq++);
-  var mem={id:id,slug:randSlug(),customSlug:plus?'margaret':'',plan:plus?'plus':'free',data:draft,createdAt:Date.now(),counts:{visits:12,flowers:3,candles:1}};
+  var mem={id:id,slug:randSlug(),customSlug:plus?'margaret':'',plan:plus?'plus':'free',data:draft,createdAt:Date.now(),counts:{visits:12,flowers:3,candles:1},
+    queue:[{id:'q1',n:'Miriam Okafor',rel:'neighbors',relLabel:'Neighbour',t:'The chair on the porch',b:'She kept a chair on the porch that was really for whoever needed it. I sat in it the week my husband died, and she never once asked me to talk. She just brought out two cups.',when:'this week'},
+      {id:'q2',n:'Tom Reyes',rel:'students',relLabel:'Her student',t:'Room 12',b:'She kept a spare lunch in her desk drawer and never once said whose it was. Thirty years later I understood.',when:'this week'}]};
   state.memorials.push(mem);state.activeId=id;save();
   go('#/dashboard');
 }
@@ -394,7 +403,7 @@ function render(){
     var act=activeMem();
     mount('dashboard',SRC.dashboard,{
       account:state.account,
-      memorials:state.memorials.map(function(m){return {id:m.id,plan:m.plan,slug:m.customSlug||m.slug,data:m.data,counts:m.counts,active:act&&act.id===m.id}}),
+      memorials:state.memorials.map(function(m){return {id:m.id,plan:m.plan,slug:m.customSlug||m.slug,data:m.data,counts:m.counts,archived:!!m.archived,queue:m.queue||[],active:act&&act.id===m.id}}),
       activeId:act?act.id:null,
       canCreate:canCreate(), plusUnlocked:plusUnlocked(),
       price:priceFor(null), hasDraft:!!state.draft
@@ -493,6 +502,39 @@ window.addEventListener('message',function(e){
     return;
   }
   if(a==='setActive'){ state.activeId=d.m; save(); render(); return; }
+  if(a==='guest-memory'){
+    var r3=parseRoute();
+    if(r3.seg[0]==='site'){
+      var gm=findBySlug(r3.seg[1]||'');
+      if(gm){ gm.queue=gm.queue||[]; gm.queue.push({id:'q'+(state.seq++),n:(d.name||'A visitor').slice(0,60),rel:d.rel||'others',relLabel:d.relLabel||'A visitor',t:(d.title||'').slice(0,120),b:(d.story||'').slice(0,2000),when:'today'}); save(); }
+    }
+    return;
+  }
+  if(a==='moderate'){
+    var mm2=byId(d.m); if(!mm2)return;
+    mm2.queue=mm2.queue||[];
+    var qi=-1;
+    mm2.queue.forEach(function(x,ix){ if(x.id===d.qid)qi=ix; });
+    if(qi<0)return;
+    var item=mm2.queue.splice(qi,1)[0];
+    if(d.decision==='share'){ mm2.data.guest=mm2.data.guest||[]; mm2.data.guest.push({n:item.n,rel:item.rel,t:item.t,b:item.b,when:item.when}); }
+    else { mm2.kept=mm2.kept||[]; mm2.kept.push(item); }
+    save();
+    return;
+  }
+  if(a==='archiveMem'){
+    var am=byId(d.m); if(!am)return;
+    am.archived=!!d.on; save();
+    toast(am.archived?'The page is resting. It stays online at its address.':'The page is awake.');
+    render();
+    return;
+  }
+  if(a==='deleteAccount'){
+    state=blank(); save();
+    toast('Your account was deleted. The pages themselves are never removed without the family’s written request.');
+    go('#/');
+    return;
+  }
   if(a==='createNew'){ startFlow(d.plan==='plus'?'plus':''); return; }
   if(a==='toast'){ toast(esc(d.msg||'')); return; }
 });
