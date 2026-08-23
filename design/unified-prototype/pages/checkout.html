@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Plus · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Work+Sans:wght@400;500;600&family=Caveat:wght@600&display=swap" rel="stylesheet"/>
+<style>
+  :root{--walnut:#3f2c1a;--walnut-deep:#241711;--cream:#FAF5EC;--cream-soft:rgba(250,245,236,.72);--gold:#C9A572;--flame:#F4B860;--line:rgba(250,245,236,.16);--ink:#2C2520}
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:linear-gradient(168deg,var(--walnut) 0%,var(--walnut-deep) 86%);color:var(--cream);font-family:'Besley',Georgia,serif}
+  .top{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:22px 26px}
+  .brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--cream)}
+  .brand img{width:26px;height:26px}
+  .wm{font-weight:600;font-size:16.5px}
+  .wm em{font-style:italic;color:var(--gold)}
+  .top a.back{font-family:'Work Sans',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.06em;color:var(--cream-soft);text-decoration:none}
+  .top a.back:hover{color:var(--flame)}
+  main{max-width:1040px;margin:0 auto;padding:2vh 26px 70px;display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+  .k{font-family:'Work Sans',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+  h1{font-size:34px;line-height:1.12;margin:12px 0 6px;font-weight:600}
+  h1 em{font-style:italic;color:var(--flame)}
+  .price{display:flex;align-items:baseline;gap:12px;margin:18px 0 4px}
+  .price b{font-size:44px;font-weight:700;letter-spacing:-.01em}
+  .price s{color:var(--cream-soft);font-size:20px}
+  .plt{font-family:'Work Sans',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-soft)}
+  .disc{display:inline-block;margin-top:8px;background:rgba(244,184,96,.14);border:1px solid rgba(244,184,96,.4);color:var(--flame);font-family:'Work Sans',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.08em;border-radius:100px;padding:6px 12px}
+  ul{list-style:none;margin:22px 0 0;padding:0}
+  li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.5;padding:7px 0;border-bottom:1px solid var(--line)}
+  li:last-child{border-bottom:0}
+  li .ck{color:var(--gold);flex:none;margin-top:1px}
+  .pledge{margin-top:18px;font-size:13px;line-height:1.6;color:var(--cream-soft);font-style:italic}
+  .card{background:var(--cream);color:var(--ink);border-radius:18px;padding:30px 28px;box-shadow:0 24px 70px rgba(0,0,0,.4)}
+  .card .k2{font-family:'Work Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#8a5a3c}
+  label{display:block;font-family:'Work Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#5c5249;margin:16px 0 6px}
+  input,select{width:100%;font-family:'Besley',serif;font-size:16px;color:var(--ink);background:#FDFBF7;border:1px solid rgba(44,37,32,.16);border-radius:10px;padding:12px 13px;outline:none}
+  input:focus,select:focus{border-color:#A87C5F;box-shadow:0 0 0 3px rgba(168,124,95,.14)}
+  .addr{display:flex;align-items:center;gap:0;border:1px solid rgba(44,37,32,.16);border-radius:10px;background:#FDFBF7;overflow:hidden}
+  .addr span{font-family:'Work Sans',sans-serif;font-size:13px;color:#5c5249;padding:12px 0 12px 13px;white-space:nowrap}
+  .addr input{border:0;border-radius:0;padding-left:2px;box-shadow:none!important;background:transparent}
+  .avail{font-family:'Work Sans',sans-serif;font-size:11.5px;margin-top:6px;letter-spacing:.04em}
+  .avail.ok{color:#4a6741}
+  .avail.no{color:#8a3c2c}
+  .row2{display:grid;grid-template-columns:1fr 1fr 90px;gap:10px}
+  .pay{width:100%;margin-top:22px;background:linear-gradient(135deg,#C9A572,#a9854f);color:#241711;border:0;border-radius:12px;padding:15px 16px;font-family:'Besley',serif;font-size:17px;font-weight:700;cursor:pointer;transition:filter .2s}
+  .pay:hover{filter:brightness(1.06)}
+  .pay:disabled{opacity:.5;cursor:default}
+  .simnote{margin-top:12px;font-family:'Work Sans',sans-serif;font-size:11px;line-height:1.55;color:#5c5249;text-align:center}
+  @media (max-width:880px){ main{grid-template-columns:1fr;gap:26px} h1{font-size:28px} .price b{font-size:38px} }
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="brand" href="/"><img src="https://imissyoumemorial.com/brand/imy-mark-reversed.svg" alt="" onerror="this.style.display='none'"/><span class="wm">I <em>Miss</em> You Memorial</span></a>
+    <a class="back" href="/dashboard">← back to the dashboard</a>
+  </div>
+  <main>
+    <section>
+      <div class="k">Plus · once, for life</div>
+      <h1 id="hd">Everything of theirs, <em>kept.</em></h1>
+      <div class="price"><b id="prAmt">$197</b><s id="prBase" style="display:none">$197</s><span class="plt">lifetime · no renewals, ever</span></div>
+      <div class="disc" id="prDisc" style="display:none">20% family discount · your account already keeps a Plus memorial</div>
+      <ul id="feat">
+        <li><span class="ck">✦</span><span>Living pictures and <b id="fVoice">their</b> voice — video and voice memories, playing in full</span></li>
+        <li><span class="ck">✦</span><span>Every photograph and video, from you and everyone who loved them</span></li>
+        <li><span class="ck">✦</span><span>The whole memory wall, open — nothing waits behind a limit</span></li>
+        <li><span class="ck">✦</span><span>A chosen address — <b id="fAddr">imissyoumemorial.com/theirname</b></span></li>
+        <li><span class="ck">✦</span><span>An AI-written life story, shaped from what the family shares</span></li>
+        <li><span class="ck">✦</span><span>AI photo restoration — damaged photographs, made whole</span></li>
+        <li><span class="ck">✦</span><span>The “Made with love” credit line, quietly removed</span></li>
+      </ul>
+      <p class="pledge">Every tribute stays online. If Plus ever lapses, the page stays and its features rest — nothing is ever deleted.</p>
+    </section>
+    <section class="card">
+      <div class="k2">Their address</div>
+      <label for="slug">Choose it — yours to keep</label>
+      <div class="addr"><span>imissyoumemorial.com/</span><input id="slug" type="text" autocomplete="off" spellcheck="false" maxlength="40"/></div>
+      <div class="avail" id="avail"></div>
+      <div class="k2" style="margin-top:26px">Payment</div>
+      <label for="cName">Name on the card</label>
+      <input id="cName" type="text" autocomplete="cc-name" placeholder="Susan Hayes"/>
+      <label for="cNum">Card number</label>
+      <input id="cNum" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="19"/>
+      <div class="row2">
+        <div><label for="cMon">Expires · month</label><select id="cMon"><option value="">Month</option></select></div>
+        <div><label for="cYr">Expires · year</label><select id="cYr"><option value="">Year</option></select></div>
+        <div><label for="cCvc">CVC</label><input id="cCvc" type="text" inputmode="numeric" maxlength="4" placeholder="424"/></div>
+      </div>
+      <button class="pay" id="payBtn" disabled>Pay $197 · once, for life</button>
+      <div class="simnote">Checkout is simulated in this prototype — the production build runs on Stripe. Nothing is charged here.</div>
+    </section>
+  </main>
+<script>
+(function(){
+  var CTX={m:'',price:{amount:197,base:197,discount:0},taken:[],suggestSlug:'',first:'',pron:'they'};
+  var PA={she:'her',he:'his',they:'their'};
+  function $(id){return document.getElementById(id)}
+  function money(n){return '$'+(n%1?n.toFixed(2):n)}
+  function hydrate(){
+    var p=CTX.price;
+    $('prAmt').textContent=money(p.amount);
+    if(p.discount){ $('prBase').style.display=''; $('prBase').textContent=money(p.base); $('prDisc').style.display=''; }
+    $('payBtn').textContent='Pay '+money(p.amount)+' · once, for life';
+    if(CTX.first){ $('hd').innerHTML='Everything of '+CTX.first.replace(/</g,'&lt;')+'’s, <em>kept.</em>'; }
+    $('fVoice').textContent=PA[CTX.pron]||'their';
+    var sg=(CTX.suggestSlug||'').replace(/[^a-z0-9-]/g,'');
+    $('fAddr').textContent='imissyoumemorial.com/'+(sg||'theirfullname');
+    $('slug').placeholder=sg||'theirfullname';
+    $('slug').value='';
+    check();
+  }
+  function slugVal(){ return $('slug').value.toLowerCase().replace(/[^a-z0-9-]/g,'') }
+  function check(){
+    var s=slugVal(); $('slug').value=s;
+    var a=$('avail');
+    if(!s){ a.className='avail'; a.textContent='their full name, or anything you choose · leave empty to keep the random address'; return true; }
+    var clash=CTX.taken.indexOf(s)>-1&&s!==CTX.currentSlug;
+    if(clash){ a.className='avail no'; a.textContent='· already kept for another page — try a variation'; return false; }
+    a.className='avail ok'; a.textContent='· theirs, the moment you pay'; return true;
+  }
+  var mon=$('cMon');for(var m=1;m<=12;m++){var o=document.createElement('option');o.textContent=(m<10?'0':'')+m;o.value=m;mon.appendChild(o)}
+  var yr=$('cYr');var Y=new Date().getFullYear();for(var y=Y;y<=Y+12;y++){var o2=document.createElement('option');o2.textContent=y;o2.value=y;yr.appendChild(o2)}
+  $('cNum').addEventListener('input',function(){
+    var d=this.value.replace(/\D/g,'').slice(0,16);
+    this.value=d.replace(/(\d{4})(?=\d)/g,'$1 ');
+    gate();
+  });
+  function ready(){
+    return check()&&$('cName').value.trim().length>1&&$('cNum').value.replace(/\D/g,'').length>=12&&mon.value&&yr.value&&$('cCvc').value.replace(/\D/g,'').length>=3;
+  }
+  function gate(){ $('payBtn').disabled=!ready() }
+  ['cName','cCvc'].forEach(function(id){$(id).addEventListener('input',gate)});
+  [mon,yr].forEach(function(s){s.addEventListener('change',gate)});
+  $('slug').addEventListener('input',function(){check();gate()});
+  $('payBtn').onclick=function(){
+    if(!ready())return;
+    this.disabled=true;this.textContent='A moment…';
+    var self=this;
+    setTimeout(function(){ IMY.send('pay',{m:CTX.m,slug:slugVal()}); },700);
+  };
+  window.addEventListener('imy-init',function(e){
+    var c=e.detail||{};
+    CTX.m=c.m||'';CTX.price=c.price||CTX.price;CTX.taken=c.taken||[];CTX.currentSlug=c.currentSlug||'';
+    CTX.suggestSlug=c.suggestSlug||'';CTX.first=c.first||'';CTX.pron=c.pron||'they';
+    hydrate();
+  });
+  IMY.send('ready',{});
+})();
+</script>
+</body>
+</html>

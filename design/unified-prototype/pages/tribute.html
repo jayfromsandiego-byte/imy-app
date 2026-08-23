@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Eleanor Margaret Hayes · 1948–2024 · I Miss You Memorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF5EC; --cream-deep:#F3ECDD; --ink:#2C2520; --ink-soft:#5F574E;
+  --terra:#A87C5F; --terra-deep:#8A5A3C; --gold:#C9A572; --night:#1A130D;
+  --line:rgba(44,37,32,.14); --card:#FFFDF8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:'Besley',serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block}
+button{font-family:'Besley',serif;cursor:pointer}
+.mono{font-family:'Work Sans',sans-serif;font-weight:600;letter-spacing:.08em}
+.kick{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep)}
+
+/* ═══ top toolbar · transparent over her, solid on scroll ═══ */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:70;height:62px;display:flex;align-items:center;gap:clamp(16px,3vw,34px);
+  padding:0 clamp(16px,4vw,44px);color:#FBF3E4;background:transparent;
+  transition:background .35s ease,box-shadow .35s ease,color .35s ease,border-color .35s ease;border-bottom:1px solid transparent}
+.topbar .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;flex:none}
+.topbar .brand img{height:26px;width:auto}
+.topbar .brand img.mk-ink{display:none}
+.topbar .brand .wm{font-family:'Besley',serif;font-weight:700;font-size:17.5px;white-space:nowrap;text-shadow:0 1px 10px rgba(16,12,8,.45)}
+.topbar .brand .wm em{font-style:italic;color:#F0C88A}
+.topbar nav{display:flex;gap:clamp(14px,2.4vw,26px);flex:1}
+.topbar nav a{color:inherit;text-decoration:none;font-size:15.5px;font-weight:500;text-shadow:0 1px 10px rgba(16,12,8,.45);padding:8px 2px}
+.topbar nav a:hover{color:#F0C88A}
+.topbar .tacts{display:flex;gap:10px;align-items:center;flex:none;margin-left:auto}
+.topbar .login{font-size:14.5px;font-weight:600;color:inherit;text-decoration:none;border:1.5px solid rgba(251,243,228,.55);border-radius:100px;padding:10px 20px;transition:border-color .35s ease}
+.topbar .start{font-size:14.5px;font-weight:700;color:#FBF6ED;text-decoration:none;background:rgba(168,124,95,.92);border-radius:100px;padding:11px 21px}
+.topbar .start:hover{background:var(--terra-deep)}
+.topbar.solid{background:rgba(250,245,236,.96);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
+  color:var(--ink);border-bottom-color:var(--line);box-shadow:0 10px 30px -18px rgba(44,37,32,.25)}
+.topbar.solid .brand .wm,.topbar.solid nav a{text-shadow:none}
+.topbar.solid .brand .wm em{color:var(--terra)}
+.topbar.solid nav a:hover{color:var(--terra-deep)}
+.topbar.solid .login{border-color:rgba(138,90,60,.5)}
+.topbar.solid .brand img.mk-rev{display:none}
+.topbar.solid .brand img.mk-ink{display:block}
+@media(max-width:900px){.topbar nav{display:none}.topbar{height:56px}}
+
+
+
+/* ═══ cover · B · the photograph runs to the buttons ═══ */
+.hero{position:relative}
+.cover{position:relative;height:min(76vh,660px);min-height:470px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.cover .cbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.cscrim{position:absolute;left:0;right:0;bottom:0;height:76%;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(14,10,7,.30) 26%,rgba(12,8,5,.62) 55%,rgba(10,7,4,.88))}
+.ctopveil{position:absolute;left:0;right:0;top:0;height:26%;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(16,12,8,.46),rgba(16,12,8,.16) 55%,transparent)}
+.cstack{position:relative;z-index:3;text-align:center;display:flex;flex-direction:column;align-items:center;
+  padding:0 clamp(18px,4vw,44px) clamp(26px,3.2vw,40px)}
+.cface{width:clamp(196px,21vw,268px);height:clamp(196px,21vw,268px);flex:none;overflow:hidden;background:rgba(255,255,255,.9);
+  border:2px solid rgba(255,255,255,.94);box-shadow:0 24px 52px -18px rgba(12,8,4,.62);margin-bottom:clamp(16px,1.9vw,24px)}
+.cface img{width:100%;height:100%;object-fit:cover;object-position:center 24%}
+.cstack h1{font-size:clamp(28px,3.8vw,46px);font-weight:800;line-height:1.06;color:#FBF3E4;text-shadow:0 2px 18px rgba(10,7,4,.5)}
+.cstack h1 em{font-style:italic;color:#F0C88A}
+.cstack .dates{font-family:'Work Sans',sans-serif;font-weight:600;font-size:clamp(11px,1.2vw,13.5px);letter-spacing:.13em;text-transform:uppercase;color:#F0E3C8;margin-top:10px;text-shadow:0 1px 12px rgba(10,7,4,.55)}
+.cstack .qt{font-style:italic;font-size:clamp(14.5px,1.4vw,17px);line-height:1.55;color:rgba(251,243,228,.94);margin-top:12px;max-width:52ch;text-shadow:0 1px 14px rgba(10,7,4,.5)}
+/* ═══ c2 · one slim ribbon: tabs left · visits center · share right ═══ */
+.ribbon{position:relative;z-index:40;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:10px clamp(14px,3vw,36px);background:rgba(250,245,236,.97);
+  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
+.rtabs{display:flex;gap:8px;flex-wrap:wrap}
+.visits{display:flex;align-items:baseline;gap:8px;margin-left:auto;margin-right:2px}
+.visits .vh{color:var(--terra);font-size:15px}
+.visits b{font-family:'Besley',serif;font-size:19.5px;font-weight:800;color:var(--ink)}
+.visits .vt{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep)}
+.rshare{flex:none;background:var(--terra);color:#FBF6ED;border:none;border-radius:100px;padding:12px 24px;font-size:15px;font-weight:700}
+.rshare:hover{background:var(--terra-deep)}
+@media(max-width:760px){.visits{display:none}}
+
+
+/* ═══ share her page · the flyer ═══ */
+.shwrap{position:fixed;inset:0;z-index:105;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(20,13,8,.66);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.shwrap.open{display:flex}
+.sh{width:min(520px,100%);max-height:96vh;overflow-y:auto;background:var(--cream);border:1px solid rgba(138,90,60,.3);border-radius:20px;padding:16px 18px 18px;color:var(--ink)}
+.sh .shk{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-deep);display:flex;justify-content:space-between;align-items:center}
+.sh .shx{background:#fff;border:1.5px solid rgba(138,90,60,.4);color:var(--ink);border-radius:10px;min-width:40px;min-height:40px;font-size:16px}
+.flyer{background:#FFFDF8;border:1px solid rgba(138,90,60,.3);border-radius:10px;margin-top:12px;padding:16px 14px;color:var(--ink);text-align:center}
+.flyer .inner{border:1px solid rgba(201,165,114,.6);border-radius:6px;padding:14px 12px}
+.flyer .ilm{font-family:'Work Sans',sans-serif;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--terra-deep)}
+.flyer .arch{width:104px;height:128px;margin:10px auto 0;border-radius:999px 999px 10px 10px;overflow:hidden;box-shadow:0 12px 26px -12px rgba(60,38,10,.45),0 0 0 5px #fff,0 0 0 6px rgba(138,106,52,.3)}
+.flyer .arch img{width:100%;height:100%;object-fit:cover}
+.flyer h5{font-size:19.5px;font-weight:800;margin-top:10px}
+.flyer .fd{font-family:'Work Sans',sans-serif;font-size:10.5px;letter-spacing:.18em;color:var(--ink-soft);margin-top:3px}
+.flyer .join{font-style:italic;color:var(--terra);margin-top:8px;font-size:14px}
+.flyer .when{font-size:17px;font-weight:800;margin-top:2px}
+.flyer .where{font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.5}
+.flyer .where b{color:var(--ink)}
+.flyer .qrrow{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:10px;text-align:left}
+.flyer .qrrow img{width:68px;height:68px}
+.flyer .qrrow p{font-family:'Work Sans',sans-serif;font-size:9.5px;letter-spacing:.08em;line-height:1.7;color:var(--ink-soft);max-width:170px}
+.flyer .fnote{font-size:11.5px;font-style:italic;color:var(--ink-soft);margin-top:5px;line-height:1.55}
+.flyer .wm{font-size:15.5px;font-weight:800;margin-top:10px}
+.flyer .wm em{color:var(--terra);font-style:italic}
+.shacts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.shacts button{font-size:15px;font-weight:700;border-radius:100px;padding:13px 10px;min-height:48px}
+.shacts .solid{background:var(--terra);color:#FBF6ED;border:none}
+.shacts .ghosty{background:#fff;border:1.5px solid rgba(138,90,60,.5);color:var(--terra-deep)}
+.sh .shnote{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.05em;color:var(--terra-deep);text-align:center;margin-top:11px;line-height:1.7}
+@media print{body *{visibility:hidden}.shwrap{position:static;background:none;display:block!important}
+  .flyer,.flyer *{visibility:visible}.flyer{position:absolute;left:0;top:0;width:100%;border:none}}
+
+/* ═══ relation chips ═══ */
+.chips{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+.chip{font-family:'Besley',serif;font-variant-caps:all-small-caps;letter-spacing:.08em;font-weight:700;font-size:15px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:100px;padding:10px 19px;color:var(--ink);min-height:44px}
+.chip b{color:#B04A3A;font-weight:700;margin-left:6px}
+.chip.on{background:var(--night);color:var(--cream);border-color:var(--night)}
+.chip.on b{color:#F0C88A}
+
+/* ═══ the together snapshot on cards ═══ */
+.snap{position:relative;background:#fff;padding:8px 8px 24px;border-radius:4px;box-shadow:0 12px 26px -14px rgba(60,38,10,.45),0 2px 6px rgba(60,38,10,.12);margin-bottom:14px;cursor:zoom-in;border:none;width:100%;text-align:center}
+.snap img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.snap span{position:absolute;left:0;right:0;bottom:3px;font-family:'Besley',serif;font-style:italic;font-size:13px;color:#6a5642}
+.snap:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+
+/* tabs (live in the ribbon) */
+.tab{font-weight:700;font-size:15px;padding:12px 22px;border-radius:11px;border:1.5px solid rgba(138,90,60,.45);background:#fff;color:var(--ink);box-shadow:0 2px 0 rgba(138,90,60,.28)}
+.tab:hover{border-color:var(--terra)}
+.tab.on{background:var(--night);color:var(--cream);border-color:var(--night);box-shadow:none}
+.tab:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+
+/* ═══ rooms ═══ */
+.room{display:none;max-width:1180px;margin:0 auto;padding:clamp(22px,3.5vw,44px) clamp(16px,4vw,44px) 30px}
+.room.on{display:block}
+
+/* memories · the stage and the wings */
+.stagewings{display:grid;grid-template-columns:1fr 1.8fr 1fr;gap:14px;align-items:center;margin-bottom:6px}
+.scard{position:relative;border-radius:15px;overflow:hidden;border:none;padding:0;background:#1c1712;cursor:pointer;width:100%}
+.scard img{width:100%;height:100%;object-fit:cover;opacity:1;transition:opacity .4s ease}
+.scard .scap{position:absolute;left:0;right:0;bottom:0;padding:44px 15px 12px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.85));color:#FBF3E4;text-align:left}
+.scard .tk{font-family:'Work Sans',sans-serif;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:#F0C88A}
+.scard .tt{font-weight:800;margin-top:4px;line-height:1.22}
+.scard.stage{height:clamp(240px,30vw,360px)}
+.scard.stage .tt{font-size:clamp(17px,1.9vw,23px)}
+.scard.stage .ts{font-style:italic;font-size:13.5px;color:rgba(251,243,228,.88);margin-top:6px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.scard.wing{height:clamp(170px,21vw,250px);opacity:.82;transform:scale(.97)}
+.scard.wing:hover{opacity:1;transform:scale(1)}
+.scard.wing .tt{font-size:14px}
+.scard:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+@media(max-width:700px){.stagewings{grid-template-columns:1fr}.scard.wing{display:none}}
+.chips-center{justify-content:center}
+/* quote callouts · a word surfaces every so often */
+.qcall{position:relative;max-width:640px;margin:22px auto 26px;background:#fff;border:1.5px solid rgba(138,90,60,.35);border-radius:22px;padding:26px 30px 20px;text-align:center;box-shadow:0 16px 34px -20px rgba(44,37,32,.35)}
+.qcall .qmark{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:var(--terra);color:#FBF6ED;font-size:24px;line-height:42px;font-family:'Besley',serif}
+.qcall .qtext{font-style:italic;font-size:16.5px;line-height:1.6;color:var(--ink);min-height:52px;transition:opacity .45s ease}
+.qcall .qwho{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-top:10px;transition:opacity .45s ease}
+.stream{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-content:start}
+@media(max-width:1080px){.stream{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.stream{grid-template-columns:1fr}}
+.memcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 19px;box-shadow:0 12px 26px -18px rgba(44,37,32,.3)}
+.memcard .who{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.memcard .who img{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.memcard .who b{font-size:15.5px;display:block;line-height:1.1}
+.memcard .who span{font-family:'Work Sans',sans-serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-deep)}
+.memcard .mt{font-size:16.5px;font-weight:800;display:block;margin-bottom:5px;line-height:1.3}
+.memcard p.body{font-size:15px;line-height:1.6;font-style:italic}
+.acts{display:flex;gap:9px;margin-top:12px}
+.acts button{font-family:'Work Sans',sans-serif;font-size:11px;letter-spacing:.06em;color:var(--terra-deep);background:#F6F0E2;border:1px solid transparent;border-radius:100px;padding:9px 16px;min-height:38px}
+.acts button:hover{border-color:rgba(138,90,60,.4)}
+.acts button.hearted{background:var(--terra);color:#fff}
+.cmts{display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.cmts.open{display:block}
+.cmt{display:flex;gap:9px;margin-bottom:10px}
+.cmt .cav{width:28px;height:28px;border-radius:50%;background:var(--cream-deep);color:var(--terra-deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none}
+.cmt p{font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
+.cmt p b{color:var(--ink)}
+.cmtrow{display:flex;gap:8px;margin-top:4px}
+.cmtrow input{flex:1;font-family:'Besley',serif;font-size:14px;border:1.5px solid var(--line);border-radius:100px;padding:10px 16px;background:#fff;color:var(--ink)}
+.cmtrow button{background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:10px 18px;font-size:13.5px;font-weight:700}
+.door{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;background:#fff;border:1.5px solid rgba(138,90,60,.45);border-radius:13px;padding:16px 19px;font-size:16px;font-weight:700;margin-top:16px;box-shadow:0 2px 0 rgba(138,90,60,.28);text-align:left}
+.door span{font-family:'Work Sans',sans-serif;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep);font-weight:400}
+.door:hover{border-color:var(--terra)}
+.hiddenmems{display:none}
+.hiddenmems.open{display:contents}
+
+/* photos */
+.phgrid .prow{height:clamp(150px,17vw,215px)}
+.prow{display:flex;gap:9px}
+.prow+.prow{margin-top:9px}
+.ph{position:relative;border-radius:12px;overflow:hidden;cursor:zoom-in;border:none;padding:0;background:#EDE6D3}
+.ph img{width:100%;height:100%;object-fit:cover;transition:opacity .5s ease}
+.ph:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+
+/* her life */
+.lifehead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:6px}
+.chnav{display:flex;gap:8px;flex:none}
+.lifewrap{position:relative;margin-bottom:6px}
+.lifewrap::after{content:"";position:absolute;left:0;right:0;bottom:7px;height:2px;z-index:0;
+  background:linear-gradient(90deg,rgba(201,165,114,.25),rgba(201,165,114,.62) 8%,rgba(201,165,114,.62) 92%,rgba(201,165,114,.25))}
+.arrowbtn{width:46px;height:46px;border-radius:50%;background:#fff;border:1.5px solid rgba(138,90,60,.45);font-size:19px;color:var(--ink);flex:none;box-shadow:0 2px 0 rgba(138,90,60,.25)}
+.arrowbtn:hover{border-color:var(--terra)}
+.chrail{position:relative;z-index:1;display:flex;gap:14px;overflow-x:auto;padding:16px 2px 0;scrollbar-width:none;scroll-behavior:smooth}
+.chrail::-webkit-scrollbar{display:none}
+.chrail::-webkit-scrollbar{display:none}
+.chc{flex:0 0 176px;background:none;border:none;padding:0 0 28px;text-align:left;position:relative;box-shadow:none}
+.chc .cy{display:block;text-align:center;white-space:nowrap;font-family:'Work Sans',sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--terra-deep);padding:0 0 10px}
+.chc .card{display:block;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:13px;overflow:hidden;box-shadow:0 2px 0 rgba(138,90,60,.25)}
+.chc .card img{width:100%;height:86px;object-fit:cover;display:block}
+.chc .card b{font-size:14px;line-height:1.25;display:block;padding:9px 12px 11px;color:var(--ink)}
+.chc::after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:1px;width:12px;height:12px;border-radius:50%;background:var(--cream);border:2px solid rgba(168,124,95,.8);box-sizing:border-box}
+.chc.on .cy{color:var(--terra-deep)}
+.chc.on .card{border-color:var(--night);box-shadow:0 0 0 1.5px var(--night)}
+.chc.on::after{background:var(--terra);border-color:var(--terra)}
+.book{display:grid;grid-template-columns:minmax(280px,410px) 1fr;gap:clamp(18px,3vw,36px);align-items:start}
+@media(max-width:900px){.book{grid-template-columns:1fr}.book .bphoto{order:-1}}
+.yrail{position:relative;margin-top:6px}
+.yrail::before{content:"";position:absolute;left:13px;top:12px;bottom:12px;width:1.5px;background:rgba(201,165,114,.55)}
+.yrow{position:relative;display:block;width:100%;text-align:left;background:none;border:none;padding:13px 12px 13px 36px;border-radius:13px}
+.yrow .dot{position:absolute;left:7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:var(--cream);border:2px solid var(--gold)}
+.yrow .yy{display:block;font-family:'Work Sans',sans-serif;font-size:10.5px;letter-spacing:.16em;color:var(--terra-deep)}
+.yrow .yl{display:block;font-size:16.5px;color:var(--ink);margin-top:3px;line-height:1.3}
+.yrow.on{background:#fff;box-shadow:0 12px 28px -16px rgba(44,37,32,.35)}
+.yrow.on .dot{background:var(--terra);border-color:var(--terra)}
+.yrow.on .yl{font-weight:700}
+.bphoto{position:relative;border-radius:16px;overflow:hidden;min-height:clamp(280px,40vw,480px);box-shadow:0 22px 44px -24px rgba(44,37,32,.45)}
+.bphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .3s ease}
+.bphoto .cap{position:absolute;left:0;right:0;bottom:0;padding:48px 20px 15px;background:linear-gradient(180deg,transparent,rgba(16,12,8,.78));color:#FBF3E4;font-size:16.5px;font-style:italic}
+
+/* room headers */
+.rh{font-size:clamp(21px,2.4vw,27px);font-weight:800;line-height:1.15;margin:0 0 4px}
+.rh2{font-size:clamp(18px,2vw,22px);font-weight:800;line-height:1.2}
+hr.roomsep{border:none;border-top:1.5px solid rgba(138,90,60,.28);margin:42px 0 30px}
+.pager{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:22px}
+.pgb{width:46px;height:46px;border-radius:50%;background:#fff;border:1.5px solid rgba(138,90,60,.45);font-size:19px;color:var(--ink);box-shadow:0 2px 0 rgba(138,90,60,.25)}
+.pgb:hover:not(:disabled){border-color:var(--terra)}
+.pgb:disabled{opacity:.35}
+.pgn{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);min-width:110px;text-align:center}
+
+/* the tape shelf */
+.shelf{display:grid;grid-template-columns:1fr 1fr;gap:24px 18px}
+@media(max-width:760px){.shelf{grid-template-columns:1fr}}
+.tape{border:none;padding:0;text-align:left;background:transparent;cursor:pointer;border-radius:14px;display:block;width:100%}
+.tape .win{display:block;position:relative;border-radius:14px 14px 4px 4px;overflow:hidden;aspect-ratio:16/9;background:#1c1712;box-shadow:0 16px 34px -18px rgba(44,37,32,.5)}
+.tape .win img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.tape:hover .win img{transform:scale(1.04)}
+.tape .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.tape .play span{width:56px;height:56px;border-radius:50%;background:rgba(250,245,236,.92);color:var(--terra-deep);display:flex;align-items:center;justify-content:center;font-size:19px;padding-left:4px;box-shadow:0 10px 24px -10px rgba(16,12,8,.6)}
+.tape .spine{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(180deg,#3a2917,#241711);border-radius:4px 4px 11px 11px;padding:13px 16px;color:#F0E3C8}
+.tape .spine b{font-size:15px;font-weight:700;line-height:1.3}
+.tape .spine .dur{font-family:'Work Sans',sans-serif;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);flex:none}
+.tape:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+.tapefoot{text-align:center;font-family:'Work Sans',sans-serif;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-top:22px}
+
+/* family tree · ancestry-style: focus person, generations, live editing */
+.treebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.tcrumb{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--terra-deep)}
+.tcrumb b{font-family:'Besley',serif;font-size:15px;letter-spacing:0;text-transform:none;color:var(--ink)}
+.tbright{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.tjump{display:flex;align-items:center;gap:7px}
+.tjump span{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.tjump select{font-family:'Besley',serif;font-size:14.5px;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:10px;padding:9px 11px;color:var(--ink);min-height:42px}
+.tbtn{font-family:'Besley',serif;font-size:14.5px;font-weight:700;background:#fff;border:1.5px solid rgba(138,90,60,.45);border-radius:100px;padding:10px 18px;min-height:42px;color:var(--ink)}
+.tbtn:hover{border-color:var(--terra)}
+.tbtn .sm{display:none}
+@media(max-width:900px){.tbtn .lg{display:none}.tbtn .sm{display:inline}}
+.treewrap{position:relative;height:clamp(420px,56vw,580px);border:1.5px solid rgba(138,90,60,.35);border-radius:16px;overflow:hidden;background:#FDFBF5;cursor:grab;touch-action:none}
+.treewrap.drag{cursor:grabbing}
+.treewrap:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+.treecanvas{position:absolute;left:0;top:0;width:2000px;height:1200px;transform-origin:0 0}
+.treesvg{position:absolute;inset:0;pointer-events:none}
+.tcard{position:absolute;width:206px;margin-left:-103px;display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid rgba(44,37,32,.2);border-radius:8px;padding:8px 10px;min-height:62px;box-shadow:0 6px 16px -10px rgba(44,37,32,.35);cursor:pointer;text-align:left}
+.tcard:hover{border-color:var(--terra);box-shadow:0 10px 22px -12px rgba(44,37,32,.45)}
+.tcard .tp{width:44px;height:44px;flex:none;border-radius:6px;background:var(--cream-deep);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--terra-deep);overflow:hidden}
+.tcard .tp img{width:100%;height:100%;object-fit:cover}
+.tcard .tt2{min-width:0}
+.tcard b{display:block;font-size:13.5px;line-height:1.2;color:var(--ink)}
+.tcard i{display:block;font-style:normal;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);margin-top:3px}
+.tcard em{display:block;font-style:italic;font-size:11px;color:var(--terra-deep);margin-top:2px}
+.tcard.focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,165,114,.35)}
+.tcard.sel{border-color:var(--night);box-shadow:0 0 0 3px rgba(26,19,13,.18)}
+.tcard.dim{opacity:.42}
+.tcard.ghost{background:rgba(255,255,255,.55);border-style:dashed;color:var(--terra-deep);justify-content:center;font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;min-height:48px}
+.tcard:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+.tmore{position:absolute;transform:translateX(-50%);background:#fff;border:1.5px solid rgba(138,90,60,.45);border-radius:100px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep);padding:6px 12px;min-height:30px;cursor:pointer;white-space:nowrap}
+.tmore:hover{border-color:var(--terra)}
+.treectl{position:absolute;top:12px;right:12px;z-index:6;display:flex;flex-direction:column;gap:6px}
+.treectl button{width:42px;height:42px;border-radius:9px;background:#fff;border:1.5px solid rgba(138,90,60,.4);font-size:17px;color:var(--ink);box-shadow:0 4px 12px -6px rgba(44,37,32,.3);display:flex;align-items:center;justify-content:center}
+.treectl button:hover{border-color:var(--terra)}
+.tinfo{position:absolute;right:12px;bottom:12px;z-index:6;width:min(320px,88%);background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;padding:14px 15px;box-shadow:0 18px 38px -18px rgba(44,37,32,.5);display:none}
+.tinfo.open{display:block}
+.tinfo .row{display:flex;gap:11px;align-items:center;padding-right:26px}
+.tinfo .pp{width:54px;height:54px;border-radius:8px;overflow:hidden;background:var(--cream-deep);flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--terra-deep)}
+.tinfo .pp img{width:100%;height:100%;object-fit:cover}
+.tinfo b{font-size:15.5px;line-height:1.2}
+.tinfo .yrs{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);margin-top:3px}
+.tinfo .rel{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep);margin-top:3px}
+.tinfo p{font-size:13.5px;font-style:italic;color:var(--ink-soft);margin-top:9px;line-height:1.55}
+.tinfo .tix{position:absolute;top:8px;right:9px;background:none;border:none;font-size:14px;color:var(--ink-soft);min-width:26px;min-height:26px}
+.tacts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tprime{flex:1;min-width:130px;background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:11px 14px;font-size:13.5px;font-weight:700}
+.tghost{flex:1;min-width:130px;background:#fff;border:1.5px solid rgba(138,90,60,.45);color:var(--terra-deep);border-radius:100px;padding:11px 14px;font-size:13.5px;font-weight:700}
+.taddform{display:none;margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.taddform.open{display:block}
+.taddform input,.taddform select{width:100%;font-family:'Besley',serif;font-size:14.5px;border:1.5px solid rgba(138,90,60,.4);border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);margin-bottom:8px}
+.tarow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* service */
+.svcroom{max-width:620px;margin:0 auto}
+.bigcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 24px;text-align:center;box-shadow:0 12px 26px -18px rgba(44,37,32,.3)}
+.bigcard+.bigcard{margin-top:14px;text-align:left}
+.bigcard .when{font-size:clamp(22px,2.4vw,28px);font-weight:800;margin-top:8px}
+.bigcard .where{font-size:16px;color:var(--ink-soft);margin-top:6px;line-height:1.6}
+.bigcard .share2{display:inline-block;background:var(--terra);color:#FBF6ED;border:none;border-radius:100px;padding:15px 30px;font-size:16.5px;font-weight:700;margin-top:16px}
+
+/* floating door + moderation */
+.fab{position:fixed;right:clamp(14px,3vw,34px);bottom:clamp(14px,3vw,26px);z-index:60;display:flex;align-items:center;gap:12px;background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:17px 26px;font-size:16.5px;font-weight:800;box-shadow:0 18px 38px -14px rgba(26,19,13,.65)}
+.fab span{font-family:'Work Sans',sans-serif;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:400}
+.fab:hover{transform:translateY(-1px)}
+@media(max-width:640px){.fab{left:14px;right:14px;justify-content:space-between}}
+
+/* leave a memory modal */
+.lmwrap{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;background:rgba(20,13,8,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.lmwrap.open{display:flex}
+@media(min-width:700px){.lmwrap{align-items:center}}
+.lm{width:min(560px,100%);max-height:92vh;overflow-y:auto;background:var(--cream);border-radius:22px 22px 0 0;padding:26px 24px 30px}
+@media(min-width:700px){.lm{border-radius:22px}}
+.lm h3{font-size:23px;font-weight:800}
+.lm .sub{font-family:'Work Sans',sans-serif;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-top:6px}
+.lm label{display:block;font-weight:700;font-size:15px;margin:18px 0 7px}
+.lm label small{font-weight:400;color:var(--ink-soft);font-style:italic;font-size:13.5px}
+.lm input[type=text],.lm textarea,.lm select{width:100%;font-family:'Besley',serif;font-size:16.5px;border:1.5px solid rgba(138,90,60,.4);border-radius:12px;padding:14px 15px;background:#fff;color:var(--ink)}
+.lm textarea{min-height:130px;resize:vertical;line-height:1.6}
+.lm input:focus,.lm textarea:focus,.lm select:focus{outline:3px solid rgba(168,124,95,.4)}
+.lm .addrow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.lm .ghost{flex:1;min-width:150px;background:#fff;border:1.5px dashed rgba(138,90,60,.5);border-radius:12px;padding:14px;font-size:14.5px;color:var(--terra-deep);font-weight:600}
+.lm .helper{width:100%;background:#fff;border:1.5px solid rgba(138,90,60,.5);border-radius:100px;padding:14px;font-size:15px;color:var(--terra-deep);font-weight:700;margin-top:16px}
+.lm .helper:hover{border-color:var(--terra)}
+.helppanel{display:none;background:#F6F0E2;border-radius:14px;padding:14px 15px 15px;margin-top:10px}
+.helppanel.open{display:block}
+.helppanel .hp{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-bottom:4px}
+.hchip{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(138,90,60,.35);border-radius:12px;padding:11px 13px;font-size:14.5px;font-style:italic;color:var(--ink);margin-top:8px}
+.hchip:hover{border-color:var(--terra)}
+.lm .send{width:100%;background:var(--night);color:var(--cream);border:none;border-radius:100px;padding:17px;font-size:17px;font-weight:800;margin-top:20px}
+.lm .send:hover{background:#000}
+.lm .cancel{width:100%;background:none;border:none;color:var(--ink-soft);font-size:14.5px;padding:13px;margin-top:4px;text-decoration:underline;text-underline-offset:3px}
+.lm .modnote{text-align:center;font-family:'Work Sans',sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep);margin-top:14px;line-height:1.8}
+.lm .done{display:none;text-align:center;padding:30px 6px 10px}
+.lm .done .bloom{font-size:40px}
+.lm .done h4{font-size:22px;font-weight:800;margin-top:12px}
+.lm .done p{color:var(--ink-soft);font-style:italic;margin-top:8px;font-size:15.5px}
+.lm.sent form{display:none}
+.lm.sent .done{display:block}
+
+/* see all · uniform squares, timestamps, works at 40 or 400 */
+.seeall{position:fixed;inset:0;z-index:108;background:var(--cream);display:none;flex-direction:column}
+.seeall.open{display:flex}
+.sabar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px clamp(14px,3vw,30px);background:rgba(250,245,236,.97);border-bottom:1px solid var(--line)}
+.sabar b{font-size:19px;font-weight:800}
+.sabar span{font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra-deep);margin-left:8px}
+.saright{display:flex;align-items:center;gap:10px}
+.sasort{display:flex;gap:6px}
+.sasort button{font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;background:#fff;border:1.5px solid rgba(138,90,60,.4);border-radius:100px;padding:9px 15px;min-height:40px;color:var(--terra-deep)}
+.sasort button.on{background:var(--night);color:var(--cream);border-color:var(--night)}
+.sax{width:44px;height:44px;border-radius:11px;background:#fff;border:1.5px solid rgba(138,90,60,.4);font-size:16px;color:var(--ink)}
+.sagrid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px 12px;padding:clamp(14px,3vw,30px);align-content:start;align-items:start;grid-auto-rows:auto}
+@media(max-width:520px){.sagrid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:9px}}
+.sacell{border:none;padding:0;background:none;cursor:zoom-in;text-align:left;display:flex;flex-direction:column;align-items:stretch}
+.sacell .sq{position:relative;width:100%;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#EDE6D3}
+.sacell .sq img{width:100%;height:100%;object-fit:cover}
+.sacell .pl{position:absolute;right:7px;bottom:7px;background:rgba(26,19,13,.82);color:#FBF3E4;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.06em;border-radius:100px;padding:4px 9px}
+.sacell .ts{display:block;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep);margin-top:7px}
+.sacell .cp{display:block;font-size:13px;line-height:1.35;color:var(--ink);margin-top:2px}
+.sacell:focus-visible{outline:3px solid #2a6df4;outline-offset:2px}
+
+/* viewing room */
+.vroom{position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;gap:10px;padding:24px;background:rgba(20,13,8,.92);backdrop-filter:blur(5px)}
+.vroom.open{display:flex}
+.vroom figure{margin:0;max-width:min(980px,90vw);text-align:center}
+.vroom img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:10px;box-shadow:0 40px 90px -30px #000}
+.vroom figcaption{font-style:italic;font-size:16px;color:#E8D5B5;margin-top:14px}
+.vroom .vx{position:absolute;top:14px;right:18px;min-width:46px;min-height:46px;background:none;border:none;color:#fff;font-size:26px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.vroom .vn{min-width:46px;min-height:46px;background:none;border:none;color:#fff;font-size:34px;opacity:.85;text-shadow:0 2px 8px rgba(0,0,0,.6);flex:none}
+.vroom .vn:hover{opacity:1}
+
+/* footer */
+.foot{background:linear-gradient(180deg,#2a1c11,#1c120a);color:#cdbea4;padding:52px clamp(20px,5vw,60px) 24px}
+.foot .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;max-width:1040px;margin:0 auto}
+@media(max-width:760px){.foot .cols{grid-template-columns:1fr 1fr}.foot .brand{grid-column:1/-1}}
+.foot .fm{font-weight:700;font-size:19px;color:#F5EBD9}
+.foot .fm em{color:var(--gold);font-style:italic}
+.foot .pl{font-style:italic;font-size:14.5px;color:#CDBEA4;margin-top:10px;max-width:30ch;line-height:1.6}
+.foot .h{font-variant-caps:all-small-caps;letter-spacing:.14em;font-weight:700;font-size:15px;color:var(--gold);margin-bottom:11px}
+.foot a{display:block;color:#E8DCC8;text-decoration:none;font-size:15px;margin-bottom:9px}
+.foot a:hover{color:#F4B860}
+.foot .bar{max-width:1040px;margin:40px auto 0;padding-top:16px;border-top:1px solid rgba(201,165,114,.22);display:flex;justify-content:space-between;gap:12px;font-variant-caps:all-small-caps;letter-spacing:.14em;font-size:13px;color:#9d8a6e}
+@media(prefers-reduced-motion:reduce){.today img,.bphoto img,.tape .win img,.qcall .qtext,.qcall .qwho{transition:none}.tape:hover .win img{transform:none}}
+
+/* ═════════ MOBILE · the phone build ═════════ */
+.mvisits{display:none;align-items:baseline;justify-content:center;gap:6px;margin-top:16px;
+  font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:#E8D9BE;text-shadow:0 1px 12px rgba(10,7,4,.6)}
+.mvisits span{color:#F0C88A;font-size:13px}
+.mvisits b{font-family:'Besley',serif;font-size:17px;font-weight:800;color:#FBF3E4;letter-spacing:0}
+.mdots{display:none;justify-content:center;align-items:center;gap:4px;margin-top:14px}
+.mdots button{width:26px;height:26px;background:none;border:none;padding:0;display:flex;align-items:center;justify-content:center}
+.mdots button::after{content:"";width:7px;height:7px;border-radius:100px;background:rgba(138,90,60,.3);transition:width .25s ease,background .25s ease}
+.mdots button.on::after{width:20px;background:var(--terra)}
+.endacts{display:none;gap:10px;max-width:520px;margin:34px auto 0;padding:0 16px}
+.endacts button{flex:1;min-height:54px;border-radius:100px;font-family:'Besley',serif;font-size:16px;font-weight:800}
+.mbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:80;grid-template-columns:1.5fr 1fr;gap:9px;
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+  background:rgba(250,245,236,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);box-shadow:0 -8px 26px -18px rgba(44,37,32,.5)}
+.mbar button{min-height:52px;border-radius:100px;font-family:'Besley',serif;font-size:15.5px;font-weight:800}
+.mbar .mprime{background:var(--night);color:var(--cream);border:none}
+.mbar .mshare{background:#fff;border:1.5px solid rgba(138,90,60,.5);color:var(--terra-deep)}
+
+@media(max-width:900px){
+  body{font-size:16.5px}
+
+  /* toolbar · brand and one action */
+  .topbar{height:58px;padding:0 16px;gap:12px;align-items:center}
+  .topbar .brand{gap:8px;min-width:0}
+  .topbar .brand img{height:23px;flex:none}
+  .topbar .brand .wm{font-size:15.5px;overflow:hidden;text-overflow:ellipsis}
+  .topbar .login{display:none}
+  .topbar .start{font-size:13.5px;font-weight:700;padding:0 17px;height:40px;display:flex;align-items:center;flex:none}
+
+  /* cover · photo to the tab line · crop holds her, not just the children */
+  .cover{height:min(82vh,700px);min-height:430px}
+  .cover .cbg{object-position:center 40%}
+  .cface{width:clamp(180px,52vw,232px);height:clamp(180px,52vw,232px);border-width:2px;margin-bottom:18px}
+  .cstack{padding:0 18px 26px}
+  .cstack h1{font-size:28px}
+  .cstack .dates{font-size:10.5px;margin-top:8px}
+  .cstack .qt{font-size:15px;margin-top:10px}
+  .mvisits{display:flex}
+
+  /* ribbon · one swipeable row, nothing wraps */
+  .ribbon{flex-wrap:nowrap;gap:0;padding:0;overflow:hidden}
+  .rtabs{flex-wrap:nowrap;overflow-x:auto;gap:7px;padding:9px 14px;width:100%;
+    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 26px),transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 26px),transparent)}
+  .rtabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;scroll-snap-align:center;font-size:14.5px;padding:11px 17px;border-radius:100px;box-shadow:none}
+  .visits,.rshare{display:none}
+
+  /* rooms */
+  .room{padding:22px 14px 26px}
+  .rh{font-size:23px}
+  hr.roomsep{margin:32px 0 24px}
+
+  /* her moments · one card, swipe, dots */
+  .scard.stage{height:clamp(250px,64vw,340px)}
+  .scard.stage .tt{font-size:19px}
+  .mdots{display:flex}
+  .qcall{margin:16px auto 22px;padding:22px 20px 18px;border-radius:18px}
+  .qcall .qtext{font-size:15.5px}
+
+  /* her wall */
+  .chips{gap:7px}
+  .chip{font-size:14px;padding:9px 15px}
+  .pager{gap:12px;margin-top:18px}
+
+  /* photographs · three across stays, shorter rows */
+  .phgrid .prow{height:clamp(98px,27vw,140px)}
+  .prow{gap:7px}
+  .prow+.prow{margin-top:7px}
+  .door{padding:15px 16px;font-size:15px;border-radius:12px}
+  .door span{display:block;margin-top:3px}
+
+  /* her life */
+  .chc{flex:0 0 158px}
+  .chc .cy{font-size:12.5px}
+  .arrowbtn{width:44px;height:44px}
+  .lifehead{align-items:center}
+  .bphoto{min-height:250px}
+  .yrow .yl{font-size:15.5px}
+
+  /* tapes */
+  .shelf{gap:18px}
+
+  /* family tree · taller board, smaller cards, sheet panel */
+  .treebar{gap:8px}
+  .tcrumb{width:100%;font-size:10.5px}
+  .tbright{width:100%;justify-content:space-between;gap:8px}
+  .tjump span{display:none}
+  .tjump select{max-width:none;width:100%;font-size:14px;padding:9px 9px}
+  .tjump{flex:1;min-width:0}
+  .tbtn{flex:none;font-size:13.5px;padding:10px 14px;white-space:nowrap}
+  .treewrap{height:62vh;min-height:390px}
+  .tcard{width:168px;margin-left:-84px;min-height:56px;padding:7px 9px;gap:8px}
+  .tcard .tp{width:38px;height:38px}
+  .tcard b{font-size:12.5px}
+  .tinfo{left:0;right:0;bottom:0;width:auto;border-radius:16px 16px 0 0;
+    border-left:none;border-right:none;border-bottom:none;padding:16px 16px 18px}
+  .tacts{gap:9px}
+  .treectl{top:10px;right:10px}
+
+  /* see all */
+  .sabar{padding:12px 14px}
+  .sabar b{font-size:17px}
+  .sagrid{padding:14px 14px calc(20px + env(safe-area-inset-bottom,0px))}
+
+  /* share · a sheet, like the memory composer */
+  .shwrap{align-items:flex-end;padding:0}
+  .sh{width:100%;max-height:94vh;border-radius:18px 18px 0 0;
+    padding:14px 14px calc(16px + env(safe-area-inset-bottom,0px))}
+  .shacts{grid-template-columns:1fr 1fr}
+
+  /* the memory composer */
+  .lm{padding:22px 16px calc(26px + env(safe-area-inset-bottom,0px))}
+  .lm h3{font-size:21px}
+  .lm input[type=text],.lm textarea,.lm select{font-size:16px}
+  .lm .addrow{gap:8px}
+  .lm .ghost{min-width:calc(50% - 4px);font-size:13.5px;padding:12px 8px}
+
+  /* the two thumb actions live at the bottom */
+  .fab{display:none}
+  .mbar{display:grid}
+  .endacts{display:flex}
+
+  /* viewing room */
+  .vroom{padding:14px}
+  .vroom .vn{position:absolute;bottom:18px;width:52px;height:52px;border-radius:50%;background:rgba(250,245,236,.14)}
+  .vroom #vPrev{left:18px}
+  .vroom #vNext{right:18px}
+  .vroom figcaption{font-size:14.5px;padding:0 8px}
+
+  /* footer */
+  .foot{padding:40px 18px 20px}
+  .foot .cols{grid-template-columns:1fr 1fr;gap:22px}
+  .foot .bar{flex-direction:column;gap:6px;text-align:center;align-items:center}
+}
+
+@media(max-width:900px){
+  /* tap targets · 44px minimum, older hands on hard days */
+  .topbar .brand{padding:10px 0}
+  .topbar .start{min-height:44px;display:flex;align-items:center}
+  .mdots button{width:30px;height:40px}
+  .acts button{min-height:44px;font-size:11.5px;padding:11px 16px}
+  .cmtrow input,.cmtrow button{min-height:46px}
+  .sasort button{min-height:44px}
+  .sax{width:46px;height:46px}
+  .shacts button{min-height:50px}
+  .tjump select,.tbtn{min-height:44px}
+  .treectl button{width:44px;height:44px}
+  .pgb{width:48px;height:48px}
+}
+
+@media(max-width:400px){
+  .cstack h1{font-size:25px}
+  .cface{width:clamp(168px,50vw,196px);height:clamp(168px,50vw,196px)}
+  .mbar{grid-template-columns:1.35fr 1fr}
+  .mbar button{font-size:14.5px}
+  .tjump select{max-width:38vw}
+}
+</style>
+<style>
+.ha-img-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#f4f4f5;border:1px dashed #d4d4d8;border-radius:8px;color:#71717a;font-size:12px;font-family:system-ui,sans-serif;min-height:80px;padding:16px;box-sizing:border-box;animation:ha-img-pulse 1.5s ease-in-out infinite}
+.ha-img-placeholder.ha-failed{animation:none;opacity:.7}
+@keyframes ha-img-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@media(prefers-color-scheme:dark){.ha-img-placeholder{background:#27272a;border-color:#3f3f46;color:#a1a1aa}}
+</style>
+</head>
+<body>
+
+<!-- TOP TOOLBAR -->
+<div class="topbar" id="topbar">
+  <a class="brand" href="https://imissyoumemorial.com" target="_blank" rel="noopener noreferrer">
+    <img class="mk-rev" src="https://imissyoumemorial.com/brand/imy-mark-reversed.svg" alt=""/>
+    <img class="mk-ink" src="https://imissyoumemorial.com/brand/imy-mark.svg" alt=""/>
+    <span class="wm">I <em>Miss</em> You Memorial</span>
+  </a>
+  <nav aria-label="I Miss You Memorial">
+    <a href="https://imissyoumemorial.com" target="_blank" rel="noopener noreferrer">Remember</a>
+    <a href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">Example</a>
+    <a href="https://imissyoumemorial.com/#how" target="_blank" rel="noopener noreferrer">How it works</a>
+    <a href="https://imissyoumemorial.com/pricing" target="_blank" rel="noopener noreferrer">Pricing</a>
+  </nav>
+  <div class="tacts">
+    <a class="login" href="https://imissyoumemorial.com/login" target="_blank" rel="noopener noreferrer">Log in</a>
+    <a class="start" href="https://imissyoumemorial.com/onboarding" target="_blank" rel="noopener noreferrer">Start a tribute</a>
+  </div>
+</div>
+
+<!-- COVER · V3 the seam -->
+<header class="hero">
+  <div class="cover">
+    <img class="cbg" src="https://pub.hyperagent.com/api/published/pbf01M0KS2ETR_SJ09R1SEHPY8PJ8R/fd070068-b679-4d1b-9b8d-4dc1ab9cdfbb.png" alt="The whole family on the beach — Eleanor with her sons, their wives and her grandchildren"/>
+    <div class="ctopveil"></div>
+    <div class="cscrim"></div>
+    <div class="cstack">
+      <div class="cface"><img src="https://pub.hyperagent.com/api/published/pbf01M0KS2PQC_EPCP85QYSFVH4EFH/f21c67de-4294-4079-b7e9-785ec297ea82.png" alt="Eleanor Margaret Hayes"/></div>
+      <h1>Eleanor Margaret <em>Hayes</em></h1>
+      <div class="dates">MARCH 12, 1948 — OCTOBER 22, 2024 · HALF MOON BAY, CA</div>
+      <div class="qt">&ldquo;Put the kettle on, sit in the garden, and notice something lovely. I&rsquo;ll be in all of it.&rdquo;</div>
+      <div class="mvisits"><span>♥</span> <b id="visN2">12,438</b> people have visited her page</div>
+    </div>
+  </div>
+</header>
+<!-- THE RIBBON · tabs · visits · share -->
+<nav class="ribbon" role="tablist" aria-label="Her page">
+  <div class="rtabs">
+    <button class="tab on" data-room="mem" role="tab" aria-selected="true">Memories</button>
+    <button class="tab" data-room="life" role="tab" aria-selected="false">Her life</button>
+    <button class="tab" data-room="pho" role="tab" aria-selected="false">Photos</button>
+    <button class="tab" data-room="tape" role="tab" aria-selected="false">Tapes</button>
+    <button class="tab" data-room="tree" role="tab" aria-selected="false">Family tree</button>
+  </div>
+  <div class="visits"><span class="vh">♥</span> <b id="visN">12,438</b> <span class="vt">people have visited her page</span></div>
+  <button class="rshare" id="shareBtn" type="button">Send to family &amp; friends ↗</button>
+</nav>
+
+<!-- MEMORIES -->
+<main>
+<section class="room on" id="room-mem">
+  <div class="kick" style="margin:0 2px 6px">Memories</div>
+  <h2 class="rh" style="margin-bottom:12px">Moments of hers</h2>
+  <div class="stagewings" id="stageWings">
+    <button class="scard wing" id="wingL" type="button" aria-label="Previous moment"><img id="wLi" src="" alt=""/><div class="scap"><div class="tk" id="wLk"></div><div class="tt" id="wLt"></div></div></button>
+    <button class="scard stage" id="stageC" type="button" aria-label="Open this moment"><img id="sCi" src="" alt=""/><div class="scap"><div class="tk" id="sCk"></div><div class="tt" id="sCt"></div><p class="ts" id="sCs"></p></div></button>
+    <button class="scard wing" id="wingR" type="button" aria-label="Next moment"><img id="wRi" src="" alt=""/><div class="scap"><div class="tk" id="wRk"></div><div class="tt" id="wRt"></div></div></button>
+  </div>
+  <div class="mdots" id="mDots" role="tablist" aria-label="Choose a moment"></div>
+  <div class="qcall" aria-label="Words left for her">
+    <div class="qmark">&ldquo;</div>
+    <p class="qtext" id="qcText"></p>
+    <div class="qwho" id="qcWho"></div>
+  </div>
+  <hr class="roomsep"/>
+  <div class="kick" style="text-align:center;margin:0 0 4px">Her wall</div>
+  <h3 class="rh2" style="text-align:center;margin:0 0 18px">From the people who knew her</h3>
+  <div class="chips chips-center" id="chips"></div>
+  <div class="stream" id="stream"></div>
+  <div class="pager" id="memPager">
+    <button class="pgb" id="memPrev" type="button" aria-label="Previous memories">‹</button>
+    <div class="pgn" id="memCount"></div>
+    <button class="pgb" id="memNext" type="button" aria-label="More memories">›</button>
+  </div>
+</section>
+
+<!-- PHOTOS -->
+<section class="room" id="room-pho">
+  <div class="kick" style="margin:0 2px 6px">Her album</div>
+  <h2 class="rh" style="margin-bottom:14px">Photographs</h2>
+  <div class="phgrid" id="phGrid"></div>
+  <button class="door" id="allPhDoor" type="button">See all photographs <span id="phCount"></span></button>
+</section>
+
+<!-- HER LIFE -->
+<section class="room" id="room-life">
+  <div class="lifehead">
+    <div>
+      <div class="kick" style="margin:0 2px 6px">Her life</div>
+      <h2 class="rh" style="margin:0">Chapters</h2>
+    </div>
+    <div class="chnav">
+      <button class="arrowbtn" id="chL" type="button" aria-label="Earlier chapters">‹</button>
+      <button class="arrowbtn" id="chR" type="button" aria-label="Later chapters">›</button>
+    </div>
+  </div>
+  <div class="lifewrap">
+    <div class="chrail" id="chRail"></div>
+  </div>
+  <div class="book">
+    <div>
+      <div class="kick" style="margin:4px 2px 6px">Year by year · tap a moment</div>
+      <div class="yrail" id="yRail"></div>
+    </div>
+    <div class="bphoto"><img id="bImg" src="" alt=""/><div class="cap" id="bCap"></div></div>
+  </div>
+</section>
+
+<!-- THE TAPE SHELF -->
+<section class="room" id="room-tape">
+  <div class="kick" style="margin:0 2px 6px">Videos</div>
+  <h2 class="rh" style="margin-bottom:14px">The tape shelf</h2>
+  <div class="shelf" id="tapeShelf"></div>
+  <button class="door" id="allTpDoor" type="button">See all videos <span id="tpCount"></span></button>
+  <div class="tapefoot">full videos play with Plus</div>
+</section>
+
+<!-- FAMILY TREE -->
+<section class="room" id="room-tree">
+  <div class="kick" style="margin:0 2px 6px">Free · part of every tribute</div>
+  <h2 class="rh" style="margin-bottom:12px">Her family tree</h2>
+  <div class="treebar">
+    <div class="tcrumb" id="tCrumb"></div>
+    <div class="tbright">
+      <label class="tjump"><span>Jump to</span><select id="tJump" aria-label="Jump to a person"></select></label>
+      <button class="tbtn" id="tHome" type="button"><span class="lg">Back to Eleanor</span><span class="sm">↺ Eleanor</span></button>
+    </div>
+  </div>
+  <div class="treewrap" id="treeWrap" tabindex="0" role="application" aria-label="Her family tree. Drag to move, plus and minus to zoom, click a person to open their card.">
+    <div class="treecanvas" id="treeCanvas"><svg class="treesvg" id="treeSvg" width="2000" height="1200" aria-hidden="true"></svg></div>
+    <div class="treectl">
+      <button type="button" id="tzIn" aria-label="Zoom in">＋</button>
+      <button type="button" id="tzOut" aria-label="Zoom out">－</button>
+      <button type="button" id="tzFit" aria-label="Fit the whole tree"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></svg></button>
+    </div>
+    <div class="tinfo" id="tInfo">
+      <button class="tix" id="tInfoX" type="button" aria-label="Close">✕</button>
+      <div class="row"><div class="pp" id="tiPic"></div><div><b id="tiName"></b><div class="yrs" id="tiYears"></div><div class="rel" id="tiRel"></div></div></div>
+      <p id="tiNote"></p>
+      <div class="tacts">
+        <button class="tprime" id="tiFocus" type="button">Center on them</button>
+        <button class="tghost" id="tiAdd" type="button">＋ Add a relative</button>
+      </div>
+      <form class="taddform" id="tAddForm">
+        <input type="text" id="taName" placeholder="Their name" required/>
+        <div class="tarow">
+          <select id="taRel" aria-label="How they are related"><option value="child">their child</option><option value="spouse">their partner</option><option value="parent">their parent</option></select>
+          <input type="text" id="taYears" placeholder="b. 1994"/>
+        </div>
+        <button class="tprime" type="submit">Add to the tree</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<button class="fab" id="fab" type="button">＋ Leave a memory <span>a photo · a message · their voice</span></button>
+<div class="endacts">
+  <button class="mprime" id="eLeave" type="button">＋ Leave a memory</button>
+  <button class="mshare" id="eShare" type="button">Share her page ↗</button>
+</div>
+<div aria-hidden="true" style="height:96px"></div>
+<div class="mbar" id="mBar">
+  <button class="mprime" id="mLeave" type="button">＋ Leave a memory</button>
+  <button class="mshare" id="mShare" type="button">Share ↗</button>
+</div>
+
+<!-- LEAVE A MEMORY -->
+<div class="lmwrap" id="lmWrap" role="dialog" aria-modal="true" aria-label="Leave a memory">
+  <div class="lm" id="lm">
+    <form id="lmForm">
+      <h3>Leave a memory of Eleanor</h3>
+      <div class="sub">no account needed · it takes about a minute</div>
+      <label for="lmName">Your name <small>· and how you knew her</small></label>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:10px">
+        <input type="text" id="lmName" placeholder="Ruth Alvarez" required/>
+        <select id="lmRel" aria-label="How you knew her"><option>Family</option><option>Friend</option><option>Neighbour</option><option>Her student</option><option>Another way</option></select>
+      </div>
+      <label for="lmTitle">Give it a title <small>· like a line from a letter</small></label>
+      <input type="text" id="lmTitle" placeholder="Fifty years of Tuesdays" required/>
+      <label for="lmStory">The whole story <small>· take all the room you need</small></label>
+      <textarea id="lmStory" placeholder="What do you remember?" required></textarea>
+      <div class="addrow">
+        <button class="ghost" type="button" id="lmPhoto">＋ Add photos · up to 4</button>
+        <input type="file" id="lmFile" accept="image/*" multiple hidden/>
+        <button class="ghost" type="button">＋ Add a video</button>
+        <button class="ghost" type="button">＋ Add a voice memory</button>
+      </div>
+      <button class="helper" type="button" id="lmHelp">If the words are hard · help me begin</button>
+      <div class="helppanel" id="lmHelpPanel">
+        <div class="hp">a kind helper · it shapes, never writes — every word stays yours</div>
+        <button class="hchip" type="button" data-start="I keep coming back to the day ">Start from one day you keep coming back to&hellip;</button>
+        <button class="hchip" type="button" data-start="The first time I met her, ">Start from the first time you met her&hellip;</button>
+        <button class="hchip" type="button" data-start="What I&rsquo;d give to tell her now is ">Start from what you&rsquo;d tell her now&hellip;</button>
+      </div>
+      <button class="send" type="submit">Share it with the family</button>
+      <button class="cancel" type="button" id="lmCancel">Not right now</button>
+      <div class="modnote">every word waits for the family before it appears ·<br/>nothing is ever taken down without them</div>
+    </form>
+    <div class="done">
+      <div class="bloom">✿</div>
+      <h4>It's with the family now.</h4>
+      <p>Your memory is safe. The moment they welcome it, it joins her wall — and they'll know it came from you.</p>
+      <button class="send" type="button" id="lmClose" style="max-width:280px">Back to her page</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE HER PAGE -->
+<div class="shwrap" id="shWrap" role="dialog" aria-modal="true" aria-label="Share her page">
+  <div class="sh">
+    <div class="shk">Share her page <button class="shx" id="shX" type="button" aria-label="Close">✕</button></div>
+    <div class="flyer" id="flyer"><div class="inner">
+      <div class="ilm">In loving memory</div>
+      <div class="arch"><img src="https://pub.hyperagent.com/api/published/pbf01M0KS2PQC_EPCP85QYSFVH4EFH/f21c67de-4294-4079-b7e9-785ec297ea82.png" alt="Eleanor"/></div>
+      <h5>Eleanor Margaret Hayes</h5>
+      <div class="fd">1948 · 2024</div>
+      <div class="join">Join us to remember</div>
+      <div class="when">June 13, 2026 · 6:00 PM</div>
+      <div class="where"><b>Linden Community Chapel</b><br/>142 Seaside Avenue, Half Moon Bay, CA 94019</div>
+      <div class="fnote">parking behind the chapel · the family gathers at 5:30 · the garden gate stays open after</div>
+      <div class="qrrow"><img src="https://api.qrserver.com/v1/create-qr-code/?size=172x172&color=2C2520&bgcolor=FBF6EC&data=https%3A%2F%2Feleanor.imissyoumemorial.com" alt="QR code to her page"/><p>scan to visit · leave a memory, a photo, a kind word</p></div>
+      <div class="wm">I <em>Miss</em> You Memorial</div>
+    </div></div>
+    <div class="shacts">
+      <button class="solid" id="shText" type="button">Send by text</button>
+      <button class="ghosty" id="shFb" type="button">Share on Facebook</button>
+      <button class="ghosty" id="shCopy" type="button">Copy the link</button>
+      <button class="ghosty" id="shPrint" type="button">Download the flyer</button>
+    </div>
+    <div class="shnote">send her page to the family &amp; friends who loved her —<br/>every memory they leave joins her wall</div>
+  </div>
+</div>
+
+<!-- SEE ALL · every photo / every video, plainly -->
+<div class="seeall" id="seeAll" role="dialog" aria-modal="true" aria-label="Everything, in one grid">
+  <div class="sabar">
+    <div><b id="saTitle"></b> <span id="saCount"></span></div>
+    <div class="saright">
+      <div class="sasort" role="group" aria-label="Sort">
+        <button type="button" class="on" data-sort="new">Newest</button>
+        <button type="button" data-sort="old">Oldest</button>
+      </div>
+      <button class="sax" id="saX" type="button" aria-label="Close">✕</button>
+    </div>
+  </div>
+  <div class="sagrid" id="saGrid"></div>
+</div>
+
+<!-- VIEWING ROOM -->
+<div class="vroom" id="vRoom" role="dialog" aria-modal="true" aria-label="Photo viewing room">
+  <button class="vn" id="vPrev" aria-label="Previous">‹</button>
+  <figure><img id="vImg" src="" alt=""/><figcaption id="vCap"></figcaption></figure>
+  <button class="vn" id="vNext" aria-label="Next">›</button>
+  <button class="vx" id="vX" aria-label="Close">✕</button>
+</div>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="cols">
+    <div class="brand">
+      <div class="fm">I <em>Miss</em> You Memorial</div>
+      <p class="pl">Every tribute stays online. We never charge a family to keep a memory alive.</p>
+    </div>
+    <div><div class="h">Begin</div><a href="https://imissyoumemorial.com/onboarding" target="_blank" rel="noopener noreferrer">Create a tribute</a><a href="https://imissyoumemorial.com/sites/eleanor" target="_blank" rel="noopener noreferrer">See Eleanor's page</a><a href="#" onclick="return false">Give this page</a></div>
+    <div><div class="h">Plans</div><a href="https://imissyoumemorial.com/pricing" target="_blank" rel="noopener noreferrer">Free</a><a href="https://imissyoumemorial.com/pricing" target="_blank" rel="noopener noreferrer">Plus</a><a href="https://imissyoumemorial.com/concierge" target="_blank" rel="noopener noreferrer">Concierge</a></div>
+    <div><div class="h">Care</div><a href="https://imissyoumemorial.com/contact" target="_blank" rel="noopener noreferrer">Contact us</a><a href="https://imissyoumemorial.com/privacy" target="_blank" rel="noopener noreferrer">Privacy</a><a href="https://imissyoumemorial.com/terms" target="_blank" rel="noopener noreferrer">Terms</a></div>
+  </div>
+  <div class="bar"><span>© I Miss You Memorial</span><span>Made with love</span></div>
+</footer>
+
+<script>
+var P='https://aozjmlbkfayaulqnxgxe.supabase.co/storage/v1/object/public/tribute-media/photos/1d50e026-9f79-4167-8f72-314694fe2f29/1784015608-';
+var M='https://imissyoumemorial.com/art/mem-demo/';
+var REDUCE=false;try{REDUCE=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+
+/* ── top toolbar · clear over her, solid past the photograph ── */
+(function(){
+  var tb=document.getElementById('topbar');
+  function sync(){tb.classList.toggle('solid',window.scrollY>48)}
+  addEventListener('scroll',sync,{passive:true});sync();
+})();
+
+/* ── tabs ── */
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');x.setAttribute('aria-selected','false')});
+    document.querySelectorAll('.room').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');t.setAttribute('aria-selected','true');
+    document.getElementById('room-'+t.dataset.room).classList.add('on');
+  });
+});
+
+/* ── her moments · the stage and the wings ── */
+var TODAY=[
+ {img:P+'2019.jpg',k:'around 2019 · from her photographs',t:'First light over the garden',s:'She was out there before the kettle finished — every morning, rain or fog. The roses never stood a chance of being anyone else\u2019s.',who:'Susan · her daughter'},
+ {img:M+'ruth-with.webp',k:'remembered by Ruth · her friend',t:'Fifty years of Tuesdays',s:'Tea at the garden gate, every week since 1974. Nobody tells you that\u2019s what friendship is — until the Tuesdays stop.',who:'Ruth · her friend'},
+ {img:P+'1989.jpg',k:'around 1989 · placed by the family',t:'The chairs multiplied',s:'Thanksgiving, the year everyone came. She counted twenty-three and put the leaf in the table like it was nothing.',who:'Daniel · her son'},
+ {img:M+'daniel-with.webp',k:'remembered by Daniel · her son',t:'The quiet before everyone arrived',s:'She taught me the best part of any gathering was the half hour before it. I still show up early, just to feel close to her.',who:'Daniel · her son'},
+ {img:P+'hands.jpg',k:'around 2015 · from her photographs',t:'Her hands, always working',s:'Dough, dirt, yarn, a grandchild\u2019s shoelaces. Nobody remembers them still.',who:'Sarah · her granddaughter'},
+ {img:M+'miguel-with.webp',k:'remembered by Miguel · a neighbour',t:'The harvest over the fence',s:'Every August, tomatoes appeared on our porch. We never once caught her doing it.',who:'Miguel · a neighbour'}
+];
+var ti=0;
+function md(n){return ((n%TODAY.length)+TODAY.length)%TODAY.length}
+function setSlot(pre,m,fade){
+  var img=document.getElementById(pre+'i');
+  if(fade&&!REDUCE){img.style.opacity=0;setTimeout(function(){img.src=m.img;img.style.opacity=1},300)}
+  else img.src=m.img;
+  document.getElementById(pre+'k').textContent=m.k;
+  document.getElementById(pre+'t').textContent=m.t;
+}
+function renderMoments(fade){
+  setSlot('wL',TODAY[md(ti-1)],fade);
+  setSlot('sC',TODAY[md(ti)],fade);
+  setSlot('wR',TODAY[md(ti+1)],fade);
+  var cur=TODAY[md(ti)];
+  document.getElementById('sCs').textContent=cur.s;
+  var qt=document.getElementById('qcText'),qw=document.getElementById('qcWho');
+  if(!qt)return;
+  function put(){qt.textContent='\u201c'+cur.s+'\u201d';qw.textContent='— '+cur.who+' · on this photograph'}
+  if(fade&&!REDUCE){qt.style.opacity=0;qw.style.opacity=0;
+    setTimeout(function(){put();qt.style.opacity=1;qw.style.opacity=1},300)}
+  else put();
+  if(window.__momentDots)window.__momentDots(md(ti));
+}
+renderMoments(false);
+document.getElementById('wingL').addEventListener('click',function(){ti=md(ti-1);renderMoments(true)});
+document.getElementById('wingR').addEventListener('click',function(){ti=md(ti+1);renderMoments(true)});
+document.getElementById('stageC').addEventListener('click',function(){
+  var m=TODAY[md(ti)];vImg.src=m.img;vCap.textContent=m.t+' — '+m.s;
+  vRoom.classList.add('open');document.body.style.overflow='hidden';
+});
+if(!REDUCE){
+  var thov=false,sw=document.getElementById('stageWings');
+  ['mouseenter','touchstart','focusin'].forEach(function(ev){sw.addEventListener(ev,function(){thov=true},{passive:true})});
+  sw.addEventListener('mouseleave',function(){thov=false});
+  setInterval(function(){if(!thov&&!document.hidden&&document.getElementById('room-mem').classList.contains('on')){ti=md(ti+1);renderMoments(true)}},4500);
+}
+
+/* ── the stream ── */
+var MEMS=[
+ {av:M+'ruth-portrait.webp',n:'Ruth',r:'her friend · 2 hours ago',rel:'friends',ph:M+'ruth-with.webp',t:'Fifty years of Tuesdays',b:'"Fifty years of Tuesdays. Nobody tells you that\u2019s what friendship is — until the Tuesdays stop."',h:12,c:[['S','<b>Sarah</b> · She talked about your Tuesdays all the time, Ruth.'],['D','<b>Daniel</b> · Thank you for every one of them.']]},
+ {av:M+'rebecca-portrait.webp',n:'Sarah',r:'her granddaughter · Monday',rel:'family',ph:P+'1988.jpg',t:'Cinnamon rolls at five in the morning',b:'"She woke me at five to make cinnamon rolls. I complained every time. I\u2019d give anything for one more morning."',h:25,c:[['R','<b>Ruth</b> · She saved you the middle one, always.'],['T','<b>Tom</b> · She brought those to Room 12 once. Legendary.']]},
+ {av:M+'daniel-portrait.webp',n:'Daniel',r:'her son · Tuesday',rel:'family',ph:M+'daniel-with.webp',t:'The quiet before everyone arrived',b:'"She taught me that the best part of any gathering was the quiet before everyone arrived. I still show up early, just to feel close to her."',h:19,c:[['M','<b>Marie</b> · That was her hour. You have it now.']]},
+ {av:M+'tom-portrait.webp',n:'Tom',r:'her student · yesterday',rel:'students',t:'Miss Hayes taught me to read',voice:'0:37',h:8,c:[['S','<b>Sarah</b> · Grandma kept your class photo on the fridge, Tom.']]},
+ {av:M+'miguel-portrait.webp',n:'Miguel',r:'a neighbour · last week',rel:'neighbors',ph:M+'miguel-with.webp',t:'The harvest over the fence',b:'"Every August, tomatoes appeared on our porch. We never once caught her doing it."',h:14,c:[],hide:true},
+ {av:M+'ruth-portrait.webp',n:'Marie',r:'a neighbour · last week',rel:'neighbors',ph:P+'2016.jpg',t:'She made the world feel gentler',b:'"Every child on the street learned to plant something in her garden. She made the world feel a little gentler."',h:25,c:[['D','<b>Daniel</b> · The street misses her too.']]},
+ {av:M+'tom-portrait.webp',n:'James',r:'her student · last week',rel:'students',t:'Room 12, 1984',b:'"She kept a spare lunch in her desk drawer and never once said whose it was. Thirty years later I understood."',h:31,c:[['S','<b>Sarah</b> · That was her, exactly.']]},
+ {av:M+'rebecca-portrait.webp',n:'Rebecca',r:'her granddaughter · 2 weeks ago',rel:'family',ph:M+'rebecca-with.webp',t:'She met June',b:'"She held my daughter for an hour and wouldn\u2019t put her down. Four generations in one chair."',h:42,c:[['D','<b>Daniel</b> · Best day of that whole year.'],['M','<b>Marie</b> · She talked about it until the end.']]},
+ {av:M+'ruth-portrait.webp',n:'Patricia',r:'her friend · 3 weeks ago',rel:'friends',t:'The garden club, every spring',b:'"She never won a ribbon and never wanted one. She just brought cuttings for everybody."',h:17,c:[]},
+ {av:M+'miguel-portrait.webp',n:'Elena',r:'a neighbour · last month',rel:'neighbors',ph:P+'1995.jpg',t:'The porch light',b:'"She left it on whenever one of us was out late. I still look for it driving home."',h:23,c:[['R','<b>Ruth</b> · Forty years of that light.']]},
+ {av:M+'daniel-portrait.webp',n:'Tom',r:'her student · last month',rel:'students',t:'The letter she wrote for me',b:'"I got into college on a recommendation she wrote by hand. I found the draft in her desk — she\u2019d written it four times."',h:38,c:[['S','<b>Sarah</b> · There\u2019s a whole folder of those drafts.']]}
+];
+var stream=document.getElementById('stream');
+MEMS.forEach(function(m,idx){
+  var card=document.createElement('div');card.className='memcard';card.dataset.rel=m.rel;
+  var inner='';
+  if(m.ph)inner+='<button class="snap" type="button" data-src="'+m.ph+'" data-cap="together · '+m.n+'"><img loading="lazy" src="'+m.ph+'" alt="together"/><span>together</span></button>';
+  inner+='<div class="who"><img src="'+m.av+'" alt=""/><div><b>'+m.n+'</b><span>'+m.r+'</span></div></div><span class="mt">'+m.t+'</span>';
+  if(m.voice){inner+='<div style="display:flex;align-items:center;gap:10px;background:#F6F0E2;border-radius:11px;padding:13px 14px"><button type="button" aria-label="Play voice memory" style="width:40px;height:40px;border-radius:50%;background:var(--terra);color:#fff;border:none;font-size:15px">▶</button><div style="flex:1;height:17px;background:repeating-linear-gradient(90deg,var(--gold) 0 2px,transparent 2px 5px);border-radius:3px;opacity:.6"></div><span class="mono" style="font-size:11px;color:var(--terra-deep)">'+m.voice+'</span></div><p class="body" style="margin-top:9px;font-size:13px;color:var(--ink-soft)">a voice, kept</p>'}
+  else{inner+='<p class="body">'+m.b+'</p>'}
+  inner+='<div class="acts"><button type="button" class="heart">♥ <b>'+m.h+'</b></button><button type="button" class="ctog">💬 '+m.c.length+(m.c.length===1?' comment':' comments')+'</button></div>';
+  inner+='<div class="cmts">'+m.c.map(function(c){return '<div class="cmt"><div class="cav">'+c[0]+'</div><p>'+c[1]+'</p></div>'}).join('')+'<div class="cmtrow"><input type="text" placeholder="Leave a kind word…" aria-label="Leave a kind word"/><button type="button">Send</button></div></div>';
+  card.innerHTML=inner;
+  var hb=card.querySelector('.heart'),hearted=false;
+  hb.addEventListener('click',function(){hearted=!hearted;m.h+=hearted?1:-1;hb.classList.toggle('hearted',hearted);hb.innerHTML='♥ <b>'+m.h+'</b>'});
+  card.querySelector('.ctog').addEventListener('click',function(){card.querySelector('.cmts').classList.toggle('open')});
+  var ci=card.querySelector('.cmtrow input'),cb=card.querySelector('.cmtrow button');
+  function addC(){var v=ci.value.trim();if(!v)return;var d=document.createElement('div');d.className='cmt';d.innerHTML='<div class="cav">Y</div><p><b>You</b> · '+v.replace(/</g,'&lt;')+' <i style="font-style:normal;font-family:\'Work Sans\',sans-serif;font-size:9px;color:var(--terra-deep)">· waiting for the family</i></p>';card.querySelector('.cmtrow').before(d);ci.value=''}
+  cb.addEventListener('click',addC);
+  ci.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addC()}});
+  stream.appendChild(card);
+});
+/* relation chips · everyone is kept, grouped by who knew her */
+var CHIPS=[['everyone','Everyone'],['family','Family'],['friends','Friends'],['neighbors','Neighbors'],['students','Her students']];
+var chipbar=document.getElementById('chips');
+function chipCount(k){return k==='everyone'?MEMS.length:MEMS.filter(function(m){return m.rel===k}).length}
+CHIPS.forEach(function(cdef,i){
+  var b=document.createElement('button');b.type='button';b.className='chip'+(i===0?' on':'');
+  b.innerHTML=cdef[1]+'<b>'+chipCount(cdef[0])+'</b>';
+  b.addEventListener('click',function(){
+    chipbar.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    var k=cdef[0];
+    stream.querySelectorAll('.memcard').forEach(function(card,j){
+      if(k==='everyone'){card.style.display=card.dataset.extra?'none':''}
+      else{card.style.display=card.dataset.rel===k?'':'none'}
+    });
+    memFilter=k;memPage=0;paintMems();
+  });
+  chipbar.appendChild(b);
+});
+
+/* paging · two rows at a time, walk them with the arrows */
+var memFilter='everyone',memPage=0,PER=6;
+var memPrev=document.getElementById('memPrev'),memNext=document.getElementById('memNext'),memCount=document.getElementById('memCount');
+function memMatches(){
+  return Array.prototype.filter.call(stream.querySelectorAll('.memcard'),function(c){
+    return memFilter==='everyone'||c.dataset.rel===memFilter});
+}
+function paintMems(){
+  var list=memMatches(),pages=Math.max(1,Math.ceil(list.length/PER));
+  if(memPage>pages-1)memPage=pages-1;
+  stream.querySelectorAll('.memcard').forEach(function(c){c.style.display='none'});
+  list.slice(memPage*PER,memPage*PER+PER).forEach(function(c){c.style.display=''});
+  var from=list.length?memPage*PER+1:0,to=Math.min(list.length,(memPage+1)*PER);
+  memCount.textContent=list.length?from+'–'+to+' of '+list.length:'none yet';
+  memPrev.disabled=memPage===0;memNext.disabled=memPage>=pages-1;
+  document.getElementById('memPager').style.visibility=list.length>PER?'':'hidden';
+}
+memPrev.addEventListener('click',function(){if(memPage>0){memPage--;paintMems()}});
+memNext.addEventListener('click',function(){memPage++;paintMems()});
+paintMems();
+
+/* ── photos ── */
+var PHOTOS=[
+ {src:M+'ruth-with.webp',cap:'At the garden gate',when:'around 2015',f:1.4},
+ {src:P+'1988.jpg',cap:'Flour everywhere, always',when:'around 1988',f:1},
+ {src:P+'2005.jpg',cap:'Dahlias, given away over the fence',when:'June 2005',f:1.2},
+ {src:P+'hands.jpg',cap:'Her hands, always working',when:'around 2015',f:1},
+ {src:M+'rebecca-with.webp',cap:'Among her roses',when:'2022',f:1.3},
+ {src:P+'1989.jpg',cap:'The chairs multiplied',when:'November 1989',f:1},
+ {src:P+'1995.jpg',cap:'One good afternoon',when:'1995',f:1.1},
+ {src:P+'2016.jpg',cap:'Caught planting, mid-sentence',when:'spring 2016',f:1.2},
+ {src:P+'2019.jpg',cap:'Still hers',when:'2019',f:1},
+ {src:M+'daniel-with.webp',cap:'Early morning',when:'around 2018',f:1.4},
+ {src:M+'miguel-with.webp',cap:'The harvest, shared',when:'every August',f:1.2}
+];
+function phButton(p,i,h){return '<button class="ph" data-vi="'+i+'" style="flex:'+p.f+';height:'+h+'" aria-label="'+p.cap+'"><img loading="lazy" src="'+p.src+'" alt="'+p.cap+'"/></button>'}
+var pp=document.getElementById('phGrid');
+var gridPh=[0,1,2,3,4,5,6,7,8];
+(function(){
+  var rows=[[0,1,2],[3,4,5],[6,7,8]];
+  pp.innerHTML=rows.map(function(r){return '<div class="prow">'+r.map(function(i){return phButton(PHOTOS[i],i,'100%')}).join('')+'</div>'}).join('');
+})();
+if(!REDUCE){
+  var phov=false,cell=0,nxt=9;
+  ['mouseenter','touchstart','focusin'].forEach(function(ev){pp.addEventListener(ev,function(){phov=true},{passive:true})});
+  pp.addEventListener('mouseleave',function(){phov=false});
+  setInterval(function(){
+    if(phov||document.hidden||!document.getElementById('room-pho').classList.contains('on'))return;
+    var btns=pp.querySelectorAll('.ph');if(!btns.length)return;
+    var guard=0;while(gridPh.indexOf(nxt)!==-1&&guard++<PHOTOS.length){nxt=(nxt+1)%PHOTOS.length}
+    var b=btns[cell],img=b.querySelector('img'),np=PHOTOS[nxt],ni=nxt;
+    img.style.opacity=0;
+    setTimeout(function(){img.src=np.src;img.alt=np.cap;b.dataset.vi=ni;b.setAttribute('aria-label',np.cap);img.style.opacity=1},500);
+    gridPh[cell]=nxt;nxt=(nxt+1)%PHOTOS.length;cell=(cell+1)%btns.length;
+  },2600);
+}
+/* ── see all · one honest grid for photos and for videos ── */
+var seeAll=document.getElementById('seeAll'),saGrid=document.getElementById('saGrid'),saMode='photos',saOrder='new';
+function saItems(){
+  var items=saMode==='photos'
+    ? PHOTOS.map(function(p,i){return {src:p.src,cap:p.cap,when:p.when,vi:i}})
+    : TAPES.map(function(t,i){return {src:t.cover,cap:t.t,when:t.when,dur:t.dur,ti:i}});
+  items=items.slice();
+  if(saOrder==='old')items.reverse();
+  return items;
+}
+function saPaint(){
+  var items=saItems();
+  document.getElementById('saTitle').textContent=saMode==='photos'?'Every photograph':'Every video';
+  document.getElementById('saCount').textContent=items.length+(saMode==='photos'?' photos':' videos');
+  saGrid.innerHTML=items.map(function(it){
+    return '<button class="sacell" type="button" '+(it.vi!==undefined?'data-vi="'+it.vi+'"':'data-ti="'+it.ti+'"')+'>'+
+      '<span class="sq"><img loading="lazy" src="'+it.src+'" alt="'+it.cap+'"/>'+(it.dur?'<span class="pl">▶ '+it.dur+'</span>':'')+'</span>'+
+      '<span class="ts">'+it.when+'</span><span class="cp">'+it.cap+'</span></button>';
+  }).join('');
+}
+function saOpen(mode){saMode=mode;saOrder='new';
+  document.querySelectorAll('.sasort button').forEach(function(b){b.classList.toggle('on',b.dataset.sort==='new')});
+  saPaint();seeAll.classList.add('open');document.body.style.overflow='hidden'}
+function saShut(){seeAll.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('allPhDoor').addEventListener('click',function(){saOpen('photos')});
+document.getElementById('allTpDoor').addEventListener('click',function(){saOpen('tapes')});
+document.getElementById('saX').addEventListener('click',saShut);
+document.querySelectorAll('.sasort button').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.sasort button').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');saOrder=b.dataset.sort;saPaint();
+  });
+});
+saGrid.addEventListener('click',function(e){
+  var c=e.target.closest('.sacell');if(!c)return;
+  if(c.dataset.vi!==undefined){vOpen(+c.dataset.vi)}
+  else{var t=TAPES[+c.dataset.ti];vImg.src=t.cover;vCap.textContent=t.t+' · '+t.dur+' · '+t.when;
+    vRoom.classList.add('open');document.body.style.overflow='hidden'}
+});
+document.getElementById('phCount').textContent=PHOTOS.length+' photographs';
+/* viewing room */
+var vRoom=document.getElementById('vRoom'),vImg=document.getElementById('vImg'),vCap=document.getElementById('vCap'),vi=0;
+function vOpen(i){vi=i;vImg.src=PHOTOS[vi].src;vCap.textContent=PHOTOS[vi].cap;vRoom.classList.add('open');document.body.style.overflow='hidden'}
+function vShut(){vRoom.classList.remove('open');document.body.style.overflow=''}
+function vStep(d){vi=((vi+d)%PHOTOS.length+PHOTOS.length)%PHOTOS.length;vImg.src=PHOTOS[vi].src;vCap.textContent=PHOTOS[vi].cap}
+document.addEventListener('click',function(e){var b=e.target.closest('.ph');if(b){vOpen(+b.dataset.vi);return}
+  var s=e.target.closest('.snap');if(s){vImg.src=s.dataset.src;vCap.textContent=s.dataset.cap;vRoom.classList.add('open');document.body.style.overflow='hidden'}});
+document.getElementById('vX').addEventListener('click',vShut);
+document.getElementById('vPrev').addEventListener('click',function(){vStep(-1)});
+document.getElementById('vNext').addEventListener('click',function(){vStep(1)});
+vRoom.addEventListener('click',function(e){if(e.target===vRoom)vShut()});
+
+/* ── her life ── */
+var CH=[
+ {era:'1948 to 1966',t:'The girl by the sea',cover:P+'1988.jpg',ms:[
+   {y:'1948',l:'Born in Half Moon Bay',img:P+'1988.jpg',cap:'Born in Half Moon Bay'},
+   {y:'1954',l:'Started at Ocean Shore School',img:P+'1989.jpg',cap:'Walking the little ones to school'},
+   {y:'1959',l:'First job, at eleven',img:P+'hands.jpg',cap:'Cinnamon at five in the morning'},
+   {y:'1966',l:'Graduated Half Moon Bay High',img:M+'ruth-with.webp',cap:'The beach before school'}]},
+ {era:'1970 to 2009',t:'The teacher',cover:P+'1989.jpg',ms:[
+   {y:'1970',l:'Room 12, Ocean Shore Elementary',img:P+'1995.jpg',cap:'Room 12, September'},
+   {y:'1971',l:'The morning she left for teachers college',img:P+'1997.jpg',cap:'The morning she left'},
+   {y:'1997',l:'A thousand students and counting',img:P+'2005.jpg',cap:'Twenty-seven years in'},
+   {y:'2009',l:'The last first day of school',img:M+'tom-with.webp',cap:'The last first day'}]},
+ {era:'1972 to 2015',t:'The kitchen',cover:P+'hands.jpg',ms:[
+   {y:'1972',l:'The sourdough starter arrives',img:P+'hands.jpg',cap:'Her hands, always working'},
+   {y:'1988',l:'Cinnamon at five in the morning',img:P+'1988.jpg',cap:'Flour everywhere, always'},
+   {y:'2005',l:'Feeding anyone who came to the door',img:P+'2008.jpg',cap:'The chairs multiplied'},
+   {y:'2015',l:'The recipe cards, handed down',img:M+'daniel-with.webp',cap:'Handed down, one by one'}]},
+ {era:'1993 to 2018',t:'The garden',cover:M+'rebecca-with.webp',ms:[
+   {y:'1993',l:'The first June rows',img:M+'rebecca-with.webp',cap:'The June rows'},
+   {y:'2005',l:'Dahlias, given away over the fence',img:P+'2005.jpg',cap:'Dahlias, given away'},
+   {y:'2016',l:'Every child on the street planted something',img:P+'2016.jpg',cap:'Caught planting, mid-sentence'},
+   {y:'2018',l:'First light, as always',img:P+'2019.jpg',cap:'First light over the garden'}]}
+];
+CH.push(
+ {era:'1967 to 1971',t:'Teachers college',cover:P+'1997.jpg',ms:[
+   {y:'1967',l:'The Greyhound out of town',img:P+'1997.jpg',cap:'The morning she left'},
+   {y:'1969',l:'Student teaching, first classroom',img:P+'1995.jpg',cap:'Room of her own'},
+   {y:'1971',l:'The diploma, framed by her mother',img:P+'hands.jpg',cap:'Hands that earned it'}]},
+ {era:'1976 to 1990',t:'The young family',cover:M+'daniel-with.webp',ms:[
+   {y:'1976',l:'The house on Seaside Avenue',img:M+'daniel-with.webp',cap:'Home, begun'},
+   {y:'1982',l:'Two children, four bikes',img:P+'1989.jpg',cap:'The chairs multiplied'},
+   {y:'1990',l:'The kitchen table years',img:P+'1988.jpg',cap:'Flour everywhere, always'}]},
+ {era:'1998 to 2020',t:'The Tuesday teas',cover:M+'ruth-with.webp',ms:[
+   {y:'1998',l:'Ruth moves in next door',img:M+'ruth-with.webp',cap:'The garden gate opens'},
+   {y:'2010',l:'Tea, every single Tuesday',img:P+'2010.jpg',cap:'Late summer, 2010'},
+   {y:'2020',l:'Tea by phone, that strange spring',img:P+'2016.jpg',cap:'Still Tuesdays'}]},
+ {era:'2019 to 2024',t:'Still hers',cover:P+'2019.jpg',ms:[
+   {y:'2019',l:'First light, as always',img:P+'2019.jpg',cap:'First light over the garden'},
+   {y:'2022',l:'The great-grandchild visits',img:M+'rebecca-with.webp',cap:'Among her roses'},
+   {y:'2024',l:'October, the garden resting',img:P+'2016.jpg',cap:'The garden, kept'}]}
+);
+var chRail=document.getElementById('chRail'),yRail=document.getElementById('yRail'),bImg=document.getElementById('bImg'),bCap=document.getElementById('bCap');
+document.getElementById('chL').addEventListener('click',function(){chRail.scrollBy({left:-chRail.clientWidth,behavior:'smooth'})});
+document.getElementById('chR').addEventListener('click',function(){chRail.scrollBy({left:chRail.clientWidth,behavior:'smooth'})});
+bImg.style.transition='opacity .3s ease';
+CH.forEach(function(c,i){
+  var b=document.createElement('button');b.type='button';b.className='chc'+(i===0?' on':'');
+  b.innerHTML='<span class="cy">'+c.era+'</span><span class="card"><img src="'+c.cover+'" alt=""/><b>'+c.t+'</b></span>';
+  b.addEventListener('click',function(){
+    chRail.querySelectorAll('.chc').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');renderChapter(i);
+  });
+  chRail.appendChild(b);
+});
+function setMoment(ci,mi){var m=CH[ci].ms[mi];
+  bImg.style.opacity=0;
+  setTimeout(function(){bImg.src=m.img;bCap.textContent=m.cap;bImg.style.opacity=1},REDUCE?0:260);
+  yRail.querySelectorAll('.yrow').forEach(function(r,j){r.classList.toggle('on',j===mi)});
+}
+function renderChapter(ci){
+  yRail.innerHTML='';
+  CH[ci].ms.forEach(function(m,j){
+    var b=document.createElement('button');b.type='button';b.className='yrow'+(j===0?' on':'');
+    b.innerHTML='<span class="dot"></span><span class="yy">'+m.y+'</span><span class="yl">'+m.l+'</span>';
+    b.addEventListener('click',function(){setMoment(ci,j)});
+    yRail.appendChild(b);
+  });
+  var m=CH[ci].ms[0];bImg.src=m.img;bCap.textContent=m.cap;
+}
+renderChapter(0);
+
+/* ── the tape shelf ── */
+var TAPES=[
+ {cover:P+'2016.jpg',t:'Her seventieth · the toast',when:'March 2018',dur:'1:42'},
+ {cover:P+'2005.jpg',t:'Sunday among the dahlias',when:'June 2005',dur:'0:58'},
+ {cover:M+'rebecca-with.webp',t:'Reading the letter aloud',when:'2022',dur:'2:26'},
+ {cover:P+'1988.jpg',t:'Cinnamon rolls, five in the morning',when:'around 1988',dur:'1:11'},
+ {cover:M+'ruth-with.webp',t:'Tea at the garden gate · with Ruth',when:'around 2015',dur:'0:47'},
+ {cover:P+'2019.jpg',t:'First light, October',when:'October 2019',dur:'0:36'}
+];
+(function(){
+  var sh=document.getElementById('tapeShelf');
+  sh.innerHTML=TAPES.map(function(t,i){return '<button class="tape" type="button" data-ti="'+i+'" aria-label="Play '+t.t+'"><span class="win"><img loading="lazy" src="'+t.cover+'" alt=""/><span class="play"><span>▶</span></span></span><span class="spine"><b>'+t.t+'</b><span class="dur">'+t.dur+'</span></span></button>'}).join('');
+  document.getElementById('tpCount').textContent=TAPES.length+' videos';
+  sh.addEventListener('click',function(e){var b=e.target.closest('.tape');if(!b)return;var t=TAPES[+b.dataset.ti];
+    vImg.src=t.cover;vCap.textContent=t.t+' · '+t.dur+' — a living picture, kept for the family';
+    vRoom.classList.add('open');document.body.style.overflow='hidden'});
+})();
+
+/* ── visits ── */
+if(!REDUCE){var vN=document.getElementById('visN'),vN2=document.getElementById('visN2'),vv=12438;
+  setInterval(function(){if(Math.random()<.5){vv++;var t=vv.toLocaleString();vN.textContent=t;if(vN2)vN2.textContent=t}},6000);}
+
+/* ── share her page · the flyer hub ── */
+var shWrap=document.getElementById('shWrap');
+function shOpen(){shWrap.classList.add('open');document.body.style.overflow='hidden'}
+function shShut(){shWrap.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('shareBtn').addEventListener('click',shOpen);
+document.getElementById('shX').addEventListener('click',shShut);
+shWrap.addEventListener('click',function(e){if(e.target===shWrap)shShut()});
+var SHURL='https://eleanor.imissyoumemorial.com';
+var SHTXT='Remembering Eleanor Margaret Hayes · leave a memory, a photo, a kind word · '+SHURL;
+document.getElementById('shText').addEventListener('click',function(){
+  if(navigator.share){navigator.share({title:'Eleanor Margaret Hayes',text:SHTXT,url:SHURL}).catch(function(){})}
+  else{location.href='sms:?&body='+encodeURIComponent(SHTXT)}
+});
+document.getElementById('shPrint').addEventListener('click',function(){window.print()});
+document.getElementById('shFb').addEventListener('click',function(){
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(SHURL),'_blank','noopener,width=640,height=560')});
+document.getElementById('shCopy').addEventListener('click',function(){
+  var b=this;try{navigator.clipboard.writeText(SHURL).then(function(){b.textContent='Copied ✓';setTimeout(function(){b.textContent='Copy the link'},1600)})}catch(e){}
+});
+
+/* ── leave a memory ── */
+var lmWrap=document.getElementById('lmWrap'),lm=document.getElementById('lm');
+function lmOpen(){lm.classList.remove('sent');document.getElementById('lmForm').reset();lmWrap.classList.add('open');document.body.style.overflow='hidden';document.getElementById('lmName').focus()}
+function lmShut(){lmWrap.classList.remove('open');document.body.style.overflow=''}
+document.getElementById('fab').addEventListener('click',lmOpen);
+document.getElementById('lmCancel').addEventListener('click',lmShut);
+document.getElementById('lmClose').addEventListener('click',lmShut);
+lmWrap.addEventListener('click',function(e){if(e.target===lmWrap)lmShut()});
+document.getElementById('lmPhoto').addEventListener('click',function(){document.getElementById('lmFile').click()});
+document.getElementById('lmFile').addEventListener('change',function(){
+  if(this.files.length)document.getElementById('lmPhoto').textContent='✓ '+this.files.length+(this.files.length>1?' photos ready':' photo ready');
+});
+document.getElementById('lmForm').addEventListener('submit',function(e){e.preventDefault();lm.classList.add('sent')});
+document.getElementById('lmHelp').addEventListener('click',function(){document.getElementById('lmHelpPanel').classList.toggle('open')});
+document.querySelectorAll('.hchip').forEach(function(c){c.addEventListener('click',function(){
+  var t=document.getElementById('lmStory');t.value=(t.value?t.value.replace(/\s+$/,'')+' ':'')+c.dataset.start;t.focus()})});
+
+/* ── her family tree · ancestry-style: focus person, generations, live editing ── */
+(function(){
+  var PEOPLE={
+   harold:{n:'Harold Hayes',y:'1916–1994',i:'HH',sp:'vivian',note:'Thomas\u2019s father · kept the boatyard on the point.'},
+   vivian:{n:'Vivian Hayes',y:'1920–2001',i:'VH',sp:'harold',note:'Thomas\u2019s mother · taught piano in the front room.'},
+   elias:{n:'Elias Whitfield',y:'1918–1989',i:'EW',sp:'margaret',note:'Her father · a fisherman out of Half Moon Bay.'},
+   margaret:{n:'Margaret Whitfield',y:'1921–1998',i:'MW',sp:'elias',note:'Her mother · the first garden on the coast was hers.'},
+   eleanor:{n:'Eleanor Margaret Hayes',y:'1948–2024',av:P+'hero.jpg',sp:'thomas',pa:['elias','margaret'],her:true,note:'This page is hers. Married Thomas in 1969 · mother of Daniel and Susan · fifty years of Tuesdays with Ruth.'},
+   thomas:{n:'Thomas Hayes',y:'1945–2011',i:'TH',sp:'eleanor',pa:['harold','vivian'],note:'Her husband · married 1969 · forty-two years on Seaside Avenue.'},
+   arthur:{n:'Arthur Whitfield',y:'1952–2019',i:'AW',sp:'joan',pa:['elias','margaret'],note:'Her younger brother · drove her to teachers college in 1967.'},
+   joan:{n:'Joan Whitfield',y:'b. 1955',i:'JW',sp:'arthur',note:'Arthur\u2019s wife · sent a card every single birthday.'},
+   ruth:{n:'Ruth Alvarez',y:'b. 1949',av:M+'ruth-portrait.webp',chosen:'eleanor',note:'Chosen family · fifty years of Tuesday teas at the garden gate.'},
+   daniel:{n:'Daniel Hayes',y:'b. 1972',av:M+'daniel-portrait.webp',sp:'marie',pa:['eleanor','thomas'],note:'Her son · still shows up half an hour early to everything.'},
+   marie:{n:'Marie Hayes',y:'b. 1974',i:'MH',sp:'daniel',note:'Daniel\u2019s wife · learned the sourdough starter by heart.'},
+   susan:{n:'Susan Hayes-Moore',y:'b. 1976',i:'SH',sp:'greg',pa:['eleanor','thomas'],note:'Her daughter · keeper of the recipe cards.'},
+   greg:{n:'Greg Moore',y:'b. 1974',i:'GM',sp:'susan',note:'Susan\u2019s husband · built the raised beds in 2009.'},
+   peter:{n:'Peter Whitfield',y:'b. 1981',i:'PW',pa:['arthur','joan'],note:'Her nephew · the one who found the old negatives.'},
+   sarah:{n:'Sarah Hayes',y:'b. 2001',av:M+'rebecca-portrait.webp',pa:['daniel','marie'],note:'Her granddaughter · the cinnamon-roll mornings were hers.'},
+   michael:{n:'Michael Hayes',y:'b. 2018',i:'MH',pa:['daniel','marie'],note:'Her grandson · the youngest in the dahlia rows.'},
+   rebecca:{n:'Rebecca Moore',y:'b. 1999',i:'RM',pa:['susan','greg'],note:'Her granddaughter · brought little June to the garden in 2022.'},
+   june:{n:'June Moore',y:'b. 2022',i:'J',pa:['rebecca'],note:'Her great-granddaughter · four generations in one chair.'}
+  };
+  var ROOT='eleanor',focus=ROOT,sel=null,hidden={};
+  function kidsOf(id){var out=[];for(var k in PEOPLE){var pa=PEOPLE[k].pa;if(pa&&pa.indexOf(id)!==-1)out.push(k)}return out}
+  function coupleKids(a,b){var out=[];for(var k in PEOPLE){var pa=PEOPLE[k].pa;if(!pa)continue;
+    if(pa.indexOf(a)!==-1&&(!b||pa.indexOf(b)!==-1||pa.length===1))out.push(k)}return out}
+  function sibsOf(id){var pa=PEOPLE[id].pa;if(!pa)return [];
+    return kidsOf(pa[0]).filter(function(k){return k!==id})}
+
+  var tc=document.getElementById('treeCanvas'),tw=document.getElementById('treeWrap'),svg=document.getElementById('treeSvg');
+  var info=document.getElementById('tInfo'),CW=206,CH=62,GAP=44,ROWH=170,CX=1000;
+  var tx=0,ty=0,zs=1,dragging=false,dx0=0,dy0=0,moved=0,rows=[];
+
+  function relTo(id){
+    if(id===ROOT)return 'this page is hers';
+    var f=PEOPLE[id];
+    if(f.chosen)return 'chosen family';
+    var r=PEOPLE[ROOT];
+    if(id===r.sp)return 'her husband';
+    if(r.pa&&r.pa.indexOf(id)!==-1)return f.n.indexOf('Margaret')>-1?'her mother':'her father';
+    if(sibsOf(ROOT).indexOf(id)!==-1)return 'her brother';
+    if((f.pa||[]).indexOf(ROOT)!==-1)return f.y.indexOf('1972')>-1?'her son':'her daughter';
+    var pa=f.pa||[];
+    for(var i=0;i<pa.length;i++){var g=PEOPLE[pa[i]]||{};if((g.pa||[]).indexOf(ROOT)!==-1)return 'her grandchild';
+      var gp=(g.pa||[]);for(var j=0;j<gp.length;j++){var gg=PEOPLE[gp[j]]||{};if((gg.pa||[]).indexOf(ROOT)!==-1)return 'her great-grandchild'}}
+    for(var i2=0;i2<pa.length;i2++){if(sibsOf(ROOT).indexOf(pa[i2])!==-1)return 'her nephew'}
+    if(PEOPLE[ROOT].pa&&(PEOPLE[id].sp&&sibsOf(ROOT).indexOf(PEOPLE[id].sp)!==-1))return 'married into the family';
+    if(PEOPLE[id].sp&&(PEOPLE[PEOPLE[id].sp].pa||[]).indexOf(ROOT)!==-1)return 'married into the family';
+    var sp=PEOPLE[id].sp;if(sp&&PEOPLE[sp]&&(PEOPLE[sp].pa||[]).indexOf(PEOPLE[ROOT].sp)!==-1)return 'married into the family';
+    if(id==='harold'||id==='vivian')return 'her husband\u2019s parent';
+    return 'family';
+  }
+
+  function unit(id){ // a person plus their partner, drawn side by side
+    var sp=PEOPLE[id].sp;
+    return sp&&PEOPLE[sp]?[id,sp]:[id];
+  }
+  function build(){
+    rows=[];
+    var f=PEOPLE[focus];
+    // gen 0 · focus, partner, siblings
+    var g0=unit(focus).slice();
+    sibsOf(focus).forEach(function(sb){if(g0.indexOf(sb)===-1)g0.push(sb)});
+    // gen -1 · parents (+ their partners)
+    var g1=[];(f.pa||[]).forEach(function(pid){if(g1.indexOf(pid)===-1)g1.push(pid)});
+    // gen -2 · grandparents
+    var g2=[];g1.forEach(function(pid){(PEOPLE[pid]&&PEOPLE[pid].pa||[]).forEach(function(gp){if(g2.indexOf(gp)===-1)g2.push(gp)})});
+    // gen +1 · children of the focus couple (+ their partners)
+    var kids=hidden[focus]?[]:coupleKids(focus,f.sp);
+    var gA=[];kids.forEach(function(k){unit(k).forEach(function(u){if(gA.indexOf(u)===-1)gA.push(u)})});
+    // gen +2 · grandchildren
+    var gB=[];kids.forEach(function(k){if(hidden[k])return;coupleKids(k,PEOPLE[k].sp).forEach(function(gk){if(gB.indexOf(gk)===-1)gB.push(gk)})});
+    // chosen family rides beside gen 0
+    for(var pid in PEOPLE){if(PEOPLE[pid].chosen===focus&&g0.indexOf(pid)===-1)g0.push(pid)}
+    [g2,g1,g0,gA,gB].forEach(function(r,i){if(r.length)rows.push({y:60+i*ROWH,ids:r,gen:i})});
+    // vertical: keep focus row roughly mid-canvas
+    var fr=rows.filter(function(r){return r.ids.indexOf(focus)!==-1})[0];
+    var shift=520-(fr?fr.y:520);
+    rows.forEach(function(r){r.y+=shift});
+  }
+  function positions(){
+    var pos={};
+    rows.forEach(function(r){
+      var w=r.ids.length*CW+(r.ids.length-1)*GAP,x0=CX-w/2+CW/2;
+      r.ids.forEach(function(id,i){pos[id]={x:x0+i*(CW+GAP),y:r.y}});
+    });
+    return pos;
+  }
+  function draw(){
+    build();
+    var pos=positions(),lines='',html='';
+    function mid(a,b){return pos[b]?{x:(pos[a].x+pos[b].x)/2,y:pos[a].y+CH/2}:{x:pos[a].x,y:pos[a].y+CH}}
+    // partner bars
+    for(var id in pos){var sp=PEOPLE[id].sp;
+      if(sp&&pos[sp]&&pos[id].x<pos[sp].x&&pos[id].y===pos[sp].y)
+        lines+='<line x1="'+(pos[id].x+CW/2)+'" y1="'+(pos[id].y+CH/2)+'" x2="'+(pos[sp].x-CW/2)+'" y2="'+(pos[sp].y+CH/2)+'" stroke="rgba(44,37,32,.35)" stroke-width="1.5"/>'}
+    // descent
+    for(var id2 in pos){var pa=PEOPLE[id2].pa||[];
+      var shown=pa.filter(function(x){return pos[x]});if(!shown.length)continue;
+      var src=shown.length>1?mid(shown[0],shown[1]):{x:pos[shown[0]].x,y:pos[shown[0]].y+CH};
+      if(pos[id2].y<=src.y)continue;
+      var my=(src.y+pos[id2].y)/2;
+      lines+='<path d="M'+src.x+' '+src.y+' V'+my+' H'+pos[id2].x+' V'+pos[id2].y+'" fill="none" stroke="rgba(44,37,32,.3)" stroke-width="1.5"/>';
+    }
+    // chosen family · dotted
+    for(var id3 in pos){var ch=PEOPLE[id3].chosen;
+      if(ch&&pos[ch])lines+='<path d="M'+pos[ch].x+' '+(pos[ch].y-6)+' Q '+((pos[ch].x+pos[id3].x)/2)+' '+(pos[ch].y-110)+' '+pos[id3].x+' '+(pos[id3].y-6)+'" fill="none" stroke="rgba(201,165,114,.95)" stroke-width="1.5" stroke-dasharray="3 6"/>'}
+    svg.innerHTML=lines;
+    // cards
+    for(var id4 in pos){var pr=PEOPLE[id4],pt=pos[id4];
+      html+='<button class="tcard'+(id4===focus?' focus':'')+(id4===sel?' sel':'')+'" data-id="'+id4+'" type="button" style="left:'+pt.x+'px;top:'+pt.y+'px">'+
+        '<span class="tp">'+(pr.av?'<img src="'+pr.av+'" alt=""/>':pr.i)+'</span>'+
+        '<span class="tt2"><b>'+pr.n+'</b><i>'+pr.y+'</i>'+(id4===ROOT?'<em>this page is hers</em>':'')+'</span></button>';
+    }
+    // expanders
+    var f2=PEOPLE[focus];
+    var kidsAll=coupleKids(focus,f2.sp);
+    if(kidsAll.length){
+      var below=pos[kidsAll[0]];
+      html+='<button class="tmore" type="button" data-toggle="'+focus+'" style="left:'+pos[focus].x+'px;top:'+(pos[focus].y+CH+14)+'px">'+(hidden[focus]?'▾ show '+kidsAll.length+' children':'▴ hide children')+'</button>';
+    }
+    if(!pos[(f2.pa||[])[0]]&&(f2.pa||[]).length){
+      html+='<button class="tmore" type="button" data-focus="'+f2.pa[0]+'" style="left:'+pos[focus].x+'px;top:'+(pos[focus].y-34)+'px">▴ her parents</button>';
+    }
+    tc.querySelectorAll('.tcard,.tmore').forEach(function(n){n.remove()});
+    tc.insertAdjacentHTML('beforeend',html);
+    document.getElementById('tCrumb').innerHTML=focus===ROOT
+      ? 'Viewing <b>Eleanor&rsquo;s</b> family'
+      : 'Viewing <b>'+PEOPLE[focus].n+'</b> · '+relTo(focus);
+  }
+  function clampApply(){
+    var minX=tw.clientWidth-2000*zs-80,minY=tw.clientHeight-1200*zs-80;
+    tx=Math.min(80,Math.max(minX,tx));ty=Math.min(80,Math.max(minY,ty));
+    tc.style.transform='translate('+tx+'px,'+ty+'px) scale('+zs+')';
+  }
+  function centerOn(id){
+    if(!tw.clientWidth)return;
+    var pos=positions(),pt=pos[id]||pos[focus];if(!pt)return;
+    tx=tw.clientWidth/2-pt.x*zs;ty=tw.clientHeight/2-(pt.y+CH/2)*zs;clampApply();
+  }
+  function openPanel(id){
+    sel=id;var pr=PEOPLE[id];
+    document.getElementById('tiPic').innerHTML=pr.av?'<img src="'+pr.av+'" alt=""/>':pr.i;
+    document.getElementById('tiName').textContent=pr.n;
+    document.getElementById('tiYears').textContent=pr.y;
+    document.getElementById('tiRel').textContent=relTo(id);
+    document.getElementById('tiNote').textContent=pr.note||'';
+    document.getElementById('tAddForm').classList.remove('open');
+    info.classList.add('open');
+    draw();
+  }
+  function setFocus(id){focus=id;sel=id;draw();
+    if(window.matchMedia('(max-width:900px)').matches){zs=.9;centerOn(id)}else fit()}
+
+  tc.addEventListener('click',function(e){
+    var mo=e.target.closest('.tmore');
+    if(mo){if(mo.dataset.toggle){hidden[mo.dataset.toggle]=!hidden[mo.dataset.toggle];draw()}
+      else if(mo.dataset.focus){setFocus(mo.dataset.focus)}return}
+    var c=e.target.closest('.tcard');if(!c||moved>6)return;
+    openPanel(c.dataset.id);
+  });
+  document.getElementById('tInfoX').addEventListener('click',function(){info.classList.remove('open');sel=null;draw()});
+  document.getElementById('tiFocus').addEventListener('click',function(){if(sel)setFocus(sel)});
+  document.getElementById('tiAdd').addEventListener('click',function(){document.getElementById('tAddForm').classList.toggle('open')});
+  document.getElementById('tAddForm').addEventListener('submit',function(e){
+    e.preventDefault();if(!sel)return;
+    var nm=document.getElementById('taName').value.trim();if(!nm)return;
+    var how=document.getElementById('taRel').value,yr=document.getElementById('taYears').value.trim()||'—';
+    var id='p'+Date.now();
+    var initials=nm.split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
+    var rec={n:nm,y:yr,i:initials,note:'Added by the family.'};
+    if(how==='child'){rec.pa=PEOPLE[sel].sp?[sel,PEOPLE[sel].sp]:[sel]}
+    else if(how==='spouse'){rec.sp=sel;PEOPLE[sel].sp=id}
+    else{rec.sp=null;PEOPLE[sel].pa=(PEOPLE[sel].pa||[]).concat([id])}
+    PEOPLE[id]=rec;
+    this.reset();this.classList.remove('open');
+    fillJump();draw();openPanel(id);
+  });
+  function fillJump(){
+    var sel2=document.getElementById('tJump'),cur=sel2.value;
+    var ids=Object.keys(PEOPLE).sort(function(a,b){return PEOPLE[a].n.localeCompare(PEOPLE[b].n)});
+    sel2.innerHTML=ids.map(function(id){return '<option value="'+id+'">'+PEOPLE[id].n+'</option>'}).join('');
+    sel2.value=cur&&PEOPLE[cur]?cur:focus;
+  }
+  document.getElementById('tJump').addEventListener('change',function(){openPanel(this.value);centerOn(this.value)});
+  document.getElementById('tHome').addEventListener('click',function(){hidden={};setFocus(ROOT);info.classList.remove('open');sel=null;draw()});
+  function setZoom(nz){
+    nz=Math.min(1.8,Math.max(.4,nz));
+    var cxv=tw.clientWidth/2,cyv=tw.clientHeight/2,wx=(cxv-tx)/zs,wy=(cyv-ty)/zs;
+    zs=nz;tx=cxv-wx*zs;ty=cyv-wy*zs;clampApply();
+  }
+  document.getElementById('tzIn').addEventListener('click',function(){setZoom(zs*1.25)});
+  document.getElementById('tzOut').addEventListener('click',function(){setZoom(zs/1.25)});
+  document.getElementById('tzFit').addEventListener('click',function(){fit()});
+  tw.addEventListener('pointerdown',function(e){dragging=true;moved=0;dx0=e.clientX-tx;dy0=e.clientY-ty;tw.classList.add('drag')});
+  addEventListener('pointermove',function(e){if(!dragging)return;var nx=e.clientX-dx0,ny=e.clientY-dy0;moved+=Math.abs(nx-tx)+Math.abs(ny-ty);tx=nx;ty=ny;clampApply();e.preventDefault()},{passive:false});
+  ['pointerup','pointercancel'].forEach(function(ev){addEventListener(ev,function(){if(!dragging)return;dragging=false;tw.classList.remove('drag');setTimeout(function(){moved=0},60)})});
+  var ptrs={},ptrN=0,pinchD=0,pinchZ=1;
+  function ptList(){var a=[];for(var k in ptrs)a.push(ptrs[k]);return a}
+  tw.addEventListener('pointerdown',function(e){
+    if(!ptrs[e.pointerId])ptrN++;
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    if(ptrN===2){dragging=false;tw.classList.remove('drag');var a=ptList();pinchD=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);pinchZ=zs}
+  });
+  addEventListener('pointermove',function(e){
+    if(!ptrs[e.pointerId])return;
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    if(ptrN>=2&&pinchD>0){var a=ptList();var d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);setZoom(pinchZ*(d/pinchD));e.preventDefault()}
+  },{passive:false});
+  ['pointerup','pointercancel'].forEach(function(ev){addEventListener(ev,function(e){
+    if(ptrs[e.pointerId]){delete ptrs[e.pointerId];ptrN=Math.max(0,ptrN-1)}
+    if(ptrN<2)pinchD=0;
+  })});
+  tw.addEventListener('keydown',function(e){
+    var st=46;
+    if(e.key==='ArrowLeft'){tx+=st}else if(e.key==='ArrowRight'){tx-=st}
+    else if(e.key==='ArrowUp'){ty+=st}else if(e.key==='ArrowDown'){ty-=st}
+    else if(e.key==='+'||e.key==='='){setZoom(zs*1.25);e.preventDefault();return}
+    else if(e.key==='-'){setZoom(zs/1.25);e.preventDefault();return}else return;
+    e.preventDefault();clampApply();
+  });
+  function fit(){
+    if(!tw.clientWidth)return;
+    var pos=positions(),xs=[],ys=[];
+    for(var k in pos){xs.push(pos[k].x);ys.push(pos[k].y)}
+    if(!xs.length)return;
+    var w=Math.max.apply(null,xs)-Math.min.apply(null,xs)+CW+90,h=Math.max.apply(null,ys)-Math.min.apply(null,ys)+CH+90;
+    zs=Math.min(1.15,Math.min(tw.clientWidth/w,tw.clientHeight/h));
+    if(window.matchMedia('(max-width:900px)').matches)zs=Math.max(zs,.62);
+    var mx=(Math.min.apply(null,xs)+Math.max.apply(null,xs))/2,my=(Math.min.apply(null,ys)+Math.max.apply(null,ys)+CH)/2;
+    tx=tw.clientWidth/2-mx*zs;ty=tw.clientHeight/2-my*zs;clampApply();
+  }
+  fillJump();draw();
+  function reset(){
+    if(window.matchMedia('(max-width:900px)').matches){zs=.9;centerOn(focus)}
+    else fit();
+  }
+  reset();addEventListener('resize',reset);
+  var treeTab=document.querySelector('.tab[data-room="tree"]');
+  if(treeTab)treeTab.addEventListener('click',function(){requestAnimationFrame(reset)});
+})();
+/* ══ mobile · touch behaviour ══ */
+(function(){
+  var MOB=function(){return window.matchMedia('(max-width:900px)').matches};
+
+  /* the bottom bar mirrors the two real actions */
+  var mL=document.getElementById('mLeave'),mS=document.getElementById('mShare');
+  if(mL)mL.addEventListener('click',function(){document.getElementById('fab').click()});
+  if(mS)mS.addEventListener('click',function(){document.getElementById('shareBtn').click()});
+  var eL=document.getElementById('eLeave'),eS=document.getElementById('eShare');
+  if(eL)eL.addEventListener('click',function(){document.getElementById('fab').click()});
+  if(eS)eS.addEventListener('click',function(){document.getElementById('shareBtn').click()});
+
+  /* tab strip · keep the active tab in view, and start each room at its top */
+  var tb=document.getElementById('topbar'),rb=document.querySelector('.ribbon'),mainEl=document.querySelector('main');
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click',function(){
+      try{t.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'})}catch(err){}
+      if(!MOB()||!rb)return;
+      var target=rb.getBoundingClientRect().top+window.scrollY-tb.offsetHeight-2;
+      if(Math.abs(window.scrollY-target)>6)window.scrollTo({top:target,behavior:REDUCE?'auto':'smooth'});
+    });
+  });
+
+  /* her moments · swipe between them, dots show where you are */
+  var dots=document.getElementById('mDots');
+  if(dots){
+    var html='';
+    for(var i=0;i<TODAY.length;i++)html+='<button type="button" data-i="'+i+'" aria-label="Moment '+(i+1)+' of '+TODAY.length+'"></button>';
+    dots.innerHTML=html;
+    window.__momentDots=function(active){
+      dots.querySelectorAll('button').forEach(function(b,j){
+        b.classList.toggle('on',j===active);b.setAttribute('aria-selected',j===active?'true':'false')});
+    };
+    window.__momentDots(0);
+    dots.addEventListener('click',function(e){
+      var b=e.target.closest('button');if(!b)return;
+      var want=+b.dataset.i;
+      while(md(ti)!==want){ti=md(ti+1)}
+      renderMoments(true);
+    });
+  }
+  var sw=document.getElementById('stageWings');
+  if(sw){
+    var x0=null,y0=0,t0=0;
+    sw.addEventListener('touchstart',function(e){
+      if(e.touches.length!==1)return;
+      x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();
+    },{passive:true});
+    sw.addEventListener('touchend',function(e){
+      if(x0===null)return;
+      var t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;
+      if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)*1.4&&Date.now()-t0<800){
+        e.preventDefault();
+        document.getElementById(dx<0?'wingR':'wingL').click();
+      }
+    },{passive:false});
+  }
+})();
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){if(vRoom.classList.contains('open'))vShut();else if(seeAll.classList.contains('open'))saShut();else if(shWrap.classList.contains('open'))shShut();else if(lmWrap.classList.contains('open'))lmShut();
+    else if(window.parent!==window)window.parent.postMessage({type:'close-fullscreen'},'*')}
+  if(vRoom.classList.contains('open')){if(e.key==='ArrowLeft')vStep(-1);if(e.key==='ArrowRight')vStep(1)}
+});
+</script>
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && window.parent !== window) {
+    window.parent.postMessage({ type: 'close-fullscreen' }, '*');
+  }
+});
+</script>
+<!-- broken-img-handler -->
+<script>
+(function(){
+  if(window.__brokenImgHandler)return;
+  window.__brokenImgHandler=true;
+  var MAX=5,DELAYS=[2000,4000,8000,16000,32000];
+  var TOKEN=/^__(?:IMG|EMBED)_[a-zA-Z0-9_-]+__/;
+  var SENTINEL=new RegExp('^/api/published/[^/]+/(?:assets|embeds)/[^/?#]*-missing(?:[?#]|$)');
+  var NOISE=/^[\s\u2018\u2019\u201c\u201d]+|[\s\u2018\u2019\u201c\u201d]+$/g;
+  function canSrcEverResolve(src){
+    var bare=src.replace(NOISE,'');
+    return !TOKEN.test(bare)&&!SENTINEL.test(bare);
+  }
+  document.addEventListener('error',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    var liveSrc=img.getAttribute('src');
+    var src=img.dataset.haOriginalSrc||liveSrc;
+    if(!src)return;
+    if(img.dataset.haOriginalSrc&&liveSrc&&liveSrc!==img.dataset.haOriginalSrc&&liveSrc.indexOf('_r=')<0){src=liveSrc;img.dataset.haOriginalSrc=src;img.dataset.haRetryCount='0'}
+    else if(!img.dataset.haOriginalSrc){img.dataset.haOriginalSrc=src}
+    var attempt=canSrcEverResolve(src)?parseInt(img.dataset.haRetryCount||'0',10):MAX;
+    if(img.dataset.haPhId){var old=document.getElementById(img.dataset.haPhId);if(old)old.remove()}
+    var ph=document.createElement('div');
+    ph.className='ha-img-placeholder'+(attempt>=MAX?' ha-failed':'');
+    ph.id='ha-ph-'+Math.random().toString(36).slice(2,9);
+    var w=img.getAttribute('width');var h=img.getAttribute('height');
+    if(w)ph.style.width=w+(isNaN(Number(w))?'':'px');
+    else if(img.style.width)ph.style.width=img.style.width;
+    else if(img.width>1)ph.style.width=img.width+'px';
+    if(h)ph.style.height=h+(isNaN(Number(h))?'':'px');
+    else if(img.style.height)ph.style.height=img.style.height;
+    else if(img.height>1)ph.style.height=img.height+'px';
+    ph.textContent=attempt>=MAX?'Image unavailable':'Loading image\u2026';
+    img.dataset.haPhId=ph.id;
+    if(img.dataset.haOrigDisplay==null)img.dataset.haOrigDisplay=img.style.display||'';
+    img.style.display='none';
+    img.insertAdjacentElement('afterend',ph);
+    if(attempt<MAX){
+      img.dataset.haRetryCount=String(attempt+1);
+      setTimeout(function(){
+        if(!img.isConnected)return;
+        if(img.dataset.haOriginalSrc!==src)return;
+        if(img.complete&&img.naturalWidth>0)return;
+        var curSrc=img.getAttribute('src');
+        if(curSrc&&curSrc.indexOf(src)!==0)return;
+        var fresh=src+(src.indexOf('?')>=0?'&':'?')+'_r='+(attempt+1)+'_'+Date.now();
+        img.src=fresh;
+      },DELAYS[attempt]);
+    }
+  },true);
+  document.addEventListener('load',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    if(img.dataset.haPhId){
+      var ph=document.getElementById(img.dataset.haPhId);
+      if(ph)ph.remove();
+      delete img.dataset.haPhId;
+      img.style.display=img.dataset.haOrigDisplay||'';
+      delete img.dataset.haOrigDisplay;
+      delete img.dataset.haOriginalSrc;
+      delete img.dataset.haRetryCount;
+    }
+  },true);
+})();
+</script>
+</body>
+</html>
