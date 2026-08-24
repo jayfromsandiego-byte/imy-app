@@ -162,17 +162,13 @@ function composeOverride(draft, opts){
 
   var acct=opts.account||{};
   var authorFirst=firstNameOf(acct.name)||'Family';
-  function relLabelForAuthor(rel,P){
-    var m={'My mother':P.pa+' child','My father':P.pa+' child','My grandmother':P.pa+' grandchild','My grandfather':P.pa+' grandchild','My wife':P.pa+' wife','My husband':P.pa+' husband','My partner':P.pa+' partner','My sister':P.pa+' sister','My brother':P.pa+' brother','My daughter':P.pa+' parent','My son':P.pa+' parent','My friend':P.pa+' friend'};
-    return m[rel]||(P.pa+' family');
-  }
-  var authorRole=relLabelForAuthor(d.rel,P);
+  var authorRole='family';
 
   var MEMS=[], TODAY=[];
   var fm=d.mem||{};
   if((fm.story||'').trim()||(fm.title||'').trim()){
     MEMS.push({av:svgAvatar((authorFirst[0]||'F').toUpperCase()),n:authorFirst,r:authorRole+' · today',
-      rel:relChipKey(d.rel),ph:fm.photo||'',t:fm.title||'A memory of '+first,
+      rel:'family',ph:fm.photo||'',t:fm.title||'A memory of '+first,
       b:'“'+(fm.story||'').trim().replace(/^["“]|["”]$/g,'')+'”',h:0,c:[]});
     if(fm.photo)TODAY.push({img:fm.photo,k:'remembered by '+authorFirst+' · '+authorRole,t:fm.title||'A memory of '+first,s:(fm.story||'').trim(),who:authorFirst+' · '+authorRole});
   }
@@ -188,12 +184,12 @@ function composeOverride(draft, opts){
 
   var CH=(d.chapters||[]).filter(function(c){return c&&(c.ms||[]).length>0}).map(function(c){
     var ms=(c.ms||[]).map(function(m){return {y:String(m.y||''),l:m.l||'',img:m.img||coverFallback(),cap:m.l||''}});
-    return {era:(c.from&&c.to)?(c.from+' to '+c.to):(c.from||c.to||''),t:c.t||'A chapter',cover:(ms[0]&&ms[0].img)||coverFallback(),ms:ms};
+    return {era:(c.from&&c.to)?(c.from+'–'+c.to):(c.from||c.to||''),t:c.t||'A chapter',cover:(ms[0]&&ms[0].img)||coverFallback(),ms:ms};
   });
 
   var TAPES=(d.tapes||[]).filter(function(t){return t&&(t.t||'').trim()}).map(function(t){
     var when=t.wy?((t.wm?MONTHS[t.wm-1]+' ':'')+t.wy):'';
-    return {cover:t.cover||svgAvatar('▸',true),t:t.t,when:when,dur:t.dur||''};
+    return {cover:t.cover||svgAvatar('▸',true),t:t.t,when:when,dur:t.dur||'',url:t.url||''};
   });
 
   /* the tree */
@@ -201,11 +197,11 @@ function composeOverride(draft, opts){
   PEOPLE[ROOT]={n:name,y:yearsStr(d.by,d.dy),av:d.portrait||undefined,i:initialsOf(name),her:true,
     note:'This page is '+P.poss+'.'};
   var fam=(d.family||[]).filter(function(f){return f&&(f.name||'').trim()});
-  var pid=1, parents=[], children=[];
+  var pid=1, parents=[], children=[], sibs=[], parentIds={};
   function add(p){ var id='p'+(pid++); PEOPLE[id]=p; return id; }
   fam.forEach(function(f){ f._id=null; });
-  /* parents first, then partner, then the rest — order builds the graph correctly */
-  var order={mother:0,father:0,partner:1,sibling:2,child:2,grandchild:3,chosen:2,parent:0};
+  /* parents first, then partner, then siblings/children, then the generations that hang from them */
+  var order={mother:0,father:0,partner:1,sibling:2,child:2,grandchild:3,niece:3,grandmother:3,grandfather:3,aunt:3,cousin:3,chosen:2,parent:0};
   fam.slice().sort(function(a,b){return (order[a.rel]||2)-(order[b.rel]||2)}).forEach(function(f){
     var base={n:f.name.trim(),y:yearsStr(f.by,f.dy),i:initialsOf(f.name),av:f.photo||undefined};
     var id;
@@ -228,30 +224,36 @@ function composeOverride(draft, opts){
       else if(children.length===1){ base.pa=[children[0].id]; }
       else { base.chosen=ROOT; base.relLabel=P.pa+' grandchild'; }
       base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' grandchild.'; id=add(base);
+    }else if(f.rel==='niece'){
+      var viaS=f.via&&sibs.filter(function(c){return c.name===f.via})[0];
+      if(viaS){ base.pa=[viaS.id]; }
+      else if(sibs.length===1){ base.pa=[sibs[0].id]; }
+      else { base.chosen=ROOT; base.relLabel=P.pa+' niece · nephew'; }
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' niece or nephew.'; id=add(base);
+    }else if(f.rel==='grandmother'||f.rel==='grandfather'){
+      var viaP=f.via&&parentIds[f.via];
+      if(!viaP&&parents.length===1)viaP=parents[0];
+      if(viaP){ PEOPLE[viaP].pa=PEOPLE[viaP].pa||[]; id=add(base); PEOPLE[viaP].pa.push(id); }
+      else { base.chosen=ROOT; base.relLabel=P.pa+' '+f.rel; id=add(base); }
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' '+f.rel+'.';
+    }else if(f.rel==='aunt'){
+      var viaP2=f.via&&parentIds[f.via];
+      if(!viaP2&&parents.length===1)viaP2=parents[0];
+      if(viaP2&&(PEOPLE[viaP2].pa||[]).length){ base.pa=PEOPLE[viaP2].pa.slice(); id=add(base); }
+      else { base.chosen=ROOT; base.relLabel=P.pa+' aunt · uncle'; id=add(base); }
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' aunt or uncle.';
+    }else if(f.rel==='cousin'){
+      base.chosen=ROOT; base.relLabel=P.pa+' cousin';
+      base.note=P.pa.charAt(0).toUpperCase()+P.pa.slice(1)+' cousin.'; id=add(base);
     }else{ /* chosen family & friends */
       base.chosen=ROOT; base.relLabel='chosen family';
       base.note='Chosen family.'; id=add(base);
     }
+    if(f.rel==='sibling'&&id)sibs.push({id:id,name:base.n});
+    if((f.rel==='mother'||f.rel==='father')&&id)parentIds[base.n]=id;
     f._id=id;
   });
   if(parents.length===2){ PEOPLE[parents[0]].sp=parents[1]; PEOPLE[parents[1]].sp=parents[0]; }
-  /* the person who is building the page joins the tree through their stated relation */
-  if(acct.name&&d.rel){
-    var mine=relToTreeEntry(d.rel);
-    var exists=fam.some(function(f){return f.name.trim().toLowerCase()===acct.name.trim().toLowerCase()});
-    if(!exists){
-      var me={n:acct.name.trim(),y:'',i:initialsOf(acct.name)};
-      if(mine==='child'){ me.pa=[ROOT]; if(PEOPLE[ROOT].sp)me.pa.push(PEOPLE[ROOT].sp); }
-      else if(mine==='partner'&&!PEOPLE[ROOT].sp){ var mid='p'+(pid++); PEOPLE[mid]=me; PEOPLE[ROOT].sp=mid; me.sp=ROOT; me.note='Keeper of this page.'; me._done=true; }
-      else if(mine==='parent'){ PEOPLE[ROOT].pa=PEOPLE[ROOT].pa||[]; var idp='p'+(pid++); PEOPLE[idp]=me; PEOPLE[ROOT].pa.push(idp); me._done=true; }
-      else if(mine==='grandchild'){ me.chosen=ROOT; me.relLabel=P.pa+' grandchild'; }
-      else if(mine==='sibling'){ if((PEOPLE[ROOT].pa||[]).length)me.pa=PEOPLE[ROOT].pa.slice(); else{me.chosen=ROOT;me.relLabel=P.pa+' sibling';} }
-      else { me.chosen=ROOT; me.relLabel='chosen family'; }
-      me.note=me.note||'Keeper of this page.';
-      if(!me._done){ PEOPLE['p'+(pid++)]=me; }
-    }
-  }
-
   var svc=null; var s=d.svc||{};
   if(s.y&&(s.where||'').trim()){
     svc={when:(s.m?MONTHS[s.m-1]+' ':'')+(s.d?s.d+', ':'')+s.y+(s.time?' · '+s.time:''),
@@ -265,6 +267,7 @@ function composeOverride(draft, opts){
       datesLine:datesLine,quote:(d.quote||'').trim(),portrait:d.portrait||'',
       coverbg:d.coverbg||coverFallback(),home:(d.home||'').trim()},
     plan:plan, mode:mode, slugUrl:url.replace('https://',''),
+    privacy:(opts.privacy||'public'), password:(opts.password||''),
     counts:counts, svc:svc,
     gates:{photosTotal:photosAll.length, memsTotal:MEMS.length},
     TODAY:TODAY, MEMS:MEMS, CHIPS:CHIPS, PHOTOS:PHOTOS, CH:CH, TAPES:TAPES,
@@ -330,6 +333,8 @@ function composeDesk(act){
     slug:slug, plan:act.plan, activeId:act.id,
     price:priceFor(act.id), canCreate:canCreate(), plusUnlocked:plusUnlocked(),
     counts:act.counts||{visits:1,flowers:0,candles:0},
+    shareUrl:location.origin+location.pathname+'#/site/'+slug,
+    payments:act.payments||[], privacy:act.privacy||'public',
     memsCount:hasMem?1:0, photosCount:photosAll.length, tapesCount:tapes.length,
     tapes:tapes.map(function(t){return {t:t.t,when:t.wy?((t.wm?MONTHS[t.wm-1]+' ':'')+t.wy):'',cover:t.cover||''}}),
     hasQuote:!!(d.quote||'').trim(), portraitSet:!!d.portrait, bgSet:!!d.coverbg,
@@ -449,7 +454,7 @@ function render(){
     if(slug==='eleanor'){ mount('tribute',SRC.tribute,{}); return; }
     var m=findBySlug(slug);
     if(!m){ toast('That page isn’t here yet.'); go('#/'); return; }
-    var ov=composeOverride(m.data,{plan:m.plan,mode:'view',slug:m.customSlug||m.slug,account:state.account||{},counts:m.counts});
+    var ov=composeOverride(m.data,{plan:m.plan,mode:'view',slug:m.customSlug||m.slug,account:state.account||{},counts:m.counts,privacy:m.privacy||'public',password:m.password||''});
     if(state.account)ov.ownerEdit={m:m.id};
     mount('tribute',spliceOverride(SRC.tribute,ov),{});
     return;
@@ -468,7 +473,8 @@ function render(){
     var fullSlug=String(cm.data.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,40);
     mount('checkout',SRC.checkout,{
       m:cm.id, price:pr, name:cm.data.name||'', first:firstNameOf(cm.data.name)||'',
-      pron:cm.data.pron||'they',
+      pron:cm.data.pron||'they', post:r.q.post==='1', plan:cm.plan,
+      liveUrl:location.origin+location.pathname+'#/site/'+(cm.customSlug||cm.slug),
       currentSlug:cm.customSlug||cm.slug, suggestSlug:fullSlug,
       taken:state.memorials.map(function(x){return x.customSlug||x.slug}).concat(['eleanor'])
     });
@@ -535,8 +541,8 @@ window.addEventListener('message',function(e){
     var mem={id:id,slug:randSlug(),customSlug:'',plan:'free',data:d.draft,createdAt:Date.now(),counts:{visits:1,flowers:0,candles:0}};
     state.memorials.push(mem); state.activeId=id; state.draft=null; save();
     if(d.plan==='plus'){ go('#/checkout?m='+id); return; }
-    toast('Published — <b>imissyoumemorial.com/'+mem.slug+'</b>');
-    go('#/site/'+mem.slug);
+    toast('Published — the page is live.');
+    go('#/checkout?m='+id+'&post=1');
     return;
   }
   if(a==='pay'){
@@ -579,6 +585,36 @@ window.addEventListener('message',function(e){
     toast('<b>'+esc(tm.owner)+'</b> now holds '+(who?esc(who)+'’s page':'the page')+' — in production, the keys arrive by email.');
     render(); return;
   }
+  if(a==='stripePay'){
+    var sm=byId(d.m); if(!sm)return;
+    var LIVE=/(^|\.)imissyoumemorial\.com$/.test(location.hostname);
+    if(!LIVE){
+      /* off the real domain there is no Stripe — the old simulated grant */
+      sm.plan='plus';
+      if(d.slug){ var want2=String(d.slug).toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40);
+        var clash2=want2==='eleanor'||state.memorials.some(function(x){return x.id!==sm.id&&(x.customSlug===want2||x.slug===want2)});
+        if(want2&&!clash2)sm.customSlug=want2; }
+      state.activeId=sm.id; save();
+      toast('Plus granted (simulated here — the live site charges through Stripe).');
+      go('#/site/'+(sm.customSlug||sm.slug)); return;
+    }
+    try{ localStorage.setItem('imy_pay_pending',JSON.stringify({m:sm.id,slug:d.slug||''})); }catch(e){}
+    fetch('/api/stripe/checkout',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({plan:'plus_once',tributeId:'proto-'+sm.id,slug:sm.slug,
+        email:(state.account||{}).email||'',returnTo:'/preview/unified.html?m='+sm.id})})
+      .then(function(r){return r.json()})
+      .then(function(j){ if(j&&j.ok&&j.url)location.assign(j.url); else toast('The checkout door didn’t open — try again in a moment.'); })
+      .catch(function(){ toast('The checkout door didn’t open — try again in a moment.'); });
+    return;
+  }
+  if(a==='keepFree'){ var kf=byId(d.m); if(kf){ state.activeId=kf.id; save(); go('#/site/'+(kf.customSlug||kf.slug)); } return; }
+  if(a==='setPrivacy'){
+    var pm2=byId(d.m); if(!pm2)return;
+    pm2.privacy=d.privacy||'public';
+    if(d.privacy==='password')pm2.password=String(d.password||'');
+    save();
+    return;
+  }
   if(a==='setActive'){ state.activeId=d.m; save(); render(); return; }
   if(a==='createNew'){ startFlow(d.plan==='plus'?'plus':''); return; }
   if(a==='toast'){ toast(esc(d.msg||'')); return; }
@@ -617,6 +653,29 @@ function consumeNextIntent(){
 (function(){
   var qs;
   try{ qs=new URLSearchParams(location.search); }catch(e){ return; }
+  /* home from Stripe · the webhook hears it too, this marks the prototype's copy */
+  if(qs.get('upgraded')==='1'){
+    var pend=null; try{ pend=JSON.parse(localStorage.getItem('imy_pay_pending')||'null'); localStorage.removeItem('imy_pay_pending'); }catch(e){}
+    var mid=qs.get('m')||(pend&&pend.m);
+    var pmem=mid?byId(mid):null;
+    if(pmem){
+      pmem.plan='plus';
+      pmem.payments=(pmem.payments||[]);
+      pmem.payments.push({cs:qs.get('cs')||'',plan:qs.get('plan')||'plus_once',at:Date.now(),amount:197});
+      if(pend&&pend.slug){ var want3=String(pend.slug).toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40);
+        var clash3=want3==='eleanor'||state.memorials.some(function(x){return x.id!==pmem.id&&(x.customSlug===want3||x.slug===want3)});
+        if(want3&&!clash3)pmem.customSlug=want3; }
+      state.activeId=pmem.id; save();
+      cleanAuthParams();
+      setTimeout(function(){ toast('Plus is yours, for life — <b>thank you.</b>'); },500);
+      go('#/site/'+(pmem.customSlug||pmem.slug));
+    } else cleanAuthParams();
+    return;
+  }
+  if(qs.get('canceled')==='1'){
+    cleanAuthParams();
+    setTimeout(function(){ toast('No charge was made. The page stays exactly as it was.'); },500);
+  }
   var authErr=qs.get('error_description')||qs.get('error');
   if(authErr){
     cleanAuthParams();

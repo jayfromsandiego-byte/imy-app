@@ -59,6 +59,19 @@ trib=mustReplace(trib,"'<em>this page is hers</em>'",`'<em>'+(${OV}.treeOwnLabel
   if(i<0)failures.push('MISS: tribute first <script>');
   else trib=trib.slice(0,i)+'<!--IMY_OVERRIDE_SLOT-->\n'+trib.slice(i);
 }
+/* the example speaks in dashes · 1948–1966, not 1948 to 1966 */
+trib=trib.replace(/era:'(\d{4}) to (\d{4})'/g,"era:'$1\u2013$2'");
+/* the flyer photo is a square, never a stone silhouette */
+const flyerCss=`<style>
+#flyer .arch{border-radius:14px!important}
+@media (max-width:900px){
+  .mbar{display:none!important}
+  #fab{position:fixed!important;right:14px;bottom:14px;left:auto!important;width:56px;height:56px;border-radius:50%!important;padding:0!important;font-size:0!important;display:flex!important;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(44,37,32,.35)}
+  #fab::before{content:'＋';font-size:26px;line-height:1}
+  #fab span{display:none!important}
+}
+</style>`;
+trib=mustReplace(trib,'</head>',flyerCss+'\n</head>','tribute flyer/mobile css');
 trib=mustReplace(trib,'</body>',bridge+'\n<script>\n'+read(P('src','tribute-hydrate.js'))+'\n</script>\n</body>','tribute tail');
 
 /* ═══ LANDING ═══ */
@@ -72,6 +85,7 @@ let land=read(P('pages','landing.html'));
     land=land.slice(0,li+5)+'<li><span class="ck">✓</span> AI photo restoration for damaged photographs</li>'+land.slice(li+5);
   }
 }
+land=mustReplace(land,'href="#memory">Remember</a>','href="#mission">Remember</a>','landing Remember anchor');
 land=mustReplace(land,'<li><span class="ck">✓</span> Everything in Free</li>','<li><span class="ck">✓</span> <b>Everything in Free</b></li>','bold everything-in-free (plus)');
 land=mustReplace(land,'<li><span class="ck">✦</span> Everything in Free and Plus</li>','<li><span class="ck">✦</span> <b>Everything in Free and Plus</b></li>','bold everything-in-free (concierge)');
 land=mustReplace(land,'</body>',bridge+'\n</body>','landing tail');
@@ -98,6 +112,26 @@ dash=mustReplace(dash,'<li>AI assisted writing tool · credit removed</li>','<li
 const dashCss=`<style>
 .pgrow .initial{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:18px;color:#A87C5F;background:#EDE3D2;font-family:'Besley',serif}
 .archp .initial{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:15px;color:#A87C5F;background:#EDE3D2;font-family:'Besley',serif}
+/* the stone silhouette rests · photographs are squares here */
+.archp,.archp img,.idb .archp,.pgrow .archp{border-radius:12px!important;clip-path:none!important}
+/* landing type on every title */
+.ni .lbl{font-family:'Besley',Georgia,serif;font-weight:600;font-size:15px;letter-spacing:0;text-transform:none}
+.kick,#greet{font-family:'Work Sans',sans-serif}
+.nm,.tn{font-family:'Besley',Georgia,serif!important;font-weight:600}
+/* the mobile menu · three bars, every room */
+#imyBurger{display:none;background:none;border:0;width:38px;height:38px;padding:8px;cursor:pointer;flex:none}
+#imyBurger span{display:block;height:2px;background:#2C2520;margin:5px 0;border-radius:2px}
+#imyMenu{position:fixed;inset:0;background:rgba(28,22,17,.45);z-index:400;display:none}
+#imyMenu.open{display:block}
+.imy-menu-card{position:absolute;left:0;top:0;bottom:0;width:min(300px,84vw);background:#FDFBF7;box-shadow:12px 0 40px rgba(0,0,0,.25);padding:22px 16px;display:flex;flex-direction:column;gap:4px}
+.imy-mi{text-align:left;background:none;border:0;border-radius:10px;padding:13px 12px;font-family:'Besley',Georgia,serif;font-weight:600;font-size:16px;color:#2C2520;cursor:pointer}
+.imy-mi:hover{background:rgba(168,124,95,.1)}
+.imy-mi-quiet{margin-top:auto;color:#8a5a3c;font-size:13px}
+.imy-rmaccess{color:#8a3c2c!important}
+@media (max-width:900px){
+  #imyBurger{display:block}
+  .mtabs{display:none!important}
+}
 /* brand pass · the landing's type and accents, applied to the desk */
 .wordmk em{font-style:italic;color:#A87C5F}
 h2.vt{font-family:'Besley',Georgia,serif;font-weight:600;letter-spacing:-.005em}
@@ -139,6 +173,30 @@ select.dsel:focus{border-color:var(--terra,#A87C5F)}
 .mhint button{background:none;border:0;padding:0;font:inherit;color:var(--terra-deep,#8a5a3c);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .lfoot{pointer-events:none}
 .lfoot button{pointer-events:auto}
+/* everything reads in ink · nothing defaults to browser blue */
+.letter a{color:var(--terra-deep,#8a5a3c)}
+.letter select,.letter input,.letter textarea{color:var(--ink,#2C2520)!important;-webkit-text-fill-color:var(--ink,#2C2520)}
+.step .body{margin-top:16px}
+.lexit{background:none;border:0;padding:4px 8px 4px 0;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-deep,#8a5a3c);cursor:pointer;flex:none}
+.ltuck{margin-left:auto;background:none;border:1px solid var(--line,rgba(44,37,32,.18));border-radius:8px;width:30px;height:30px;font-size:15px;line-height:1;color:var(--ink-soft,#5c5249);cursor:pointer;flex:none}
+.rmup{background:none;border:0;padding:4px 0;font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a3c2c;cursor:pointer;display:block}
+.tp-head{display:flex;gap:10px;align-items:flex-start}
+.tpth{position:relative}
+.tpth i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+#famForm .chnamein,#tpEd .chnamein{font-size:16px;font-style:normal}
+/* the letter tucks away · the page gets the room */
+body.letter-min .letter .lbody,body.letter-min .letter .lfoot,body.letter-min #jumpRow{display:none!important}
+@media (min-width:901px){
+  body.letter-min .letter{max-width:240px}
+}
+@media (max-width:900px){
+  body.letter-min .letter{max-height:58px;overflow:hidden}
+  body.letter-min .canvas{padding-bottom:0}
+  body.letter-min #pvFrame,body.letter-min #pvVeil{height:calc(100% - 74px)}
+  .lfoot{position:static;flex:none;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px}
+  .lfoot .cont{min-height:46px}
+  .lfoot .backb,.lfoot .skipb{min-height:46px;display:inline-flex;align-items:center}
+}
 @media (max-width:900px){
   #pvFrame,#pvVeil{left:8px;top:8px;width:calc(100% - 16px);height:calc(100% - 52dvh - 14px)}
   .jumprow{padding:10px 16px 0}

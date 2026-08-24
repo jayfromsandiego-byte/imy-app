@@ -37,6 +37,7 @@
     if(qt){ if(pe.quote){qt.style.display='';qt.textContent='“'+pe.quote.replace(/^[“"]|[”"]$/g,'')+'”';} else qt.style.display='none'; }
     var face=$('.cface img'); if(face)face.src=pe.portrait||avatarFromName(pe.name);
     var cbg=$('.cover .cbg'); if(cbg&&pe.coverbg)cbg.src=pe.coverbg;
+    var flyFace=$('#flyer .arch img'); if(flyFace)flyFace.src=pe.portrait||avatarFromName(pe.name);
 
     /* tabs + room labels */
     $$('.tab').forEach(function(t){
@@ -90,11 +91,25 @@
     /* tape shelf empty + counts stay handled by page script */
   }
 
+  /* ghost skeletons · in the editor an empty room still shows its shape */
+  function ghost(host,html){
+    var g=document.createElement('div');
+    g.className='imy-ghost';
+    g.innerHTML=html;
+    host.appendChild(g);
+  }
+  var GHOST_CSS='.imy-ghost{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px auto;max-width:640px}'+
+    '.imy-ghost .gc{border:1.5px dashed rgba(168,124,95,.45);border-radius:14px;background:rgba(243,236,221,.4);display:flex;align-items:center;justify-content:center;color:rgba(138,90,60,.75);font:600 10px/1.4 "Work Sans",sans-serif;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:10px}';
+
   function emptyStates(ov){
     /* memories stage · hide when no photographed moments */
     if(!(ov.TODAY&&ov.TODAY.length)){
       ['stageWings','mDots'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none'});
       var qc=$('.qcall'); if(qc)qc.style.display='none';
+      if(ov.mode==='edit'){
+        var sw=document.getElementById('stageWings');
+        if(sw)ghost(sw.parentNode,'<span class="gc" style="width:150px;height:150px">a moment</span><span class="gc" style="width:220px;height:190px">the first photograph lands here</span><span class="gc" style="width:150px;height:150px">a moment</span>');
+      }
     }
     var P=pack(ov.person.pron), first=ov.person.first;
     /* wall gate note (free · more waiting) */
@@ -104,14 +119,18 @@
     }
     if(ov.MEMS.length===0&&mem){
       ['memPager','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none'});
-      note(mem,'No memories yet · share '+P.pa+' page and the wall will begin to fill');
+      if(ov.mode==='edit'){
+        var stream=document.getElementById('stream');
+        if(stream)ghost(stream.parentNode,'<span class="gc" style="width:250px;height:120px">a memory card</span><span class="gc" style="width:250px;height:120px">a memory card</span>');
+      }else note(mem,'No memories yet · share '+P.pa+' page and the wall will begin to fill');
     }
     /* photos */
     var pho=$('#room-pho');
     if(pho&&ov.PHOTOS.length===0){
       var grid=$('#phGrid'); if(grid)grid.style.display='none';
       var door=$('#allPhDoor'); if(door)door.style.display='none';
-      note(pho,'Photographs of '+first+' will fill this album · add them from the studio');
+      if(ov.mode==='edit')ghost(pho,'<span class="gc" style="width:170px;height:130px">a photograph</span><span class="gc" style="width:220px;height:130px">a photograph</span><span class="gc" style="width:150px;height:130px">a photograph</span>');
+      else note(pho,'Photographs of '+first+' will fill this album');
     }else if(pho&&ov.gates&&ov.gates.photosTotal>ov.PHOTOS.length){
       note(pho,(ov.gates.photosTotal-ov.PHOTOS.length)+' more '+plural(ov.gates.photosTotal-ov.PHOTOS.length,'photograph waits','photographs wait')+', safe · Plus keeps them all');
     }
@@ -121,14 +140,16 @@
       ['chRail'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none'});
       var book=$('.book',life); if(book)book.style.display='none';
       var nav=$('.chnav',life); if(nav)nav.style.display='none';
-      note(life,first+'’s chapters will rest here · written in the studio, kept for good');
+      if(ov.mode==='edit')ghost(life,'<span class="gc" style="width:190px;height:110px">a chapter · its years</span><span class="gc" style="width:190px;height:110px">a chapter · its years</span>');
+      else note(life,first+'’s chapters will rest here');
     }
     /* tapes */
     var tape=$('#room-tape');
     if(tape&&ov.TAPES.length===0){
       var sh=$('#tapeShelf'); if(sh)sh.style.display='none';
       var d2=$('#allTpDoor'); if(d2)d2.style.display='none';
-      note(tape,'Videos and voice · the tape shelf fills with Plus');
+      if(ov.mode==='edit')ghost(tape,'<span class="gc" style="width:230px;height:120px">a film · its still</span>');
+      else note(tape,'Videos and voice · the tape shelf fills with Plus');
     }
     function note(room,text){
       var n=document.createElement('p');
@@ -147,8 +168,12 @@
 
   /* ── edit mode ── */
   function editMode(ov){
+    /* the editor shows the page, not its chrome — one brand, no guest bars */
+    ['topbar','mBar','fab'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none'});
+    $$('.endacts').forEach(function(el){el.style.display='none'});
+    document.body.style.paddingTop='0';
     var css=document.createElement('style');
-    css.textContent='[data-imy-edit]{cursor:pointer!important;position:relative}'+
+    css.textContent=GHOST_CSS+'[data-imy-edit]{cursor:pointer!important;position:relative}'+
       '[data-imy-edit]:hover{outline:2px dashed rgba(168,124,95,.85);outline-offset:3px;border-radius:4px}'+
       '.imy-editbadge{position:fixed;pointer-events:none;z-index:9999;background:#2C2520;color:#FAF5EC;font:600 11px/1 "Work Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:7px;opacity:0;transition:opacity .18s}'+
       '.imy-editbadge.on{opacity:.96}';
@@ -208,13 +233,83 @@
     if(m.action==='room'){ var t=$$('.tab').filter(function(x){return x.dataset.room===m.data.room})[0]; if(t)t.click(); var rb=$('.ribbon'); if(rb)rb.scrollIntoView({behavior:'smooth',block:'start'}); }
     if(m.action==='scrolltop'){ try{window.scrollTo({top:0,behavior:'smooth'})}catch(err){window.scrollTo(0,0)} }
     if(m.action==='flyer'){ if(m.data.open&&window.shOpen)window.shOpen(); else if(!m.data.open&&window.shShut)window.shShut(); }
+    /* live text · the page keeps pace with typing, no reloads */
+    if(m.action==='memtext'){
+      var d=m.data||{};
+      var card=$('#stream .memcard');
+      if(card){
+        var tt=$('.tt',card)||card.querySelector('b'); if(tt)tt.textContent=d.title||('A memory');
+        var body=card.querySelector('.mb, .body, p'); if(body)body.textContent=d.story?('“'+d.story.replace(/^["“]|["”]$/g,'')+'”'):'';
+      }
+      var sct=document.getElementById('sCt'); if(sct&&d.title)sct.textContent=d.title;
+      var scs=document.getElementById('sCs'); if(scs)scs.textContent=d.story||'';
+      var qt=document.getElementById('qcText'); if(qt&&d.story)qt.textContent='“'+d.story.replace(/^["“]|["”]$/g,'')+'”';
+    }
+    if(m.action==='chaptext'){
+      var chs=(m.data||{}).chapters||[];
+      $$('#chRail .chc').forEach(function(btn,i){
+        var c=chs[i]; if(!c)return;
+        var cy=$('.cy',btn); if(cy)cy.textContent=c.era;
+        var bb=btn.querySelector('.card b'); if(bb)bb.textContent=c.t;
+      });
+      /* the open chapter's year rail keeps pace too */
+      var onIdx=0; $$('#chRail .chc').forEach(function(b,i){ if(b.classList.contains('on'))onIdx=i; });
+      var oc=chs[onIdx];
+      if(oc)$$('#yRail .yrow').forEach(function(r,j){
+        var mm=oc.ms[j]; if(!mm)return;
+        var yy=$('.yy',r); if(yy)yy.textContent=mm.y;
+        var yl=$('.yl',r); if(yl)yl.textContent=mm.l;
+      });
+    }
   });
+
+  /* ── who may enter · password and unlisted, honored ── */
+  function privacyGate(ov){
+    if(ov.mode!=='view'||ov.privacy!=='password'||!ov.password)return;
+    var okKey='imy_gate_'+(ov.slugUrl||'');
+    try{ if(sessionStorage.getItem(okKey)==='1')return; }catch(e){}
+    var veil=document.createElement('div');
+    veil.style.cssText='position:fixed;inset:0;background:#FDFBF7;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px';
+    veil.innerHTML='<div style="max-width:380px;width:100%;text-align:center;font-family:\'Besley\',Georgia,serif;color:#2C2520">'+
+      '<div style="font-size:26px;font-weight:600;margin-bottom:8px">This page is kept close.</div>'+
+      '<div style="font-size:14px;color:#5c5249;margin-bottom:18px">Enter the password the family shared with you.</div>'+
+      '<input id="imyGateIn" type="password" style="width:100%;box-sizing:border-box;font-family:inherit;font-size:16px;padding:12px 13px;border:1px solid rgba(44,37,32,.25);border-radius:10px;background:#fff;outline:none;text-align:center"/>'+
+      '<button id="imyGateGo" style="margin-top:12px;width:100%;background:#A87C5F;color:#fff;border:0;border-radius:12px;padding:13px;font-family:inherit;font-size:15.5px;font-weight:600;cursor:pointer">Enter</button>'+
+      '<div id="imyGateErr" style="display:none;margin-top:10px;font-size:12.5px;color:#8a3c2c">That isn’t it — check with the family.</div></div>';
+    document.body.appendChild(veil);
+    function tryGo(){
+      var v=document.getElementById('imyGateIn').value;
+      if(v===ov.password){ try{sessionStorage.setItem(okKey,'1')}catch(e){} document.body.removeChild(veil); }
+      else document.getElementById('imyGateErr').style.display='block';
+    }
+    document.getElementById('imyGateGo').addEventListener('click',tryGo);
+    document.getElementById('imyGateIn').addEventListener('keydown',function(e){if(e.key==='Enter')tryGo()});
+    setTimeout(function(){document.getElementById('imyGateIn').focus()},80);
+  }
+
+  /* ── tapes that really play ── */
+  function tapePlayback(ov){
+    if(!(ov.TAPES||[]).some(function(t){return t.url}))return;
+    document.addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('.tape');
+      if(!b)return;
+      var t=(ov.TAPES||[])[+b.dataset.ti];
+      if(!t||!t.url)return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      var wrap=document.createElement('div');
+      wrap.style.cssText='position:fixed;inset:0;background:rgba(20,15,10,.94);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+      wrap.innerHTML='<video src="'+t.url+'" controls autoplay playsinline style="max-width:100%;max-height:86vh;border-radius:12px;background:#000"></video>'+
+        '<button aria-label="Close" style="position:absolute;top:14px;right:16px;background:none;border:1px solid rgba(250,245,236,.4);color:#FAF5EC;border-radius:8px;width:36px;height:36px;font-size:16px;cursor:pointer">✕</button>';
+      wrap.querySelector('button').addEventListener('click',function(){try{wrap.querySelector('video').pause()}catch(x){}document.body.removeChild(wrap)});
+      document.body.appendChild(wrap);
+    },true);
+  }
 
   /* the owner's doors · their desk and the live editor, right on the page */
   function ownerDoors(ov){
     var tacts=$('#topbar .tacts');
     if(!tacts)return;
-    tacts.innerHTML='<a class="login" href="#" id="imyDeskDoor">Your desk</a><a class="start" href="#" id="imyLiveDoor">Edit this page, live</a>';
+    tacts.innerHTML='<a class="login" href="#" id="imyDeskDoor">Dashboard</a><a class="start" href="#" id="imyLiveDoor">Edit Page</a>';
     $('#imyDeskDoor').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();try{parent.postMessage({type:'imy',action:'nav',data:{go:'dashboard'}},'*')}catch(err){}});
     $('#imyLiveDoor').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();try{parent.postMessage({type:'imy',action:'nav',data:{go:'studio',m:ov.ownerEdit.m}},'*')}catch(err){}});
   }
@@ -223,6 +318,8 @@
     applyPerson(OV);
     emptyStates(OV);
     planGate(OV);
+    privacyGate(OV);
+    tapePlayback(OV);
     if(OV.mode==='edit')editMode(OV);
     if(OV.mode==='view'&&OV.ownerEdit)ownerDoors(OV);
     try{parent.postMessage({type:'imy',action:'tribute-ready',data:{}},'*');}catch(e){}

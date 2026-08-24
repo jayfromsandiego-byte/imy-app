@@ -48,6 +48,8 @@
   .pay{width:100%;margin-top:22px;background:linear-gradient(135deg,#C9A572,#a9854f);color:#241711;border:0;border-radius:12px;padding:15px 16px;font-family:'Besley',serif;font-size:17px;font-weight:700;cursor:pointer;transition:filter .2s}
   .pay:hover{filter:brightness(1.06)}
   .pay:disabled{opacity:.5;cursor:default}
+  .paynote{font-family:'Work Sans',sans-serif;font-size:12.5px;line-height:1.6;color:#5c5249;margin:6px 0 4px}
+  .keepfree{background:none;border:0;color:#8a5a3c;font-family:'Besley',serif;font-size:14.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
   .simnote{margin-top:12px;font-family:'Work Sans',sans-serif;font-size:11px;line-height:1.55;color:#5c5249;text-align:center}
   @media (max-width:880px){ main{grid-template-columns:1fr;gap:26px} h1{font-size:28px} .price b{font-size:38px} }
 </style>
@@ -80,71 +82,56 @@
       <div class="addr"><span>imissyoumemorial.com/</span><input id="slug" type="text" autocomplete="off" spellcheck="false" maxlength="40"/></div>
       <div class="avail" id="avail"></div>
       <div class="k2" style="margin-top:26px">Payment</div>
-      <label for="cName">Name on the card</label>
-      <input id="cName" type="text" autocomplete="cc-name" placeholder="Susan Hayes"/>
-      <label for="cNum">Card number</label>
-      <input id="cNum" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="19"/>
-      <div class="row2">
-        <div><label for="cMon">Expires · month</label><select id="cMon"><option value="">Month</option></select></div>
-        <div><label for="cYr">Expires · year</label><select id="cYr"><option value="">Year</option></select></div>
-        <div><label for="cCvc">CVC</label><input id="cCvc" type="text" inputmode="numeric" maxlength="4" placeholder="424"/></div>
+      <p class="paynote">Payment is handled by <b>Stripe</b> — card, Apple Pay, or Google Pay on the secure page. Promo codes are entered there too.</p>
+      <button class="pay" id="payBtn">Continue to secure checkout · $197</button>
+      <div id="freeKeep" style="display:none;text-align:center;margin-top:14px">
+        <button class="keepfree" id="keepFreeBtn">Keep the free page — see it live</button>
       </div>
-      <button class="pay" id="payBtn" disabled>Pay $197 · once, for life</button>
-      <div class="simnote">Checkout is simulated in this prototype — the production build runs on Stripe. Nothing is charged here.</div>
     </section>
   </main>
 <script>
 (function(){
-  var CTX={m:'',price:{amount:197,base:197,discount:0},taken:[],suggestSlug:'',first:'',pron:'they'};
+  var CTX={m:'',price:{amount:197,base:197,discount:0},taken:[],suggestSlug:'',first:'',pron:'they',post:false,plan:'free',liveUrl:''};
   var PA={she:'her',he:'his',they:'their'};
   function $(id){return document.getElementById(id)}
-  function money(n){return '$'+(n%1?n.toFixed(2):n)}
   function hydrate(){
-    var p=CTX.price;
-    $('prAmt').textContent=money(p.amount);
-    if(p.discount){ $('prBase').style.display=''; $('prBase').textContent=money(p.base); $('prDisc').style.display=''; }
-    $('payBtn').textContent='Pay '+money(p.amount)+' · once, for life';
+    $('payBtn').textContent='Continue to secure checkout · $197';
     if(CTX.first){ $('hd').innerHTML='Everything of '+CTX.first.replace(/</g,'&lt;')+'’s, <em>kept.</em>'; }
     $('fVoice').textContent=PA[CTX.pron]||'their';
     var sg=(CTX.suggestSlug||'').replace(/[^a-z0-9-]/g,'');
     $('fAddr').textContent='imissyoumemorial.com/'+(sg||'theirfullname');
     $('slug').placeholder=sg||'theirfullname';
     $('slug').value='';
+    if(CTX.post){
+      var k=document.querySelector('.k');
+      if(k)k.textContent='The page is live · one more door';
+      $('freeKeep').style.display='block';
+    }
     check();
   }
   function slugVal(){ return $('slug').value.toLowerCase().replace(/[^a-z0-9-]/g,'') }
   function check(){
-    var s=slugVal(); $('slug').value=s;
+    var v=slugVal(); $('slug').value=v;
     var a=$('avail');
-    if(!s){ a.className='avail'; a.textContent='their full name, or anything you choose · leave empty to keep the random address'; return true; }
-    var clash=CTX.taken.indexOf(s)>-1&&s!==CTX.currentSlug;
+    if(!v){ a.className='avail'; a.textContent='their full name, or anything you choose · leave empty to keep the random address'; return true; }
+    var clash=CTX.taken.indexOf(v)>-1&&v!==CTX.currentSlug;
     if(clash){ a.className='avail no'; a.textContent='· already kept for another page — try a variation'; return false; }
-    a.className='avail ok'; a.textContent='· theirs, the moment you pay'; return true;
+    a.className='avail ok'; a.textContent='· theirs, the moment payment completes'; return true;
   }
-  var mon=$('cMon');for(var m=1;m<=12;m++){var o=document.createElement('option');o.textContent=(m<10?'0':'')+m;o.value=m;mon.appendChild(o)}
-  var yr=$('cYr');var Y=new Date().getFullYear();for(var y=Y;y<=Y+12;y++){var o2=document.createElement('option');o2.textContent=y;o2.value=y;yr.appendChild(o2)}
-  $('cNum').addEventListener('input',function(){
-    var d=this.value.replace(/\D/g,'').slice(0,16);
-    this.value=d.replace(/(\d{4})(?=\d)/g,'$1 ');
-    gate();
-  });
-  function ready(){
-    return check()&&$('cName').value.trim().length>1&&$('cNum').value.replace(/\D/g,'').length>=12&&mon.value&&yr.value&&$('cCvc').value.replace(/\D/g,'').length>=3;
-  }
-  function gate(){ $('payBtn').disabled=!ready() }
-  ['cName','cCvc'].forEach(function(id){$(id).addEventListener('input',gate)});
-  [mon,yr].forEach(function(s){s.addEventListener('change',gate)});
-  $('slug').addEventListener('input',function(){check();gate()});
-  $('payBtn').onclick=function(){
-    if(!ready())return;
-    this.disabled=true;this.textContent='A moment…';
+  $('slug').addEventListener('input',check);
+  $('payBtn').addEventListener('click',function(){
+    if(!check())return;
+    this.textContent='Opening the secure checkout…';
+    IMY.send('stripePay',{m:CTX.m,slug:slugVal()});
     var self=this;
-    setTimeout(function(){ IMY.send('pay',{m:CTX.m,slug:slugVal()}); },700);
-  };
+    setTimeout(function(){ self.textContent='Continue to secure checkout · $197'; },6000);
+  });
+  document.getElementById('keepFreeBtn').addEventListener('click',function(){ IMY.send('keepFree',{m:CTX.m}); });
   window.addEventListener('imy-init',function(e){
     var c=e.detail||{};
     CTX.m=c.m||'';CTX.price=c.price||CTX.price;CTX.taken=c.taken||[];CTX.currentSlug=c.currentSlug||'';
     CTX.suggestSlug=c.suggestSlug||'';CTX.first=c.first||'';CTX.pron=c.pron||'they';
+    CTX.post=!!c.post;CTX.plan=c.plan||'free';CTX.liveUrl=c.liveUrl||'';
     hydrate();
   });
   IMY.send('ready',{});

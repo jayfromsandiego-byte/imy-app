@@ -9,6 +9,12 @@
   function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
   function money(n){return '$'+(n%1?n.toFixed(2):n)}
 
+  /* ── names for things · nothing here is a desk ── */
+  $$('.shl').forEach(function(el){ if(/the desk/i.test(el.textContent))el.textContent='Dashboard'; });
+  $$('.mtab').forEach(function(el){
+    el.childNodes.forEach(function(n){ if(n.nodeType===3&&/desk/i.test(n.textContent))n.textContent='Home'; });
+  });
+
   /* ── identity ── */
   $$('.nm-txt').forEach(function(el){el.textContent=D.name});
   $$('.dt-txt').forEach(function(el){el.textContent=D.datesShort});
@@ -24,9 +30,41 @@
   var vt=$('.vartag'); if(vt)vt.textContent='I MISS YOU MEMORIAL · '+(D.email||'')+' · PROTOTYPE';
   var ps=$('.plan-strip');
   if(ps)ps.innerHTML=D.plan==='plus'?'Plus · everything kept, <b>for life</b>':'Free plan · the page stays online, <b>always</b>';
-  var sl=$('#sharelink'); if(sl)sl.textContent='imissyoumemorial.com/'+D.slug;
+  var REAL=D.shareUrl||('imissyoumemorial.com/'+D.slug);
+  var sl=$('#sharelink'); if(sl)sl.textContent=REAL.replace(/^https?:\/\//,'');
+  var qrImg=$('#v-account .qr-row img'); if(qrImg)qrImg.src='https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(REAL);
+  var cpBtn=$('#copylink');
+  if(cpBtn)cpBtn.addEventListener('click',function(e){
+    e.stopImmediatePropagation(); e.preventDefault();
+    try{ navigator.clipboard.writeText(REAL).then(function(){ if(window.whisper)window.whisper('Link copied — it opens the page',false); }); }
+    catch(err){ if(window.whisper)window.whisper(REAL,false); }
+  },true);
   /* every door to the page itself */
   $$('a[href*="/sites/"]').forEach(function(a){ a.setAttribute('href','/sites/'+D.slug); });
+  /* the QR buttons do real work */
+  $$('#v-account .qr-row .btn').forEach(function(b){
+    if(/download the qr/i.test(b.textContent)){
+      b.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();
+        try{window.open('https://api.qrserver.com/v1/create-qr-code/?size=600x600&data='+encodeURIComponent(REAL),'_blank','noopener')}catch(x){}
+      },true);
+    }
+    if(/print a card/i.test(b.textContent)){
+      b.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();
+        var w=null; try{ w=window.open('','_blank'); }catch(x){}
+        if(!w){ if(window.whisper)window.whisper('Pop-ups are blocked — allow them to print the card',false); return; }
+        w.document.write('<html><head><title>'+D.name.replace(/</g,'&lt;')+' · I Miss You Memorial</title>'+
+          '<style>body{font-family:Georgia,serif;color:#2C2520;background:#FAF5EC;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}'+
+          '.c{text-align:center;border:1.5px solid #C9A572;border-radius:16px;padding:38px 44px;background:#fff}'+
+          '.c h1{font-size:24px;margin:0 0 4px}.c .d{font-size:13px;letter-spacing:.12em;color:#8a5a3c;margin-bottom:16px}'+
+          '.c img{width:150px;height:150px}.c .u{font-size:12px;color:#5c5249;margin-top:12px}</style></head><body>'+
+          '<div class="c"><h1>'+D.name.replace(/</g,'&lt;')+'</h1><div class="d">'+D.datesShort+'</div>'+
+          '<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(REAL)+'"/>'+
+          '<div class="u">scan to visit · leave a memory, a photo, a kind word</div></div>'+
+          '<scr'+'ipt>setTimeout(function(){window.print()},600)</scr'+'ipt></body></html>');
+        w.document.close();
+      },true);
+    }
+  });
   var dl=$('#delmodal .fld label'); if(dl)dl.innerHTML='Type your full email address to confirm — <b>'+esc(D.email)+'</b>';
 
   /* ── overview ── */
@@ -68,7 +106,7 @@
     studioCard.className='qcard';
     studioCard.style.marginTop='14px';
     studioCard.innerHTML='<p class="sen"><b>The live editor.</b> The page is the editor — open it and tap anything on it. The name, a chapter, a photograph: each opens its own question, and the page updates as you type.</p>'+
-      '<div class="foot"><button class="btn small primary" id="imyEdit">Open the live editor</button><button class="btn small" id="imyView">See the page</button></div>';
+      '<div class="foot"><button class="btn small primary" id="imyEdit">Edit Page</button><button class="btn small" id="imyView">See the page</button></div>';
     conveyor.parentNode.insertBefore(studioCard,conveyor.nextSibling);
     $('#imyEdit').addEventListener('click',function(){editLive('')});
     $('#imyView').addEventListener('click',function(){IMY.send('nav',{go:'site',slug:D.slug})});
@@ -131,13 +169,22 @@
   /* ── billing ── */
   var freeCard=$$('.plancard').filter(function(c){return !c.classList.contains('plus')})[0];
   var plusCard=$('.plancard.plus');
+  /* billing · real payments, remembered */
+  if((D.payments||[]).length){
+    var payc=$('#paycard');
+    if(payc){
+      var last=D.payments[D.payments.length-1];
+      var dstr=new Date(last.at||Date.now()).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      payc.innerHTML='<p class="sen"><b>Plus · $197 · paid '+dstr+'</b> — handled by Stripe'+(last.cs?' · receipt '+String(last.cs).slice(0,14)+'…':'')+'</p>';
+    }
+  }
   var up=$('.upbtn');
   if(D.plan==='plus'){
     if(freeCard){var cc=$('.curchip',freeCard); if(cc)cc.remove();}
     if(plusCard){var pt=$('.plustag',plusCard); if(pt)pt.outerHTML='<span class="curchip">Current plan</span>';}
     if(up){up.textContent='Plus is yours, for life'; up.disabled=true; up.style.opacity=.55; up.style.cursor='default';}
   }else if(up){
-    up.textContent='Upgrade to Plus · '+money(D.price.amount)+(D.price.discount?' · 20% off':'');
+    up.textContent='Upgrade to Plus · $197';
     up.addEventListener('click',function(){IMY.send('nav',{go:'checkout',m:D.activeId})});
   }
   document.addEventListener('click',function(e){
@@ -168,14 +215,14 @@
       el.className='pgrow'+(m.active?' active':'');
       el.innerHTML='<span class="archp">'+(m.portrait?'<img src="'+m.portrait+'" alt=""/>':'<span class="initial">'+esc(m.initial)+'</span>')+'</span>'+
         '<div><div class="pgn">'+esc(m.name)+'</div><div class="pgm">'+esc(m.dates)+' · '+(m.plan==='plus'?'PLUS':'FREE PLAN')+'</div></div>'+
-        (m.active?'<span class="rolechip">This desk</span>':'');
+        (m.active?'<span class="rolechip">Current</span>':'');
       if(!m.active)el.addEventListener('click',function(){IMY.send('setActive',{m:m.id})});
       modal.insertBefore(el,anchorEl); anchorEl=el;
     });
     if(foot){
       if(D.canCreate){
         foot.innerHTML='<button class="btn small primary" id="pgNew">Begin another page</button>'+
-          (D.plusUnlocked?'<button class="btn small" id="pgNewPlus">A Plus page · '+money(D.price.discount?D.price.amount:197)+(D.price.discount?' · 20% off':'')+'</button>':'')+
+          (D.plusUnlocked?'<button class="btn small" id="pgNewPlus">A Plus page · $197</button>':'')+
           '<button class="btn small" id="pg-editdetails2">Edit details</button>';
         $('#pgNew').addEventListener('click',function(){IMY.send('createNew',{plan:''})});
         var pnp=$('#pgNewPlus'); if(pnp)pnp.addEventListener('click',function(){IMY.send('createNew',{plan:'plus'})});
@@ -259,14 +306,49 @@
       try{ IMY.send('transferOwner',{m:D.activeId,email:window.tfEmail||''}); }catch(e){}
     };
   }
-  /* the "you" row speaks with the real account */
-  var youRow=$$('#peoplerows .prow')[0];
+  /* access · only the owner until someone is truly invited */
+  var rows0=$$('#peoplerows .prow');
+  rows0.forEach(function(r,i){ if(i>0)r.remove(); });
+  var youRow=rows0[0];
   if(youRow){
     var pn2=$('.pn2',youRow), pe2=$('.pe2',youRow), ti=$('.tinit',youRow);
     if(pn2)pn2.textContent=(D.accountName||'You')+' (you)';
     if(pe2)pe2.textContent=D.email||'';
     if(ti)ti.textContent=(D.accountName||'Y')[0].toUpperCase();
   }
+  var invBtn=$('#invite-btn');
+  if(invBtn)invBtn.addEventListener('click',function(e){
+    e.stopImmediatePropagation(); e.preventDefault();
+    var em=($('#invite-email')||{}).value||'';
+    if(!/.+@.+\..+/.test(em.trim())){ if(window.whisper)window.whisper('Type their email first',false); return; }
+    var role=($('#invite-role')||{}).value||'Editor';
+    var row=document.createElement('div');
+    row.className='prow';
+    row.innerHTML='<span class="tinit">'+em.trim()[0].toUpperCase()+'</span>'+
+      '<div><div class="pn2">Invited</div><div class="pe2">'+em.trim().replace(/</g,'&lt;')+'</div></div>'+
+      '<span class="rolechip">'+role+'</span>'+
+      '<button class="btn small imy-rmaccess" aria-label="Remove this person">✕</button>';
+    $('#peoplerows').appendChild(row);
+    row.querySelector('.imy-rmaccess').addEventListener('click',function(){
+      if(window.askConfirm)window.askConfirm('Remove this person? They lose access to the dashboard — the page itself stays visible to them like anyone else.','Remove them',function(){ row.remove(); if(window.whisper)window.whisper('Removed — they no longer have access',false); });
+      else row.remove();
+    });
+    $('#invite-email').value='';
+    if(window.whisper)window.whisper('Invited — in the real app they receive an email',false);
+  },true);
+  /* privacy · the choice saves, the password holds the door */
+  $$('#privseg button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var v=b.textContent.trim().toLowerCase();
+      if(v==='password')return; /* saved when they set the password */
+      IMY.send('setPrivacy',{m:D.activeId,privacy:v==='unlisted'?'unlisted':'public'});
+    });
+  });
+  var pws=$('#pwsave');
+  if(pws)pws.addEventListener('click',function(){
+    var pw=($('#pwinput')||{}).value||'';
+    if(pw.trim())IMY.send('setPrivacy',{m:D.activeId,privacy:'password',password:pw.trim()});
+  });
   /* sign out */
   $$('#v-account .btn').forEach(function(b){
     if(/^sign out$/i.test(b.textContent.trim()))b.addEventListener('click',function(){IMY.send('signout',{})});
@@ -278,4 +360,28 @@
       if(el){e.stopImmediatePropagation();e.preventDefault();if(window.whisper)window.whisper('The address is chosen — imissyoumemorial.com/'+D.slug+' · yours for good',false);}
     },true);
   }
+
+  /* ── mobile · one menu, every room ── */
+  (function(){
+    var tb=$('#topbar-edit')||$('.topbar');
+    if(!tb)return;
+    var burger=document.createElement('button');
+    burger.id='imyBurger'; burger.setAttribute('aria-label','Open the menu');
+    burger.innerHTML='<span></span><span></span><span></span>';
+    tb.insertBefore(burger,tb.firstChild);
+    var panel=document.createElement('div');
+    panel.id='imyMenu';
+    var items=[['Overview','overview'],['Approvals','approvals'],['The pictures','pictures'],['The story','story'],['The anniversary','thatday'],['Billing','billing'],['Account','account']];
+    panel.innerHTML='<div class="imy-menu-card">'+items.map(function(it){
+      return '<button class="imy-mi" data-v="'+it[1]+'">'+it[0]+'</button>';
+    }).join('')+'<button class="imy-mi imy-mi-quiet" data-x="1">Close</button></div>';
+    document.body.appendChild(panel);
+    burger.addEventListener('click',function(){ panel.classList.add('open'); });
+    panel.addEventListener('click',function(e){
+      var b=e.target.closest('.imy-mi');
+      if(!b){ if(e.target===panel)panel.classList.remove('open'); return; }
+      panel.classList.remove('open');
+      if(b.dataset.v&&window.go)window.go(b.dataset.v);
+    });
+  })();
 })();

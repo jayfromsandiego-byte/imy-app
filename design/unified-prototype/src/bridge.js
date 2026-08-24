@@ -30,7 +30,7 @@
     var ours = /(^|\.)imissyoumemorial\.com$/.test(u.hostname);
     if(!ours) return null;
     var p=u.pathname.replace(/\/+$/,'')||'/';
-    if(p==='/')                    return {go:'landing'};
+    if(p==='/')                    return {go:'landing', anchor:(u.hash||'').replace('#','')};
     if(p==='/onboarding')          return {go:'start', plan:(u.searchParams.get('plan')||'')};
     if(p==='/signin'||p==='/login')return {go:'signin'};
     if(p==='/dashboard')           return {go:'dashboard'};
@@ -44,7 +44,11 @@
     var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;
     if(!a)return;
     var href=a.getAttribute('href')||'';
-    if(href.charAt(0)==='#')return;                     /* in-page anchors stay native */
+    if(href.charAt(0)==='#'){                           /* in-page anchors scroll here — never through a <base> */
+      e.preventDefault();
+      anchor(href.slice(1));
+      return;
+    }
     var it=intent(href);
     if(!it)return;
     e.preventDefault();
