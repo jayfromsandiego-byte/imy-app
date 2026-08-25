@@ -86,14 +86,22 @@ let land=read(P('pages','landing.html'));
   }
 }
 land=mustReplace(land,'href="#memory">Remember</a>','href="#mission">Remember</a>','landing Remember anchor');
-/* the chosen How-It-Works films · step 1 the kitchen table, step 3 the family around one phone */
+/* the chosen How-It-Works films · step 1 the kitchen table, step 3 the family around one phone.
+   Embedded as data URIs when the asset files are present (self-contained, survives any
+   account or hosting move); the published URLs stand in when building without assets. */
+function filmSrc(local,fallback){
+  try{
+    const bytes=fs.readFileSync(P('assets',local));
+    return 'data:video/mp4;base64,'+bytes.toString('base64');
+  }catch(e){ failures.push('NOTE: assets/'+local+' missing — using published URL'); return fallback; }
+}
 land=mustReplace(land,
   'src="https://pub.hyperagent.com/api/published/pbf01M0CGTX83_25ANBGF8ZD99QWSB/begin-sq.mp4" aria-label="Adding a photo to her page"',
-  'src="https://pub.hyperagent.com/api/published/pbf01M0V0R6AZ_S2R1Z3V44DECWNHG/step1-final-B.mp4" aria-label="Writing their name as the page takes shape beside her"',
+  'src="'+filmSrc('step1-final-B.mp4','https://pub.hyperagent.com/api/published/pbf01M0V0R6AZ_S2R1Z3V44DECWNHG/step1-final-B.mp4')+'" aria-label="Writing their name as the page takes shape beside her"',
   'landing step1 video');
 land=mustReplace(land,
   'src="https://pub.hyperagent.com/api/published/pbf01M0CGTY7X_MN1NAQFASWJ5TF7Y/invite-sq.mp4" aria-label="Sharing her page with family"',
-  'src="https://pub.hyperagent.com/api/published/pbf01M0V0RFE4_VVZW6PHCK8J3R57Y/step3-final-F.mp4" aria-label="The family gathered around her page"',
+  'src="'+filmSrc('step3-final-F.mp4','https://pub.hyperagent.com/api/published/pbf01M0V0RFE4_VVZW6PHCK8J3R57Y/step3-final-F.mp4')+'" aria-label="The family gathered around her page"',
   'landing step3 video');
 land=mustReplace(land,'<li><span class="ck">✓</span> Everything in Free</li>','<li><span class="ck">✓</span> <b>Everything in Free</b></li>','bold everything-in-free (plus)');
 land=mustReplace(land,'<li><span class="ck">✦</span> Everything in Free and Plus</li>','<li><span class="ck">✦</span> <b>Everything in Free and Plus</b></li>','bold everything-in-free (concierge)');
