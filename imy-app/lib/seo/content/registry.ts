@@ -9,6 +9,16 @@ import { content as cardsSecular } from "./cards-secular";
 import { content as cardsVerses } from "./cards-verses";
 import { content as cardsYahrzeit } from "./cards-yahrzeit";
 import { content as costAverage } from "./cost-average";
+import { content as costArizona } from "./cost-arizona";
+import { content as costIndiana } from "./cost-indiana";
+import { content as costMassachusetts } from "./cost-massachusetts";
+import { content as costMichigan } from "./cost-michigan";
+import { content as costNewJersey } from "./cost-new-jersey";
+import { content as costNorthCarolina } from "./cost-north-carolina";
+import { content as costOhio } from "./cost-ohio";
+import { content as costTennessee } from "./cost-tennessee";
+import { content as costVirginia } from "./cost-virginia";
+import { content as costWashington } from "./cost-washington";
 import { content as costCalifornia } from "./cost-california";
 import { content as costChecklist } from "./cost-checklist";
 import { content as costFlorida } from "./cost-florida";
@@ -62,6 +72,16 @@ const all = [
   cardsVerses,
   cardsYahrzeit,
   costAverage,
+  costArizona,
+  costIndiana,
+  costMassachusetts,
+  costMichigan,
+  costNewJersey,
+  costNorthCarolina,
+  costOhio,
+  costTennessee,
+  costVirginia,
+  costWashington,
   costCalifornia,
   costChecklist,
   costFlorida,
