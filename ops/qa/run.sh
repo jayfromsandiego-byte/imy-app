@@ -23,6 +23,11 @@ sed -e 's|import { type LovedThing } from "./lovedThings";|type LovedThing = { l
 # the generated module resolves it under plain Node.
 cp "$ROOT/imy-app/lib/heroBackgrounds.ts" "$WORK/heroBackgrounds.ts"
 cp "$ROOT/ops/qa/harness.ts" "$WORK/harness.ts"
+# The unified renderer (the tribute-unified port) rides the same shim path: its
+# one internal import re-points at the generated wreath module beside it.
+sed -e 's|from "./renderTribute";|from "./renderTribute.gen.ts";|' \
+  "$ROOT/imy-app/lib/renderTributeUnified.ts" > "$WORK/renderTributeUnified.gen.ts"
+cp "$ROOT/ops/qa/unified-harness.ts" "$WORK/unified-harness.ts"
 set +e
 rc=0
 IMY_REPO_ROOT="$ROOT" node "$WORK/harness.ts" || rc=1
@@ -34,6 +39,11 @@ IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/film-fulfillment.test.mjs" || rc=1
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/agnesy-review.test.mjs" || rc=1
 # LB-1: a stranger's words stay words — every visitor field is escaped at its innerHTML seam.
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/lb1-xss.test.mjs" || rc=1
+# The unified template's render contract (the tribute-unified port, Gates 0-3):
+# frozen-template hygiene, identity safety, tier caps, real endpoints, SSR head.
+IMY_REPO_ROOT="$ROOT" node "$WORK/unified-harness.ts" || rc=1
+# LB-1 at the unified seams: escaped once, server-side, at the mapping layer.
+IMY_REPO_ROOT="$ROOT" GEN_DIR="$WORK" node "$ROOT/ops/qa/lb1-xss.unified.test.mjs" || rc=1
 # r5: programmatic scrolling answers a user gesture only — no scrollIntoView or
 # page-level scroll reachable from any setInterval/setTimeout/autoplay path.
 IMY_REPO_ROOT="$ROOT" node "$ROOT/ops/qa/scroll-scan.mjs" || rc=1
