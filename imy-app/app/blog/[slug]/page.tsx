@@ -43,7 +43,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const a = getArticle(params.slug);
   if (!a) notFound();
 
-  const jsonLd = [
+  const jsonLd: object[] = [
     {
       "@context": "https://schema.org",
       "@type": "Article",
@@ -67,6 +67,18 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     },
   ];
 
+  if (a.faq && a.faq.length > 0) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: a.faq.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    });
+  }
+
   return (
     <article>
       <script
@@ -77,9 +89,22 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <h1 className="nb-h1">{a.title}</h1>
       <p className="nb-lede">{a.lede}</p>
       <p className="nb-meta">
-        {fmt(a.datePublished)} · {readingMinutes(a)} minute read · I Miss You Memorial
+        {fmt(a.datePublished)}
+        {a.dateModified ? ` · Updated ${fmt(a.dateModified)}` : ""} · {readingMinutes(a)} minute
+        read · I Miss You Memorial
       </p>
       <div className="nb-body" dangerouslySetInnerHTML={{ __html: a.bodyHtml }} />
+      {a.faq && a.faq.length > 0 && (
+        <div className="nb-body">
+          <h2>Questions families ask</h2>
+          {a.faq.map((f) => (
+            <div key={f.q}>
+              <h3 style={{ fontSize: "17.5px", fontWeight: 600, margin: "24px 0 8px" }}>{f.q}</h3>
+              <p>{f.a}</p>
+            </div>
+          ))}
+        </div>
+      )}
       <aside className="nb-end">
         <p>
           If you are gathering memories of someone you love, a tribute page can hold them — their
