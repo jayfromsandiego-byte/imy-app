@@ -17,51 +17,59 @@ export async function GET() {
 
   // Structured data. The FAQ block is derived from the landing page's own
   // markup, so the schema can never say something the page does not.
+  // A single @graph so every node shares one context, and the /#organization
+  // entity the blog posts already reference as publisher is defined once, here.
   const jsonLd: object[] = [
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": `${SITE}/#organization`,
-      name: "I Miss You Memorial",
-      url: SITE,
-      logo: `${SITE}/icon.svg`,
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "I Miss You Memorial",
-      url: SITE,
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      name: "I Miss You Memorial",
-      serviceType: "Online memorial and tribute pages",
-      description: DESCRIPTION,
-      url: SITE,
-      provider: { "@id": `${SITE}/#organization` },
-      areaServed: "Worldwide",
-      offers: [
+      "@graph": [
         {
-          "@type": "Offer",
-          name: "Free tribute page",
-          price: "0",
-          priceCurrency: "USD",
-          description: "A complete tribute page, online forever. Free stays free.",
+          "@type": "Organization",
+          "@id": `${SITE}/#organization`,
+          name: "I Miss You Memorial",
+          url: SITE,
+          logo: `${SITE}/icon.svg`,
+          description: DESCRIPTION,
+          contactPoint: { "@type": "ContactPoint", url: `${SITE}/contact` },
         },
         {
-          "@type": "Offer",
-          name: "Plus",
-          price: "197",
-          priceCurrency: "USD",
-          description: "$197 once or $29/month — video and voice memories, every photo, an exact-name address.",
+          "@type": "WebSite",
+          "@id": `${SITE}/#website`,
+          name: "I Miss You Memorial",
+          url: SITE,
+          publisher: { "@id": `${SITE}/#organization` },
         },
         {
-          "@type": "Offer",
-          name: "Concierge",
-          price: "499",
-          priceCurrency: "USD",
-          description: "A tribute hand-built for the family, from $499.",
+          "@type": "Service",
+          name: "I Miss You Memorial",
+          serviceType: "Online memorial and tribute pages",
+          description: DESCRIPTION,
+          url: SITE,
+          provider: { "@id": `${SITE}/#organization` },
+          areaServed: "Worldwide",
+          offers: [
+            {
+              "@type": "Offer",
+              name: "Free tribute page",
+              price: "0",
+              priceCurrency: "USD",
+              description: "A complete tribute page, online forever. Free stays free.",
+            },
+            {
+              "@type": "Offer",
+              name: "Plus",
+              price: "197",
+              priceCurrency: "USD",
+              description: "$197 once or $29/month — video and voice memories, every photo, an exact-name address.",
+            },
+            {
+              "@type": "Offer",
+              name: "Concierge",
+              price: "499",
+              priceCurrency: "USD",
+              description: "A tribute hand-built for the family, from $499.",
+            },
+          ],
         },
       ],
     },
