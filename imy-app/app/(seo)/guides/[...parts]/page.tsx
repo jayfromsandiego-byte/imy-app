@@ -46,7 +46,7 @@ export default function GuidePage({ params }: { params: { parts: string[] } }) {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Guides", item: `${SITE}/guides/` },
+              { "@type": "ListItem", position: 1, name: "Guides", item: `${SITE}/guides` },
               { "@type": "ListItem", position: 2, name: entry.h1, item: `${SITE}${entryPath(entry)}` },
             ],
           }),

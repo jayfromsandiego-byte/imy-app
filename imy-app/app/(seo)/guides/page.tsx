@@ -7,7 +7,7 @@ export function generateMetadata(): Metadata {
     title: "Guides for a hard season",
     description:
       "Quiet, practical guides — writing an obituary, planning a service, what things cost, and what to do first.",
-    path: "/guides/",
+    path: "/guides",
     index: liveEntries("guides").length > 0,
   });
 }

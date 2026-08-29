@@ -122,5 +122,8 @@ export function findEntry(section: SeoSection, slugParts: string[]): SeoEntry | 
 }
 
 export function entryPath(e: SeoEntry): string {
-  return `/${e.section}/${e.slug}/`;
+  // Non-slash form — the site serves these routes without trailing slashes
+  // (Next.js trailingSlash: false) and 308-redirects the slash versions.
+  // Canonicals, sitemaps, and internal links must all use the 200 URL.
+  return e.slug ? `/${e.section}/${e.slug}` : `/${e.section}`;
 }

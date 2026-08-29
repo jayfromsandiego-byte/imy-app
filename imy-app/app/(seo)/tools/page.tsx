@@ -8,7 +8,7 @@ export function generateMetadata(): Metadata {
     title: "Free memorial tools",
     description:
       "Free tools for a hard week — a funeral program maker, an obituary writer, and more. Each one ends with something you can hold.",
-    path: "/tools/",
+    path: "/tools",
     index: liveEntries("tools").length > 0,
   });
 }

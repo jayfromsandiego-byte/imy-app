@@ -7,7 +7,7 @@ export function generateMetadata(): Metadata {
     title: "Memorial templates",
     description:
       "Free, printable templates for a service — funeral programs, obituaries, memorial cards, and checklists. Download and make them theirs.",
-    path: "/templates/",
+    path: "/templates",
     index: liveEntries("templates").length > 0,
   });
 }
