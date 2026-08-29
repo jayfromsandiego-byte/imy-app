@@ -36,9 +36,25 @@ export default function GuidePage({ params }: { params: { parts: string[] } }) {
     mainEntityOfPage: `${SITE}${entryPath(entry)}`,
   };
 
+  const faqLd =
+    content && content.faq.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: content.faq.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }
+      : null;
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(articleLd) }} />
+      {faqLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(faqLd) }} />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -99,6 +115,27 @@ export default function GuidePage({ params }: { params: { parts: string[] } }) {
             <div className="km-calcslot">
               <h2>Work out your own estimate</h2>
               <CostCalculator mode="funeral" />
+            </div>
+          )}
+
+          {entry.slug.startsWith("funeral-costs/") && (
+            <div className="km-calcslot">
+              <h2>Work out your own estimate</h2>
+              <p>
+                Medians are a benchmark, not your number. Two free calculators turn a funeral
+                home's price list into an honest, itemized estimate — nothing to sign up for,
+                and the estimate is yours to print.
+              </p>
+              <ul>
+                <li>
+                  <a href="/tools/funeral-cost-calculator">Funeral cost calculator</a> — burial or
+                  a full service, line by line.
+                </li>
+                <li>
+                  <a href="/tools/cremation-cost-calculator">Cremation cost calculator</a> — direct
+                  cremation or cremation with a service.
+                </li>
+              </ul>
             </div>
           )}
 
