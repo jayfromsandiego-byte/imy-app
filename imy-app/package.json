@@ -12,7 +12,7 @@
     "@aws-sdk/s3-request-presigner": "^3.624.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.0",
-    "@vercel/blob": "latest",
+    "@vercel/blob": "2.6.1",
     "next": "14.2.35",
     "react": "18.3.1",
     "react-dom": "18.3.1",

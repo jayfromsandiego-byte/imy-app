@@ -1,7 +1,65 @@
-// A shared pricing link must never dead-end (July 12): the prices live on the
-// homepage's own pricing section, so this route simply walks you there.
-import { NextResponse } from "next/server";
-export const dynamic = "force-dynamic";
-export function GET(req: Request) {
-  return NextResponse.redirect(new URL("/#pricing", req.url), 308);
+// /pricing → serves the marketing landing page as real, crawlable SSR content
+// (the prices live in the landing document's own #pricing section). Previously
+// this route 308-redirected to /#pricing, which left /pricing with no indexable
+// HTML of its own; now Googlebot and AI crawlers see the full page without
+// executing the app bundle. The locked design file is served verbatim — only
+// server-side SEO chrome and the consent-first tracking layer are injected
+// (both no-ops until their env vars exist). Canonical is self so / and /pricing
+// never compete.
+import { promises as fs } from "fs";
+import path from "path";
+import { injectSeo, faqJsonLdFromHtml } from "@/lib/seo";
+import { injectTracking } from "@/lib/tracking";
+
+export const runtime = "nodejs";
+
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
+const DESCRIPTION =
+  "I Miss You Memorial pricing — a complete tribute page is free, forever. Plus is $197 once or $29/month for video, voice, and every photo. Concierge, hand-built, from $499.";
+
+export async function GET() {
+  let html = await fs.readFile(path.join(process.cwd(), "templates", "landing.html"), "utf8");
+
+  const jsonLd: object[] = [
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": `${SITE}/#organization`,
+          name: "I Miss You Memorial",
+          url: SITE,
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE}/icon.svg`,
+          },
+          description:
+            "Free permanent online memorial pages — photos, life stories, voice and video memories, virtual candles, and a family-moderated guest book. Free forever; memorial pages are never deleted.",
+        },
+        {
+          "@type": "WebSite",
+          "@id": `${SITE}/#website`,
+          name: "I Miss You Memorial",
+          url: SITE,
+          publisher: { "@id": `${SITE}/#organization` },
+        },
+      ],
+    },
+  ];
+  const faq = faqJsonLdFromHtml(html);
+  if (faq) jsonLd.push(faq);
+
+  html = injectSeo(html, {
+    canonical: `${SITE}/pricing`,
+    description: DESCRIPTION,
+    ogTitle: "I Miss You Memorial · Pricing",
+    ogDescription: DESCRIPTION,
+    ogImage: `${SITE}/hero.jpg`,
+    ogType: "website",
+    ogUrl: `${SITE}/pricing`,
+    twitterCard: "summary_large_image",
+    jsonLd,
+  });
+  html = injectTracking(html);
+  return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
 }
