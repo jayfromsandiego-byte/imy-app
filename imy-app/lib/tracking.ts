@@ -129,8 +129,8 @@ export function trackingBodyHtml(): string {
     'if(q.get("upgraded")==="1"){var cs=q.get("cs")||"";var plan=q.get("plan")||"";var seen="";' +
     'try{seen=localStorage.getItem("imy_cs_seen")||""}catch(e){}' +
     "if(!cs||seen.indexOf(cs)<0){" +
-    'if(plan==="plus_monthly"){imyTrack("trial_started",{value:12,currency:"USD",plan:plan,transaction_id:cs})}' +
-    'else{imyTrack("purchase",{value:97,currency:"USD",plan:plan||"plus",transaction_id:cs})}' +
+    'if(plan==="plus_monthly"){imyTrack("trial_started",{value:29,currency:"USD",plan:plan,transaction_id:cs})}' +
+    'else{imyTrack("purchase",{value:197,currency:"USD",plan:plan||"plus",transaction_id:cs})}' +
     'if(cs){try{localStorage.setItem("imy_cs_seen",(seen+","+cs).slice(-400))}catch(e){}}' +
     "}}}catch(e){}" +
     "})();";
