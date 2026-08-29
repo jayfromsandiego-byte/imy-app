@@ -549,8 +549,17 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
     : "";
   const archLivetag = archVideo ? `<span class="livetag" id="archLiveTag">Living portrait</span>` : "";
 
-  const metaDescription = (t.story || "").replace(/\s+/g, " ").trim().slice(0, 155) ||
-    `A place to remember ${t.fullName} · photos, stories, and the voices of everyone who loved ${first}.`;
+  // Meta description ends on a whole word, never mid-word ("...and w"). A
+  // shared link's snippet is often a family's first sight of the page.
+  const metaDescription = (() => {
+    const story = (t.story || "").replace(/\s+/g, " ").trim();
+    if (!story)
+      return `A place to remember ${t.fullName} · photos, stories, and the voices of everyone who loved ${first}.`;
+    if (story.length <= 155) return story;
+    const cut = story.slice(0, 155);
+    const lastSpace = cut.lastIndexOf(" ");
+    return (lastSpace > 80 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:.—–-]+$/, "") + "…";
+  })();
 
   const boot_script = `<script>window.__TRIBUTE__=${JSON.stringify(boot).replace(/</g, "\\u003c")};</script>`;
 

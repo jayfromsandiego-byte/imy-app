@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
 
 export const metadata: Metadata = {
-  title: "About · I Miss You Memorial",
+  // The root layout's title template appends "· I Miss You Memorial" —
+  // a full title here doubled the brand name in the tab and the SERP.
+  title: "About",
   description:
     "Why we built a place to keep someone close — and the promise that every memorial stays online, free, forever.",
   alternates: { canonical: "/about" },

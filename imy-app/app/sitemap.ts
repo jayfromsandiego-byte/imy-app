@@ -8,10 +8,11 @@ export const revalidate = 3600; // refresh hourly
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  // /pricing is a 308 redirect to /#pricing — redirect routes do not belong
+  // in a sitemap; Google flags them and wastes crawl budget re-checking.
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
     "/onboarding",
-    "/pricing",
     "/about",
     "/contact",
     "/terms",
@@ -21,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${SITE}${p}`,
     lastModified: now,
     changeFrequency: p === "" ? "weekly" : "monthly",
-    priority: p === "" ? 1 : p === "/onboarding" ? 0.8 : p === "/pricing" ? 0.7 : 0.4,
+    priority: p === "" ? 1 : p === "/onboarding" ? 0.8 : 0.4,
   }));
 
   const blogRoutes: MetadataRoute.Sitemap = [
