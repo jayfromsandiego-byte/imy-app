@@ -416,7 +416,7 @@ const neverDeletes: BlogArticle = {
 <li>I Miss You Memorial keeps every tribute page online forever, free, with no time limit and no renewal.</li>
 <li>Memorial pages usually vanish for ordinary reasons — a lapsed subscription, an expired obituary host, a closed platform — not dramatic ones.</li>
 <li>Free tiers differ widely: some are complete pages, some are trials with a clock. Read what each site promises in writing.</li>
-<li>Plus, at $197 once, adds video, voice, and every photo with nothing that can ever lapse.</li>
+<li>Plus, at $197 once, adds video, voice, and every photo with nothing that can ever lapse — here is <a href="/blog/memorial-website-without-a-subscription">how memorial websites without a subscription compare</a>.</li>
 </ul>
 `,
   faq: [
@@ -467,12 +467,126 @@ const neverDeletes: BlogArticle = {
   ],
 };
 
+const oneTimePayment: BlogArticle = {
+  slug: "memorial-website-without-a-subscription",
+  title: "A memorial website without a subscription (2026)",
+  description:
+    "Memorial websites that charge once instead of monthly, why a subscription is the wrong shape for remembering someone, and what $197 once buys for life at I Miss You Memorial.",
+  datePublished: "2026-08-29",
+  dateModified: "2026-08-29",
+  lede: "A subscription assumes someone will always be there to pay it. A memorial should not have to make that assumption.",
+  bodyHtml: `
+<p><strong>TL;DR:</strong> Yes — there are memorial websites without a subscription. On I Miss You Memorial, a complete tribute page is free forever, and the paid plan is $197 once, yours for life: one payment, nothing that renews, nothing that can lapse. Several other services also charge once; the differences are in what the free page includes and what the single payment buys.</p>
+<p>Most things on the internet are rented. That is fine for software and film nights, and wrong for a memorial — because a subscription ties the page to a payment that has to outlive the person paying it. Here is how one-time-payment memorial websites work, and how to compare them honestly.</p>
+
+<h2>Is there a memorial website without a subscription?</h2>
+<p>Yes. I Miss You Memorial charges no subscription on any plan: a complete tribute page is free forever, and Plus is a single payment of $197, yours for life. There is no renewal, no billing cycle, and no feature that expires on a clock.</p>
+<ul>
+<li>The free page is complete — photos, their story, and everyone's written memories — and stays online forever.</li>
+<li>Plus, $197 once, adds video and voice memories, room for every photo, restoration of old photographs, and an exact-name web address.</li>
+<li>Concierge, a tribute hand-built for the family, begins at $499 — also a single payment.</li>
+</ul>
+
+<h2>Why does a subscription matter for a memorial?</h2>
+<p>A subscription matters because a memorial is meant to outlast the person who set it up, and a monthly fee cannot promise that. The U.S. National Funeral Directors Association put the median cost of a funeral with viewing and burial at $8,300 in 2023; after a week like that, a bill that arrives forever is the wrong shape for keeping someone.</p>
+<ul>
+<li>On subscription memorial sites, the page's fate is tied to a card that can expire, a bank account that closes, an email no one checks.</li>
+<li>The person most likely to have set up the page — a spouse, a parent — is also a person the page will one day need to survive.</li>
+<li>A single payment ends the question. There is nothing to cancel, nothing to lapse, and nothing to inherit except the page itself.</li>
+</ul>
+
+<h2>What does "$197 once, yours for life" mean at I Miss You Memorial?</h2>
+<p>It means one payment, made one time, and the page and its Plus features belong to the family for good. I Miss You Memorial has no monthly option to confuse it with: free is complete and permanent, and Plus is a single $197.</p>
+<ul>
+<li>Video and voice memories — the sound of them, kept on purpose.</li>
+<li>Room for every photo, and restoration of old photographs.</li>
+<li>An exact-name web address for the page, chosen at checkout.</li>
+<li>Everything stays exportable, always — the photos and words remain the family's own.</li>
+</ul>
+
+<h2>Which memorial websites charge once instead of monthly?</h2>
+<p>Several memorial websites now use one-time payments; the honest differences are what the free page includes and what the single payment buys. The table below reflects each service's own published pricing pages, checked in August 2026.</p>
+<div class="nb-tablewrap"><table>
+<thead><tr><th>Service</th><th>Free page</th><th>One-time payment</th><th>What the payment buys</th></tr></thead>
+<tbody>
+<tr><td>I Miss You Memorial</td><td>Complete page, free forever</td><td>$197 (Plus) · Concierge from $499</td><td>Video and voice memories, every photo, photo restoration, exact-name address — for life</td></tr>
+<tr><td>Keeper</td><td>One page, up to 5 photos and videos</td><td>$99 (Plus) · $350 (Concierge)</td><td>Unlimited photos, videos, and pages</td></tr>
+<tr><td>Candela</td><td>Permanent page with up to 20 photos</td><td>One-time tiers</td><td>More photos, storytelling tools, visitor uploads</td></tr>
+<tr><td>QuickMemorial</td><td>Starter page, 1 photo, 14-day manage window</td><td>From $9</td><td>Permanent hosting, QR code, more photos</td></tr>
+<tr><td>Ever Loved</td><td>Memorial website free to create and maintain</td><td>—</td><td>Funded through other services it offers</td></tr>
+</tbody>
+</table></div>
+<p class="nb-tnote">Checked August 2026 against each service's published pages. Details change; verify before you choose.</p>
+
+<h2>What should you ask before paying for any memorial website?</h2>
+<p>Ask four questions of any memorial website — including I Miss You Memorial — before you pay it anything. Good answers should be published on the site, not implied.</p>
+<ul>
+<li><strong>Is the payment truly once?</strong> Some "lifetime" offers sit beside subscription tiers; read which one you are buying.</li>
+<li><strong>What does the free page include, and does it expire?</strong> A free page with a clock is a trial, not a home.</li>
+<li><strong>What happens to the page when the buyer dies?</strong> The page should not depend on anyone logging in or renewing.</li>
+<li><strong>Can you export everything, at any time?</strong> The photos and words should remain the family's own.</li>
+</ul>
+<p>How services answer the deeper question — whether pages are ever deleted — is compared in <a href="/blog/free-memorial-website-that-never-deletes">a free memorial website that never deletes pages</a>.</p>
+
+<h2>Key takeaways</h2>
+<ul>
+<li>I Miss You Memorial has no subscription on any plan: free is a complete permanent page, and Plus is $197 once, yours for life.</li>
+<li>A one-time payment removes the failure mode that erases most memorial pages — a payment that had to outlive the payer.</li>
+<li>Several services charge once; compare what the free page includes and what the single payment buys, from each site's own published pages.</li>
+<li>Families leaving social platforms can start with the <a href="/blog/alternatives-to-a-facebook-memorial-page">alternatives to a Facebook memorial page</a>, or <a href="/">begin a free memorial page</a> that never asks for a card.</li>
+</ul>
+`,
+  faq: [
+    {
+      q: "Is there a memorial website without monthly fees?",
+      a: "Yes. I Miss You Memorial charges no monthly fees on any plan. A complete tribute page is free forever, and the paid plan is a single payment — Plus at $197, yours for life — so nothing renews and nothing can lapse.",
+    },
+    {
+      q: "How much does a lifetime memorial website cost?",
+      a: "On I Miss You Memorial, $197 once for Plus — video and voice memories, every photo, photo restoration, and an exact-name web address, for life. A complete tribute page without those extras is free forever. Concierge, hand-built for the family, begins at $499.",
+    },
+    {
+      q: "Is the $197 on I Miss You Memorial one-time or yearly?",
+      a: "One-time. Plus on I Miss You Memorial is $197 paid once, yours for life. It is not a yearly fee and not a subscription; there is nothing to renew and nothing to cancel.",
+    },
+    {
+      q: "What happens to a memorial page if you stop paying a subscription?",
+      a: "On subscription memorial sites, features or the page itself can lapse with the payment. I Miss You Memorial removes the question: there is no subscription on any plan, the free page stays online forever, and a Plus purchase is a single payment that cannot lapse.",
+    },
+    {
+      q: "Does the free memorial page on I Miss You Memorial expire?",
+      a: "No. The free page on I Miss You Memorial is a complete tribute page — photos, their story, and everyone's memories — and it stays online forever, with no time limit, no renewal, and no credit card required to begin.",
+    },
+    {
+      q: "Can you upgrade a free memorial page to Plus later?",
+      a: "Yes. A family can begin with the free page on I Miss You Memorial and add Plus at any time with a single $197 payment. Everything already on the page stays exactly as it was kept.",
+    },
+    {
+      q: "Do visitors have to pay or sign up to see a memorial page?",
+      a: "No. On I Miss You Memorial, visitors open the page from one shared link — no account, app, or payment. Family and friends can leave written memories, candles, and flowers, and every word waits for the family's approval before it appears.",
+    },
+    {
+      q: "What does the Plus plan add on I Miss You Memorial?",
+      a: "Plus, $197 once, adds video and voice memories, room for every photo, restoration of old photographs, and an exact-name web address for the page. The free page it builds on is already complete and permanent.",
+    },
+    {
+      q: "Why do some memorial websites charge monthly?",
+      a: "Subscriptions fund ongoing hosting on many platforms, which works until the payment stops — and with a memorial, the payer may not always be there. Services built on one-time payments, including I Miss You Memorial, fund permanence up front so the page never depends on a billing cycle.",
+    },
+    {
+      q: "What happens to the memorial page when the person who paid for it dies?",
+      a: "On I Miss You Memorial, nothing changes. The page does not depend on its creator logging in, renewing, or paying anything again — it stays online for the family exactly as it was kept, because there is no subscription to outlive.",
+    },
+  ],
+};
+
 export const articles: BlogArticle[] = [
   whatToWrite,
   facebookMemorialized,
   qrGuide,
   facebookAlternatives,
   neverDeletes,
+  oneTimePayment,
 ];
 
 export function getArticle(slug: string): BlogArticle | undefined {
