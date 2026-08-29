@@ -28,6 +28,12 @@ font-family:'Besley',Georgia,serif;background:var(--cream);color:var(--ink);-web
 .nb-body ul{padding-left:22px;margin:0 0 18px}
 .nb-body li{margin-bottom:9px}
 .nb-body blockquote{margin:28px 0;padding:4px 0 4px 20px;border-left:3px solid var(--gold);font-style:italic;color:var(--ink-soft)}
+.nb-tablewrap{overflow-x:auto;margin:26px 0}
+.nb-body table{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.5;min-width:560px}
+.nb-body th{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;color:var(--ink-soft);text-align:left;padding:9px 12px 8px;border-bottom:2px solid var(--line)}
+.nb-body td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.nb-body td:first-child{font-weight:600}
+.nb-body .nb-tnote{font-family:'Sometype Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:var(--ink-soft)}
 .nb-list{list-style:none;margin:36px 0 0;padding:0}
 .nb-item{padding:26px 0;border-top:1px solid var(--line)}
 .nb-item:first-child{border-top:0;padding-top:16px}
