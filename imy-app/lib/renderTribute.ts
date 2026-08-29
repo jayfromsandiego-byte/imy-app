@@ -41,6 +41,22 @@ export function embedSrc(url: string): string | null {
   return null;
 }
 export type MemoryComment = { name: string; rel: string; text: string };
+// A family-tree member (0034). years/relLabel are the family's own words
+// ("1948–2024", "b. 1972", "her son"); links refer to member keys.
+export type FamilyMember = {
+  key: string;
+  name: string;
+  years?: string;
+  initials?: string;
+  avatar?: string;
+  spouse?: string;
+  parents?: string[];
+  chosenOf?: string;
+  relLabel?: string;
+  isSubject?: boolean;
+  note?: string;
+  sort?: number;
+};
 export type MemoryItem = { id?: string; text: string; name: string; rel: string; hearts?: number; audio?: string; video?: string; comments?: MemoryComment[]; photos?: string[]; avatarUrl?: string };
 export type ReelItem = { poster?: string; label?: string; url?: string };
 
@@ -84,6 +100,7 @@ export type Tribute = {
   voiceUrl?: string;
   reel?: ReelItem[];
   memories?: MemoryItem[];
+  familyTree?: FamilyMember[]; // the tree room (0034) — read by the unified renderer only
   placements?: Placements;
   sections?: SectionPlan;
   sponsor?: { name?: string; photoUrl?: string; message?: string };

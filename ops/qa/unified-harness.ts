@@ -287,6 +287,39 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("counts carry no fabricated visits", !("visits" in (bare.counts || {})) || !bare.counts.visits);
 }
 
+// ── 11b · the family tree wakes with a real data source (0034) ────────────────
+{
+  const treed: Tribute = {
+    slug: "jonny",
+    fullName: "Jon Alvarez",
+    tier: "plus",
+    status: "published",
+    pronouns: "he",
+    familyTree: [
+      { key: "jon", name: "Jon Alvarez", years: "1948–2026", isSubject: true, note: "This page is his.", avatar: "https://x/jon.jpg", sort: 0 },
+      { key: "maria", name: "Maria <script>alert(1)</script> Alvarez", years: '2001"><img onerror=x>', relLabel: "his daughter", parents: ["jon"], note: "O'Neill & sons", sort: 1 },
+      { key: "ruthy", name: "Ruth Q.", chosenOf: "jon", avatar: "javascript:alert(1)", sort: 2 },
+      { key: "bad key!", name: "Mallory", sort: 3 },
+      { key: "ghost", name: "   ", sort: 4 },
+      { key: "link", name: "Lin K.", spouse: "bad key!", parents: ["jon", "nope key!"], sort: 5 },
+    ],
+  };
+  const b = boot(renderTributeUnified(template, treed));
+  t("the tree wakes: PEOPLE populated, ROOT is the subject", Object.keys(b.PEOPLE).length === 4 && b.ROOT === "jon" && b.PEOPLE.jon.her === true);
+  t("tree names/years/notes are escaped at the boundary (LB-1)",
+    b.PEOPLE.maria.n === "Maria &lt;script&gt;alert(1)&lt;/script&gt; Alvarez" &&
+    b.PEOPLE.maria.y === "2001&quot;&gt;&lt;img onerror=x&gt;" &&
+    b.PEOPLE.maria.note === "O&#39;Neill &amp; sons");
+  t("relLabel rides raw for its textContent sink", b.PEOPLE.maria.relLabel === "his daughter");
+  t("a non-https avatar is gated out and the monogram takes over", !b.PEOPLE.ruthy.av && b.PEOPLE.ruthy.i === "RQ");
+  t("an https avatar is kept", b.PEOPLE.jon.av === "https://x/jon.jpg");
+  t("chosen-family links survive", b.PEOPLE.ruthy.chosen === "jon");
+  t("an unsafe member_key is dropped whole, never half-linked", !("bad key!" in b.PEOPLE) && !b.PEOPLE.ghost);
+  t("unsafe link targets are filtered from sp/pa", !b.PEOPLE.link.sp && JSON.stringify(b.PEOPLE.link.pa) === '["jon"]');
+  t("no subject row = the room rests exactly as before 0034",
+    (() => { const nb = boot(renderTributeUnified(template, { ...treed, familyTree: [{ key: "a", name: "A" }] })); return nb.ROOT === "" && Object.keys(nb.PEOPLE).length === 1; })());
+}
+
 // ── 12 · the wreath template and renderer are untouched by this port ──────────
 {
   t("the wreath template still carries its own boot contract", wreathTemplate.includes("{{TRIBUTE_BOOT}}"));
