@@ -20,6 +20,24 @@ const DESCRIPTION =
 export async function GET() {
   let html = await fs.readFile(path.join(process.cwd(), "templates", "landing.html"), "utf8");
 
+  // The unified landing document carries homepage-scoped SEO tags (canonical
+  // "/", og:url "/", the homepage title and description). /pricing serves the
+  // same document, so those tags are rewritten to pricing-scoped values here —
+  // otherwise /pricing would canonicalize to / and never index on its own.
+  html = html
+    .replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, `<link rel="canonical" href="${SITE}/pricing"/>`)
+    .replace(/<meta property="og:url" content="[^"]*"\s*\/?>/, `<meta property="og:url" content="${SITE}/pricing"/>`)
+    .replace(
+      /<meta property="og:title" content="[^"]*"\s*\/?>/,
+      '<meta property="og:title" content="I Miss You Memorial · Pricing"/>',
+    )
+    .replace(/<meta name="description" content="[^"]*"\s*\/?>/, `<meta name="description" content="${DESCRIPTION}"/>`)
+    .replace(
+      /<meta property="og:description" content="[^"]*"\s*\/?>/,
+      `<meta property="og:description" content="${DESCRIPTION}"/>`,
+    )
+    .replace(/<title>[^<]*<\/title>/, "<title>Pricing · I Miss You Memorial</title>");
+
   const jsonLd: object[] = [
     {
       "@context": "https://schema.org",
