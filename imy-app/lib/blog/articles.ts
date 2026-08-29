@@ -18,6 +18,12 @@ export type BlogArticle = {
   lede: string;
   /** Article body: h2 / p / a / ul / li / blockquote only. */
   bodyHtml: string;
+  /**
+   * Optional FAQ, rendered after the body and emitted as FAQPage JSON-LD.
+   * Answers must be self-contained and true standing alone — assistants and
+   * search engines quote them verbatim, away from the rest of the page.
+   */
+  faq?: { q: string; a: string }[];
 };
 
 const whatToWrite: BlogArticle = {
@@ -215,7 +221,153 @@ const qrGuide: BlogArticle = {
 `,
 };
 
-export const articles: BlogArticle[] = [whatToWrite, facebookMemorialized, qrGuide];
+const facebookAlternatives: BlogArticle = {
+  slug: "alternatives-to-a-facebook-memorial-page",
+  title: "Alternatives to a Facebook memorial page",
+  description:
+    "What families use instead of a Facebook memorial page — a dedicated memorial website, shared albums, printed keepsakes — and how to keep every memory in one lasting place.",
+  datePublished: "2026-08-29",
+  lede: "A feed was built for the passing moment. Remembering someone asks for the opposite.",
+  bodyHtml: `
+<p>When someone dies, their Facebook profile is often the first place the grief gathers — and the first place families discover its limits. What follows is a plain map of the alternatives, what each one holds well, and how to move the memories that matter before anything is locked away.</p>
+
+<h2>What can families use instead of a Facebook memorial page?</h2>
+<p>The main alternatives to a Facebook memorial page are a dedicated memorial website, a shared photo album, a private group chat, and a printed keepsake. A dedicated memorial website such as I Miss You Memorial gathers the photos, the story, and everyone's written memories on one permanent page that does not depend on a social platform's rules.</p>
+<ul>
+<li><strong>A dedicated memorial website</strong> — one page for one person, built to be added to for years. On I Miss You Memorial, a complete tribute page is free, forever.</li>
+<li><strong>A shared photo album</strong> (Google Photos, iCloud) — good for gathering pictures, silent on the story.</li>
+<li><strong>A private group chat</strong> — warm and immediate, but memories scatter and sink.</li>
+<li><strong>A printed keepsake book</strong> — permanent and holdable, finished the day it is printed.</li>
+</ul>
+<p>These are not rivals. Many families keep the album and the chat, and give the memories a permanent home on a memorial page.</p>
+
+<h2>Why do families look beyond Facebook for a memorial?</h2>
+<p>Families look beyond Facebook because a <a href="/blog/facebook-memorialized-account-what-happens">memorialized account</a> is sealed: no one can log in again, and every photo keeps its original privacy setting forever. About 68% of U.S. adults use Facebook, by Pew Research Center's 2024 measure — which also means roughly a third of the people who loved someone may not be there at all.</p>
+<ul>
+<li>No one can log in to a memorialized account — not family, not with the password.</li>
+<li>Photos stay locked at the audience they were first shared with; a friends-only picture stays friends-only, forever.</li>
+<li>Tributes written on the wall sink in the feed like everything else.</li>
+<li>Grandparents, children, and friends who never joined Facebook are outside the door.</li>
+</ul>
+<p>One example, common enough to be a pattern: a grandmother's photos, shared friends-only over fifteen years, become invisible to the grandchildren who were never on her friends list — permanently.</p>
+
+<h2>What is a dedicated memorial website?</h2>
+<p>A dedicated memorial website is a single page built for one person, where family and friends add photos, videos, and written memories over time, from one shared link. On I Miss You Memorial the page exists the moment you add their name and a favorite photo, and it takes a few minutes to begin.</p>
+<ul>
+<li>One link brings everyone in — no account, app, or friend request required to visit.</li>
+<li>The family decides who sees it: public, unlisted, or protected with a password, on every plan.</li>
+<li>Everything on the page stays exportable — the photos and words remain the family's own.</li>
+<li>Words written there wait for the family instead of scrolling away.</li>
+</ul>
+
+<h2>How much does a memorial website cost?</h2>
+<p>A complete memorial page on I Miss You Memorial is free, forever, with no credit card to begin. Plus is $197 once, yours for life — video and voice memories, every photo, and an exact-name web address. Concierge, hand-built for the family, begins at $499. There is no subscription on any plan, so nothing lapses and no page is ever held to a billing cycle.</p>
+
+<h2>Can you move photos and posts from Facebook to a memorial page?</h2>
+<p>Yes, while the account is still accessible. Facebook's Download Your Information tool exports the photos, videos, and posts; after memorialization, only a legacy contact may download shared content, and only if the person granted that permission in advance.</p>
+<ul>
+<li>Export first, memorialize second — the order matters and cannot be reversed.</li>
+<li>Messenger threads, including voice messages, are private and cannot be exported by anyone else. If a recording of their voice lives there, save it now.</li>
+<li>Once exported, the best of it can be uploaded to <a href="/">their memorial page</a> in an afternoon.</li>
+</ul>
+<p>A family that spends one evening on the export keeps everything. A family that waits often keeps only what strangers could already see.</p>
+`,
+  faq: [
+    {
+      q: "What is the best alternative to a Facebook memorial page?",
+      a: "A dedicated memorial website is the most complete alternative to a Facebook memorial page, because it gathers photos, stories, and messages on one permanent page anyone can visit from a single link. On I Miss You Memorial, a complete tribute page is free, forever, with no account required to visit.",
+    },
+    {
+      q: "Is a Facebook memorial page free?",
+      a: "Yes. Memorializing a Facebook account is free, but it seals the account: no one can log in again, photos keep their original privacy settings forever, and nothing new can be arranged or exported without a pre-named legacy contact.",
+    },
+    {
+      q: "Can you make a memorial page for someone without using Facebook?",
+      a: "Yes. I Miss You Memorial lets a family create a memorial page in a few minutes by adding a name and a favorite photo. The page is free, stays online forever, and family and friends add their own photos and memories through one shared link.",
+    },
+    {
+      q: "Does a memorial website replace a Facebook memorial?",
+      a: "It does not have to. Many families keep the memorialized Facebook profile as it stands and build the living memorial elsewhere. The memorial website becomes the place that grows — where photos from every source, the full story, and new memories are kept together.",
+    },
+  ],
+};
+
+const neverDeletes: BlogArticle = {
+  slug: "free-memorial-website-that-never-deletes",
+  title: "A free memorial website that never deletes pages",
+  description:
+    "Why online memorials disappear — lapsed subscriptions, expired hosting, closed platforms — and what it means that I Miss You Memorial keeps every page, free, forever.",
+  datePublished: "2026-08-29",
+  lede: "The internet forgets by default. Keeping a page is a decision someone has to make on purpose, and keep making.",
+  bodyHtml: `
+<p>The question families ask, once they have been burned or heard of someone who was: <em>will this page still be there in twenty years?</em> It deserves a plain answer, and a way to test anyone's answer — including ours.</p>
+
+<h2>Is there a free memorial website that never deletes pages?</h2>
+<p>Yes. I Miss You Memorial keeps a complete tribute page online forever, free, with no credit card and no time limit. Free is the finished product, not a trial: the page holds their photos, their story, and the messages of everyone who misses them, and it stays.</p>
+<ul>
+<li>A complete tribute page — photos, their story, and room for every memory — at no cost.</li>
+<li>Family and friends contribute through one shared link; the page grows over time.</li>
+<li>Privacy on every plan: public, unlisted, or protected with a password.</li>
+<li>Everything stays exportable — the photos and words remain the family's own.</li>
+</ul>
+
+<h2>Why do online memorial pages disappear?</h2>
+<p>Most memorial pages disappear because they were rented, not kept: subscriptions lapse, obituary hosting expires, and platforms close. When Yahoo shut down GeoCities in 2009, an estimated 38 million pages went offline at once — personal pages, tributes among them, gone in a day.</p>
+<ul>
+<li><strong>Subscriptions lapse.</strong> On subscription memorial sites, the page's fate is tied to a payment that must outlive the payer.</li>
+<li><strong>Obituary hosting expires.</strong> Newspaper obituaries and their guest books are often kept only for a paid term.</li>
+<li><strong>Social accounts get sealed or deleted.</strong> A <a href="/blog/facebook-memorialized-account-what-happens">memorialized profile</a> is locked at its old privacy settings; a deleted one takes everything with it.</li>
+<li><strong>Platforms close.</strong> No service is exempt from this by default — only by design and by promise.</li>
+</ul>
+
+<h2>What does "free, forever" mean at I Miss You Memorial?</h2>
+<p>It means every tribute page is backed up and funded to stay online for generations, and no family is ever charged to keep a memory alive. Free stays free: the free page is not a sample of the real thing, it is the real thing.</p>
+<ul>
+<li>The page exists from the moment you add their name and a favorite photo.</li>
+<li>It does not depend on the creator logging in, renewing, or remembering.</li>
+<li>The family's photos and words stay private, exportable, and theirs. I Miss You Memorial never sells the data.</li>
+</ul>
+
+<h2>What does the $197 Plus plan add?</h2>
+<p>Plus is $197 once, yours for life — a single payment, never a subscription, so there is nothing to lapse. It adds video and voice memories, room for every photo, restoration of old photographs, and an exact-name web address for the page. Because nothing renews, the question that haunts subscription memorials — <em>what happens when the payments stop?</em> — never arises. Concierge, a tribute hand-built for the family, begins at $499.</p>
+
+<h2>How can you tell whether any memorial site will keep a page?</h2>
+<p>Ask four questions of any memorial website — including I Miss You Memorial — before you pour a life into it. The U.S. National Funeral Directors Association put the median cost of a funeral with viewing and burial at $8,300 in 2023; after that, the remembering should not carry a monthly bill.</p>
+<ul>
+<li><strong>Is the free page complete, or a trial?</strong> If features expire, the page is a funnel, not a home.</li>
+<li><strong>What happens if payments stop?</strong> The honest answer should be written down, not implied.</li>
+<li><strong>Can you export everything, at any time?</strong> A page you cannot leave with your photos is a page you do not own.</li>
+<li><strong>Is permanence a published promise, or an assumption?</strong> Look for the words, in writing, on the site itself.</li>
+</ul>
+<p>Any service with good answers to all four is worth trusting. That is the standard I Miss You Memorial holds itself to, in writing.</p>
+`,
+  faq: [
+    {
+      q: "Is I Miss You Memorial really free?",
+      a: "Yes. A complete tribute page on I Miss You Memorial stays online forever, free, with no credit card to begin. Plus is $197 once, yours for life, and adds video and voice memories, every photo, and an exact-name address — but free is a finished page, not a trial.",
+    },
+    {
+      q: "How long does a free memorial page stay online?",
+      a: "On I Miss You Memorial, forever. Every tribute page is backed up and funded to stay online for generations, and no family is ever charged to keep a memory alive. There is no time limit and no renewal on a free page.",
+    },
+    {
+      q: "What happens to a memorial page if the person who created it dies?",
+      a: "On I Miss You Memorial, the page stays online. A tribute page does not depend on its creator logging in or renewing anything, so it remains for the family exactly as it was kept.",
+    },
+    {
+      q: "Can a memorial page be moved to I Miss You Memorial from another site?",
+      a: "Yes. Export or save the photos and words from the old site, create a free page on I Miss You Memorial with their name and a favorite photo, and add the memories from one shared link. Most families move a memorial in an afternoon.",
+    },
+  ],
+};
+
+export const articles: BlogArticle[] = [
+  whatToWrite,
+  facebookMemorialized,
+  qrGuide,
+  facebookAlternatives,
+  neverDeletes,
+];
 
 export function getArticle(slug: string): BlogArticle | undefined {
   return articles.find((a) => a.slug === slug);
