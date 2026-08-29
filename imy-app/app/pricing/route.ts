@@ -15,7 +15,7 @@ export const runtime = "nodejs";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
 const DESCRIPTION =
-  "I Miss You Memorial pricing — a complete tribute page is free, forever. Plus is $197 once or $29/month for video, voice, and every photo. Concierge, hand-built, from $499.";
+  "I Miss You Memorial pricing — a complete tribute page is free, forever. Plus is $197 once, yours for life: video, voice, and every photo. Concierge, hand-built, from $499.";
 
 export async function GET() {
   let html = await fs.readFile(path.join(process.cwd(), "templates", "landing.html"), "utf8");
@@ -49,6 +49,10 @@ export async function GET() {
   const faq = faqJsonLdFromHtml(html);
   if (faq) jsonLd.push(faq);
 
+  // The unified landing document ships its own JSON-LD — when the design file
+  // carries structured data it is the source of truth; inject nothing on top.
+  const docOwnsJsonLd = html.includes("application/ld+json");
+
   html = injectSeo(html, {
     canonical: `${SITE}/pricing`,
     description: DESCRIPTION,
@@ -58,7 +62,7 @@ export async function GET() {
     ogType: "website",
     ogUrl: `${SITE}/pricing`,
     twitterCard: "summary_large_image",
-    jsonLd,
+    jsonLd: docOwnsJsonLd ? [] : jsonLd,
   });
   html = injectTracking(html);
   return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });

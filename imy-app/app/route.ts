@@ -68,7 +68,8 @@ export async function GET() {
           name: "Plus",
           price: "197",
           priceCurrency: "USD",
-          description: "$197 once or $29/month — video and voice memories, every photo, an exact-name address.",
+          description:
+            "$197 once, yours for life — video and voice memories, every photo, AI photo restoration, an exact-name address.",
         },
         {
           "@type": "Offer",
@@ -83,6 +84,12 @@ export async function GET() {
   const faq = faqJsonLdFromHtml(html);
   if (faq) jsonLd.push(faq);
 
+  // The unified landing document ships its own JSON-LD (Organization, WebSite,
+  // Service with the $197-lifetime offer, FAQPage). When the design file
+  // carries structured data it is the source of truth — nothing is injected on
+  // top of it. The blocks above only serve a design file that has none.
+  const docOwnsJsonLd = html.includes("application/ld+json");
+
   html = injectSeo(html, {
     canonical: `${SITE}/`,
     description: DESCRIPTION,
@@ -92,7 +99,7 @@ export async function GET() {
     ogType: "website",
     ogUrl: `${SITE}/`,
     twitterCard: "summary_large_image",
-    jsonLd,
+    jsonLd: docOwnsJsonLd ? [] : jsonLd,
   });
   html = injectTracking(html);
   return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
