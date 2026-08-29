@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ip = clientIp(req);
-  const { allowed } = rateLimit(`memory-author:${ip}`, 20, 10 * 60_000);
+  const { allowed } = await rateLimit(`memory-author:${ip}`, 20, 10 * 60_000);
   if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
 
   let body: any;

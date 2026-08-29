@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "not_configured" }, { status: 503 });
   }
   const ip = clientIp(req);
-  const { allowed } = rateLimit(`film-approve:${ip}`, 10, 60_000);
+  const { allowed } = await rateLimit(`film-approve:${ip}`, 10, 60_000);
   if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
 
   const ct = req.headers.get("content-type") || "";

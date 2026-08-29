@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   }
 
   const ip = clientIp(req);
-  const { allowed } = rateLimit(`candle:${ip}:${slug}`, 60, 60_000);
+  const { allowed } = await rateLimit(`candle:${ip}:${slug}`, 60, 60_000);
   if (!allowed) {
     return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }

@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   // for grief, still a wall against abuse.
   {
     const ip = clientIp(req);
-    const { allowed } = rateLimit(`upload:${ip}`, 150, 600_000);
+    const { allowed } = await rateLimit(`upload:${ip}`, 150, 600_000);
     if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }
 

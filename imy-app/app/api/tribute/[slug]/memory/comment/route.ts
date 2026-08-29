@@ -42,7 +42,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   if (text.length < 2) return NextResponse.json({ ok: false, error: "empty" }, { status: 400 });
 
   const ip = clientIp(req);
-  const { allowed } = rateLimit(`comment:${ip}`, 8, 5 * 60_000);
+  const { allowed } = await rateLimit(`comment:${ip}`, 8, 5 * 60_000);
   if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
 
   const db = supabaseAdmin();
