@@ -669,8 +669,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
 // ── 16 · the landing carries the log-in door too (July 10) ────────────────────
 {
   const landing = readFileSync((process.env.IMY_REPO_ROOT || ".") + "/imy-app/templates/landing.html", "utf8");
-  t("the landing's log-in door stands left of start a tribute",
-    landing.includes('<a class="mw-login" href="/signin">Log in</a>\n    <a class="mw-navcta" href="/onboarding">Start a tribute</a>'));
+  t("the landing's log-in door stands left of start a tribute (doors lead into the unified app since #38)",
+    landing.includes('<a class="mw-login" href="/preview/unified.html#/signin">Log in</a>\n    <a class="mw-navcta" href="/preview/unified.html#/signin?next=start">Start a tribute</a>'));
   t("the landing door matches the tribute button's size",
     landing.includes(".mwhero .mw-login{margin-left:auto;font-weight:600;font-size:14px;") && landing.includes("padding:10px 20px") && landing.includes(".mwhero .mw-login+.mw-navcta{margin-left:0}"));
   t("the full mobile wordmark is no longer ellipsized", landing.includes("overflow:visible;text-overflow:clip;font-size:18px") && landing.includes("height:23px!important"));
@@ -747,12 +747,12 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     template.includes("function mtier(m){var ph=((m.phs&&m.phs.length)||m.ph||m.dp)?1:0,av=(m.au||m.vi)?1:0;return ph&&av?0:(ph?1:(av?2:3))}") &&
     template.includes("MEMS.sort(function(a,b){return mtier(a)-mtier(b)||a._bi-b._bi})"));
   const landing = readFileSync((process.env.IMY_REPO_ROOT || ".") + "/imy-app/templates/landing.html", "utf8");
-  t("the landing hero wears the memory wall exactly once",
-    (landing.match(/\/art\/landing-memorywall\.webp/g) || []).length === 1);
+  t("the landing hero wears the memory wall exactly once (same-origin since #40)",
+    (landing.match(/\/media\/landing\/183c5d31-cc77-4003-bd27-ea405d0d72c7\.webp/g) || []).length === 1);
   t("the nav's Example walks the page to the example section (a plain anchor, gesture-only)",
     landing.includes('<a href="#example">Example</a>') && landing.includes('id="example"'));
-  t("the hero's See an example still opens Eleanor in a new tab",
-    landing.includes('<a class="mw-bg2" href="/sites/eleanor" target="_blank" rel="noopener">See an example</a>'));
+  t("the hero's See an example still opens Eleanor in a new tab (the unified page since #38)",
+    landing.includes('<a class="mw-bg2" href="/preview/unified.html#/site/eleanor" target="_blank" rel="noopener">See an example</a>'));
   t("the nav scroll is smooth, and rests under reduced motion",
     landing.includes("html{scroll-behavior:smooth}") && landing.includes("html{scroll-behavior:auto}"));
 }

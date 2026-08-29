@@ -306,6 +306,42 @@ export function renderTributeUnified(template: string, t: Tribute): string {
     ? { when: svcWhen, whereName: t.service.place || "", whereAddr: t.service.address || "" } // hydrator-consumed → raw (it escapes its own seams)
     : null;
 
+  // ── the family tree (0034) — PEOPLE keyed by member_key, ROOT the subject.
+  //    Escaping classes per the boundary note: n/y/note are innerHTML-consumed
+  //    → esc(); relLabel is textContent-consumed (relTo → tiRel.textContent)
+  //    → raw. Avatars ride the https-only gate; a gated-out or absent avatar
+  //    falls back to a monogram. member_key doubles as an object key and a
+  //    link target (sp/pa/chosen), so it must be slug-safe — anything else is
+  //    dropped whole rather than half-linked. No subject row = no ROOT = the
+  //    template's Gate 0 guard rests the room, exactly as before 0034. ──
+  const keyOk = (k?: string) => !!k && /^[a-z0-9_-]{1,64}$/i.test(k);
+  const peopleDict: Record<string, object> = {};
+  let treeRoot = "";
+  for (const fm of t.familyTree || []) {
+    if (!fm || !keyOk(fm.key) || !String(fm.name || "").trim()) continue;
+    const entry: Record<string, unknown> = {
+      n: esc(fm.name),
+      y: esc(fm.years || ""),
+      note: esc(fm.note || ""),
+    };
+    const av = keptUrl(fm.avatar);
+    if (av) entry.av = av;
+    else
+      entry.i = esc(
+        (fm.initials || String(fm.name).trim().split(/\s+/).map((w) => w[0] || "").join("").slice(0, 2)).toUpperCase().slice(0, 3)
+      );
+    if (keyOk(fm.spouse)) entry.sp = fm.spouse;
+    const parents = (fm.parents || []).filter(keyOk);
+    if (parents.length) entry.pa = parents;
+    if (keyOk(fm.chosenOf)) entry.chosen = fm.chosenOf;
+    if (fm.relLabel) entry.relLabel = fm.relLabel; // textContent-consumed → raw
+    if (fm.isSubject && !treeRoot) {
+      entry.her = true;
+      treeRoot = fm.key;
+    }
+    peopleDict[fm.key] = entry;
+  }
+
   // ── the override — every key present, empty arrays included, so no `||`
   //    fallback can ever fire (§4a) ──
   const override = {
@@ -334,8 +370,8 @@ export function renderTributeUnified(template: string, t: Tribute): string {
     TAPES,
     SHURL: shurl,
     SHTXT: `Remembering ${t.fullName} · leave a memory, a photo, a kind word · ${shurl}`,
-    PEOPLE: {}, // no family-tree data source yet (G-U2/R6) — the Gate 0 guard rests the room
-    ROOT: "",
+    PEOPLE: peopleDict,
+    ROOT: treeRoot,
     treeOwnLabel: `this page is ${poss}`,
   };
   const overrideScript = `<script>window.IMY_OVERRIDE=${JSON.stringify(override).replace(/</g, "\\u003c")};</script>`;

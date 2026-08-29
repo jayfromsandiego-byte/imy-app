@@ -18,6 +18,7 @@ const SELECT =
   "tribute_memories(*," +
   "tribute_memory_comments(author_name,relation,body,status,created_at,deleted_at))," +
   "tribute_loved_things(label,motif_key,note,sort)," +
+  "tribute_family_members(member_key,name,years_line,initials,avatar_url,spouse_key,parent_keys,chosen_of_key,rel_label,is_subject,note,sort,deleted_at)," +
   "tribute_audio(url,kind)," +
   "tribute_service(starts_at,venue,address,charity_name,charity_url)," +
   "film_jobs(video_id,film_url,poster_url,duration_seconds,variant,rendered_variant,status,error,created_at,finished_at,deleted_at)";
@@ -144,6 +145,25 @@ function rowToTribute(r: any): Tribute {
           .map((c: any) => ({ name: c.author_name, rel: c.relation || "", text: c.body })),
       })),
     lovedThings: lovedThings.map((l: any) => ({ label: l.label, motifKey: l.motif_key, note: l.note })),
+    // The family tree (0034), in the family's order. Absent = the room rests.
+    familyTree: (r.tribute_family_members || [])
+      .filter((f: any) => !f.deleted_at)
+      .slice()
+      .sort(bySort)
+      .map((f: any) => ({
+        key: f.member_key,
+        name: f.name,
+        years: f.years_line || undefined,
+        initials: f.initials || undefined,
+        avatar: f.avatar_url || undefined,
+        spouse: f.spouse_key || undefined,
+        parents: Array.isArray(f.parent_keys) && f.parent_keys.length ? f.parent_keys : undefined,
+        chosenOf: f.chosen_of_key || undefined,
+        relLabel: f.rel_label || undefined,
+        isSubject: !!f.is_subject,
+        note: f.note || undefined,
+        sort: f.sort ?? 0,
+      })),
     service: r.tribute_service
       ? {
           date: dateOnly(r.tribute_service.starts_at),
