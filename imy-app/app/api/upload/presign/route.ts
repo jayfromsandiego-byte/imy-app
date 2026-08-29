@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   // Same wall as the proxied upload door (July 12 audit): a family's videos
   // fit comfortably; an unbounded signer does not.
   {
-    const { allowed } = rateLimit(`presign:${clientIp(req)}`, 60, 600_000);
+    const { allowed } = await rateLimit(`presign:${clientIp(req)}`, 60, 600_000);
     if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }
   let body: any;

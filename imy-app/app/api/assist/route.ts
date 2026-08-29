@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   // The helper spends the operator's model keys — generous for a grieving
   // writer, closed to a script (July 12 audit).
   {
-    const { allowed } = rateLimit(`assist:${clientIp(req)}`, 30, 600_000);
+    const { allowed } = await rateLimit(`assist:${clientIp(req)}`, 30, 600_000);
     if (!allowed) return NextResponse.json({ ok: false, error: "Please try again in a moment." }, { status: 429 });
   }
   let body: any = {};

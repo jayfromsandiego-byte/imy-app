@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   }
 
   const ip = clientIp(req);
-  const { allowed } = rateLimit(`slugcheck:${ip}`, 30, 60_000);
+  const { allowed } = await rateLimit(`slugcheck:${ip}`, 30, 60_000);
   if (!allowed) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
 
   if (!supabaseConfigured) {

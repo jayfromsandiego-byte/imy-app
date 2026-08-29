@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   // sealing hundreds is not a family (July 12 audit) — and every unchecked
   // seal is a published page and a spent slug.
   {
-    const { allowed } = rateLimit(`intake:${clientIp(req)}`, 10, 3_600_000);
+    const { allowed } = await rateLimit(`intake:${clientIp(req)}`, 10, 3_600_000);
     if (!allowed) return NextResponse.json({ ok: false, error: "Too many pages from this connection · please try again in an hour." }, { status: 429 });
   }
   let body: any;

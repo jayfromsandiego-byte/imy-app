@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (clean(p.company, 100)) return back(true);
 
   const ip = clientIp(req);
-  const { allowed } = rateLimit(`contact:${ip}`, 5, 10 * 60_000);
+  const { allowed } = await rateLimit(`contact:${ip}`, 5, 10 * 60_000);
   if (!allowed) return back(true);
 
   const name = clean(p.name, 120) || "A visitor";
