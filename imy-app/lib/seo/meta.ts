@@ -26,7 +26,7 @@ const DEFAULT_OG_IMAGE = `${SITE}/hero.jpg`;
 export function seoPageMetadata(opts: {
   title: string;
   description: string;
-  /** Site-absolute path with trailing slash, e.g. "/templates/funeral-program/word/" */
+  /** Site-absolute path, no trailing slash, e.g. "/templates/funeral-program/word" — the site serves non-slash URLs and 308-redirects slash forms. */
   path: string;
   /** Set false while a section index has no live entries yet. */
   index?: boolean;

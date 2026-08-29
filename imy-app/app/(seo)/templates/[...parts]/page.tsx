@@ -47,7 +47,7 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Templates", item: `${SITE}/templates/` },
+              { "@type": "ListItem", position: 1, name: "Templates", item: `${SITE}/templates` },
               { "@type": "ListItem", position: 2, name: entry.h1, item: `${SITE}${entryPath(entry)}` },
             ],
           }),
@@ -71,7 +71,7 @@ export default function TemplatePage({ params }: { params: { parts: string[] } }
               files={[
                 {
                   label: content.toolLabel || "Open the free program maker",
-                  href: `/tools/${content.toolSlug || "funeral-program-maker"}/?variant=${content.makerVariant}`,
+                  href: `/tools/${content.toolSlug || "funeral-program-maker"}?variant=${content.makerVariant}`,
                   note: content.downloadNote,
                   download: false,
                 },
