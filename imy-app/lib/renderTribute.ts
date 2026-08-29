@@ -549,8 +549,31 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
     : "";
   const archLivetag = archVideo ? `<span class="livetag" id="archLiveTag">Living portrait</span>` : "";
 
-  const metaDescription = (t.story || "").replace(/\s+/g, " ").trim().slice(0, 155) ||
-    `A place to remember ${t.fullName} · photos, stories, and the voices of everyone who loved ${first}.`;
+  // Meta descriptions truncate to <=155 chars, but never mid-word (a raw
+  // .slice(0,155) left endings like "...and w"). Prefer a clean sentence
+  // boundary when one lands within the limit, otherwise fall back to the last
+  // whole word and add an ellipsis.
+  const metaDescription = ((): string => {
+    const story = (t.story || "").replace(/\s+/g, " ").trim();
+    if (!story) {
+      return `A place to remember ${t.fullName} · photos, stories, and the voices of everyone who loved ${first}.`;
+    }
+    if (story.length <= 155) return story;
+    const clip = story.slice(0, 155);
+    // A sentence that ends inside the window reads best (>=60 chars so we don't
+    // clip to a stray early period).
+    const sentenceEnd = Math.max(
+      clip.lastIndexOf(". "),
+      clip.lastIndexOf("! "),
+      clip.lastIndexOf("? ")
+    );
+    if (sentenceEnd >= 60) return clip.slice(0, sentenceEnd + 1).trim();
+    // Otherwise cut at the last whole word. Reserve room for the ellipsis so the
+    // total stays <=155.
+    const wordCut = clip.slice(0, 154).lastIndexOf(" ");
+    const base = (wordCut > 0 ? clip.slice(0, wordCut) : clip.slice(0, 154)).replace(/[\s.,;:!?-]+$/, "").trim();
+    return `${base}…`;
+  })();
 
   const boot_script = `<script>window.__TRIBUTE__=${JSON.stringify(boot).replace(/</g, "\\u003c")};</script>`;
 

@@ -3,7 +3,10 @@ import type { Metadata } from "next";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
 
 export const metadata: Metadata = {
-  title: "About · I Miss You Memorial",
+  // `absolute` opts out of the root layout's "%s · I Miss You Memorial" title
+  // template, so the brand suffix appears exactly once (was doubling to
+  // "About · I Miss You Memorial · I Miss You Memorial").
+  title: { absolute: "About · I Miss You Memorial" },
   description:
     "Why we built a place to keep someone close — and the promise that every memorial stays online, free, forever.",
   alternates: { canonical: "/about" },

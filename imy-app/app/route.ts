@@ -11,26 +11,40 @@ export const runtime = "nodejs";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
 const DESCRIPTION =
   "Create a beautiful online memorial page for someone you love — their photos, their story, and the voices of everyone who misses them. Free, forever.";
+const ORG_DESCRIPTION =
+  "Free permanent online memorial pages — photos, life stories, voice and video memories, virtual candles, and a family-moderated guest book. Free forever; memorial pages are never deleted.";
 
 export async function GET() {
   let html = await fs.readFile(path.join(process.cwd(), "templates", "landing.html"), "utf8");
 
-  // Structured data. The FAQ block is derived from the landing page's own
-  // markup, so the schema can never say something the page does not.
+  // Structured data. Organization + WebSite ride together in a single @graph so
+  // the publisher entity that Blog Article schema references
+  // (https://imissyoumemorial.com/#organization) is actually defined here in the
+  // SSR layer. The FAQ block is derived from the landing page's own markup, so
+  // the schema can never say something the page does not.
   const jsonLd: object[] = [
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": `${SITE}/#organization`,
-      name: "I Miss You Memorial",
-      url: SITE,
-      logo: `${SITE}/icon.svg`,
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "I Miss You Memorial",
-      url: SITE,
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": `${SITE}/#organization`,
+          name: "I Miss You Memorial",
+          url: SITE,
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE}/icon.svg`,
+          },
+          description: ORG_DESCRIPTION,
+        },
+        {
+          "@type": "WebSite",
+          "@id": `${SITE}/#website`,
+          name: "I Miss You Memorial",
+          url: SITE,
+          publisher: { "@id": `${SITE}/#organization` },
+        },
+      ],
     },
     {
       "@context": "https://schema.org",
