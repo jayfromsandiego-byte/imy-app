@@ -1,7 +1,7 @@
 // Routes {slug}.imissyoumemorial.com to the tribute renderer, and on the apex/www
 // refreshes the Supabase session and protects /dashboard.
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
 const ROOT = "imissyoumemorial.com";
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -40,7 +40,7 @@ export async function middleware(req: NextRequest) {
   const supabase = createServerClient(URL, ANON, {
     cookies: {
       getAll() { return req.cookies.getAll(); },
-      setAll(list) {
+      setAll(list: { name: string; value: string; options: CookieOptions }[]) {
         list.forEach(({ name, value, options }) => {
           req.cookies.set(name, value);
           res.cookies.set(name, value, options as any);
