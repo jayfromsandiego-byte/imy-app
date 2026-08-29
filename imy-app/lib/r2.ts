@@ -7,7 +7,7 @@
 //
 // Configured entirely from env (see the founder setup checklist). When R2 isn't
 // configured, callers fall back to Vercel Blob or return a clear "not configured".
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const ACCOUNT = process.env.R2_ACCOUNT_ID || "";
@@ -16,8 +16,21 @@ const SECRET = process.env.R2_SECRET_ACCESS_KEY || "";
 const BUCKET = process.env.R2_BUCKET || "";
 const ENDPOINT = process.env.R2_ENDPOINT || (ACCOUNT ? `https://${ACCOUNT}.r2.cloudflarestorage.com` : "");
 const PUBLIC_BASE = (process.env.R2_PUBLIC_BASE_URL || "").replace(/\/$/, "");
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com").replace(/\/$/, "");
+
+// Media privacy, phase 1 (Gate 1): when R2_PROXY_READS=1, newly uploaded media
+// is addressed same-origin (/media/r2/<key>, served by app/media/r2 with the
+// app's own credentials) instead of the storage provider's public base. Same
+// bytes, same caching — but the page no longer depends on the bucket being
+// publicly readable, which is what lets it stop being publicly readable.
+// Off by default: nothing changes until the env flag is set. Already-stored
+// URLs are untouched either way (see ops/media-privacy-plan.md).
+const PROXY_READS = process.env.R2_PROXY_READS === "1";
 
 export const r2Configured = Boolean(KEY && SECRET && BUCKET && ENDPOINT && PUBLIC_BASE);
+
+/** Reads need credentials + bucket only — a private bucket has no public base. */
+export const r2ReadConfigured = Boolean(KEY && SECRET && BUCKET && ENDPOINT);
 
 let _client: S3Client | null = null;
 function client(): S3Client {
@@ -38,7 +51,17 @@ function keyFor(name: string, forcedExt?: string): string {
 }
 
 export function publicUrl(key: string): string {
+  if (PROXY_READS) return `${SITE}/media/r2/${key}`;
   return `${PUBLIC_BASE}/${key}`;
+}
+
+/**
+ * Read an object with the app's own credentials (S3 GetObject) — works whether
+ * or not the bucket allows public reads. `range` passes an HTTP Range header
+ * through so audio/video can seek.
+ */
+export async function getFromR2(key: string, range?: string) {
+  return client().send(new GetObjectCommand({ Bucket: BUCKET, Key: key, Range: range }));
 }
 
 /** Upload bytes to R2. Images are resized + converted to WebP when sharp is available. */
