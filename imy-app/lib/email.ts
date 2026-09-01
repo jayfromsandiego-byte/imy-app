@@ -93,6 +93,30 @@ export async function sendMemoryWaitingEmail(to: string, fullName: string): Prom
   return send(to, `A memory is waiting for ${first}`, html);
 }
 
+/** Someone gave the page as a gift (family unlock): the family's quiet notice.
+ *  The gifter's receipt is Stripe's own; this note goes to the page's keeper.
+ *  Ownership never moves — the gift opens the page, it never takes the keys. */
+export async function sendGiftNoticeEmail(
+  to: string,
+  fullName: string,
+  slug: string,
+  sponsorName?: string
+): Promise<boolean> {
+  const first = firstName(fullName);
+  const pageUrl = `${SITE}/sites/${encodeURIComponent(slug)}`;
+  const who = (sponsorName || "").trim();
+  const html = shell({
+    heading: `Someone gave ${esc(first)}'s page a gift.`,
+    bodyHtml:
+      `<p style="margin:0 0 12px">${who ? `${esc(who)} has` : "Someone who loves your family has"} opened the full memorial for ${esc(first)} — every memory, every photograph, and ${esc(first)}'s voice, kept for life.</p>` +
+      `<p style="margin:0 0 12px">Nothing changes hands. The page is still yours: you keep ownership, you approve every memory, you can edit anything, and there is nothing for you to pay.</p>` +
+      `<p style="margin:0">${who ? "If you wish, a quiet line on the page remembers the gift." : "The gift was given quietly, without a name."}</p>`,
+    cta: { label: `Visit ${esc(first)}'s page`, url: pageUrl },
+    footnote: "A gift opens the page; it never moves ownership. Every page stays online, always.",
+  });
+  return send(to, `A gift for ${first}'s page`, html);
+}
+
 /** A day before the trial converts: honest notice, easy way out. */
 export async function sendTrialReminderEmail(to: string, fullName: string, chargeDate: string): Promise<boolean> {
   const first = firstName(fullName);

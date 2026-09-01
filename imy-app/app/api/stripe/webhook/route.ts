@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe, stripeConfigured, planToTier } from "@/lib/stripe";
 import { supabaseAdmin, supabaseConfigured } from "@/lib/supabaseServer";
 import { ensureFullFilmForPaid } from "@/lib/film";
+import { sendGiftNoticeEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -125,6 +126,28 @@ export async function POST(req: NextRequest) {
             },
             { onConflict: "stripe_subscription_id" }
           ));
+        }
+
+        // A gift (family unlock): the family hears about it — quietly, and
+        // non-fatally. Stripe's own receipt covers the gifter; this note tells
+        // the page's keeper the wall is open and the keys never moved. A send
+        // failure must never 500 the webhook: the paid promise is already kept.
+        if (plan === "family_unlock") {
+          try {
+            const { data: trib } = await db
+              .from("tributes")
+              .select("owner_email, loved_one_name, slug")
+              .eq("id", tributeId)
+              .maybeSingle();
+            if (trib?.owner_email) {
+              await sendGiftNoticeEmail(
+                trib.owner_email,
+                trib.loved_one_name || "them",
+                trib.slug || md.slug || "",
+                md.sponsorName ? String(md.sponsorName).slice(0, 80) : ""
+              );
+            }
+          } catch { /* the notice is a courtesy; the unlock already happened */ }
         }
 
         // Count the referral use (non-fatal).
