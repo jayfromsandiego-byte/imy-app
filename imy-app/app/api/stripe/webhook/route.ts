@@ -49,7 +49,19 @@ export async function POST(req: NextRequest) {
       const tier = plan === "family_unlock" ? "plus" : planToTier(plan);
 
       // Resolve the tribute by id when we have it, else by slug (guest wall flow).
-      let tributeId: string | null = md.tributeId || s.client_reference_id || null;
+      //
+      // Only a real uuid counts as an id. The unified app pays with a
+      // prototype reference ("proto-<local id>") because its pages still live
+      // in the visitor's own browser — a truthy string that is not a uuid.
+      // Unguarded, that walked straight past the paid_unmatched safety net
+      // below and into an insert on a uuid column: the webhook threw, Stripe
+      // retried into the same throw, and a family who had paid $197 was
+      // recorded nowhere. A payment must never be lost to a malformed
+      // reference, whoever sends it — anything that is not a uuid is treated
+      // as no id at all, which is exactly what the safety net was built for.
+      const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const claimedId = md.tributeId || s.client_reference_id || null;
+      let tributeId: string | null = claimedId && UUID.test(String(claimedId)) ? String(claimedId) : null;
       if (!tributeId && md.slug) {
         const data = dataOrThrow(await db.from("tributes").select("id").eq("slug", md.slug).maybeSingle());
         tributeId = data?.id || null;
@@ -64,7 +76,12 @@ export async function POST(req: NextRequest) {
           tribute_id: null, kind: plan || "unknown", amount_cents: s.amount_total ?? null,
           currency: s.currency || "usd", stripe_session_id: s.id,
           stripe_payment_intent: s.payment_intent || null, status: "paid_unmatched",
-          fulfillment_status: "needs_attention", fulfillment_error: "tribute-not-matched",
+          fulfillment_status: "needs_attention",
+          // Carry what the payer's app claimed, so reconciliation has a thread
+          // to pull: a "proto-…" reference names the prototype page it belongs to.
+          fulfillment_error: claimedId
+            ? `tribute-not-matched · claimed:${String(claimedId).slice(0, 60)}`
+            : "tribute-not-matched",
         }, { onConflict: "stripe_session_id" }));
       }
 

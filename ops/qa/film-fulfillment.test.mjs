@@ -22,6 +22,14 @@ let pass = 0, fail = 0;
 const ok = (name, cond) => { cond ? pass++ : (fail++, console.log("  FAIL", name)); };
 
 ok("paid checkout requires a tribute identity", checkout.includes('includes(plan) && !tributeId && !slug'));
+// A payment is never lost to a malformed reference (owner walkthrough, Aug 31).
+// The unified app pays with "proto-<local id>" while its pages live in the
+// visitor's browser. That truthy non-uuid used to slip past the unmatched
+// safety net and throw on a uuid column — Stripe retried into the same throw
+// and a paid family was recorded nowhere.
+ok("only a real uuid counts as a tribute id", webhook.includes("const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i") && webhook.includes("UUID.test(String(claimedId))"));
+ok("a non-uuid reference falls through to the slug lookup, then to paid_unmatched", webhook.includes("if (!tributeId && md.slug)") && webhook.includes('status: "paid_unmatched"'));
+ok("the unmatched row carries the claimed reference for reconciliation", webhook.includes("tribute-not-matched · claimed:"));
 ok("webhook fails closed without its signing secret", webhook.includes('error: "webhook_secret_missing"') && webhook.includes("status: 503"));
 ok("webhook fails closed without the database", webhook.includes('error: "database_not_configured"'));
 ok("webhook returns 500 so Stripe retries fulfillment", webhook.includes('error: "fulfillment_failed"') && webhook.includes("status: 500"));
