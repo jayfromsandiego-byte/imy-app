@@ -473,6 +473,21 @@ export function renderTributeUnified(template: string, t: Tribute): string {
     if (hi > -1) html = html.slice(0, hi) + `<style>${hides.join("")}</style>` + html.slice(hi);
   }
 
+  // ── the sponsor's quiet line (Issue 2) — when a family_unlock gift opened
+  //    the wall, the page says so, softly, at the end of the memories room.
+  //    The gift writes sponsor_* and the tier only; ownership never moves. ──
+  if (tier === "plus" && t.sponsor && (t.sponsor.name || t.sponsor.message)) {
+    const roomIdx = html.indexOf('<section class="room on" id="room-mem">');
+    const endIdx = roomIdx > -1 ? html.indexOf("</section>", roomIdx) : -1;
+    if (endIdx > -1) {
+      const line =
+        `\n  <p id="sponsorLine" style="margin:26px auto 0;max-width:520px;text-align:center;font-style:italic;color:rgba(44,37,32,.6);font-size:14.5px;line-height:1.7">` +
+        `The whole page, open for everyone — a gift from ${t.sponsor.name ? esc(t.sponsor.name) : "someone who loves this family"}.` +
+        `${t.sponsor.message ? `<br/>&ldquo;${esc(t.sponsor.message)}&rdquo;` : ""}</p>\n`;
+      html = html.slice(0, endIdx) + line + html.slice(endIdx);
+    }
+  }
+
   // ── the obituary keeps its home (R4): families have entered these words;
   //    they must not silently disappear. A quiet sheet at the end of the
   //    memories room, in the document's own visual language. ──

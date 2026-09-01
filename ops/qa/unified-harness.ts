@@ -320,6 +320,42 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     (() => { const nb = boot(renderTributeUnified(template, { ...treed, familyTree: [{ key: "a", name: "A" }] })); return nb.ROOT === "" && Object.keys(nb.PEOPLE).length === 1; })());
 }
 
+// ── 11c · the gift door (Issue 2/6) — a visitor opens the page, the family ────
+//          keeps it. family_unlock only: sponsor_* and the tier, never ownership.
+{
+  // the frozen template's gift contract
+  t("the gift sheet lives in the template", template.includes('id="giftSheet"') && template.includes('id="gsGive"'));
+  t("the footer's dead link became a real door", template.includes('<a href="#" id="footGive">Give this page</a>') && !template.includes('onclick="return false"'));
+  t("a standing gift line sits beside the wall", template.includes('id="giftLine"') && template.includes('id="giftLineBtn"'));
+  t("the leave-a-memory letter carries the whisper", template.includes('id="lmGift"'));
+  t("the wall-gate hold note is actionable", template.includes("className='gatedoor'") && template.includes("window.IMYGift.open()"));
+  t("the checkout payload is fixed: slug + sponsor only, never the person (compliance)",
+    template.includes("body:JSON.stringify({plan:'family_unlock',slug:slug,sponsorName:sponsorName,sponsorMessage:'',returnTo:'/sites/'+slug})"));
+  t("the hung-checkout timeout restores the button (15s AbortController)",
+    template.includes("'AbortController' in window") && template.includes("},15000)"));
+  t("the price speaks once, plainly", template.includes('<span class="gp">$197</span>') && template.includes(">Once · never again<"));
+  t("visitor-side copy is a direct gift", template.includes(">Give this to the family<"));
+  t("the doors rest on a plus page", template.includes("OV().plan==='plus'"));
+
+  // rendered — the sheet speaks the person, the tokens all land
+  const freePage = renderTributeUnified(template, freeShe);
+  t("the sheet heading speaks her first name", freePage.includes("Open Rose&rsquo;s wall for everyone"));
+  t("the benefits speak her voice", freePage.includes("Audio memories · keep her voice"));
+
+  // the sponsor's quiet line — only on a plus page that truly carries a gift
+  const gifted: Tribute = { ...jonny, sponsor: { name: "Dave <b>Alvarez</b>", message: "For everyone who loved him & more" } };
+  const giftedPage = renderTributeUnified(template, gifted);
+  t("a gifted plus page says thank-you, escaped at the boundary",
+    giftedPage.includes('id="sponsorLine"') &&
+    giftedPage.includes("a gift from Dave &lt;b&gt;Alvarez&lt;/b&gt;.") &&
+    giftedPage.includes("For everyone who loved him &amp; more"));
+  t("a quiet gift shows no name, just love",
+    renderTributeUnified(template, { ...jonny, sponsor: { message: "quietly" } }).includes("a gift from someone who loves this family"));
+  t("no sponsor, no line", !renderTributeUnified(template, jonny).includes('id="sponsorLine"'));
+  t("a free page never wears a sponsor line (the gift always sets plus)",
+    !renderTributeUnified(template, { ...freeShe, sponsor: { name: "Dave" } }).includes('id="sponsorLine"'));
+}
+
 // ── 12 · the wreath template and renderer are untouched by this port ──────────
 {
   t("the wreath template still carries its own boot contract", wreathTemplate.includes("{{TRIBUTE_BOOT}}"));
