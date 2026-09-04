@@ -56,7 +56,7 @@ const escT = (s = "") =>
   String(s).replace(/[<>"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
-const FALLBACK_COVER = `${SITE}/photos/candle.jpg`;
+const FALLBACK_COVER = `${SITE}/photos/hands.jpg`;
 
 function firstName(full: string) {
   return (full || "").trim().split(/\s+/)[0] || "them";

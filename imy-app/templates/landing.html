@@ -119,26 +119,13 @@ img{max-width:100%}
 .creed h2{font-weight:700;font-size:clamp(32px,5vw,53px);letter-spacing:-.025em;line-height:1.06;max-width:18ch;margin:0 auto}
 .creed h2 em{font-style:italic;color:var(--terracotta)}
 .creed p{font-size:clamp(21px,2.6vw,26px);color:var(--ink);margin-top:18px;font-style:italic}
-
-/* ===== THE EXAMPLE · candlelit vigil ===== */
-.vigil{position:relative;overflow:hidden;background:radial-gradient(140% 120% at 50% 6%,#2a1d11 0%,#15100a 60%,#100b06 100%);color:#f3ece0;padding:60px 5% 64px;z-index:2}
-.vigil .stars,.vigil .flames{position:absolute;inset:0;pointer-events:none;z-index:0}
-.vigil .star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:twinkle 5s infinite ease-in-out}
-@keyframes twinkle{0%,100%{opacity:.18}50%{opacity:.8}}
-.vigil .moon{position:absolute;top:48px;right:8%;width:74px;height:74px;border-radius:50%;
-  background:radial-gradient(circle at 38% 36%,#fffdf3,#f0e4c4 62%,#d9c79a);
-  box-shadow:0 0 60px 18px rgba(244,224,170,.28),inset -10px -8px 22px rgba(120,100,60,.35);z-index:0}
-.vigil .fl{position:absolute;bottom:-30px;width:7px;height:13px;border-radius:50% 50% 48% 48%/66% 66% 36% 36%;
-  background:radial-gradient(circle at 50% 72%,#fff4d3,var(--flame) 56%,rgba(244,184,96,0));
-  box-shadow:0 0 14px 5px rgba(244,184,96,.45);opacity:0;animation:rise linear infinite}
 @keyframes rise{
   0%{transform:translateY(0) translateX(0) scale(.7);opacity:0}
   12%{opacity:.95}
   70%{opacity:.85}
   100%{transform:translateY(-78vh) translateX(var(--drift,14px)) scale(1.05);opacity:0}
 }
-.vigil .in{position:relative;z-index:3;max-width:940px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:46px;align-items:center}
-@media(max-width:880px){.vigil .in{grid-template-columns:1fr;gap:40px;text-align:center;justify-items:center}}
+@media(max-width:880px){}
 
 /* memorial stone preview */
 .stone-wrap{position:relative;justify-self:center}
@@ -152,23 +139,16 @@ img{max-width:100%}
 .stone .nm{font-weight:800;font-size:21px;line-height:1.05;letter-spacing:-.02em;margin:7px 0 6px;color:#fff}
 .stone .role{font-family:'Besley',serif;font-variant-caps:all-small-caps;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#e7d4ad}
 .stone .dts{font-family:'Besley',serif;font-variant-caps:all-small-caps;font-size:10px;color:#cbb89a;margin-top:6px}
-
-.vigil .copy .eyebrow{color:var(--gold)}.vigil .copy .eyebrow::before{background:var(--gold)}
-.vigil .copy h2{font-weight:700;font-size:clamp(27px,3.6vw,39px);letter-spacing:-.02em;line-height:1.08;margin:14px 0 0;max-width:18ch}
-.vigil .copy p{color:#cbb99c;font-size:17.5px;margin:13px 0 0;max-width:40ch}
-@media(max-width:880px){.vigil .copy h2,.vigil .copy p{margin-left:auto;margin-right:auto}}
+@media(max-width:880px){}
 .acts{margin:20px 0 0;white-space:nowrap;color:#e7d4ad}
 @media(max-width:880px){.acts{white-space:normal;text-align:center}}
 .acts .a{display:inline;font-family:'Besley',serif;font-style:italic;font-size:16.5px}
 .acts .a svg{width:16px;height:16px;vertical-align:-2px;margin-right:6px;color:var(--gold)}
 .acts .sep{color:var(--gold);margin:0 13px;opacity:.75}
-.vigil .count{margin-top:17px;font-family:'Besley',serif;font-variant-caps:all-small-caps;font-size:12.5px;color:#b89b73;letter-spacing:.03em}
-.vigil .count b{color:#f0dcae;font-weight:500}
-.vigil .go{margin-top:22px;display:inline-flex}
 .btn.gold{border-color:var(--gold);background:var(--gold);color:#241711;box-shadow:0 14px 30px -14px rgba(201,165,114,.8)}
 .btn.gold:hover{background:#d8b985;transform:translateY(-1px)}
 
-/* ===== HOW · one candle, kept ===== */
+/* ===== HOW ===== */
 .how{padding:86px 5% 90px;position:relative;z-index:2}
 .how .in{max-width:980px;margin:0 auto;text-align:center}
 .how .lead{color:var(--ink-soft);font-size:17.5px;margin-top:12px}
@@ -278,7 +258,7 @@ footer .pl{font-family:'Besley',serif;font-variant-caps:all-small-caps;font-size
 .mw-eyb{font-size:13px!important}
 .mw-counter{font-size:14px!important}
 :root{--cream:#FDFBF7}
-.mono,.eyebrow,.stone .iml,.stone .role,.stone .dts,.vigil .count,/* pricing */ .pledge,.tier .pr .per,.tier .alt,.badge,.gw .ey,.gw-side .per,footer .pl,.mwhero .mw-eyb,.mwhero .mw-counter,.foldticker .run,.lp .ey,.lp-stone .il,.lp-stone .dt,.lp-typer .lab,.lp-mq .run,.lp-t .alt,.lp-badge,.lp-compare summary,.lp-crow.h,.lp-final .small,.lp-foot .pl,.lp-gift,.imy-a11y-title,.imy-a11y-val,.imy-a11y-toggle::after,.imy-a11y-reset,.lp-example .exil,.lp-example .excap .dt,.lp-example .exey,.lp-example .exline,.lp-example .excomposer .lab,.lp-example .extaste{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
+.mono,.eyebrow,.stone .iml,.stone .role,.stone .dts,/* pricing */ .pledge,.tier .pr .per,.tier .alt,.badge,.gw .ey,.gw-side .per,footer .pl,.mwhero .mw-eyb,.mwhero .mw-counter,.foldticker .run,.lp .ey,.lp-stone .il,.lp-stone .dt,.lp-typer .lab,.lp-mq .run,.lp-t .alt,.lp-badge,.lp-compare summary,.lp-crow.h,.lp-final .small,.lp-foot .pl,.lp-gift,.imy-a11y-title,.imy-a11y-val,.imy-a11y-toggle::after,.imy-a11y-reset,.lp-example .exil,.lp-example .excap .dt,.lp-example .exey,.lp-example .exline,.lp-example .excomposer .lab,.lp-example .extaste{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
 .hand,.memory .photos .pf figcaption,.jnum,.qc .who,.gw .hand,.mwhero .mw-sig,.lp-pf figcaption,.lp-typer .ta,.lp-fed .m b,.lp-step h3,.lp-feature .fq .who,.lp-c .who,.lp-example .excomposer .field,.lp-example .exmem .q{font-family:'Besley',serif!important;font-style:italic;letter-spacing:0}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #8B5E3C;outline-offset:2px;border-radius:4px}
 @media(max-width:680px){.lp p,.lp-step p{font-size:16.5px}}
@@ -412,14 +392,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .lp-band .q em{font-style:italic;color:#F0CE92}
 .lp-band .sub{font-style:italic;font-size:clamp(17px,2.1vw,21px);margin-top:12px;color:#f3e7d2;text-shadow:0 2px 18px rgba(0,0,0,.7);opacity:0}
 .lp-band.seen .sub{animation:fadeUp .9s ease .55s forwards}
-.lp-vigil{position:relative;overflow:hidden;background:radial-gradient(140% 120% at 50% 6%,#2a1d11 0%,#15100a 60%,#100b06 100%);color:#f3ece0;padding:72px 6% 78px}
-.lp-vigil .stars,.lp-vigil .flames{position:absolute;inset:0;z-index:0;pointer-events:none}
-.lp-vigil .star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:tw 5s ease-in-out infinite}
-@keyframes tw{0%,100%{opacity:.18}50%{opacity:.85}}
-.lp-vigil .moon{position:absolute;top:44px;right:9%;width:68px;height:68px;border-radius:50%;z-index:0;background:radial-gradient(circle at 38% 36%,#fffdf3,#f0e4c4 62%,#d9c79a);box-shadow:0 0 58px 16px rgba(244,224,170,.28),inset -10px -8px 22px rgba(120,100,60,.35)}
-.lp-vigil .fl{position:absolute;bottom:-30px;width:7px;height:13px;border-radius:50% 50% 48% 48%/66% 66% 36% 36%;background:radial-gradient(circle at 50% 72%,#fff4d3,var(--flame) 56%,rgba(244,184,96,0));box-shadow:0 0 14px 5px rgba(244,184,96,.45);opacity:0;animation:rise linear infinite}
 @keyframes rise{0%{transform:translateY(0) translateX(0) scale(.7);opacity:0}12%{opacity:.95}70%{opacity:.85}100%{transform:translateY(-72vh) translateX(var(--rx,14px)) scale(1.05);opacity:0}}
-.lp-vigil .in{position:relative;z-index:2;max-width:1000px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:46px;align-items:center}
 .lp-stone{position:relative;width:236px;height:308px;border-radius:118px 118px 16px 16px;overflow:hidden;justify-self:center;border:1px solid rgba(201,165,114,.5);box-shadow:0 30px 80px -24px rgba(0,0,0,.7),0 0 0 7px rgba(201,165,114,.08),0 0 70px rgba(244,184,96,.12)}
 .lp-stone img{width:100%;height:100%;object-fit:cover;animation:kb 26s ease-in-out infinite}
 @keyframes kb{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
@@ -444,7 +417,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .lp-fed{margin-top:14px;display:flex;flex-direction:column;gap:9px}
 .lp-fed .m{font-size:13.5px;color:#e2d4bd;line-height:1.4}.lp-fed .m b{font-family:'Caveat',cursive;font-size:17px;color:#f3ece0;font-weight:600}
 .lp-fed .m .hh{color:#caa86f;font-size:12.5px}
-@media(max-width:840px){.lp-vigil .in{grid-template-columns:1fr;gap:34px}.lp-vc h2,.lp-vc .ey{text-align:center;justify-content:center}.lp-acts{justify-content:center}.lp-typer,.lp-fed{margin-left:auto;margin-right:auto}}
+@media(max-width:840px){.lp-vc h2,.lp-vc .ey{text-align:center;justify-content:center}.lp-acts{justify-content:center}.lp-typer,.lp-fed{margin-left:auto;margin-right:auto}}
 .lp-how{position:relative;overflow:hidden;padding:90px 6%;text-align:center;background:var(--cream)}
 .lp-how::before{content:"";position:absolute;inset:-10% 0;z-index:0;background:radial-gradient(40% 50% at 80% 30%,rgba(201,165,114,.16),transparent 70%);animation:drift1 22s ease-in-out infinite alternate}
 .lp-how .in{position:relative;z-index:1;max-width:1000px;margin:0 auto}
@@ -453,12 +426,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .lp-thread path{animation:flow 7s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-40}}
 .lp-step{position:relative;z-index:1;padding:0 8px}
-.lp-cands{display:flex;justify-content:center;align-items:flex-end;gap:6px;min-height:58px;margin-bottom:12px}
-.lp-ic{position:relative;width:22px;height:46px}
-.lp-ic .bd{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:9px;height:34px;border-radius:2px;background:linear-gradient(180deg,#FBF3E4,#e7d4b0);border:1px solid rgba(120,86,54,.25)}
-.lp-ic .fm{position:absolute;bottom:33px;left:50%;width:9px;height:14px;border-radius:50% 50% 46% 46%/64% 64% 38% 38%;background:radial-gradient(circle at 50% 70%,#fff1cc,var(--flame) 55%,rgba(244,184,96,0));box-shadow:0 0 12px 4px rgba(244,184,96,.5);transform:translateX(-50%);transform-origin:50% 100%;animation:flick 2.6s ease-in-out infinite}
-.lp-cands .lp-ic:nth-child(2) .fm{animation-delay:.5s}.lp-cands .lp-ic:nth-child(3) .fm{animation-delay:1s}.lp-cands .lp-ic:nth-child(4) .fm{animation-delay:1.4s}
-@keyframes flick{0%,100%{opacity:.85;transform:translateX(-50%) scale(1)}25%{opacity:1;transform:translateX(-51%) scale(1.08,.95)}50%{opacity:.7;transform:translateX(-49%) scale(.95,1.06)}75%{opacity:.96;transform:translateX(-50%) scale(1.03,.99)}}
+
 .lp-step h3{font-family:'Caveat',cursive;font-weight:700;font-size:27px;color:var(--terracotta);margin:2px 0 5px;line-height:1}
 .lp-step p{font-size:13.5px;color:var(--ink-soft);max-width:24ch;margin:0 auto;line-height:1.45}
 @media(max-width:780px){.lp-journey{grid-template-columns:1fr 1fr;gap:40px 16px}.lp-thread{display:none}}
@@ -547,7 +515,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 main:focus{outline:none}
 /* visible keyboard focus */
 a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #2C2520;outline-offset:3px;border-radius:6px}
-.mwhero .scrollcue:focus-visible,.lp-vigil a:focus-visible,.lp-vigil button:focus-visible,.lp-band a:focus-visible,.lp-t.con a:focus-visible,.lp-foot a:focus-visible{outline-color:#F6E4BC}
+.mwhero .scrollcue:focus-visible,.lp-band a:focus-visible,.lp-t.con a:focus-visible,.lp-foot a:focus-visible{outline-color:#F6E4BC}
 /* contrast: small terracotta text -> deeper terracotta (>=4.5:1) */
 .lp .ey{color:var(--terracotta-text)}
 .mwhero .mw-eyb{color:var(--terracotta-text)}
@@ -636,8 +604,6 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
 .lp-example .exside{grid-area:side}
 .lp-example .exmain{grid-area:main}
 .lp-example .exinfo{grid-area:info;color:#2C2520}
-.lp-example .exwr{position:relative;width:min(300px,100%);margin:0 auto;aspect-ratio:1/1}
-.lp-example .exwr .wreath{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 54px rgba(0,0,0,.45))}
 .lp-example .exarch{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:46%;aspect-ratio:3/4;border-radius:999px 999px 14px 14px;overflow:hidden;border:6px solid #FFFDF6;box-shadow:0 18px 46px -12px rgba(0,0,0,.55)}
 .lp-example .exarch img{width:100%;height:100%;object-fit:cover}
 .lp-example .exil{position:absolute;top:11px;left:50%;transform:translateX(-50%);font-family:'Besley',serif;font-variant-caps:all-small-caps;font-size:7px;letter-spacing:.14em;color:#f8e7c8;background:rgba(26,19,13,.72);padding:3px 9px;border-radius:13px;text-transform:uppercase;white-space:nowrap;z-index:4}
@@ -645,8 +611,6 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
 .lp-example .excap .nm{font-weight:700;font-size:22px;color:#2C2520}
 .lp-example .excap .nm em{font-style:italic;color:#A87C5F}
 .lp-example .excap .dt{font-family:'Besley',serif;font-variant-caps:all-small-caps;font-size:9.5px;letter-spacing:.16em;color:#8a7c6d;text-transform:uppercase;margin-top:5px}
-.lp-example .exslot{position:absolute;width:18.6%;height:18.6%;pointer-events:none;z-index:4}
-.lp-example .exslot img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 9px rgba(0,0,0,.45))}
 .lp-example .exey{font-family:'Besley',serif;font-variant-caps:all-small-caps;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#A87C5F}
 .lp-example h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.12;letter-spacing:-.01em;color:#2C2520;text-align:left;margin:10px 0 0}
 .lp-example h2 em{font-style:italic;color:#A87C5F}
@@ -686,7 +650,7 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
   .lp-example .exacts{flex-direction:column;align-items:stretch}
   .lp-example .exlay,.lp-example .exvisit{justify-content:center;white-space:nowrap;padding-left:16px;padding-right:16px}
 }
-@media (prefers-reduced-motion: reduce){.lp-example .exslot img{animation:none!important}.lp-example .exlay,.lp-example .exvisit{transition:none}}
+@media (prefers-reduced-motion: reduce){.lp-example .exlay,.lp-example .exvisit{transition:none}}
 
 /* ═══ item 49 · global type pass: every small font grows; display type untouched ═══ */
 .lp-step p{font-size:16px;max-width:26ch}
@@ -706,7 +670,6 @@ html.a11y-contrast .lp-t,html.a11y-contrast .lp-c,html.a11y-contrast .faq detail
 .gw-side li{font-size:15px}
 footer .pl,.lp-foot .pl{font-size:13.5px}
 .tier .pr .per,.tier .alt{font-size:14px}
-.vigil .count{font-size:14px}
 .lp-mq .run{font-size:14px}
 .mwhero .mw-counter{font-size:14px}
 /* item 55 · phones: big titles and section headers center; body content stays left */
@@ -797,7 +760,7 @@ footer .pl,.lp-foot .pl{font-size:13.5px}
           <div class="ggrid"><img src="/media/landing/8006c294-78fd-4542-a196-58d03e9e7cb7.webp" alt=""><img src="/media/landing/8c99c90c-3fe3-4e78-98ee-4416fad788ca.webp" alt=""><img src="/media/landing/4446c4d8-178e-49af-b8d3-1c3aad941700.webp" alt=""><img src="/media/landing/b79ff897-61e1-4852-80fa-209149a7f15c.webp" alt=""></div>
           <div class="gmem">"You taught me to drive on the back roads…" <i>· Daniel</i></div>
           <div class="gmem">"She hummed while she cooked, always." <i>· Renee</i></div>
-          <div class="gbtn">✿ Lay a flower</div>
+          <div class="gbtn">Leave a memory</div>
         </div>
       </div>
     </div>
@@ -849,7 +812,6 @@ footer .pl,.lp-foot .pl{font-size:13.5px}
             <div class="pwho">Daniel, her grandson</div>
             <div class="pline"></div>
             <div class="pline"></div>
-            <p class="pcnt"><b id="exCt" data-count="1284">0</b> <span class="psc">flowers laid on her page</span></p>
           </div>
         </div>
       </div>
@@ -884,7 +846,7 @@ footer .pl,.lp-foot .pl{font-size:13.5px}
         <ul>
           <li><span class="ck">✓</span> A beautiful tribute page to honor them</li>
           <li><span class="ck">✓</span> Up to 12 photographs and 10 memories</li>
-          <li><span class="ck">✓</span> Visitors can add memories and send flowers</li>
+          <li><span class="ck">✓</span> Visitors can add memories and kind words</li>
           <li><span class="ck">✓</span> Their own shareable link to send anywhere</li>
         </ul>
         <a class="tb" href="/preview/unified.html#/signin?next=start">Start free</a>
@@ -922,7 +884,6 @@ footer .pl,.lp-foot .pl{font-size:13.5px}
       <summary>Compare every feature →</summary>
       <div class="lp-crow h"><span>Feature</span><span class="v">Free</span><span class="v">Plus</span><span class="v">Concierge</span></div>
       <div class="lp-crow"><span>Tribute page, online forever</span><span class="v">✓</span><span class="v">✓</span><span class="v">✓</span></div>
-      <div class="lp-crow"><span>Candles, flowers, and shared memories</span><span class="v">✓</span><span class="v">✓</span><span class="v">✓</span></div>
       <div class="lp-crow"><span>You choose what appears on the page</span><span class="v">✓</span><span class="v">✓</span><span class="v">✓</span></div>
       <div class="lp-crow"><span>Privacy · public, unlisted, or password</span><span class="v">✓</span><span class="v">✓</span><span class="v">✓</span></div>
       <div class="lp-crow"><span>Photos</span><span class="x">up to 12</span><span class="v">unlimited</span><span class="v">unlimited</span></div>
@@ -1107,38 +1068,6 @@ document.addEventListener('keydown', function(e) {
 })();
 </script>
 <script>
-/* See an example · the keepsake frame + lay a flower onto the wreath ring (July 14) */
-(function(){
-  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var wr=document.getElementById('exWr');
-  if(!wr)return;
-  var FL={
-    rose:'/art/rose2-6094a3.png',
-    lily:'/art/lily2-f5e2ef.png',
-    mum:'/art/mum2-34d609.png'
-  };
-  var keys=['rose','lily','mum'];
-  function pick(){return FL[keys[Math.floor(Math.random()*keys.length)]]}
-  function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')}
-  var slots=[[50,4],[68,8],[82,22],[90,42],[86,64],[72,82],[28,82],[13,64],[9,42],[17,22],[32,8]];
-  var seed=[[68,8],[86,64],[17,22]];
-  function seeded(p){return seed.some(function(s){return s[0]===p[0]&&s[1]===p[1]})}
-  function lay(pos,anim){
-    var d=document.createElement('div');d.className='exslot';
-    d.style.left=pos[0]+'%';d.style.top=pos[1]+'%';d.style.transform='translate(-50%,-18%)';
-    var im=document.createElement('img');im.src=pick();im.alt='';
-    if(anim&&!RM)im.style.animation='exBloom .7s cubic-bezier(.2,1.4,.4,1) both';
-    d.appendChild(im);wr.appendChild(d);
-  }
-  seed.forEach(function(p){lay(p,false)});
-  var free=slots.filter(function(p){return !seeded(p)}),used=0;
-  var btn=document.getElementById('exBtn'),ct=document.getElementById('exCt');
-  if(btn)btn.addEventListener('click',function(){
-    lay(free[(used++)%free.length],true);
-    if(ct){var n=parseInt(ct.textContent.replace(/,/g,''),10)+1;ct.textContent=fmt(n)}
-    try{fetch('/api/tribute/example/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count&&ct)ct.textContent=fmt(Number(j.count))}).catch(function(){})}catch(e){}
-  });
-})();
 /* the frame hangs from its pin; the world moves it, then it rests (July 14) */
 (function(){
   var sw=document.getElementById('exSwing');if(!sw)return;
@@ -1267,9 +1196,8 @@ html,body,a,button,input,select,textarea,label,[role=button]{touch-action:manipu
   .lp-example .exframe{padding:10px}
   .lp-example .exmat{padding:20px 16px 18px}
   .lp-example .exgrid{gap:14px}
-  /* item 56 · the wreath and the arch stay together on phones, flowers scaled to the ring */
-  .lp-example .exwr{width:150px;aspect-ratio:1/1;margin:0;flex:0 0 auto}
-  .lp-example .exarch{border-width:4px}
+  
+    .lp-example .exarch{border-width:4px}
   .lp-example .exil{display:none}
   .lp-example .exside{display:flex;align-items:center;gap:14px}
   .lp-example .excap{text-align:left;margin-top:0}
@@ -1401,9 +1329,7 @@ document.querySelectorAll('a[href^="https://imissyoumemorial.com"]').forEach(fun
 </script>
 
 <style>
-/* ══════════ ADJUSTMENTS · Aug 14, 11pm ══════════ */
-/* 1 · the candles, in walnut */
-.lp-ic .bd{width:7px;background:linear-gradient(180deg,#4d3520,#3f2c1a 55%,#241711);border:none;box-shadow:inset 0 1px 0 rgba(255,224,178,.25)}
+/* ══════════ ADJUSTMENTS · Aug 14{width:7px;background:linear-gradient(180deg,#4d3520,#3f2c1a 55%,#241711);border:none;box-shadow:inset 0 1px 0 rgba(255,224,178,.25)}
 
 /* 3+4 · the quiet view · words on the veil */
 .mwhero .mw-bg video{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.03)}
@@ -1586,27 +1512,9 @@ document.querySelectorAll('a[href^="https://imissyoumemorial.com"]').forEach(fun
   .lp-ex5 .pfront{transform:rotate(-2deg)}
   .lp-ex5 .pback{transform:rotate(1.5deg)}
 }
-/* the lily rises when a flower is laid */
-@keyframes petalRise5{0%{opacity:0;transform:translateY(6px) scale(.7)}18%{opacity:1}100%{opacity:0;transform:translateY(-64px) scale(1.05) rotate(24deg)}}
-.fpetal5{position:absolute;width:22px;pointer-events:none;left:50%;top:-6px;animation:petalRise5 1.6s ease-out forwards}
+
+
 </style>
-<script>
-/* lay a flower · count climbs, a lily rises (the old exBtn handler may not cover the new card) */
-(function(){
-  var b=document.getElementById('exBtn'),c=document.getElementById('exCt');
-  if(!b||!c)return;
-  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  b.addEventListener('click',function(){
-    var n=parseInt((c.textContent||'0').replace(/,/g,''),10)||1284;
-    c.textContent=(n+1).toLocaleString('en-US');
-    if(RM)return;
-    var p=document.createElement('img');
-    p.src='/art/lily2-f5e2ef.png';p.className='fpetal5';p.alt='';
-    p.style.left=(38+Math.random()*24)+'%';
-    b.appendChild(p);setTimeout(function(){p.remove()},1700);
-  });
-})();
-</script>
 
 <style>
 /* ══════════ v13 · the example: words left, postcards right · the glow leads the eye ══════════ */
@@ -1734,23 +1642,13 @@ document.querySelectorAll('a[href^="https://imissyoumemorial.com"]').forEach(fun
 </style>
 
 <style>
-/* ══════════ v17 · the candles become votives (W5) ══════════ */
-.lp-ic{width:24px!important;height:38px!important}
-.lp-ic .bd{width:22px!important;height:19px!important;border-radius:4px 4px 9px 9px!important;
-  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(233,205,156,.4))!important;
-  border:1px solid rgba(201,165,114,.55)!important;
-  box-shadow:inset 0 -5px 9px rgba(244,184,96,.42),0 3px 7px rgba(63,44,26,.14)!important}
-.lp-ic .fm{bottom:15px!important;width:8px!important;height:12px!important}
-</style>
-
-<style>
 /* ══════════ v18 · richer mini site · steps in cards ══════════ */
 /* the mini page shows the real format: header → photo wall → memories → ritual */
 .gsite{width:216px}
 .ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}
 .ggrid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:5px;display:block;border:1px solid rgba(44,37,32,.06)}
 
-/* each step lives in its own rounded card, candles and all */
+/* each step lives in its own rounded card */
 .lp-step{background:#fff;border:1px solid rgba(201,165,114,.32);border-radius:16px;padding:20px 16px 18px;box-shadow:0 22px 44px -20px rgba(20,12,6,.35),0 4px 12px rgba(20,12,6,.08)}
 .lp-thread{display:none!important}
 .lp-journey{gap:22px!important;align-items:stretch}
@@ -1944,7 +1842,7 @@ document.querySelectorAll('a[href^="https://imissyoumemorial.com"]').forEach(fun
 .lp-ex5 .pquote{font-size:18px!important}
 .gph figcaption{font-size:13px!important}
 .gmem i{font-size:11px!important}
-.mono,.eyebrow,.stone .iml,.stone .role,.stone .dts,.vigil .count,.pledge,.tier .pr .per,.tier .alt,.badge,.gw .ey,.gw-side .per,footer .pl,.mwhero .mw-eyb,.mwhero .mw-counter,.foldticker .run,.lp .ey,.lp-stone .il,.lp-stone .dt,.lp-typer .lab,.lp-mq .run,.lp-t .alt,.lp-badge,.lp-compare summary,.lp-crow.h,.lp-final .small,.lp-foot .pl,.lp-gift,.lp-example .exil,.lp-example .excap .dt,.lp-example .exey,.lp-example .exline,.lp-example .excomposer .lab,.lp-example .extaste{font-family:'Work Sans',sans-serif!important;text-transform:uppercase!important;font-variant-caps:normal!important;letter-spacing:.13em!important;font-weight:600!important;font-size:.78em!important}
+.mono,.eyebrow,.stone .iml,.stone .role,.stone .dts,.pledge,.tier .pr .per,.tier .alt,.badge,.gw .ey,.gw-side .per,footer .pl,.mwhero .mw-eyb,.mwhero .mw-counter,.foldticker .run,.lp .ey,.lp-stone .il,.lp-stone .dt,.lp-typer .lab,.lp-mq .run,.lp-t .alt,.lp-badge,.lp-compare summary,.lp-crow.h,.lp-final .small,.lp-foot .pl,.lp-gift,.lp-example .exil,.lp-example .excap .dt,.lp-example .exey,.lp-example .exline,.lp-example .excomposer .lab,.lp-example .extaste{font-family:'Work Sans',sans-serif!important;text-transform:uppercase!important;font-variant-caps:normal!important;letter-spacing:.13em!important;font-weight:600!important;font-size:.78em!important}
 </style>
 
 <style id="rev2">

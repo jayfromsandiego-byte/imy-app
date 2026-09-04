@@ -13,7 +13,7 @@
 <!-- Production tribute template · wreath design (v11 final, July 5 2026) · data via {{TOKENS}} + window.__TRIBUTE__ -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Sometype+Mono:wght@400;500;700&family=Caveat:wght@600;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Sometype+Mono:wght@400;500;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet"/>
 <link rel="icon" href="/brand/favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/brand/favicon-16.png">
@@ -721,15 +721,6 @@ body[data-tier="free"] .keepnote::after{content:" · the tape shelf opens with p
 .wr-plate .n1 em{font-style:italic;color:var(--terra)}
 .wr-plate .n2{font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#6a5a44;margin-top:8px;line-height:1.8}
 .wr-plate .ep{font-family:'Caveat',cursive;font-size:clamp(18px,2.1vw,22px);color:#7a5f46;margin-top:8px}
-.fl{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-50%) scale(.08);opacity:0;filter:drop-shadow(0 4px 6px rgba(50,40,14,.3))}
-.fl.in{animation:bloomIn .62s cubic-bezier(.3,1.3,.5,1) both}
-@keyframes bloomIn{0%{transform:translate(-50%,-50%) scale(.08) rotate(var(--r,0deg));opacity:0}55%{opacity:1}100%{transform:translate(-50%,-50%) scale(1) rotate(var(--r,0deg));opacity:1}}
-.fl img{width:100%;display:block}
-.wr-hud{position:relative;z-index:9;display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;flex-wrap:wrap;cursor:auto}
-.wr-count{font-family:'Sometype Mono',monospace;font-size:11px;letter-spacing:.08em;color:#4a3520}
-.wr-count b{color:#8a3a3a;font-variant-numeric:tabular-nums}
-.wr-total{position:relative;z-index:9;font-family:'Sometype Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:11px;text-align:center}
-.wr-total b{color:var(--terra);font-variant-numeric:tabular-nums}
 @media(max-width:720px){.wreathbox{width:min(96vw,max(300px,calc(100svh - 320px)))}.wr-plate{padding:12px 20px 14px}}
 
 /* ===== v9.2 · the five touches ===== */
@@ -769,12 +760,9 @@ body.a11y-nomotion .tick9 .run{animation:none}
 
 /* ===== v9.3 adjustments ===== */
 /* T8 · the BIG living number */
-.wr-big{font-family:'Sometype Mono',monospace;font-weight:700;font-size:clamp(30px,4.2vw,48px);letter-spacing:.02em;color:var(--terra);font-variant-numeric:tabular-nums;line-height:1;margin-top:16px}
-.wr-biglab{font-family:'Sometype Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
 /* item 12 · the presence bubble keeps watch from the top left corner */
 .wrhero .presence{position:absolute;top:12px;left:14px;margin-top:0;z-index:9}
 /* item 13 · a zero is a beginning, not a bug */
-.wr-big.iszero b{font-size:24px;color:#B7A48B;background:rgba(243,236,221,.92);border:1px solid #E4D9C4;border-radius:100px;padding:7px 20px;display:inline-block;line-height:1}
 .presence{font-size:12.5px;font-weight:700;margin-top:12px}
 /* global small-text bump */
 .kick{font-size:12px;font-weight:700}
@@ -788,7 +776,6 @@ body.a11y-nomotion .tick9 .run{animation:none}
 .svcrow .what .mono{font-size:11.5px}
 .announce .mono{font-size:11px}
 .tick9 .run{font-size:12.5px}
-.wr-count{font-size:12.5px;font-weight:700}
 .wr-plate .n2{font-size:10.5px;font-weight:700}
 .galnav .gp{font-size:11px;font-weight:700}
 .addingas{font-size:11px}
@@ -846,7 +833,7 @@ body.a11y-nomotion .mg{animation:none}
 .plaque .pl-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 3px #fff,0 0 0 4px var(--goldline)}
 .plaque .pl-line{font-size:15px;font-weight:600;line-height:1.45}
 .plaque .pl-date{font-family:'Sometype Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin-top:5px}
-/* the bloom · candlelight, once */
+/* the bloom · a warm glow, once */
 .wallbloom{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:5;background:radial-gradient(60% 52% at 50% 38%,rgba(244,184,96,.42),rgba(244,184,96,.14) 55%,transparent 76%)}
 .wallbloom.on{animation:wbloom 2.1s ease-out 1}
 @keyframes wbloom{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
@@ -981,9 +968,9 @@ body.a11y-nomotion .living{opacity:0!important}
 /* palette air: the canvas lifts toward paper; cream becomes the accent surface it always wanted to be */
 :root{--bg:#FDFBF7;--line:#e7dfd0}
 /* type v2: mono retires from UI into Besley small caps (the tape shelf keeps its diegetic lettering); brand-hand Caveat becomes the family's italic serif */
-.mono,.kick,.plusflag,.preview .pl,.readout,.svcrow .lab,.svcrow .mini,.bbpill,.stone .il,.arr-dt,.rosect,.chalk .l2,.stage-nav .st,.tln .yr,.like,.cmt,.letter .lnote,.truth .tl2,.memtab,.mem-rel,.memkeep,.lockpill .plus,.mode,.cl-name .ct2,.bnote .more,.vidp .vbadge2,.plock,.hint-open,.sheet .pgno,.sheet .stamp,.albnav .pg,.swipehint,.lb .who,.lb .ldate,.lb .cmt2 .r,.lib .sub,.libcard .ln .lk,.lib .note,.gw-inner .ey,.gw-side .per,footer .pledge,footer .p2,footer .gwline,footer .url,.whisper .wp,.period,.mo .yr,/* v5 · memories views */ .memviews,.mview,.human,.btab,.pmeta .m1,.pmeta .m2,/* chapter cards hierarchy */ .hier,.period .py,/* fixed jump buttons */ .bbfab,/* adding-as line */ .addingas,.addingas button,/* ── July 12 release · the first ten ───────────────────────────────────── */ /* the identity sheet must sit above the gift sheet (z 460) · a named giver introduces themselves ON TOP of the gift,never invisibly beneath it */ .inv-trial,.idm .note2,.galnav .gp,/* curated note */ .curated,.cdrawer .c1 .r,.wr-arch .il,.wr-plate .n2,.wr-count,.wr-total,.tick9 .run,.presence,/* ===== v9.3 adjustments ===== */ /* T8 · the BIG living number */ .wr-big,.wr-biglab,/* ===== v9.4 · FAMILY UNLOCK ===== */ .wallct,.wchip .st,.wmore,.inv-kick,.inv-trust,.unlockline .ul-sub,.plaque .pl-date,/* JUST JOINED badge */ .jj,.gs-kick,.gs-price .gper,.gs-opt span,.gs-fine,.livetag{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
+.mono,.kick,.plusflag,.preview .pl,.readout,.svcrow .lab,.svcrow .mini,.bbpill,.stone .il,.arr-dt,.rosect,.chalk .l2,.stage-nav .st,.tln .yr,.like,.cmt,.letter .lnote,.truth .tl2,.memtab,.mem-rel,.memkeep,.lockpill .plus,.mode,.cl-name .ct2,.bnote .more,.vidp .vbadge2,.plock,.hint-open,.sheet .pgno,.sheet .stamp,.albnav .pg,.swipehint,.lb .who,.lb .ldate,.lb .cmt2 .r,.lib .sub,.libcard .ln .lk,.lib .note,.gw-inner .ey,.gw-side .per,footer .pledge,footer .p2,footer .gwline,footer .url,.whisper .wp,.period,.mo .yr,/* v5 · memories views */ .memviews,.mview,.human,.btab,.pmeta .m1,.pmeta .m2,/* chapter cards hierarchy */ .hier,.period .py,/* fixed jump buttons */ .bbfab,/* adding-as line */ .addingas,.addingas button,/* ── July 12 release · the first ten ───────────────────────────────────── */ /* the identity sheet must sit above the gift sheet (z 460) · a named giver introduces themselves ON TOP of the gift,never invisibly beneath it */ .inv-trial,.idm .note2,.galnav .gp,/* curated note */ .curated,.cdrawer .c1 .r,.wr-arch .il,.wr-plate .n2,.tick9 .run,.presence,/* ===== v9.3 adjustments ===== */ /* ===== v9.4 · FAMILY UNLOCK ===== */ .wallct,.wchip .st,.wmore,.inv-kick,.inv-trust,.unlockline .ul-sub,.plaque .pl-date,/* JUST JOINED badge */ .jj,.gs-kick,.gs-price .gper,.gs-opt span,.gs-fine,.livetag{font-family:'Besley',serif!important;font-variant-caps:all-small-caps;letter-spacing:.045em}
 .hand,/* announcement bar (free credit) */ .announce,.arr-ep,.scene .capline,.fig .fname,.chalk .l1,.band .s,.tlpop .cap,.print .cap,.letter .sig,.really .handline,.cl-name,.bnote .bt,.bnote .bx,.bnote .who2,.addpiece,.scrap,.slot .scap,.sp-title,.tapeobj .lbl .t,.lb .bignote,footer .credit,.car .ci .cc,.bookline .bl1,.wr-plate .ep{font-family:'Besley',serif!important;font-style:italic;letter-spacing:0}
-/* one action color: flame retires from interactive states to candle duty */
+/* one action color for interactive states */
 .seg button.active,.tchip.active{background:var(--accent);color:#FBF6ED}
 .tchip.active{border-color:var(--accent)}
 .gw-cta{background:var(--accent);color:#FBF6ED}
@@ -1151,8 +1138,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 </style>
 <style>
-/* mobile pass · July 5 · the name plate hangs below the wreath on phones; give it room so
-   "Lay a flower" never covers her line. The demo strip becomes one quiet swipeable row. */
+/* mobile pass · July 5 · the name plate hangs below the wreath on phones; give it room.
+   The demo strip becomes one quiet swipeable row. */
 @media(max-width:640px){
   .wreathbox{margin-bottom:118px}
   .preview-in{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:8px 12px}
@@ -1165,9 +1152,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
    The family-curated top of the page wears the darker brown; from the memories
    section down the page turns white, where anyone who loved them may add. */
 .arrive{background:linear-gradient(180deg,#3f2c1a 0%,#46331f 72%,var(--cream) 100%)}
-.arrive .wr-big b{color:#E8CFA4}
 .arrive .presence{background:rgba(250,245,236,.94)}
-.arrive .wr-big.iszero b{background:rgba(250,245,236,.94);color:#8a7c6d}
 #memories.sheetdeep{background:#FFFFFF}
 /* item 55 · phones: big titles and section headers center; names and memories stay left */
 @media(max-width:820px){
@@ -1274,18 +1259,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
    untouched; depth, not glow, never mud. */
 .arrive{--hv-ts:0 1px 3px rgba(26,19,13,.55),0 5px 20px rgba(26,19,13,.38)}
 /* the lines that float straight on the video */
-.arrive .wr-big b,.arrive .wr-biglab,.arrive .wr-count,.arrive .wr-arch .il{text-shadow:var(--hv-ts)}
+.arrive .wr-arch .il{text-shadow:var(--hv-ts)}
 /* the count line was ink-dark over the scene; it turns cream so the shadow can carry it */
-.arrive .wr-count{color:#F7EFDF}
-.arrive .wr-count b{color:#F4B860}
 /* the name element and its plate: a whisper of depth on the letters, a real shadow under the paper */
 .arrive .wr-plate{box-shadow:0 5px 14px rgba(26,19,13,.3),0 26px 60px -16px rgba(26,19,13,.55)}
 .arrive .wr-plate .n1,.arrive .wr-plate .n2{text-shadow:0 1px 2px rgba(44,37,32,.14)}
 /* the portrait's frame casts the shadow — never a drop-shadow on the wreath cutout's edges */
 .arrive .wr-arch{box-shadow:0 8px 20px rgba(26,19,13,.32),0 30px 64px -16px rgba(26,19,13,.55),0 0 0 9px #FFFDF6,0 0 0 10px rgba(138,106,52,.32)}
 /* the presence bubble and the zero pill stand on their own paper · the same quiet depth */
-.arrive .presence,.arrive .wr-big.iszero b{box-shadow:0 4px 14px rgba(26,19,13,.3)}
-.arrive .wr-big.iszero b{text-shadow:none}
+.arrive .presence{box-shadow:0 4px 14px rgba(26,19,13,.3)}
 </style>
 <style>
 /* ═══ visual batch r3 · July 30 2026 ═══ */
@@ -1335,19 +1317,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .share{position:relative;background:linear-gradient(180deg,#FFFEFA,#FBF6EA);border:1px solid rgba(201,165,114,.42);border-radius:2px;transform:rotate(-.25deg)}
 @media(max-width:820px){.cyc{margin-left:auto;margin-right:auto}}
 /* ═══ visual batch r4 · July 30 2026 ═══ */
-/* item 1.4 · the flower counter's digits. Root cause: Besley's OpenType
-   tabular figure set carries a hairline zero — the blanket small-caps rule
-   above pulls that set, and asking Besley for lining-nums tabular-nums
-   directly reproduces the same broken zero at 700, 800, and 900 (specimen
-   render, July 30; every feature toggle tried). Both prescribed candidates
-   fail: Besley-with-tabular keeps the hairline zero, and Sometype Mono's
-   zero is SLASHED in every stylistic set — the brief's own gate ("not
-   dotted/slashed") rules it out. So the digits wear Noto Serif 700, one
-   small added weight: a closed, properly weighted zero, the closest serif
-   character to Besley of the candidates tried, and tabular by default
-   (0.00px per-digit spread, measured) so the count-up never jitters.
-   Same size, same animation, same color. */
-.wr-big,.wr-big b{font-family:'Noto Serif','Besley',serif!important;font-variant-caps:normal;font-variant-numeric:lining-nums tabular-nums;font-weight:700;letter-spacing:.02em}
 /* item 1.6 · the presence pill keeps its top-left watch but stays fully inside
    the viewport at every width — a sane inset, and a long line trims instead of
    ever leaving the page */
@@ -1399,7 +1368,7 @@ img.sba{max-width:160px;min-height:0;padding:0;border:0;background:none}
          no reserved gap), on its own paper so it stays legible everywhere. -->
     {{SERVICE_STRIP}}
     <div class="wreathbox" id="wbox">
-      <img class="wreathimg" src="/art/wreath2-64e82a.png" alt="A green foliage wreath, flowered by visitors"/>
+      <img class="wreathimg" src="/art/wreath2-64e82a.png" alt="A green foliage wreath"/>
       <div class="wr-arch">
         <img src="{{COVER_URL}}" alt="{{NAME_PLAIN}}"/>
         {{ARCH_VIDEO}}
@@ -1411,13 +1380,6 @@ img.sba{max-width:160px;min-height:0;padding:0;border:0;background:none}
         <div class="n1">{{NAME_HTML}}</div>
         <div class="n2">{{DATES_LINE}}</div>
       </div>
-    </div>
-    <!-- r5 item 2 · the flower number stands ABOVE the "Lay a flower" button:
-         count first, then the button. Same Noto Serif face, same count-up. -->
-    <div class="wr-big"><b data-count="{{FLOWER_COUNT}}">0</b></div>
-    <div class="wr-hud">
-      <button class="btn solid" id="layBtn">Lay a flower</button>
-      <span class="wr-count"><b id="wreathCt">0</b> laid on today's wreath · it greens again each morning</span>
     </div>
     <div class="presence" {{PRESENCE_HIDDEN}}><i aria-hidden="true"><svg viewBox="0 0 14 14" focusable="false"><g fill="#C28270"><circle cx="7" cy="3.1" r="3.1"/><circle cx="10.38" cy="5.05" r="3.1"/><circle cx="10.38" cy="8.95" r="3.1"/><circle cx="7" cy="10.9" r="3.1"/><circle cx="3.62" cy="8.95" r="3.1"/><circle cx="3.62" cy="5.05" r="3.1"/></g><g fill="none" stroke="#9E5744" stroke-width=".7" stroke-linecap="round"><path d="M7 1.2C4.4 1.8 2.5 3.6 1.9 6.2"/><path d="M12.1 4.4C11 2.6 9.2 1.4 7.2 1.2"/><path d="M12.2 9.6C12.7 8 12.6 6.2 11.8 4.7"/><path d="M4.8 12.4C6.7 13 8.9 12.7 10.5 11.4"/><path d="M1.8 8.1C2.2 10 3.4 11.5 5.1 12.3"/></g><circle cx="7" cy="7" r="4.3" fill="#B26A55"/><g fill="none" stroke="#8E4A38" stroke-width=".7" stroke-linecap="round"><path d="M7 2.9C5.1 3.2 3.7 4.5 3.2 6.3"/><path d="M10.9 6.1C10.5 4.3 9.2 3.1 7.5 2.8"/><path d="M9.9 10.1C11 9 11.4 7.4 10.9 5.9"/><path d="M4 9.8C5 10.9 6.6 11.4 8.1 11"/></g><circle cx="7" cy="7" r="2.4" fill="#994F3C"/><path d="M7 5.3C8 5.4 8.7 6.3 8.4 7.3 8.1 8.2 7 8.6 6.2 8.1 5.5 7.7 5.4 6.7 6 6.2" fill="none" stroke="#6E3324" stroke-width=".75" stroke-linecap="round"/></svg></i> <span id="presenceTxt">{{PRESENCE_LINE}}</span></div>
   </div>
@@ -1782,90 +1744,19 @@ function applyTier(t){body.dataset.tier=t;document.querySelectorAll('.seg button
 document.querySelectorAll('.seg button').forEach(function(b){b.onclick=function(){applyTier(b.dataset.tier)}});
 document.querySelectorAll('.uchip').forEach(function(c){c.onclick=function(){if(body.dataset.tier==='plus')applyTier('free');body.dataset.theme=c.dataset.theme;body.dataset.motif='';mark();setReadout()}});
 document.querySelectorAll('.mchip').forEach(function(c){c.onclick=function(){if(body.dataset.tier==='free'){say('Her motifs paint every section on Plus. The three universal themes are always free.');return}lastMotif=c.dataset.motif;body.dataset.motif=lastMotif;mark();setReadout()}});
-/* the wreath · flowers snap to the ring · three lanes, evenly spaced, never on her name */
-var WFL=[
- {src:'/art/rose2-6094a3.png',w:.142},
- {src:'/art/lily2-f5e2ef.png',w:.168},
- {src:'/art/mum2-34d609.png',w:.138}
-];
-var wbox=document.getElementById('wbox'),wrHero=document.getElementById('wrHero'),wreathCt=document.getElementById('wreathCt');
-var LANES=[0.392,0.452,0.338];
-var wplaced=[[],[],[]],wn=0,wfi=0;
-var WMINSEP=12,WFORBID=[64,116];
-function wnorm(a){a%=360;if(a<0)a+=360;return a}
-function winForbid(a){return a>WFORBID[0]&&a<WFORBID[1]}
-function wfree(lane,a){var arr=wplaced[lane];for(var i=0;i<arr.length;i++){var d=Math.abs(wnorm(a-arr[i]+180)-180);if(d<WMINSEP)return false}return true}
-function wfind(want){
-  for(var L=0;L<LANES.length;L++){
-    var a=wnorm(want);
-    if(winForbid(a))a=(Math.abs(a-WFORBID[0])<Math.abs(a-WFORBID[1]))?WFORBID[0]-2:WFORBID[1]+2;
-    if(wfree(L,a))return{lane:L,a:a};
-    for(var k=1;k<=26;k++){
-      var c=wnorm(a+k*7);if(!winForbid(c)&&wfree(L,c))return{lane:L,a:c};
-      c=wnorm(a-k*7);if(!winForbid(c)&&wfree(L,c))return{lane:L,a:c};
-    }
-  }
-  return null;
-}
-var roseN=0;
-function layFlower(want){
-  var spot=wfind(want);
-  /* no limit (item 4): when the ring is crowded, flowers layer in — the count never stops */
-  if(!spot){
-    var la=wnorm(want);
-    if(winForbid(la))la=(Math.abs(la-WFORBID[0])<Math.abs(la-WFORBID[1]))?WFORBID[0]-2:WFORBID[1]+2;
-    spot={lane:wn%LANES.length,a:la};
-  }
-  var f=WFL[wfi%WFL.length];wfi++;
-  var side=wbox.clientWidth;
-  var R=side*(LANES[spot.lane]+(Math.random()*0.024-0.012));
-  var scale=spot.lane===2?0.86:(spot.lane===1?0.95:1);
-  /* fit the full frame (items 5, 10): flowers stay inside the wreath box, smaller on phones */
-  var mob=side<560?0.66:1;
-  var wpx=side*f.w*scale*(0.92+Math.random()*0.16)*mob;
-  R=Math.min(R,side/2-wpx/2-2);
-  var rad=spot.a*Math.PI/180;
-  var x=50+Math.cos(rad)*R/side*100;
-  var y=50+Math.sin(rad)*R/side*100;
-  x=Math.max(3,Math.min(97,x));y=Math.max(3,Math.min(97,y));
-  var rot=spot.a+90+(Math.random()*26-13);
-  var d=document.createElement('div');d.className='fl';
-  d.style.cssText='left:'+x+'%;top:'+y+'%;width:'+wpx+'px;--r:'+rot+'deg;z-index:'+(spot.lane===1?4:3);
-  d.innerHTML='<img src="'+f.src+'" alt=""/>';
-  wbox.appendChild(d);
-  if(noMo()){d.style.opacity='1';d.style.transform='translate(-50%,-50%) scale(1) rotate('+rot+'deg)'}
-  else requestAnimationFrame(function(){d.classList.add('in')});
-  wplaced[spot.lane].push(spot.a);wn++;wreathCt.textContent=wn;
-  /* the number moves the moment the flower lands (item 4); the server's truth follows */
-  var big=document.querySelector('.wr-big b');
-  if(big){roseN=(roseN||parseInt(String(big.textContent).replace(/,/g,''),10)||0)+1;big.textContent=roseN.toLocaleString();big.parentNode.classList.remove('iszero')}
-  if(T){try{fetch('/api/tribute/'+SLUG+'/flower',{method:'POST'}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok&&j.count){roseN=Number(j.count);if(big)big.textContent=roseN.toLocaleString()}if(j&&j.ok&&j.today){wn=Number(j.today);wreathCt.textContent=wn}}).catch(function(){})}catch(e){}}
-}
-wrHero.addEventListener('click',function(e){
-  /* r4 · the Celebration of Life bar sits in the hero now — a tap on it opens
-     the details, it never lays a flower */
-  if(e.target.closest('button,a,.wr-plate,.svcrow'))return;
-  var r=wbox.getBoundingClientRect();
-  var dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
-  layFlower(wnorm(Math.atan2(dy,dx)*180/Math.PI));
-});
-document.getElementById('layBtn').addEventListener('click',function(){layFlower(Math.random()*360)});
 /* item 57 · share the page from the sticky bar */
 (function(){var b=document.getElementById('shareTop');if(!b)return;b.addEventListener('click',function(){
   var u=location.href.split('#')[0];
   if(navigator.share){navigator.share({title:document.title,url:u}).catch(function(){});return}
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){say('The address is copied. Send it to everyone who loved them.',false)}).catch(function(){})}
 })})();
-function cu(el){var t=+el.getAttribute('data-count'),s=null;function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/1400,1);el.textContent=Math.floor(p*t).toLocaleString();if(p<1)requestAnimationFrame(st);else roseN=t}requestAnimationFrame(st)}
+function cu(el){var t=+el.getAttribute('data-count'),s=null;function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/1400,1);el.textContent=Math.floor(p*t).toLocaleString();if(p<1)requestAnimationFrame(st)}requestAnimationFrame(st)}
 document.querySelectorAll('[data-count]').forEach(cu);
-/* item 13 · when no flower has been laid yet, the zero rests quietly instead of looking broken */
-(function(){var bb=document.querySelector('.wr-big b');if(bb)bb.parentNode.classList.toggle('iszero',(+bb.getAttribute('data-count')||0)===0)})();
 /* ===== production data · injected by the server as window.__TRIBUTE__ ; the inline demo keeps the standalone preview alive ===== */
 var T=window.__TRIBUTE__||null;
 /* a stranger's words are kept in their own words, not their own tags — every visitor field is entity-escaped right at the innerHTML seam */
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var SLUG=(T&&T.slug)||'example';
-if(T&&T.fwt){wn=Number(T.fwt)||0;if(wreathCt)wreathCt.textContent=wn}
 /* gallery · family-curated, paged (scales to 50 without the scroll) */
 var GAL=(T&&T.gal)||[['dawn','Summer, 1979'],['coffee','Black coffee, no sugar'],['laugh','That laugh'],['kitchen','Her kitchen'],['garden','Walking the rows'],['letters','Golden hour'],['porch','On the porch, 1998'],['dawn','First light, again'],['garden','Best in show, 2018'],['coffee','The crossword hour'],['letters','A letter a week'],['kitchen','Sunday bread']];
 var galPage=0,galGrid=document.getElementById('galGrid'),galPg=document.getElementById('galPg');
@@ -2870,9 +2761,9 @@ html,body,a,button,input,select,textarea,label,[role=button],.tapeobj,.piece,.bt
 /* ═══ the small type grows up · July 16 2026 · nothing under ~13px remains on a memorial ═══ */
 /* reading labels & meta — the lines people actually read */
 .kick{font-size:16px!important}
-.curated,.svcrow .lab,.svcrow .mini,.svcrow .what .mono,.arr-dt,.rosect,.period .py,.tln .yr,.hier,.truth .tl2,.chalk .l2,.mem-rel,.memkeep,.pmeta .m1,.pmeta .m2,.cl-name .ct2,.announce .mono,.presence,.wr-count,.wr-total,.wr-biglab,.wr-plate .n2,.unlockline .ul-sub,.inv-kick,.inv-trial,.inv-trust,.wallct,.wchip .st,.wmore,.gwline,.gw-side .per,.gw-inner .ey,.url,.idm .note2,.gs-fine,.gs-kick,.gs-price .gper,.gs-opt span,.cdrawer .c1 .r,.galnav .gp,.albnav .pg,.sp-story .txt .mono,.carcap,.shelfcap,.cassette .mt,.whisper .wp,.readout,.tick9 .run,.addingas,.plaque .pl-date,.stage-nav .st,.preview .pl,.mode,.lb .who,.lb .ldate,.lb .cmt2 .r,.lib .sub,.libcard .ln .lk,.lib .note,.memviews{font-size:14px!important}
+.curated,.svcrow .lab,.svcrow .mini,.svcrow .what .mono,.arr-dt,.rosect,.period .py,.tln .yr,.hier,.truth .tl2,.chalk .l2,.mem-rel,.memkeep,.pmeta .m1,.pmeta .m2,.cl-name .ct2,.announce .mono,.presence,.wr-plate .n2,.unlockline .ul-sub,.inv-kick,.inv-trial,.inv-trust,.wallct,.wchip .st,.wmore,.gwline,.gw-side .per,.gw-inner .ey,.url,.idm .note2,.gs-fine,.gs-kick,.gs-price .gper,.gs-opt span,.cdrawer .c1 .r,.galnav .gp,.albnav .pg,.sp-story .txt .mono,.carcap,.shelfcap,.cassette .mt,.whisper .wp,.readout,.tick9 .run,.addingas,.plaque .pl-date,.stage-nav .st,.preview .pl,.mode,.lb .who,.lb .ldate,.lb .cmt2 .r,.lib .sub,.libcard .ln .lk,.lib .note,.memviews{font-size:14px!important}
 .human .humantxt{font-size:14px!important;line-height:1.5}
-.tln p,.tlpop .cap,.bnote .more,.cmt,.pledge,footer .pl,.gs-fine2,.vk-cap,.sp16 .slot .scap,.slot .scap,.tchip,.wr-count,.presence{font-size:15px!important}
+.tln p,.tlpop .cap,.bnote .more,.cmt,.pledge,footer .pl,.gs-fine2,.vk-cap,.sp16 .slot .scap,.slot .scap,.tchip,.presence{font-size:15px!important}
 .addingas button{font-size:13.5px!important}
 .tchip .lk{font-size:13px!important}
 /* pills, tabs, chips — bigger, but they must still fit their shells */

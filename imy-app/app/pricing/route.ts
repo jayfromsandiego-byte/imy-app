@@ -52,7 +52,7 @@ export async function GET() {
             url: `${SITE}/icon.svg`,
           },
           description:
-            "Free permanent online memorial pages — photos, life stories, voice and video memories, virtual candles, and a family-moderated guest book. Free forever; memorial pages are never deleted.",
+            "Free permanent online memorial pages — photos, life stories, voice and video memories, and a family-moderated guest book. Free forever; memorial pages are never deleted.",
         },
         {
           "@type": "WebSite",

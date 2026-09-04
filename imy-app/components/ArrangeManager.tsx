@@ -61,7 +61,7 @@ export default function ArrangeManager({
       <div style={{ marginTop: 16, border: `1px solid ${C.line}`, borderRadius: 11, padding: "11px 14px", background: C.deep, display: "flex", alignItems: "center", gap: 10 }}>
         <span style={{ fontFamily: "'Sometype Mono',monospace", fontSize: 10, letterSpacing: ".1em", textTransform: "uppercase", color: C.inkSoft }}>always first</span>
         <strong style={{ fontSize: 14.5 }}>The Memorial Stone</strong>
-        <span style={{ color: C.inkSoft, fontSize: 13 }}>· the wreath, their name, the flowers</span>
+        <span style={{ color: C.inkSoft, fontSize: 13 }}>· the wreath, their name, their dates</span>
       </div>
 
       <div style={{ display: "grid", gap: 8, marginTop: 10 }}>

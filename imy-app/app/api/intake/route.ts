@@ -101,8 +101,6 @@ export async function POST(req: NextRequest) {
     pronouns,
     owner_email: email,
     claim_token: claim,
-    candle_count: 0,
-    flower_count: 1, // the family's own first flower, laid by the seal
   }).select("id").single();
 
   if (error || !trib) {

@@ -73,7 +73,7 @@ export async function sendSealEmail(to: string, fullName: string, slug: string):
     bodyHtml:
       `<p style="margin:0 0 12px">The letter is sealed. Everything you wrote now lives at</p>` +
       `<p style="margin:0 0 12px;font-family:'Courier New',monospace;font-size:14px"><a href="${esc(pageUrl)}" style="color:#A87C5F">${esc(slug)}.imissyoumemorial.com</a></p>` +
-      `<p style="margin:0 0 12px">Share the address with anyone who loved ${esc(first)}. They can lay flowers, light candles, and leave memories — every memory waits for you before it appears.</p>` +
+      `<p style="margin:0 0 12px">Share the address with anyone who loved ${esc(first)}. They can leave memories — every word waits for you before it appears.</p>` +
       `<p style="margin:0">This email address is your key. Sign in with it any time at <a href="${SITE}/signin" style="color:#A87C5F">imissyoumemorial.com/signin</a> to tend the page — approve memories, add photographs, change anything.</p>`,
     cta: { label: "Open their page", url: pageUrl },
   });
@@ -113,14 +113,12 @@ export async function sendYearLetterEmail(
   to: string,
   fullName: string,
   slug: string,
-  stats: { memories: number; flowers: number; candles: number }
+  stats: { memories: number }
 ): Promise<boolean> {
   const first = (fullName || "them").split(/\s+/)[0];
   const line = (n: number, one: string, many: string) => (n === 1 ? `one ${one}` : `${n} ${many}`);
   const parts: string[] = [];
   if (stats.memories > 0) parts.push(`${line(stats.memories, "new memory", "new memories")} joined the wall`);
-  if (stats.flowers > 0) parts.push(`${line(stats.flowers, "flower was laid", "flowers were laid")}`);
-  if (stats.candles > 0) parts.push(`${line(stats.candles, "candle was lit", "candles were lit")}`);
   const held = parts.length
     ? `This year, ${parts.join(", ")}.`
     : `The page held steady this year, quiet and kept, exactly where you left it.`;

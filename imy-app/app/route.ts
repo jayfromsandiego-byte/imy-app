@@ -12,7 +12,7 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
 const DESCRIPTION =
   "Create a beautiful online memorial page for someone you love — their photos, their story, and the voices of everyone who misses them. Free, forever.";
 const ORG_DESCRIPTION =
-  "Free permanent online memorial pages — photos, life stories, voice and video memories, virtual candles, and a family-moderated guest book. Free forever; memorial pages are never deleted.";
+  "Free permanent online memorial pages — photos, life stories, voice and video memories, and a family-moderated guest book. Free forever; memorial pages are never deleted.";
 
 export async function GET() {
   let html = await fs.readFile(path.join(process.cwd(), "templates", "landing.html"), "utf8");

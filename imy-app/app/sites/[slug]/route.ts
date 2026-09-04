@@ -85,7 +85,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
   return new Response(html, {
     headers: {
       "content-type": "text/html; charset=utf-8",
-      // Fresh within a minute — approvals, flowers, and Family Unlock should feel
+      // Fresh within a minute — approvals and Family Unlock should feel
       // immediate; stale-while-revalidate keeps the CDN protective under load.
       // A ?design= preview is never cached: the owner judging the unified page
       // must always see the freshest render, and a preview URL should not

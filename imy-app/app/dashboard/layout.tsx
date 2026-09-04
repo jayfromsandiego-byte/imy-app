@@ -41,7 +41,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     const orFilter = email ? `owner_id.eq.${user.id},owner_email.eq.${email}` : `owner_id.eq.${user.id}`;
     const { data } = await db
       .from("tributes")
-      .select("id,slug,loved_one_name,pronouns,born_on,died_on,tier,status,candle_count,created_at")
+      .select("id,slug,loved_one_name,pronouns,born_on,died_on,tier,status,created_at")
       .or(orFilter)
       .is("deleted_at", null)
       .order("created_at", { ascending: false });

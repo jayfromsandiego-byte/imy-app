@@ -36,7 +36,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
   const { data: rawTribute } = await db
     .from("tributes")
     .select(
-      "id,slug,loved_one_name,born_on,died_on,place,tier,owner_id,owner_email,candle_count,flower_count," +
+      "id,slug,loved_one_name,born_on,died_on,place,tier,owner_id,owner_email," +
         "tribute_photos(id,url,caption,sort,deleted_at)," +
         "tribute_memories(author_name,relation,body,status,photo_url,audio_url,video_url,created_at,deleted_at)," +
         "tribute_audio(url,kind)"
@@ -140,7 +140,7 @@ ${photoRefs.map((p, i) => (p.file ? `<div class="cap">${p.file.split("/").pop()}
 ${voiceRef ? `<h2>Their voice</h2><div class="cap"><a href="voices/${voiceRef.split("/").pop()}">${voiceRef.split("/").pop()}</a></div>` : ""}
 <h2>The memories</h2>
 ${memHtml || '<p class="mono">the wall is still gathering</p>'}
-<div class="note">${t.candle_count ?? 0} candles lit · ${t.flower_count ?? 0} flowers laid · the page itself stays online, always — this folder is simply yours to hold.${skipped.length ? ` A few files (${skipped.length}) could not be gathered this time; download again and they will try once more.` : ""}</div>
+<div class="note">The page itself stays online, always — this folder is simply yours to hold.${skipped.length ? ` A few files (${skipped.length}) could not be gathered this time; download again and they will try once more.` : ""}</div>
 </body></html>`;
 
   entries.unshift({ name: "cover.html", data: new TextEncoder().encode(cover) });

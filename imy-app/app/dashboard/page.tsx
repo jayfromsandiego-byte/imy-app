@@ -53,7 +53,7 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
   const orFilter = email ? `owner_id.eq.${user.id},owner_email.eq.${email}` : `owner_id.eq.${user.id}`;
   const { data: tributesData } = await db
     .from("tributes")
-    .select("id,slug,loved_one_name,pronouns,tier,status,candle_count,flower_count,died_on,story,created_at")
+    .select("id,slug,loved_one_name,pronouns,tier,status,died_on,story,created_at")
     .or(orFilter)
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
@@ -294,18 +294,6 @@ export default async function DashboardHome({ searchParams }: { searchParams: { 
           </div>
         </div>
 
-        {/* Vigil band */}
-        <div className="s-card full vigil-card stagger" style={{ animationDelay: ".26s" }}>
-          <p className="sentence">
-            <b>{t.flower_count || 0} {(t.flower_count || 0) === 1 ? "flower has" : "flowers have"} been laid</b> {"·"}{" "}
-            {t.candle_count || 0} {(t.candle_count || 0) === 1 ? "candle" : "candles"} lit for {name}.
-          </p>
-          <div className="card-foot">
-            <Link href={`/sites/${t.slug}`} target="_blank" rel="noopener noreferrer" className="btn quiet">
-              See how {pn.pos} page is tended
-            </Link>
-          </div>
-        </div>
 
         {/* Plus, quietly — only on free pages, only ever an offer */}
         {t.tier === "free" || !t.tier ? (

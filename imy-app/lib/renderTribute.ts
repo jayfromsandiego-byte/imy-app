@@ -74,9 +74,6 @@ export type Tribute = {
   quote?: string;
   story?: string;
   obituary?: string;
-  candleCount?: number;
-  flowerCount?: number;
-  flowerToday?: number;
   tier?: string; // "free" | "plus" | "heirloom"
   theme?: string;
   motif?: string;
@@ -109,10 +106,10 @@ export type Tribute = {
 const esc = (s = "") =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 
-// No-photo fallback: a quiet lit candle from the brand's own photo set — never
+// No-photo fallback: a quiet photograph from the brand's own set — never
 // a stranger's face in a family's arch. Absolute for og:image validity.
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://imissyoumemorial.com";
-const FALLBACK_COVER = `${SITE}/photos/candle.jpg`;
+const FALLBACK_COVER = `${SITE}/photos/hands.jpg`;
 
 function firstName(full: string) {
   return (full || "").trim().split(/\s+/)[0] || "them";
@@ -378,7 +375,6 @@ export function renderTribute(template: string, t: Tribute): string {
     gal, imgs, liv, ch, mems, seedw, words, boards,
     phw: tier === "free" ? Math.max(0, allPhotos.length - FREE_PHOTO_CAP) : 0,
     waiting: seedw.length,
-    fwt: Math.max(0, t.flowerToday ?? 0),
     // The tape shelf's real tapes (fix 6). Free pages rest their videos — kept,
     // not shown. Only clean https urls ever reach the page.
     vids: tier === "plus"
@@ -613,7 +609,6 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
     .split("{{DATES_LINE}}").join(datesLine + donateUnderName)
     // m5d (July 29, owner reversal of item 7): the wreath plate carries no
     // epigraph line — the mid-page quote band keeps their words instead.
-    .split("{{FLOWER_COUNT}}").join(String(Math.max(0, t.flowerCount ?? 0)))
     .split("{{THEIR}}").join("their")
     .split("{{TIER}}").join(tier)
     .split("{{SERVICE_STRIP}}").join(serviceStrip)
@@ -839,7 +834,7 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
   }
 
   // ═══ the obituary and the kept voice (July 9) ═══════════════════════════════
-  // The obituary sits directly below the wreath and its flowers (its own quiet
+  // The obituary sits directly below the wreath (its own quiet
   // sheet, long words wrapped, never off the card). Their voice stands just
   // before the memories wall.
   {
@@ -964,9 +959,6 @@ var os=document.getElementById('svcOvShare');if(os)os.addEventListener('click',f
   // 7) Sections with nothing real to show, rest quietly.
   {
     const hides: string[] = [];
-    // One number is enough (July 9): the big all-time count and the Lay a
-    // flower button carry the ritual; the today line was saying it twice.
-    hides.push(".wr-count{display:none!important}");
     if (!videos.length || tier !== "plus") hides.push("#keep .shelfview{display:none!important}");
     if (!words.length) hides.push(".cyc{display:none!important}", ".tick9{display:none!important}");
     if (!boardItems.length) hides.push(".bbfab{display:none!important}");
@@ -1169,7 +1161,7 @@ x.fillStyle='#A87C5F';x.font='italic 500 32px Besley';x.fillText('Join us to rem
 x.fillStyle='#2C2520';x.font='600 42px Besley';x.fillText(D.dateLine,W/2,1086);
 if(D.venue){x.fillStyle='#5A4F45';x.font='500 30px Besley';x.fillText(D.venue,W/2,1132)}
 if(D.address){x.fillStyle='#7A6A58';x.font="500 22px 'Sometype Mono'";x.fillText(D.address,W/2,1168)}
-if(hasQR&&window.QrCreator){try{var q=document.createElement('canvas');window.QrCreator.render({text:D.url,radius:0,ecLevel:'M',fill:'#2C2520',background:'#FAF5EC',size:336},q);x.drawImage(q,72,H-244,164,164);x.textAlign='left';x.fillStyle='#7A6A58';x.font="500 22px 'Sometype Mono'";x.fillText('scan to visit · leave a memory,',260,H-176);x.fillText('light a candle, lay a flower',260,H-144)}catch(e){}}
+if(hasQR&&window.QrCreator){try{var q=document.createElement('canvas');window.QrCreator.render({text:D.url,radius:0,ecLevel:'M',fill:'#2C2520',background:'#FAF5EC',size:336},q);x.drawImage(q,72,H-244,164,164);x.textAlign='left';x.fillStyle='#7A6A58';x.font="500 22px 'Sometype Mono'";x.fillText('scan to visit · leave a memory,',260,H-176);x.fillText('a photo, a kind word',260,H-144)}catch(e){}}
 x.textAlign='center';x.fillStyle='#2C2520';x.font='600 26px Besley';
 var w1=x.measureText('I ').width,w2=x.measureText('Miss').width,w3=x.measureText(' You Memorial').width,bx=W/2-(w1+w2+w3)/2;
 x.textAlign='left';x.fillText('I ',bx,H-64);x.fillStyle='#A87C5F';x.font='italic 600 26px Besley';x.fillText('Miss',bx+w1,H-64);x.fillStyle='#2C2520';x.font='600 26px Besley';x.fillText(' You Memorial',bx+w1+w2,H-64);
@@ -1401,8 +1393,6 @@ export function recordToTribute(rec: any): Tribute {
     coverPhoto: f["Cover Photo"] || (Array.isArray(f["Photos"]) && f["Photos"][0]?.url) || undefined,
     quote: f["Quote"],
     story: f["Story"],
-    candleCount: 0,
-    flowerCount: 0,
     tier: (f["Tier"] || "free").toString().toLowerCase(),
     theme: f["Theme"],
     photos: photosField,

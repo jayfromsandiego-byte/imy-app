@@ -61,7 +61,7 @@ export default function TermsPage() {
 
         <h2>Memories left by others</h2>
         <p>
-          Anyone with the link can light a candle or leave a memory. Memories are held privately until you, the
+          Anyone with the link can leave a memory. Memories are held privately until you, the
           family, welcome them in. You decide what appears. We add quiet safeguards against spam, but the page is
           yours to tend.
         </p>

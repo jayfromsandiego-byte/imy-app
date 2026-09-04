@@ -46,7 +46,7 @@ export default function PrivacyPage() {
         <ul>
           <li><b>Your account</b> · the email you sign in with. We use magic links, so we don't store passwords.</li>
           <li><b>Tribute content</b> · the names, dates, stories, photos, video, and audio you choose to add.</li>
-          <li><b>Memories and candles</b> · words others leave, the name they sign, and a simple count of candles lit.</li>
+          <li><b>Memories</b> · words others leave and the name they sign.</li>
           <li><b>Basic, aggregate usage</b> · only if analytics is enabled, and only in a cookieless, anonymous form (see below).</li>
         </ul>
 

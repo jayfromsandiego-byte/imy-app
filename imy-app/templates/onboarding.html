@@ -369,8 +369,6 @@
   .finwreath{position:relative;width:min(300px,74vw);aspect-ratio:1/1;opacity:0;transform:scale(.82)}
   #finale.open .finwreath{transition:opacity .8s ease .2s,transform 1.1s cubic-bezier(.2,1.2,.4,1) .2s;opacity:1;transform:scale(1)}
   .finwreath>img.wr{width:100%;height:100%;filter:drop-shadow(0 22px 34px rgba(60,50,18,.3))}
-  .finwreath .fl{position:absolute;width:23%;opacity:0;transform:scale(.1) rotate(var(--r,0deg));transform-origin:center}
-  #finale.open .finwreath .fl{animation:bloomIn .8s cubic-bezier(.2,1.4,.4,1) forwards}
   @keyframes bloomIn{0%{opacity:0;transform:scale(.1) rotate(var(--r,0deg))}60%{opacity:1}100%{opacity:1;transform:scale(1) rotate(var(--r,0deg))}}
   .finstone{position:absolute;left:50%;top:50%;width:36%;aspect-ratio:3/4.05;transform:translate(-50%,-53%) scale(.84);border-radius:50% 50% 12px 12px/33% 33% 12px 12px;background:var(--cream) center/cover no-repeat;border:4px solid rgba(252,249,242,.92);box-shadow:0 16px 34px -12px rgba(26,19,13,.5);overflow:hidden;opacity:0}
   #finale.open .finstone{transition:opacity .8s ease .7s,transform 1s cubic-bezier(.2,1.25,.4,1) .7s;opacity:1;transform:translate(-50%,-53%) scale(1)}
@@ -440,7 +438,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <circle cx="12" cy="14" r="5.2" fill="url(#ping)"/><circle cx="10.4" cy="12.4" r="1.6" fill="rgba(255,255,255,.85)"/>
     <circle cx="628" cy="14" r="5.2" fill="url(#ping)"/><circle cx="626.4" cy="12.4" r="1.6" fill="rgba(255,255,255,.85)"/>
   </svg></div>
-  <div class="prog"><div class="saved" id="saved">saved ✓</div><div class="qcount" id="qcount"><b>00</b> / 16</div><div class="plabel" id="plabel">a flower for every answer</div></div>
+  <div class="prog"><div class="saved" id="saved">saved ✓</div><div class="qcount" id="qcount"><b>00</b> / 16</div><div class="plabel" id="plabel">the garland fills as you answer</div></div>
 </div>
 
 <button class="ktag" id="ktag" type="button" aria-label="your plus keepsakes"><span class="kstr"></span><span class="khole"></span><span id="ktagTxt">plus · 0</span></button>
@@ -466,7 +464,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="hand">a letter for the one you miss</div>
       <h1>Let’s write down<br><em>who they were.</em></h1>
       <div class="wrows">
-        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>a handful of small questions · each answer lays a flower on the garland</span></div>
+        <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="2"/><circle cx="8.2" cy="9.8" r="2"/><circle cx="15.8" cy="9.8" r="2"/><circle cx="9.7" cy="13.4" r="2"/><circle cx="14.3" cy="13.4" r="2"/><circle cx="12" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><path d="M12,15.5 V21 M12,18 Q8.6,17 7.6,14.4"/></svg><span>a handful of small questions · each answer adds to the garland</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9.2" y="9" width="5.6" height="12" rx="1.6"/><path d="M12,9 V7.4"/><path d="M12,6.6 q1.7,-2.1 0,-3.6 q-1.7,1.5 0,3.6"/></svg><span>about ten minutes · it saves as you go, change anything later</span></div>
         <div class="wrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.5" y="10.5" width="13" height="9" rx="2"/><path d="M8.5,10.5 V8 a3.5,3.5 0 0 1 7,0 V10.5"/></svg><span id="wrowPlan">free forever · a few extras are part of <b>plus · $197 once</b></span></div>
       </div>
@@ -488,7 +486,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
     <div class="fin-hand">sealed with love</div>
     <div class="fin-msg">
-      <div class="cap" id="finCap">eighteen flowers laid · the garland is full</div>
+      <div class="cap" id="finCap">the garland is full</div>
       <h2>Their memorial is ready.</h2>
       <span class="url" id="finUrl"></span>
       <p>We saved every word as you wrote it. Open the page when you are ready, or enter the family study to add and arrange more. It stays online forever. That is a promise.</p>
@@ -807,7 +805,7 @@ var ENGINE=(function(){
       var gs=items.children;
       for(var i=0;i<gs.length;i++){gs[i].classList.toggle('on',i<k)}
       /* the fraction follows the card (nº of 18) · set on every step change; the garland alone counts answers */
-      document.getElementById('plabel').textContent=k===0?'a flower for every answer':(k>=n?'the garland is full':'flowers laid on the garland');
+      document.getElementById('plabel').textContent=k>=n?'the garland is full':'the garland fills as you answer';
     }
     return {set:set,total:n};
   })();
@@ -1111,7 +1109,7 @@ var ENGINE=(function(){
       planCard('free','Free','$0 · forever',[
         [esc(A.slugRandom||'a quiet address')+'<span style="color:var(--ink-soft)">.imissyoumemorial.com</span>','✓'],
         [freePhotos,'✓'],
-        ['candles, flowers and messages from visitors','✓'],
+        ['messages and kind words from visitors','✓'],
         ['a universal design','✓'],
         ['online forever · never charged to keep it','✓']
       ].concat(A.plusItems.length?[['everything plus rests safely, ready if you return','·']]:[]))+
@@ -1144,23 +1142,12 @@ var ENGINE=(function(){
     var fst=document.getElementById('finStudy');
     if(fst)fst.href=(SEAL&&SEAL.tributeId)?('/dashboard/tributes/'+SEAL.tributeId):'/dashboard';
     var fn=(A.fullName||'').trim();
-    document.getElementById('finCap').textContent='eighteen flowers laid'+(fn?' for '+fn:' · the garland is full');
+    document.getElementById('finCap').textContent='the garland is full'+(fn?' · for '+fn:'');
     var st=document.getElementById('finStone'),init=document.getElementById('fsInit');
     var veil=st.querySelector('.fs-veil');
     if(A.photoURL){st.style.backgroundImage='url('+A.photoURL+')';init.style.display='none';if(veil)veil.style.display='block'}
     else{init.textContent=(fn||'T').charAt(0).toUpperCase();if(veil)veil.style.display='none'}
     var box=document.getElementById('finWreathBox');
-    if(!box._flowers){
-      box._flowers=true;
-      var FA=[ASSET.rose,ASSET.lily,ASSET.mum];
-      var POS=[[41.5,-0.5,17,-7],[64,6.6,14,5],[78.4,21,16,-4],[84.5,42.5,15,8],[77.4,62,18,-6],[64,79.4,14,3],[41.5,83.5,17,6],[21.5,78.9,15,-8],[5.6,63,16,4],[1,43,14,-5],[4.6,20,18,7],[21.5,6.1,15,-3]];
-      POS.forEach(function(p,i){
-        var im=document.createElement('img');
-        im.className='fl';im.src=FA[i%3];im.alt='';
-        im.style.cssText='left:'+p[0]+'%;top:'+p[1]+'%;width:'+p[2]+'%;--r:'+p[3]+'deg;animation-delay:'+(0.85+i*0.13).toFixed(2)+'s';
-        box.appendChild(im);
-      });
-    }
     document.getElementById('finale').classList.add('open');
   }
 

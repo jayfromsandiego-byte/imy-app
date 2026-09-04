@@ -1,6 +1,6 @@
 // QA harness — renders the real tribute template through renderTribute and asserts
 // identity safety, tier behavior, hearts, comments, voice, the Plus band,
-// the footer address, flower persistence, truthful presence, photo placements,
+// the footer address, truthful presence, photo placements,
 // the tape shelf, the arranger, the composer's doors, the demo's ask, the
 // obituary with the kept voice, a life in chapters, the log-in doors
 // (tribute bar + landing), share the date, the visitor's gift note, the
@@ -37,7 +37,6 @@ const jonny: Tribute = {
     mem("aaaaaaaa-1111-4111-8111-111111111111", "Maria", "his daughter", "He built my first bookshelf.", 4),
     mem("bbbbbbbb-2222-4222-8222-222222222222", "Sam", "a neighbour", "Best fence on the street.", 0),
   ],
-  flowerCount: 12, candleCount: 3, flowerToday: 4,
 };
 
 const freeShe: Tribute = {
@@ -159,16 +158,6 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   t("concierge cta is a real intake, not the old mockup", htmlFree.includes("mailto:imissyoumemorial@gmail.com?subject=Concierge") && !htmlFree.includes("hyperagent.com/s/aBadvO39KhiuGhTHgfi93g"));
 }
 
-// ── 9 · flowers persist — today's wreath hydrates from the ground truth ──────
-{
-  const html = renderTribute(template, jonny);
-  const b = boot(html);
-  t("boot carries today's wreath count", b.fwt === 4);
-  t("template hydrates today's count from boot", html.includes("if(T&&T.fwt)"));
-  t("lay POST consumes the server's today count", html.includes("if(j&&j.ok&&j.today)"));
-  t("negative today count clamps to zero", boot(renderTribute(template, { ...jonny, flowerToday: -3 })).fwt === 0);
-}
-
 // ── 11 · placements: every photograph knows its place (July 8) ────────────────
 {
   const phA = { id: "ph-a", url: "https://x/p0.jpg" }, phB = { id: "ph-b", url: "https://x/p1.jpg", cap: "the bench" };
@@ -193,7 +182,6 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
   const keeps = boot(renderTribute(template, { ...base, memories: [{ ...mem("99999999-9999-4999-8999-999999999999", "Ana", "a neighbour", "The bench he built.", 2), photos: ["https://x/keep.jpg"] }] }));
   t("visitor keepsakes pin with their names, after the family's photographs", keeps.boards[0].items.length === 3 && keeps.boards[0].items[2].who === "Ana" && keeps.boards[0].items[2].img === "https://x/keep.jpg");
   t("engine renders the quiet empty card", template.includes("no photograph for this moment · yet"));
-  t("one flower number is enough", renderTribute(template, jonny).includes(".wr-count{display:none!important}"));
   t("engine survives an empty carousel", template.includes("if(!c.ph.length)return;phI"));
 }
 
@@ -288,8 +276,7 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
 // ── 14d · hero content shadows (r2 Task 7) — the Task 2 scene system untouched ─
 {
   t("hero text wears one soft shadow setting over every scene",
-    template.includes("--hv-ts:0 1px 3px rgba(26,19,13,.55),0 5px 20px rgba(26,19,13,.38)") && template.includes(".arrive .wr-big b,.arrive .wr-biglab,.arrive .wr-count,.arrive .wr-arch .il{text-shadow:var(--hv-ts)}"));
-  t("the count line turned cream so the shadow can carry it", template.includes(".arrive .wr-count{color:#F7EFDF}"));
+    template.includes("--hv-ts:0 1px 3px rgba(26,19,13,.55),0 5px 20px rgba(26,19,13,.38)") && template.includes(".arrive .wr-arch .il{text-shadow:var(--hv-ts)}"));
   t("the portrait's FRAME casts the shadow, never the wreath cutout", template.includes(".arrive .wr-arch{box-shadow:0 8px 20px") && !template.includes(".wreathimg{filter:drop-shadow"));
   const page = renderTribute(template, jonny);
   t("the Task 2 scene system stands exactly as built", page.includes('id="heroVid"') && page.includes("hv-scrim") && page.includes('id="hvPick"') && page.includes("linear-gradient(180deg,rgba(63,44,26,.44) 0%,rgba(63,44,26,.10) 30%,rgba(63,44,26,.14) 60%,rgba(63,44,26,.66) 100%)"));
@@ -377,9 +364,8 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
     const plate = barPage.indexOf('<div class="wr-plate">');
     return hero > -1 && wrhero > hero && bar > wrhero && wreath > bar && plate > wreath;
   })());
-  t("the bar stands on its own paper over the scene, and a tap on it never lays a flower",
-    barPage.includes(".svcrow .svcrow-in{margin:0;max-width:min(92vw,620px);background:linear-gradient(180deg,#FFFDF6,#FBF4E4)") &&
-    template.includes(".wr-plate,.svcrow'))return;"));
+  t("the bar stands on its own paper over the scene",
+    barPage.includes(".svcrow .svcrow-in{margin:0;max-width:min(92vw,620px);background:linear-gradient(180deg,#FFFDF6,#FBF4E4)"));
   t("no service · no bar in the hero, and nothing reserves the old strip's room",
     !renderTribute(template, jonny).includes('class="svcrow"') && !template.includes("{{SERVICE_STRIP}}\n\n\n\n{{CREDIT_BANNER}}"));
   t("the bar holds one line and truncates with an ellipsis",
@@ -416,12 +402,6 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
 // ── 14f · visual batch r4 (July 30) — the hero header block and the
 //          memory-submission identity system ─────────────────────────────────
 {
-  // item 1.4 · the counter's digits: a closed, properly weighted zero. Besley's
-  // tabular figure set carries a hairline zero and Sometype Mono's zero is
-  // slashed — the count wears Noto Serif 700, tabular by default, no jitter.
-  t("the counter wears Noto Serif 700 with tabular lining figures (r4 1.4)",
-    template.includes(".wr-big,.wr-big b{font-family:'Noto Serif','Besley',serif!important;font-variant-caps:normal;font-variant-numeric:lining-nums tabular-nums;font-weight:700") &&
-    template.includes("family=Noto+Serif:wght@700"));
   t("the count-up stays comma-grouped through the same animation",
     template.includes("el.textContent=Math.floor(p*t).toLocaleString()"));
   // item 1.5 retired by r5 item 1 (owner order): the counter caption — element,
@@ -468,16 +448,6 @@ const skipped: Tribute = { slug: "jay-8049", fullName: "Jay Río", tier: "free",
 //          bar at the hero's top, the rose watch, the contained book, and the
 //          accents without the book ─────────────────────────────────────────────
 {
-  // item 2 · the flower number stands above the "Lay a flower" button
-  t("the count stands above the button — number first, then the hud (r5 2)", (() => {
-    const big = template.indexOf('<div class="wr-big">');
-    const hud = template.indexOf('<div class="wr-hud">');
-    const btn = template.indexOf('id="layBtn"');
-    return big > -1 && hud > big && btn > hud;
-  })());
-  t("the count keeps its Noto Serif face and its count-up (r5 2)",
-    template.includes(".wr-big,.wr-big b{font-family:'Noto Serif','Besley',serif!important") &&
-    template.includes('<div class="wr-big"><b data-count="{{FLOWER_COUNT}}">0</b></div>'));
   // item 4 · the presence watch is a blinking rose, no stem, no green
   t("the presence dot is a rose now — layered petals, no green anywhere (r5 4)",
     template.includes('<i aria-hidden="true"><svg viewBox="0 0 14 14"') &&

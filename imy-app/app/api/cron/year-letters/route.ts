@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const db = supabaseAdmin();
     const { data: rows } = await db
       .from("tributes")
-      .select("id,slug,loved_one_name,owner_email,tier,born_on,created_at,year_letter_md,year_letter_last_year,candle_count,flower_count")
+      .select("id,slug,loved_one_name,owner_email,tier,born_on,created_at,year_letter_md,year_letter_last_year")
       .in("tier", ["plus", "heirloom"])
       .eq("status", "published")
       .is("deleted_at", null)
@@ -64,8 +64,6 @@ export async function GET(req: NextRequest) {
 
       const ok = await sendYearLetterEmail(t.owner_email, t.loved_one_name || "them", t.slug, {
         memories: memCount ?? 0,
-        flowers: t.flower_count ?? 0,
-        candles: t.candle_count ?? 0,
       });
       if (ok) {
         sent += 1;

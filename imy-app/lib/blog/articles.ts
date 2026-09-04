@@ -458,7 +458,7 @@ const neverDeletes: BlogArticle = {
     },
     {
       q: "Can visitors leave messages on a free memorial page?",
-      a: "Yes. On I Miss You Memorial, family and friends leave written memories, candles, and flowers through one shared link on the free page. Every word waits for the family's approval before it appears, so the page stays a kind place.",
+      a: "Yes. On I Miss You Memorial, family and friends leave written memories through one shared link on the free page. Every word waits for the family's approval before it appears, so the page stays a kind place.",
     },
     {
       q: "What is the difference between a free memorial page and a paid one on I Miss You Memorial?",
@@ -563,7 +563,7 @@ const oneTimePayment: BlogArticle = {
     },
     {
       q: "Do visitors have to pay or sign up to see a memorial page?",
-      a: "No. On I Miss You Memorial, visitors open the page from one shared link — no account, app, or payment. Family and friends can leave written memories, candles, and flowers, and every word waits for the family's approval before it appears.",
+      a: "No. On I Miss You Memorial, visitors open the page from one shared link — no account, app, or payment. Family and friends can leave written memories, and every word waits for the family's approval before it appears.",
     },
     {
       q: "What does the Plus plan add on I Miss You Memorial?",

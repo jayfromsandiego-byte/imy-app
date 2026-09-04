@@ -63,9 +63,8 @@ export default function AboutPage() {
         </p>
         <p>
           So we build memorial pages — a portrait held in a stone arch, a wall of memories
-          from everyone who knew them, flowers laid by real visitors, candles lit on real
-          nights. A page is free to make and takes minutes. Everything on it waits for the
-          family before it appears.
+          from everyone who knew them, kind words left by real visitors. A page is free to
+          make and takes minutes. Everything on it waits for the family before it appears.
         </p>
         <p>
           We also make free tools for the hardest week — programs, obituaries, checklists —

@@ -48,7 +48,6 @@ const jonny: Tribute = {
     { ...mem("aaaaaaaa-1111-4111-8111-111111111111", "Maria", "his daughter", "He built my first bookshelf.", 4), photos: ["https://x/bench.jpg"] },
     mem("bbbbbbbb-2222-4222-8222-222222222222", "Sam", "a neighbour", "Best fence on the street.", 0),
   ],
-  flowerCount: 12, candleCount: 3, flowerToday: 4,
 };
 
 const freeShe: Tribute = {
